@@ -1,10 +1,16 @@
 # OliUmbi Apps
 
-## goals
+## targets
+- multi route
+- api
 - query
-- trpc
+- trpc / zod
 - image compression sharp
 - time / date
+- database
+- migration management
+- auth
+- components (tailwind, baseui)
 
 ## open topics
 - linter
