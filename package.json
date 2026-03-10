@@ -1,6 +1,5 @@
 {
   "name": "apps",
-
   "private": true,
   "type": "module",
   "scripts": {

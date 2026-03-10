@@ -3,7 +3,7 @@
 ## goals
 - query
 - trpc
-- image compression
+- image compression sharp
 - time / date
 
 ## open topics
