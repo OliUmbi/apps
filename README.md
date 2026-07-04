@@ -4,6 +4,11 @@ TODO structure
 TODO deployment
 TODO development
 
+
+## web
+TODO zod, linter (biome), query, datetime, tailwind, baseui, react compiler
+
+
 ## targets
 - multi route
 - api
