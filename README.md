@@ -1,5 +1,9 @@
 # OliUmbi Apps
 
+TODO structure
+TODO deployment
+TODO development
+
 ## targets
 - multi route
 - api
