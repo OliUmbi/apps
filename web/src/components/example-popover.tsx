@@ -9,7 +9,7 @@ export default function ExamplePopover() {
 					<Popover.Popup>
 						<Popover.Arrow />
 						<Popover.Title>Notifications</Popover.Title>
-						<Popover.Description>
+						<Popover.Description className="text-3xl font-bold underline">
 							You are all caught up. Good job!
 						</Popover.Description>
 					</Popover.Popup>
