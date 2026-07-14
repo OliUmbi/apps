@@ -1,42 +1,54 @@
-import type {ReactNode} from 'react'
-import {createRootRoute, HeadContent, Outlet, Scripts} from '@tanstack/react-router'
+import {
+	createRootRoute,
+	HeadContent,
+	Outlet,
+	Scripts,
+} from "@tanstack/react-router";
+import type { ReactNode } from "react";
+import rootCss from "../styles/root.css?url";
 
 export const Route = createRootRoute({
-    head: () => ({
-        meta: [
-            {
-                charSet: 'utf-8',
-            },
-            {
-                name: 'viewport',
-                content: 'width=device-width, initial-scale=1',
-            },
-            {
-                title: 'OliUmbi Apps',
-            },
-        ],
-    }),
-    component: RootComponent,
-})
+	head: () => ({
+		meta: [
+			{
+				charSet: "utf-8",
+			},
+			{
+				name: "viewport",
+				content: "width=device-width, initial-scale=1",
+			},
+			{
+				title: "OliUmbi Apps",
+			},
+		],
+		links: [
+			{
+				rel: "stylesheet",
+				href: rootCss,
+			},
+		],
+	}),
+	component: RootComponent,
+});
 
 function RootComponent() {
-    return (
-        <RootDocument>
-            <Outlet/>
-        </RootDocument>
-    )
+	return (
+		<RootDocument>
+			<Outlet />
+		</RootDocument>
+	);
 }
 
-function RootDocument({children}: Readonly<{ children: ReactNode }>) {
-    return (
-        <html>
-        <head>
-            <HeadContent/>
-        </head>
-        <body>
-        {children}
-        <Scripts/>
-        </body>
-        </html>
-    )
+function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+	return (
+		<html lang="de-CH">
+			<head>
+				<HeadContent />
+			</head>
+			<body>
+				{children}
+				<Scripts />
+			</body>
+		</html>
+	);
 }

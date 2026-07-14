@@ -1,0 +1,4 @@
+body {
+	isolation: isolate;
+	position: relative;
+}
