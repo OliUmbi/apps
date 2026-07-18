@@ -6,7 +6,7 @@ TODO development
 
 
 ## web
-TODO zod, linter (biome), query, datetime, tailwind, baseui, react compiler
+TODO zod, query, datetime, react compiler
 
 
 ## targets

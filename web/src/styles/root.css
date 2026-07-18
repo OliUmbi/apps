@@ -1,4 +1,11 @@
 @import "tailwindcss";
+@import "fonts.css";
+
+@theme {
+	--font-sans: "sans-geist", sans-serif;
+	--font-serif: "serif-playfair", serif;
+	--font-mono: "mono-geist", monospace;
+}
 
 body {
 	isolation: isolate;
