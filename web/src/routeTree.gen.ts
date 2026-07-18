@@ -9,38 +9,123 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ZelglihofRouteRouteImport } from './routes/zelglihof/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ZelglihofIndexRouteImport } from './routes/zelglihof/index'
+import { Route as UncletIndexRouteImport } from './routes/unclet/index'
+import { Route as OliumbiIndexRouteImport } from './routes/oliumbi/index'
+import { Route as JublawomaIndexRouteImport } from './routes/jublawoma/index'
+import { Route as ZelglihofAboutRouteImport } from './routes/zelglihof/about'
 
+const ZelglihofRouteRoute = ZelglihofRouteRouteImport.update({
+  id: '/zelglihof',
+  path: '/zelglihof',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ZelglihofIndexRoute = ZelglihofIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ZelglihofRouteRoute,
+} as any)
+const UncletIndexRoute = UncletIndexRouteImport.update({
+  id: '/unclet/',
+  path: '/unclet/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OliumbiIndexRoute = OliumbiIndexRouteImport.update({
+  id: '/oliumbi/',
+  path: '/oliumbi/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JublawomaIndexRoute = JublawomaIndexRouteImport.update({
+  id: '/jublawoma/',
+  path: '/jublawoma/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ZelglihofAboutRoute = ZelglihofAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => ZelglihofRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/zelglihof': typeof ZelglihofRouteRouteWithChildren
+  '/zelglihof/about': typeof ZelglihofAboutRoute
+  '/jublawoma/': typeof JublawomaIndexRoute
+  '/oliumbi/': typeof OliumbiIndexRoute
+  '/unclet/': typeof UncletIndexRoute
+  '/zelglihof/': typeof ZelglihofIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/zelglihof/about': typeof ZelglihofAboutRoute
+  '/jublawoma': typeof JublawomaIndexRoute
+  '/oliumbi': typeof OliumbiIndexRoute
+  '/unclet': typeof UncletIndexRoute
+  '/zelglihof': typeof ZelglihofIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/zelglihof': typeof ZelglihofRouteRouteWithChildren
+  '/zelglihof/about': typeof ZelglihofAboutRoute
+  '/jublawoma/': typeof JublawomaIndexRoute
+  '/oliumbi/': typeof OliumbiIndexRoute
+  '/unclet/': typeof UncletIndexRoute
+  '/zelglihof/': typeof ZelglihofIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/zelglihof'
+    | '/zelglihof/about'
+    | '/jublawoma/'
+    | '/oliumbi/'
+    | '/unclet/'
+    | '/zelglihof/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/zelglihof/about'
+    | '/jublawoma'
+    | '/oliumbi'
+    | '/unclet'
+    | '/zelglihof'
+  id:
+    | '__root__'
+    | '/'
+    | '/zelglihof'
+    | '/zelglihof/about'
+    | '/jublawoma/'
+    | '/oliumbi/'
+    | '/unclet/'
+    | '/zelglihof/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ZelglihofRouteRoute: typeof ZelglihofRouteRouteWithChildren
+  JublawomaIndexRoute: typeof JublawomaIndexRoute
+  OliumbiIndexRoute: typeof OliumbiIndexRoute
+  UncletIndexRoute: typeof UncletIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/zelglihof': {
+      id: '/zelglihof'
+      path: '/zelglihof'
+      fullPath: '/zelglihof'
+      preLoaderRoute: typeof ZelglihofRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +133,64 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/zelglihof/': {
+      id: '/zelglihof/'
+      path: '/'
+      fullPath: '/zelglihof/'
+      preLoaderRoute: typeof ZelglihofIndexRouteImport
+      parentRoute: typeof ZelglihofRouteRoute
+    }
+    '/unclet/': {
+      id: '/unclet/'
+      path: '/unclet'
+      fullPath: '/unclet/'
+      preLoaderRoute: typeof UncletIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/oliumbi/': {
+      id: '/oliumbi/'
+      path: '/oliumbi'
+      fullPath: '/oliumbi/'
+      preLoaderRoute: typeof OliumbiIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jublawoma/': {
+      id: '/jublawoma/'
+      path: '/jublawoma'
+      fullPath: '/jublawoma/'
+      preLoaderRoute: typeof JublawomaIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/zelglihof/about': {
+      id: '/zelglihof/about'
+      path: '/about'
+      fullPath: '/zelglihof/about'
+      preLoaderRoute: typeof ZelglihofAboutRouteImport
+      parentRoute: typeof ZelglihofRouteRoute
+    }
   }
 }
 
+interface ZelglihofRouteRouteChildren {
+  ZelglihofAboutRoute: typeof ZelglihofAboutRoute
+  ZelglihofIndexRoute: typeof ZelglihofIndexRoute
+}
+
+const ZelglihofRouteRouteChildren: ZelglihofRouteRouteChildren = {
+  ZelglihofAboutRoute: ZelglihofAboutRoute,
+  ZelglihofIndexRoute: ZelglihofIndexRoute,
+}
+
+const ZelglihofRouteRouteWithChildren = ZelglihofRouteRoute._addFileChildren(
+  ZelglihofRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ZelglihofRouteRoute: ZelglihofRouteRouteWithChildren,
+  JublawomaIndexRoute: JublawomaIndexRoute,
+  OliumbiIndexRoute: OliumbiIndexRoute,
+  UncletIndexRoute: UncletIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

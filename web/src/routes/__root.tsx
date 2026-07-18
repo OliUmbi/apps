@@ -41,11 +41,11 @@ function RootComponent() {
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 	return (
-		<html lang="de-CH">
+		<html lang="de-CH" className="h-full">
 			<head>
 				<HeadContent />
 			</head>
-			<body>
+			<body className="h-full">
 				{children}
 				<Scripts />
 			</body>
