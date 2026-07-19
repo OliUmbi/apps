@@ -8,23 +8,23 @@ export const Route = createFileRoute("/zelglihof")({
 const navigationLinks = [
 	{
 		label: "Zelglihof",
-		to: "/",
+		to: "/zelglihof/",
 	},
 	{
 		label: "Produkte",
-		to: "/products",
+		to: "/zelglihof/products",
 	},
 	{
 		label: "Über uns",
-		to: "/about",
+		to: "/zelglihof/about",
 	},
 ];
 
 function RouteComponent() {
 	return (
 		<>
-			<header className="flex gap-4 justify-between items-center p-4 bg-amber-50">
-				<span className="font-serif font-black text-lg">Zelglihof</span>
+			<header className="flex gap-8 justify-between md:justify-center items-center p-4 bg-amber-50">
+				<span className="font-serif font-black text-3xl">Zelglihof</span>
 				<Navigation links={navigationLinks} />
 			</header>
 			<main className="p-4 h-full">
