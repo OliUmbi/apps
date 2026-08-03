@@ -6,7 +6,7 @@ TODO development
 
 
 ## web
-TODO zod, query, datetime, react compiler
+TODO zod, query, datetime, react compiler, paraglide (i18n)
 
 
 ## targets

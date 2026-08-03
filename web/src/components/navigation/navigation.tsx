@@ -2,6 +2,7 @@ import {Drawer} from "@base-ui/react/drawer";
 import {NavigationMenu} from "@base-ui/react/navigation-menu";
 import {Link} from "@tanstack/react-router";
 import {Menu, X} from "lucide-react";
+import {useState} from "react";
 
 interface NavigationLink {
     label: string;
@@ -24,10 +25,10 @@ const Navigation = (props: Props) => {
 const Desktop = (props: Props) => {
     return (
         <NavigationMenu.Root className="hidden md:flex">
-            <NavigationMenu.List className="flex gap-2">
+            <NavigationMenu.List className="flex gap-4">
                 {props.links.map((value, index) => (
                     <NavigationMenu.Item key={index} className="">
-                        <Link to={value.to} className="font-bold hover:bg-amber-200 px-4 py-3 rounded-xl">{value.label}</Link>
+                        <Link to={value.to} className="text-stone-500 font-bold py-1 border-b-2 border-transparent hover:text-stone-950 data-[status=active]:text-stone-950 data-[status=active]:border-stone-600">{value.label}</Link>
                     </NavigationMenu.Item>
                 ))}
             </NavigationMenu.List>
@@ -36,26 +37,28 @@ const Desktop = (props: Props) => {
 };
 
 const Mobile = (props: Props) => {
+    const [open, setOpen] = useState(false);
+
     return (
-        <Drawer.Root swipeDirection="right">
-            <Drawer.Trigger className="md:hidden rounded-2xl px-4 py-3 bg-amber-300 focus:bg-amber-400 flex items-center gap-2 text-sm font-bold">
+        <Drawer.Root swipeDirection="right" open={open} onOpenChange={setOpen}>
+            <Drawer.Trigger className="md:hidden rounded-2xl px-4 py-3 bg-stone-200 focus:bg-stone-300 flex items-center gap-2 text-sm font-bold">
                 Menu <Menu size={24}/>
             </Drawer.Trigger>
             <Drawer.Portal>
                 <Drawer.Backdrop className="fixed inset-0 min-h-dvh min-w-dvw bg-black opacity-25"/>
                 <Drawer.Viewport className="fixed inset-0 flex items-stretch justify-end p-(--viewport-padding)">
-                    <Drawer.Popup className="h-full w-96 max-w-[80%] bg-white p-6">
-                        <Drawer.Content className="h-full w-full max-w-[32rem] flex flex-col gap-4">
+                    <Drawer.Popup className="h-full w-full max-w-lg bg-white p-6">
+                        <Drawer.Content className="h-full w-full flex flex-col gap-4">
                             <Drawer.Close className="self-end">
                                 <X/>
                             </Drawer.Close>
                             <div className="h-full flex flex-col gap-4 justify-center">
-                                <Drawer.Title>Menu</Drawer.Title>
+                                <Drawer.Title className="text-stone-400">Menu</Drawer.Title>
                                 <NavigationMenu.Root>
-                                    <NavigationMenu.List className="flex flex-col gap-3">
+                                    <NavigationMenu.List className="flex flex-col gap-4">
                                         {props.links.map((value, index) => (
                                             <NavigationMenu.Item key={index}>
-                                                <Link to={value.to} className="font-bold text-3xl">
+                                                <Link to={value.to} onClick={() => setOpen(false)} className="font-bold text-3xl text-stone-500 data-[status=active]:text-stone-950">
                                                     {value.label}
                                                 </Link>
                                             </NavigationMenu.Item>

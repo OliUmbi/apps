@@ -45,7 +45,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 			<head>
 				<HeadContent />
 			</head>
-			<body className="h-full">
+			<body className="h-full bg-stone-50">
 				{children}
 				<Scripts />
 			</body>
