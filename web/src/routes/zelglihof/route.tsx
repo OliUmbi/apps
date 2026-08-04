@@ -37,7 +37,7 @@ function RouteComponent() {
 				</Link>
                 <Navigation links={navigationLinks}/>
             </header>
-            <main className="p-8 h-full">
+            <main className="h-full">
                 <Outlet/>
             </main>
         </>

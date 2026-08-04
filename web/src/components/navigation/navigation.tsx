@@ -41,7 +41,7 @@ const Mobile = (props: Props) => {
 
     return (
         <Drawer.Root swipeDirection="right" open={open} onOpenChange={setOpen}>
-            <Drawer.Trigger className="md:hidden rounded-2xl px-4 py-3 bg-stone-200 focus:bg-stone-300 flex items-center gap-2 text-sm font-bold">
+            <Drawer.Trigger className="md:hidden rounded-2xl px-4 py-3 bg-green-200 border border-green-300 flex items-center gap-2 text-sm font-bold">
                 Menu <Menu size={24}/>
             </Drawer.Trigger>
             <Drawer.Portal>
