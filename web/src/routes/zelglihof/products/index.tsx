@@ -38,7 +38,7 @@ function RouteComponent() {
     ]
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col max-w-5xl m-auto">
             <div className="p-8">
                 <h1 className="text-4xl font-bold font-serif">Produkte</h1>
                 <h2 className="text-lg font-semibold">Frisch vom Hof</h2>
@@ -49,7 +49,7 @@ function RouteComponent() {
                 <p>Nulla facilisi. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
                     Sed molestie non mauris tempus convallis. Vivamus a augue velit. Etiam a erat finibus, gravida magna ut, fringilla felis.</p>
             </div>
-            <div className="flex flex-col gap-4 p-4">
+            <div className="grid md:grid-cols-2 gap-4 p-4">
                 {
                     products.map(value => (
                         <div key={value.id} className="relative min-h-96 rounded-2xl overflow-hidden">

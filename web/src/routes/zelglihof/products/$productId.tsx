@@ -8,19 +8,19 @@ export const Route = createFileRoute('/zelglihof/products/$productId')({
 
 function RouteComponent() {
     return (
-        <div className="flex flex-col gap-8">
-            <img className="" src="/images/zelglihof/demo-rindfleisch.jpg" alt="Rindfleisch"/>
-            <div className="p-8">
+        <div className="flex flex-col items-center gap-8 md:gap-2">
+            <img className="w-full max-w-5xl aspect-square md:aspect-video object-cover lg:rounded-2xl" src="/images/zelglihof/demo-rindfleisch.jpg" alt="Rindfleisch"/>
+            <div className="w-full max-w-2xl p-8">
                 <h1 className="text-3xl font-serif font-bold">Rindfleisch</h1>
                 <h2 className="text-md">Mischpakete à kg xx</h2>
             </div>
-            <div className="px-8">
+            <div className="w-full max-w-2xl px-8">
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vitae placerat ligula, sed faucibus quam.
                     Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
                 <p>Nulla facilisi. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
                     Sed molestie non mauris tempus convallis. Vivamus a augue velit. Etiam a erat finibus, gravida magna ut, fringilla felis.</p>
             </div>
-            <Form className="p-8 flex flex-col gap-4">
+            <Form className="w-full max-w-2xl p-8 flex flex-col gap-4">
                 <Field.Root className="flex flex-col gap-0.5">
                     <Field.Label className="font-semibold text-sm px-3 text-stone-600">Name</Field.Label>
                     <Field.Control className="font-bold border bg-stone-100 border-stone-950 rounded-md px-3 py-2"/>
@@ -39,14 +39,14 @@ function RouteComponent() {
                         <NumberField.Group className="flex align-middle gap-2 border bg-stone-100 border-stone-950 rounded-md px-3 py-2">
                             <NumberField.Input className="w-full font-bold"/>
                             <NumberField.Decrement>
-                                <Minus />
+                                <Minus/>
                             </NumberField.Decrement>
                             <NumberField.Increment>
-                                <Plus />
+                                <Plus/>
                             </NumberField.Increment>
                         </NumberField.Group>
                     </NumberField.Root>
-                    <Field.Error />
+                    <Field.Error/>
                 </Field.Root>
                 <p className="text-sm text-stone-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vitae placerat ligula, sed faucibus quam.</p>
                 <Button className="text-stone-50 px-3 py-2 bg-amber-700 border border-amber-800 rounded-xl ">Bestellen</Button>

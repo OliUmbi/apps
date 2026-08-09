@@ -16,6 +16,8 @@ import { Route as OliumbiIndexRouteImport } from './routes/oliumbi/index'
 import { Route as UncletIndexRouteImport } from './routes/unclet/index'
 import { Route as ZelglihofIndexRouteImport } from './routes/zelglihof/index'
 import { Route as ZelglihofAboutRouteImport } from './routes/zelglihof/about'
+import { Route as ZelglihofContactRouteImport } from './routes/zelglihof/contact'
+import { Route as ZelglihofServicesRouteImport } from './routes/zelglihof/services'
 import { Route as ZelglihofProductsIndexRouteImport } from './routes/zelglihof/products/index'
 import { Route as ZelglihofProductsProductIdRouteImport } from './routes/zelglihof/products/$productId'
 
@@ -54,6 +56,16 @@ const ZelglihofAboutRoute = ZelglihofAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => ZelglihofRouteRoute,
 } as any)
+const ZelglihofContactRoute = ZelglihofContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => ZelglihofRouteRoute,
+} as any)
+const ZelglihofServicesRoute = ZelglihofServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => ZelglihofRouteRoute,
+} as any)
 const ZelglihofProductsIndexRoute = ZelglihofProductsIndexRouteImport.update({
   id: '/products/',
   path: '/products/',
@@ -70,6 +82,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/zelglihof': typeof ZelglihofRouteRouteWithChildren
   '/zelglihof/about': typeof ZelglihofAboutRoute
+  '/zelglihof/contact': typeof ZelglihofContactRoute
+  '/zelglihof/services': typeof ZelglihofServicesRoute
   '/jublawoma/': typeof JublawomaIndexRoute
   '/oliumbi/': typeof OliumbiIndexRoute
   '/unclet/': typeof UncletIndexRoute
@@ -80,6 +94,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/zelglihof/about': typeof ZelglihofAboutRoute
+  '/zelglihof/contact': typeof ZelglihofContactRoute
+  '/zelglihof/services': typeof ZelglihofServicesRoute
   '/jublawoma': typeof JublawomaIndexRoute
   '/oliumbi': typeof OliumbiIndexRoute
   '/unclet': typeof UncletIndexRoute
@@ -92,6 +108,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/zelglihof': typeof ZelglihofRouteRouteWithChildren
   '/zelglihof/about': typeof ZelglihofAboutRoute
+  '/zelglihof/contact': typeof ZelglihofContactRoute
+  '/zelglihof/services': typeof ZelglihofServicesRoute
   '/jublawoma/': typeof JublawomaIndexRoute
   '/oliumbi/': typeof OliumbiIndexRoute
   '/unclet/': typeof UncletIndexRoute
@@ -105,6 +123,8 @@ export interface FileRouteTypes {
     | '/'
     | '/zelglihof'
     | '/zelglihof/about'
+    | '/zelglihof/contact'
+    | '/zelglihof/services'
     | '/jublawoma/'
     | '/oliumbi/'
     | '/unclet/'
@@ -115,6 +135,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/zelglihof/about'
+    | '/zelglihof/contact'
+    | '/zelglihof/services'
     | '/jublawoma'
     | '/oliumbi'
     | '/unclet'
@@ -126,6 +148,8 @@ export interface FileRouteTypes {
     | '/'
     | '/zelglihof'
     | '/zelglihof/about'
+    | '/zelglihof/contact'
+    | '/zelglihof/services'
     | '/jublawoma/'
     | '/oliumbi/'
     | '/unclet/'
@@ -193,6 +217,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ZelglihofAboutRouteImport
       parentRoute: typeof ZelglihofRouteRoute
     }
+    '/zelglihof/contact': {
+      id: '/zelglihof/contact'
+      path: '/contact'
+      fullPath: '/zelglihof/contact'
+      preLoaderRoute: typeof ZelglihofContactRouteImport
+      parentRoute: typeof ZelglihofRouteRoute
+    }
+    '/zelglihof/services': {
+      id: '/zelglihof/services'
+      path: '/services'
+      fullPath: '/zelglihof/services'
+      preLoaderRoute: typeof ZelglihofServicesRouteImport
+      parentRoute: typeof ZelglihofRouteRoute
+    }
     '/zelglihof/products/': {
       id: '/zelglihof/products/'
       path: '/products'
@@ -212,6 +250,8 @@ declare module '@tanstack/react-router' {
 
 interface ZelglihofRouteRouteChildren {
   ZelglihofAboutRoute: typeof ZelglihofAboutRoute
+  ZelglihofContactRoute: typeof ZelglihofContactRoute
+  ZelglihofServicesRoute: typeof ZelglihofServicesRoute
   ZelglihofIndexRoute: typeof ZelglihofIndexRoute
   ZelglihofProductsProductIdRoute: typeof ZelglihofProductsProductIdRoute
   ZelglihofProductsIndexRoute: typeof ZelglihofProductsIndexRoute
@@ -219,6 +259,8 @@ interface ZelglihofRouteRouteChildren {
 
 const ZelglihofRouteRouteChildren: ZelglihofRouteRouteChildren = {
   ZelglihofAboutRoute: ZelglihofAboutRoute,
+  ZelglihofContactRoute: ZelglihofContactRoute,
+  ZelglihofServicesRoute: ZelglihofServicesRoute,
   ZelglihofIndexRoute: ZelglihofIndexRoute,
   ZelglihofProductsProductIdRoute: ZelglihofProductsProductIdRoute,
   ZelglihofProductsIndexRoute: ZelglihofProductsIndexRoute,

@@ -6,10 +6,6 @@ export const Route = createFileRoute("/zelglihof")({
 });
 
 const navigationLinks = [
-	{
-		label: "Aktuelles",
-		to: "/zelglihof/latest",
-	},
     {
         label: "Produkte",
         to: "/zelglihof/products",
@@ -37,7 +33,7 @@ function RouteComponent() {
 				</Link>
                 <Navigation links={navigationLinks}/>
             </header>
-            <main className="h-full">
+            <main className="h-full w-full">
                 <Outlet/>
             </main>
         </>

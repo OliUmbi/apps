@@ -5,5 +5,12 @@ export const Route = createFileRoute("/zelglihof/about")({
 });
 
 function RouteComponent() {
-	return <div>Hello "/zelglihof/about"!</div>;
+	return (
+		<div>
+			<p>Wer</p>
+			<p>Wo</p>
+			<p>Tiere</p>
+			<p>Pflanzen</p>
+		</div>
+	);
 }
