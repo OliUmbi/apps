@@ -13,8 +13,12 @@ interface Props {
 	links: NavigationLink[];
 }
 
-const Navigation = () => {
+const Header = () => {
 	const links = [
+		{
+			label: "Aktuelles",
+			to: "/latest",
+		},
 		{
 			label: "Produkte",
 			to: "/products",
@@ -34,10 +38,13 @@ const Navigation = () => {
 	];
 
 	return (
-		<>
+		<header className="flex gap-12 justify-between md:justify-center items-center md:p-8 p-4">
+			<Link to="/">
+				<span className="font-serif font-black text-3xl">Zelglihof</span>
+			</Link>
 			<Desktop links={links} />
 			<Mobile links={links} />
-		</>
+		</header>
 	);
 };
 
@@ -102,4 +109,4 @@ const Mobile = (props: Props) => {
 	);
 };
 
-export default Navigation;
+export default Header;

@@ -13,8 +13,8 @@ catalog:
 
   "nitro": ^3.0.260610-beta
 
-  "@tanstack/react-router": ^1.170.18
-  "@tanstack/react-start": ^1.168.28
+  "@tanstack/react-router": ^1.170.25
+  "@tanstack/react-start": ^1.168.42
 
   "@types/react": ^19.2.17
   "@types/react-dom": ^19.2.3

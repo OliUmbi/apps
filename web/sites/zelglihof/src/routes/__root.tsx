@@ -1,12 +1,12 @@
 import {
 	createRootRoute,
 	HeadContent,
-	Link,
 	Outlet,
 	Scripts,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import Navigation from "../components/navigation/navigation";
+import Footer from "../components/footer/footer";
+import Header from "../components/header/header";
 import rootCss from "../styles/root.css?url";
 
 export const Route = createRootRoute({
@@ -49,14 +49,9 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 				<HeadContent />
 			</head>
 			<body className="h-full bg-stone-50">
-				<header className="flex gap-12 justify-between md:justify-center items-center md:p-8 p-4">
-					<Link to="/">
-						<span className="font-serif font-black text-3xl">Zelglihof</span>
-					</Link>
-					<Navigation />
-				</header>
-				<main className="h-full w-full">{children}</main>
-
+				<Header />
+				<main>{children}</main>
+				<Footer />
 				<Scripts />
 			</body>
 		</html>

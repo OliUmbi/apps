@@ -74,7 +74,8 @@ function RouteComponent() {
 								<h4 className="text-sm text-stone-200">{value.description}</h4>
 							</div>
 							<Link
-								to={value.id}
+								to="/products/$productId"
+								params={{ productId: value.id }}
 								className="text-stone-50 text-center px-3 py-2 bg-amber-700 border border-amber-800 rounded-xl "
 							>
 								{value.button}
