@@ -7,7 +7,7 @@ import {
 import type { ReactNode } from "react";
 import Footer from "../components/footer/footer";
 import Header from "../components/header/header";
-import rootCss from "../styles/root.css?url";
+import "../styles/root.css";
 
 export const Route = createRootRoute({
 	head: () => ({
@@ -21,12 +21,6 @@ export const Route = createRootRoute({
 			},
 			{
 				title: "Zelglihof",
-			},
-		],
-		links: [
-			{
-				rel: "stylesheet",
-				href: rootCss,
 			},
 		],
 	}),
