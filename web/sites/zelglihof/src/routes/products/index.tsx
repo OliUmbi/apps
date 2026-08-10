@@ -1,6 +1,6 @@
 import {createFileRoute, Link} from '@tanstack/react-router'
 
-export const Route = createFileRoute('/zelglihof/products/')({
+export const Route = createFileRoute('/products/')({
     component: RouteComponent,
 })
 
@@ -12,28 +12,28 @@ function RouteComponent() {
             title: "Rindfleisch",
             description: "Mischpakete à kg xx",
             button: "Vorbestellen per. XXXXXX",
-            image: "/images/zelglihof/demo-rindfleisch.jpg"
+            image: "/images/demo/demo-rindfleisch.jpg"
         },
         {
             id: "2",
             title: "Zuckermais",
             description: "Ab XXXXXX erhältlich",
             button: "Vorbestellen",
-            image: "/images/zelglihof/demo-zuckermais.jpg"
+            image: "/images/demo/demo-zuckermais.jpg"
         },
         {
             id: "3",
             title: "Eier",
             description: "Immer ab Hof erhältlich",
             button: "Bestellen",
-            image: "/images/zelglihof/demo-eier.jpg"
+            image: "/images/demo/demo-eier.jpg"
         },
         {
             id: "4",
             title: "Bohnen",
             description: "Ab XXXXXX erhältlich",
             button: "Vorbestellen",
-            image: "/images/zelglihof/demo-bohnen.jpg"
+            image: "/images/demo/demo-bohnen.jpg"
         }
     ]
 

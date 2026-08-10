@@ -1,6 +1,6 @@
 import {createFileRoute, Link} from '@tanstack/react-router'
 
-export const Route = createFileRoute('/zelglihof/services')({
+export const Route = createFileRoute('/services')({
     component: RouteComponent,
 })
 
@@ -9,17 +9,17 @@ function RouteComponent() {
         {
             name: "Pflanzenschutz",
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent interdum lacus in neque lobortis, quis vehicula massa accumsan. Morbi vel pretium ipsum. Nunc sed nulla nec ipsum commodo porta ac nec enim. Suspendisse ut massa libero.",
-            image: "/images/zelglihof/demo-pflanzenschutz.jpg"
+            image: "/images/demo/demo-pflanzenschutz.jpg"
         },
         {
             name: "Winterdienst",
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent interdum lacus in neque lobortis, quis vehicula massa accumsan. Morbi vel pretium ipsum. Nunc sed nulla nec ipsum commodo porta ac nec enim. Suspendisse ut massa libero.",
-            image: "/images/zelglihof/demo-winterdienst.jpg"
+            image: "/images/demo/demo-winterdienst.jpg"
         },
         {
             name: "Saat",
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent interdum lacus in neque lobortis, quis vehicula massa accumsan. Morbi vel pretium ipsum. Nunc sed nulla nec ipsum commodo porta ac nec enim. Suspendisse ut massa libero.",
-            image: "/images/zelglihof/demo-saat.jpg"
+            image: "/images/demo/demo-saat.jpg"
         }
     ]
 

@@ -2,14 +2,14 @@ import {createFileRoute} from '@tanstack/react-router'
 import {Button, Field, Form, NumberField} from "@base-ui/react";
 import {Minus, Plus} from "lucide-react";
 
-export const Route = createFileRoute('/zelglihof/products/$productId')({
+export const Route = createFileRoute('/products/$productId')({
     component: RouteComponent,
 })
 
 function RouteComponent() {
     return (
         <div className="flex flex-col items-center gap-8 md:gap-2">
-            <img className="w-full max-w-5xl aspect-square md:aspect-video object-cover lg:rounded-2xl" src="/images/zelglihof/demo-rindfleisch.jpg" alt="Rindfleisch"/>
+            <img className="w-full max-w-5xl aspect-square md:aspect-video object-cover lg:rounded-2xl" src="/images/demo/demo-rindfleisch.jpg" alt="Rindfleisch"/>
             <div className="w-full max-w-2xl p-8">
                 <h1 className="text-3xl font-serif font-bold">Rindfleisch</h1>
                 <h2 className="text-md">Mischpakete à kg xx</h2>

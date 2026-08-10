@@ -2,7 +2,7 @@ import {createFileRoute} from '@tanstack/react-router'
 import {Button, Field, Form, NumberField, Select} from "@base-ui/react";
 import {Check, ChevronDown, ChevronsUpDown, ChevronUp, Minus, Plus} from "lucide-react";
 
-export const Route = createFileRoute('/zelglihof/contact')({
+export const Route = createFileRoute('/contact')({
     component: RouteComponent,
 })
 

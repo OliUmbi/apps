@@ -13,11 +13,30 @@ interface Props {
     links: NavigationLink[];
 }
 
-const Navigation = (props: Props) => {
+const Navigation = () => {
+    const links = [
+        {
+            label: "Produkte",
+            to: "/products",
+        },
+        {
+            label: "Dienstleistungen",
+            to: "/services",
+        },
+        {
+            label: "Über uns",
+            to: "/about",
+        },
+        {
+            label: "Kontakt",
+            to: "/contact",
+        },
+    ];
+
     return (
         <>
-            <Desktop links={props.links}/>
-            <Mobile links={props.links}/>
+            <Desktop links={links}/>
+            <Mobile links={links}/>
         </>
     );
 };
