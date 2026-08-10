@@ -1,12 +1,13 @@
 import {
 	createRootRoute,
-	HeadContent, Link,
+	HeadContent,
+	Link,
 	Outlet,
 	Scripts,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import rootCss from "../styles/root.css?url";
 import Navigation from "../components/navigation/navigation";
+import rootCss from "../styles/root.css?url";
 
 export const Route = createRootRoute({
 	head: () => ({
@@ -19,7 +20,7 @@ export const Route = createRootRoute({
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "OliUmbi Apps",
+				title: "Zelglihof",
 			},
 		],
 		links: [
@@ -30,7 +31,7 @@ export const Route = createRootRoute({
 		],
 	}),
 	component: RootComponent,
-	notFoundComponent: NotFoundComponent
+	notFoundComponent: NotFoundComponent,
 });
 
 function RootComponent() {
@@ -52,11 +53,9 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 					<Link to="/">
 						<span className="font-serif font-black text-3xl">Zelglihof</span>
 					</Link>
-					<Navigation/>
+					<Navigation />
 				</header>
-				<main className="h-full w-full">
-					{children}
-				</main>
+				<main className="h-full w-full">{children}</main>
 
 				<Scripts />
 			</body>
@@ -65,7 +64,5 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 }
 
 function NotFoundComponent() {
-	return (
-		<h1>Not found</h1>
-	)
+	return <h1>Not found</h1>;
 }

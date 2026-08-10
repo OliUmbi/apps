@@ -1,96 +1,105 @@
-import {Drawer} from "@base-ui/react/drawer";
-import {NavigationMenu} from "@base-ui/react/navigation-menu";
-import {Link} from "@tanstack/react-router";
-import {Menu, X} from "lucide-react";
-import {useState} from "react";
+import { Drawer } from "@base-ui/react/drawer";
+import { NavigationMenu } from "@base-ui/react/navigation-menu";
+import { Link } from "@tanstack/react-router";
+import { Menu, X } from "lucide-react";
+import { useState } from "react";
 
 interface NavigationLink {
-    label: string;
-    to: string;
+	label: string;
+	to: string;
 }
 
 interface Props {
-    links: NavigationLink[];
+	links: NavigationLink[];
 }
 
 const Navigation = () => {
-    const links = [
-        {
-            label: "Produkte",
-            to: "/products",
-        },
-        {
-            label: "Dienstleistungen",
-            to: "/services",
-        },
-        {
-            label: "Über uns",
-            to: "/about",
-        },
-        {
-            label: "Kontakt",
-            to: "/contact",
-        },
-    ];
+	const links = [
+		{
+			label: "Produkte",
+			to: "/products",
+		},
+		{
+			label: "Dienstleistungen",
+			to: "/services",
+		},
+		{
+			label: "Über uns",
+			to: "/about",
+		},
+		{
+			label: "Kontakt",
+			to: "/contact",
+		},
+	];
 
-    return (
-        <>
-            <Desktop links={links}/>
-            <Mobile links={links}/>
-        </>
-    );
+	return (
+		<>
+			<Desktop links={links} />
+			<Mobile links={links} />
+		</>
+	);
 };
 
 const Desktop = (props: Props) => {
-    return (
-        <NavigationMenu.Root className="hidden md:flex">
-            <NavigationMenu.List className="flex gap-4">
-                {props.links.map((value, index) => (
-                    <NavigationMenu.Item key={index} className="">
-                        <Link to={value.to} className="text-stone-500 font-bold py-1 border-b-2 border-transparent hover:text-stone-950 data-[status=active]:text-stone-950 data-[status=active]:border-stone-600">{value.label}</Link>
-                    </NavigationMenu.Item>
-                ))}
-            </NavigationMenu.List>
-        </NavigationMenu.Root>
-    );
+	return (
+		<NavigationMenu.Root className="hidden md:flex">
+			<NavigationMenu.List className="flex gap-4">
+				{props.links.map((value, index) => (
+					<NavigationMenu.Item key={index} className="">
+						<Link
+							to={value.to}
+							className="text-stone-500 font-bold py-1 border-b-2 border-transparent hover:text-stone-950 data-[status=active]:text-stone-950 data-[status=active]:border-stone-600"
+						>
+							{value.label}
+						</Link>
+					</NavigationMenu.Item>
+				))}
+			</NavigationMenu.List>
+		</NavigationMenu.Root>
+	);
 };
 
 const Mobile = (props: Props) => {
-    const [open, setOpen] = useState(false);
+	const [open, setOpen] = useState(false);
 
-    return (
-        <Drawer.Root swipeDirection="right" open={open} onOpenChange={setOpen}>
-            <Drawer.Trigger className="md:hidden rounded-2xl px-4 py-3 bg-green-200 border border-green-300 flex items-center gap-2 text-sm font-bold">
-                Menu <Menu size={24}/>
-            </Drawer.Trigger>
-            <Drawer.Portal>
-                <Drawer.Backdrop className="fixed inset-0 min-h-dvh min-w-dvw bg-black opacity-25"/>
-                <Drawer.Viewport className="fixed inset-0 flex items-stretch justify-end p-(--viewport-padding)">
-                    <Drawer.Popup className="h-full w-full max-w-lg bg-white p-6">
-                        <Drawer.Content className="h-full w-full flex flex-col gap-4">
-                            <Drawer.Close className="self-end">
-                                <X/>
-                            </Drawer.Close>
-                            <div className="h-full flex flex-col gap-4 justify-center">
-                                <Drawer.Title className="text-stone-400">Menu</Drawer.Title>
-                                <NavigationMenu.Root>
-                                    <NavigationMenu.List className="flex flex-col gap-4">
-                                        {props.links.map((value, index) => (
-                                            <NavigationMenu.Item key={index}>
-                                                <Link to={value.to} onClick={() => setOpen(false)} className="font-bold text-3xl text-stone-500 data-[status=active]:text-stone-950">
-                                                    {value.label}
-                                                </Link>
-                                            </NavigationMenu.Item>
-                                        ))}
-                                    </NavigationMenu.List>
-                                </NavigationMenu.Root>
-                            </div>
-                        </Drawer.Content>
-                    </Drawer.Popup>
-                </Drawer.Viewport>
-            </Drawer.Portal>
-        </Drawer.Root>
-    );
+	return (
+		<Drawer.Root swipeDirection="right" open={open} onOpenChange={setOpen}>
+			<Drawer.Trigger className="md:hidden rounded-2xl px-4 py-3 bg-green-200 border border-green-300 flex items-center gap-2 text-sm font-bold">
+				Menu <Menu size={24} />
+			</Drawer.Trigger>
+			<Drawer.Portal>
+				<Drawer.Backdrop className="fixed inset-0 min-h-dvh min-w-dvw bg-black opacity-25" />
+				<Drawer.Viewport className="fixed inset-0 flex items-stretch justify-end p-(--viewport-padding)">
+					<Drawer.Popup className="h-full w-full max-w-lg bg-white p-6">
+						<Drawer.Content className="h-full w-full flex flex-col gap-4">
+							<Drawer.Close className="self-end">
+								<X />
+							</Drawer.Close>
+							<div className="h-full flex flex-col gap-4 justify-center">
+								<Drawer.Title className="text-stone-400">Menu</Drawer.Title>
+								<NavigationMenu.Root>
+									<NavigationMenu.List className="flex flex-col gap-4">
+										{props.links.map((value, index) => (
+											<NavigationMenu.Item key={index}>
+												<Link
+													to={value.to}
+													onClick={() => setOpen(false)}
+													className="font-bold text-3xl text-stone-500 data-[status=active]:text-stone-950"
+												>
+													{value.label}
+												</Link>
+											</NavigationMenu.Item>
+										))}
+									</NavigationMenu.List>
+								</NavigationMenu.Root>
+							</div>
+						</Drawer.Content>
+					</Drawer.Popup>
+				</Drawer.Viewport>
+			</Drawer.Portal>
+		</Drawer.Root>
+	);
 };
 
 export default Navigation;
