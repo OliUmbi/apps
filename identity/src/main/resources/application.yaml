@@ -1,0 +1,20 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+identity:
+  internal-token: ${IDENTITY_INTERNAL_TOKEN}
+  bootstrap-username: ${IDENTITY_BOOTSTRAP_USERNAME:}
+  bootstrap-password: ${IDENTITY_BOOTSTRAP_PASSWORD:}
+  session-days: 7

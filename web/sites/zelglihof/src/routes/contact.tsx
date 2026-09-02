@@ -101,8 +101,7 @@ function RouteComponent() {
 						Anfrage
 					</Field.Label>
 					<Field.Control
-						render={<textarea />}
-						rows={5}
+						render={<textarea rows={5} />}
 						className="font-bold border bg-stone-100 border-stone-950 rounded-md px-3 py-2"
 					/>
 				</Field.Root>

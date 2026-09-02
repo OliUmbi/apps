@@ -1,0 +1,9 @@
+{
+  "name": "@oliumbi/database",
+  "type": "module",
+  "private": true,
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "check": "tsc --noEmit" },
+  "dependencies": { "postgres": "catalog:" },
+  "devDependencies": { "typescript": "catalog:" }
+}

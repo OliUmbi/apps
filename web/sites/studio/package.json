@@ -1,5 +1,5 @@
 {
-  "name": "zelglihof",
+  "name": "studio",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,11 +11,9 @@
   "dependencies": {
     "@oliumbi/database": "workspace:*",
     "@oliumbi/newsletter": "workspace:*",
-    "@base-ui/react": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-start": "catalog:",
-    "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "tailwindcss": "catalog:",
@@ -27,7 +25,7 @@
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "nitro": "catalog:",
-    "typescript": "catalog:",
-    "vite": "catalog:"
+    "vite": "catalog:",
+    "typescript": "catalog:"
   }
 }

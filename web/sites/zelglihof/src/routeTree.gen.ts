@@ -19,6 +19,9 @@ import { Route as ServicesRouteImport } from './routes/services'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ProductsIndexRouteImport } from './routes/products/index'
 import { Route as ProductsProductIdRouteImport } from './routes/products/$productId'
+import { Route as NewsletterAbmeldenTokenRouteImport } from './routes/newsletter/abmelden/$token'
+import { Route as NewsletterBestaetigenTokenRouteImport } from './routes/newsletter/bestaetigen/$token'
+import { Route as ApiNewsletterAbmeldenTokenRouteImport } from './routes/api/newsletter/abmelden/$token'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -70,6 +73,23 @@ const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
   path: '/products/$productId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewsletterAbmeldenTokenRoute = NewsletterAbmeldenTokenRouteImport.update({
+  id: '/newsletter/abmelden/$token',
+  path: '/newsletter/abmelden/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsletterBestaetigenTokenRoute =
+  NewsletterBestaetigenTokenRouteImport.update({
+    id: '/newsletter/bestaetigen/$token',
+    path: '/newsletter/bestaetigen/$token',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiNewsletterAbmeldenTokenRoute =
+  ApiNewsletterAbmeldenTokenRouteImport.update({
+    id: '/api/newsletter/abmelden/$token',
+    path: '/api/newsletter/abmelden/$token',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -82,6 +102,9 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/products/': typeof ProductsIndexRoute
+  '/newsletter/abmelden/$token': typeof NewsletterAbmeldenTokenRoute
+  '/newsletter/bestaetigen/$token': typeof NewsletterBestaetigenTokenRoute
+  '/api/newsletter/abmelden/$token': typeof ApiNewsletterAbmeldenTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,6 +117,9 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/products': typeof ProductsIndexRoute
+  '/newsletter/abmelden/$token': typeof NewsletterAbmeldenTokenRoute
+  '/newsletter/bestaetigen/$token': typeof NewsletterBestaetigenTokenRoute
+  '/api/newsletter/abmelden/$token': typeof ApiNewsletterAbmeldenTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +133,9 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/products/': typeof ProductsIndexRoute
+  '/newsletter/abmelden/$token': typeof NewsletterAbmeldenTokenRoute
+  '/newsletter/bestaetigen/$token': typeof NewsletterBestaetigenTokenRoute
+  '/api/newsletter/abmelden/$token': typeof ApiNewsletterAbmeldenTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +150,9 @@ export interface FileRouteTypes {
     | '/terms'
     | '/products/$productId'
     | '/products/'
+    | '/newsletter/abmelden/$token'
+    | '/newsletter/bestaetigen/$token'
+    | '/api/newsletter/abmelden/$token'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +165,9 @@ export interface FileRouteTypes {
     | '/terms'
     | '/products/$productId'
     | '/products'
+    | '/newsletter/abmelden/$token'
+    | '/newsletter/bestaetigen/$token'
+    | '/api/newsletter/abmelden/$token'
   id:
     | '__root__'
     | '/'
@@ -145,6 +180,9 @@ export interface FileRouteTypes {
     | '/terms'
     | '/products/$productId'
     | '/products/'
+    | '/newsletter/abmelden/$token'
+    | '/newsletter/bestaetigen/$token'
+    | '/api/newsletter/abmelden/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,6 +196,9 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
+  NewsletterAbmeldenTokenRoute: typeof NewsletterAbmeldenTokenRoute
+  NewsletterBestaetigenTokenRoute: typeof NewsletterBestaetigenTokenRoute
+  ApiNewsletterAbmeldenTokenRoute: typeof ApiNewsletterAbmeldenTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -232,6 +273,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/newsletter/abmelden/$token': {
+      id: '/newsletter/abmelden/$token'
+      path: '/newsletter/abmelden/$token'
+      fullPath: '/newsletter/abmelden/$token'
+      preLoaderRoute: typeof NewsletterAbmeldenTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/newsletter/bestaetigen/$token': {
+      id: '/newsletter/bestaetigen/$token'
+      path: '/newsletter/bestaetigen/$token'
+      fullPath: '/newsletter/bestaetigen/$token'
+      preLoaderRoute: typeof NewsletterBestaetigenTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/newsletter/abmelden/$token': {
+      id: '/api/newsletter/abmelden/$token'
+      path: '/api/newsletter/abmelden/$token'
+      fullPath: '/api/newsletter/abmelden/$token'
+      preLoaderRoute: typeof ApiNewsletterAbmeldenTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -246,6 +308,9 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
   ProductsIndexRoute: ProductsIndexRoute,
+  NewsletterAbmeldenTokenRoute: NewsletterAbmeldenTokenRoute,
+  NewsletterBestaetigenTokenRoute: NewsletterBestaetigenTokenRoute,
+  ApiNewsletterAbmeldenTokenRoute: ApiNewsletterAbmeldenTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,0 +1,122 @@
+name: oliumbi-apps
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-apps}
+      POSTGRES_USER: ${POSTGRES_MIGRATOR_USER:-apps_migrator}
+      POSTGRES_PASSWORD: ${POSTGRES_MIGRATOR_PASSWORD:-dev-migrator-password}
+      ZELGLIHOF_DATABASE_PASSWORD: ${ZELGLIHOF_DATABASE_PASSWORD:-dev-zelglihof-password}
+      STUDIO_DATABASE_PASSWORD: ${STUDIO_DATABASE_PASSWORD:-dev-studio-password}
+      IDENTITY_DATABASE_PASSWORD: ${IDENTITY_DATABASE_PASSWORD:-dev-identity-password}
+      MESSAGING_DATABASE_PASSWORD: ${MESSAGING_DATABASE_PASSWORD:-dev-messaging-password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+      - ./database/bootstrap:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_MIGRATOR_USER:-apps_migrator} -d ${POSTGRES_DB:-apps}"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  flyway:
+    image: flyway/flyway:13.4.0-alpine
+    command:
+      - -url=jdbc:postgresql://postgres:5432/${POSTGRES_DB:-apps}
+      - -user=${POSTGRES_MIGRATOR_USER:-apps_migrator}
+      - -password=${POSTGRES_MIGRATOR_PASSWORD:-dev-migrator-password}
+      - -connectRetries=60
+      - -locations=filesystem:/flyway/sql
+      - migrate
+    volumes:
+      - ./database/migrations:/flyway/sql:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  identity:
+    build:
+      context: ./identity
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-apps}
+      DATABASE_USER: ${IDENTITY_DATABASE_USER:-identity_service}
+      DATABASE_PASSWORD: ${IDENTITY_DATABASE_PASSWORD:-dev-identity-password}
+      IDENTITY_BOOTSTRAP_USERNAME: ${IDENTITY_BOOTSTRAP_USERNAME:-owner}
+      IDENTITY_BOOTSTRAP_PASSWORD: ${IDENTITY_BOOTSTRAP_PASSWORD:-change-me-for-real-deployments}
+      IDENTITY_INTERNAL_TOKEN: ${IDENTITY_INTERNAL_TOKEN:-dev-identity-internal-token}
+    ports:
+      - "8081:8081"
+    depends_on:
+      flyway:
+        condition: service_completed_successfully
+
+  messaging:
+    build:
+      context: ./messaging
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-apps}
+      DATABASE_USER: ${MESSAGING_DATABASE_USER:-messaging_service}
+      DATABASE_PASSWORD: ${MESSAGING_DATABASE_PASSWORD:-dev-messaging-password}
+      MESSAGING_INTERNAL_TOKEN: ${MESSAGING_INTERNAL_TOKEN:-dev-messaging-internal-token}
+      STUDIO_SECURE_COOKIES: ${STUDIO_SECURE_COOKIES:-false}
+      SMTP_HOST: ${SMTP_HOST:-mailpit}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_AUTH: ${SMTP_AUTH:-false}
+      SMTP_TLS: ${SMTP_TLS:-false}
+      SMTP_FROM_ADDRESS: ${SMTP_FROM_ADDRESS:-newsletter@zelglihof.ch}
+      SMTP_FROM_NAME: ${SMTP_FROM_NAME:-Zelglihof}
+    ports:
+      - "8082:8082"
+    depends_on:
+      flyway:
+        condition: service_completed_successfully
+      mailpit:
+        condition: service_started
+
+  zelglihof:
+    build:
+      context: ./web
+      dockerfile: sites/zelglihof/Dockerfile
+    environment:
+      DATABASE_URL: postgres://${ZELGLIHOF_DATABASE_USER:-zelglihof_web}:${ZELGLIHOF_DATABASE_PASSWORD:-dev-zelglihof-password}@postgres:5432/${POSTGRES_DB:-apps}
+      ZELGLIHOF_PUBLIC_URL: ${ZELGLIHOF_PUBLIC_URL:-http://localhost:8003}
+    ports:
+      - "8003:8003"
+    depends_on:
+      flyway:
+        condition: service_completed_successfully
+      messaging:
+        condition: service_started
+
+  studio:
+    build:
+      context: ./web
+      dockerfile: sites/studio/Dockerfile
+    environment:
+      DATABASE_URL: postgres://${STUDIO_DATABASE_USER:-studio_web}:${STUDIO_DATABASE_PASSWORD:-dev-studio-password}@postgres:5432/${POSTGRES_DB:-apps}
+      ZELGLIHOF_PUBLIC_URL: ${ZELGLIHOF_PUBLIC_URL:-http://localhost:8003}
+      IDENTITY_SERVICE_URL: http://identity:8081
+      MESSAGING_SERVICE_URL: http://messaging:8082
+      IDENTITY_INTERNAL_TOKEN: ${IDENTITY_INTERNAL_TOKEN:-dev-identity-internal-token}
+      MESSAGING_INTERNAL_TOKEN: ${MESSAGING_INTERNAL_TOKEN:-dev-messaging-internal-token}
+    ports:
+      - "8000:8000"
+    depends_on:
+      identity:
+        condition: service_started
+      messaging:
+        condition: service_started
+
+volumes:
+  postgres-data:

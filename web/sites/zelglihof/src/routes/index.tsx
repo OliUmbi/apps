@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { NewsletterSignup } from "../components/newsletter-signup";
 
 export const Route = createFileRoute("/")({
 	component: RouteComponent,
@@ -69,6 +70,7 @@ function RouteComponent() {
 					<h3 className="font-semibold text-stone-600">Lorem Ipsum</h3>
 				</div>
 			</div>
+			<NewsletterSignup />
 		</div>
 	);
 }

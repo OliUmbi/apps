@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+:root { color: #1c2520; background: #f5f5f1; font-family: Inter, system-ui, sans-serif; }
+button, input, select { font: inherit; }
+button { cursor: pointer; }
