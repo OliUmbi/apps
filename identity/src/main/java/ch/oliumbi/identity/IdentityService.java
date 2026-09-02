@@ -40,14 +40,15 @@ class IdentityService implements CommandLineRunner {
         this.sessionDays = sessionDays;
     }
 
-    @Override public void run(String... args) {
+    @Override
+    public void run(String... args) {
         if (bootstrapUsername.isBlank() || bootstrapPassword.isBlank()) return;
         long count = jdbc.sql("select count(*) from identity.account").query(Long.class).single();
         if (count == 0) {
             jdbc.sql("""
-                    insert into identity.account (username, password_hash, display_name)
-                    values (:username, :passwordHash, :displayName)
-                    """)
+                            insert into identity.account (username, password_hash, display_name)
+                            values (:username, :passwordHash, :displayName)
+                            """)
                     .param("username", bootstrapUsername.trim().toLowerCase())
                     .param("passwordHash", passwords.encode(bootstrapPassword))
                     .param("displayName", bootstrapUsername.trim())
@@ -57,9 +58,9 @@ class IdentityService implements CommandLineRunner {
 
     SessionCreated authenticate(String username, String password) {
         var account = jdbc.sql("""
-                select id, username, password_hash, display_name
-                from identity.account where username = :username and enabled = true
-                """)
+                        select id, username, password_hash, display_name
+                        from identity.account where username = :username and enabled = true
+                        """)
                 .param("username", username.trim().toLowerCase())
                 .query((rs, row) -> new Account(
                         rs.getObject("id", UUID.class), rs.getString("username"),
@@ -72,9 +73,9 @@ class IdentityService implements CommandLineRunner {
         String token = randomToken();
         Instant expiresAt = Instant.now().plus(sessionDays, ChronoUnit.DAYS);
         jdbc.sql("""
-                insert into identity.session (token_hash, account_id, expires_at)
-                values (:tokenHash, :accountId, :expiresAt)
-                """)
+                        insert into identity.session (token_hash, account_id, expires_at)
+                        values (:tokenHash, :accountId, :expiresAt)
+                        """)
                 .param("tokenHash", hash(token)).param("accountId", account.id())
                 .param("expiresAt", Timestamp.from(expiresAt)).update();
         return new SessionCreated(token, expiresAt, new Actor(account.id(), account.username(), account.displayName()));
@@ -82,11 +83,11 @@ class IdentityService implements CommandLineRunner {
 
     Actor validate(String token) {
         return jdbc.sql("""
-                select a.id, a.username, a.display_name
-                from identity.session s join identity.account a on a.id = s.account_id
-                where s.token_hash = :tokenHash and s.revoked_at is null
-                  and s.expires_at > now() and a.enabled = true
-                """)
+                        select a.id, a.username, a.display_name
+                        from identity.session s join identity.account a on a.id = s.account_id
+                        where s.token_hash = :tokenHash and s.revoked_at is null
+                          and s.expires_at > now() and a.enabled = true
+                        """)
                 .param("tokenHash", hash(token))
                 .query((rs, row) -> new Actor(rs.getObject("id", UUID.class), rs.getString("username"), rs.getString("display_name")))
                 .optional()
@@ -113,7 +114,12 @@ class IdentityService implements CommandLineRunner {
         }
     }
 
-    private record Account(UUID id, String username, String passwordHash, String displayName) {}
-    record Actor(UUID id, String username, String displayName) {}
-    record SessionCreated(String token, Instant expiresAt, Actor actor) {}
+    private record Account(UUID id, String username, String passwordHash, String displayName) {
+    }
+
+    record Actor(UUID id, String username, String displayName) {
+    }
+
+    record SessionCreated(String token, Instant expiresAt, Actor actor) {
+    }
 }

@@ -13,4 +13,5 @@ record OutboxMessage(
         String status,
         int attemptCount,
         Instant createdAt,
-        String lastError) {}
+        String lastError) {
+}

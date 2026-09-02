@@ -8,13 +8,11 @@
     "dev:unclet": "pnpm --filter unclet dev",
     "dev:zelglihof": "pnpm --filter zelglihof dev",
     "dev:studio": "pnpm --filter studio dev",
-
     "build:oliumbi": "pnpm --filter oliumbi build",
     "build:jublawoma": "pnpm --filter jublawoma build",
     "build:unclet": "pnpm --filter unclet build",
     "build:zelglihof": "pnpm --filter zelglihof build",
     "build:studio": "pnpm --filter studio build",
-
     "check": "biome check",
     "fix": "biome check --write"
   },

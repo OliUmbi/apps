@@ -6,9 +6,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,7 +17,9 @@ import java.util.UUID;
 class OutboxRepository {
     private final JdbcClient jdbc;
 
-    OutboxRepository(JdbcClient jdbc) { this.jdbc = jdbc; }
+    OutboxRepository(JdbcClient jdbc) {
+        this.jdbc = jdbc;
+    }
 
     @Transactional
     Optional<OutboxMessage> claimNext() {
@@ -55,11 +57,11 @@ class OutboxRepository {
         String error = safeError(exception);
         Instant availableAt = Instant.now().plus(Math.min(30, 1L << attempt), ChronoUnit.MINUTES);
         jdbc.sql("""
-                update messaging.outbox
-                set status = :status, attempt_count = :attempt, available_at = :availableAt,
-                    locked_at = null, last_error = :error, updated_at = now()
-                where id = :id
-                """).param("status", finalFailure ? "failed" : "pending")
+                        update messaging.outbox
+                        set status = :status, attempt_count = :attempt, available_at = :availableAt,
+                            locked_at = null, last_error = :error, updated_at = now()
+                        where id = :id
+                        """).param("status", finalFailure ? "failed" : "pending")
                 .param("attempt", attempt).param("availableAt", Timestamp.from(availableAt))
                 .param("error", error).param("id", message.id()).update();
         attempt(message.id(), attempt, finalFailure ? "failed" : "retry", error);
@@ -104,9 +106,9 @@ class OutboxRepository {
 
     private void attempt(UUID id, int number, String outcome, String error) {
         jdbc.sql("""
-                insert into messaging.delivery_attempt (outbox_id, attempt_number, outcome, error_message)
-                values (:id, :number, :outcome, :error)
-                """).param("id", id).param("number", number).param("outcome", outcome)
+                        insert into messaging.delivery_attempt (outbox_id, attempt_number, outcome, error_message)
+                        values (:id, :number, :outcome, :error)
+                        """).param("id", id).param("number", number).param("outcome", outcome)
                 .param("error", error).update();
     }
 

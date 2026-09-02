@@ -10,6 +10,13 @@ import javax.sql.DataSource;
 
 @Configuration
 class IdentityConfiguration {
-    @Bean JdbcClient jdbcClient(DataSource dataSource) { return JdbcClient.create(dataSource); }
-    @Bean PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(12); }
+    @Bean
+    JdbcClient jdbcClient(DataSource dataSource) {
+        return JdbcClient.create(dataSource);
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12);
+    }
 }

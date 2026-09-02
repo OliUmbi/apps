@@ -1,6 +1,7 @@
 package ch.oliumbi.messaging;
 
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -15,24 +16,28 @@ class MessagingController {
         this.authorization = authorization;
     }
 
-    @GetMapping("/failed") List<OutboxMessage> failed(@RequestHeader("X-Internal-Token") String token) {
+    @GetMapping("/failed")
+    List<OutboxMessage> failed(@RequestHeader("X-Internal-Token") String token) {
         authorization.require(token);
         return outbox.failed();
     }
 
-    @PostMapping("/{id}/retry") void retry(
+    @PostMapping("/{id}/retry")
+    void retry(
             @RequestHeader("X-Internal-Token") String token,
             @PathVariable UUID id) {
         authorization.require(token);
         outbox.retry(id);
     }
 
-    @PostMapping("/scrub") void scrub(
+    @PostMapping("/scrub")
+    void scrub(
             @RequestHeader("X-Internal-Token") String token,
             @RequestBody ScrubRequest request) {
         authorization.require(token);
         outbox.scrub(request.correlationKey());
     }
 
-    record ScrubRequest(String correlationKey) {}
+    record ScrubRequest(String correlationKey) {
+    }
 }

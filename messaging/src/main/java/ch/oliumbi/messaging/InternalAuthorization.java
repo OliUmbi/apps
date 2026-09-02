@@ -11,7 +11,10 @@ import java.security.MessageDigest;
 @Component
 class InternalAuthorization {
     private final String expected;
-    InternalAuthorization(@Value("${messaging.internal-token}") String expected) { this.expected = expected; }
+
+    InternalAuthorization(@Value("${messaging.internal-token}") String expected) {
+        this.expected = expected;
+    }
 
     void require(String supplied) {
         if (supplied == null || !MessageDigest.isEqual(

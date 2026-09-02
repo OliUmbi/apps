@@ -17,21 +17,24 @@ class IdentityController {
         this.internalToken = internalToken;
     }
 
-    @PostMapping IdentityService.SessionCreated create(
+    @PostMapping
+    IdentityService.SessionCreated create(
             @RequestHeader("X-Internal-Token") String suppliedToken,
             @RequestBody LoginRequest request) {
         authorize(suppliedToken);
         return identity.authenticate(request.username(), request.password());
     }
 
-    @GetMapping("/current") IdentityService.Actor current(
+    @GetMapping("/current")
+    IdentityService.Actor current(
             @RequestHeader("X-Internal-Token") String suppliedToken,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
         authorize(suppliedToken);
         return identity.validate(bearer(authorization));
     }
 
-    @DeleteMapping("/current") void delete(
+    @DeleteMapping("/current")
+    void delete(
             @RequestHeader("X-Internal-Token") String suppliedToken,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
         authorize(suppliedToken);
@@ -51,5 +54,6 @@ class IdentityController {
         return authorization.substring(7);
     }
 
-    record LoginRequest(String username, String password) {}
+    record LoginRequest(String username, String password) {
+    }
 }

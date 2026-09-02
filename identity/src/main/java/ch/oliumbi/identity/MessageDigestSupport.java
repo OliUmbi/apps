@@ -4,7 +4,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
 final class MessageDigestSupport {
-    private MessageDigestSupport() {}
+    private MessageDigestSupport() {
+    }
 
     static boolean constantTimeEquals(String expected, String actual) {
         if (expected == null || actual == null) return false;
