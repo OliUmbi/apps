@@ -1,30 +1,60 @@
 import postgres from "postgres";
 
 export type Database = ReturnType<typeof postgres>;
+export type Transaction = postgres.TransactionSql;
 
-const clients = new Map<string, Database>();
-
-export function getDatabase(connectionString: string | undefined): Database {
-	if (!connectionString) {
-		throw new Error("DATABASE_URL is not configured");
-	}
-
-	const existing = clients.get(connectionString);
-	if (existing) return existing;
-
-	const client = postgres(connectionString, {
-		max: 10,
-		idle_timeout: 20,
-		connect_timeout: 10,
-		prepare: true,
-	});
-	clients.set(connectionString, client);
-	return client;
+export interface DatabasePoolOptions {
+	applicationName: string;
+	connectionString: () => string | undefined;
+	maxConnections?: number;
 }
 
-export async function closeDatabases(): Promise<void> {
-	await Promise.all([...clients.values()].map((client) => client.end()));
-	clients.clear();
+export interface DatabasePool {
+	readonly sql: Database;
+	transaction<T>(work: (sql: Transaction) => Promise<T>): Promise<T>;
+	close(): Promise<void>;
+}
+
+export function createDatabasePool(options: DatabasePoolOptions): DatabasePool {
+	let client: Database | undefined;
+
+	function connection(): Database {
+		if (client) return client;
+		const connectionString = options.connectionString();
+		if (!connectionString) throw new Error("DATABASE_URL is not configured");
+
+		client = postgres(connectionString, {
+			max: options.maxConnections ?? 10,
+			idle_timeout: 20,
+			connect_timeout: 10,
+			prepare: true,
+			connection: { application_name: options.applicationName },
+		});
+		return client;
+	}
+
+	return {
+		get sql() {
+			return connection();
+		},
+		async transaction<T>(work: (sql: Transaction) => Promise<T>) {
+			return connection().begin(work) as Promise<T>;
+		},
+		async close() {
+			if (!client) return;
+			await client.end();
+			client = undefined;
+		},
+	};
+}
+
+export function databasePoolSize(value: string | undefined): number {
+	if (!value) return 10;
+	const size = Number.parseInt(value, 10);
+	if (!Number.isInteger(size) || size < 1 || size > 50) {
+		throw new Error("DATABASE_POOL_SIZE must be an integer between 1 and 50");
+	}
+	return size;
 }
 
 export function exactlyOne<T>(rows: readonly T[], context: string): T {

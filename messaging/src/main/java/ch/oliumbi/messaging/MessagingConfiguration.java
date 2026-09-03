@@ -5,11 +5,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.simple.JdbcClient;
 
 import javax.sql.DataSource;
+import java.time.Clock;
 
 @Configuration
 class MessagingConfiguration {
     @Bean
     JdbcClient jdbcClient(DataSource dataSource) {
         return JdbcClient.create(dataSource);
+    }
+
+    @Bean
+    Clock clock() {
+        return Clock.systemUTC();
     }
 }

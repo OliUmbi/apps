@@ -11,12 +11,22 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AgbRouteImport } from './routes/agb'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DatenschutzRouteImport } from './routes/datenschutz'
+import { Route as DienstleistungenRouteImport } from './routes/dienstleistungen'
+import { Route as HofRouteImport } from './routes/hof'
+import { Route as ImpressumRouteImport } from './routes/impressum'
+import { Route as KontaktRouteImport } from './routes/kontakt'
 import { Route as LatestRouteImport } from './routes/latest'
 import { Route as LegalRouteImport } from './routes/legal'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as AktuellesIndexRouteImport } from './routes/aktuelles/index'
+import { Route as AktuellesSlugRouteImport } from './routes/aktuelles/$slug'
+import { Route as HofladenIndexRouteImport } from './routes/hofladen/index'
+import { Route as HofladenProductIdRouteImport } from './routes/hofladen/$productId'
 import { Route as ProductsIndexRouteImport } from './routes/products/index'
 import { Route as ProductsProductIdRouteImport } from './routes/products/$productId'
 import { Route as NewsletterAbmeldenTokenRouteImport } from './routes/newsletter/abmelden/$token'
@@ -33,9 +43,39 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AgbRoute = AgbRouteImport.update({
+  id: '/agb',
+  path: '/agb',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DatenschutzRoute = DatenschutzRouteImport.update({
+  id: '/datenschutz',
+  path: '/datenschutz',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DienstleistungenRoute = DienstleistungenRouteImport.update({
+  id: '/dienstleistungen',
+  path: '/dienstleistungen',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HofRoute = HofRouteImport.update({
+  id: '/hof',
+  path: '/hof',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImpressumRoute = ImpressumRouteImport.update({
+  id: '/impressum',
+  path: '/impressum',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KontaktRoute = KontaktRouteImport.update({
+  id: '/kontakt',
+  path: '/kontakt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LatestRoute = LatestRouteImport.update({
@@ -61,6 +101,26 @@ const ServicesRoute = ServicesRouteImport.update({
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AktuellesIndexRoute = AktuellesIndexRouteImport.update({
+  id: '/aktuelles/',
+  path: '/aktuelles/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AktuellesSlugRoute = AktuellesSlugRouteImport.update({
+  id: '/aktuelles/$slug',
+  path: '/aktuelles/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HofladenIndexRoute = HofladenIndexRouteImport.update({
+  id: '/hofladen/',
+  path: '/hofladen/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HofladenProductIdRoute = HofladenProductIdRouteImport.update({
+  id: '/hofladen/$productId',
+  path: '/hofladen/$productId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductsIndexRoute = ProductsIndexRouteImport.update({
@@ -94,13 +154,23 @@ const ApiNewsletterAbmeldenTokenRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/agb': typeof AgbRoute
   '/contact': typeof ContactRoute
+  '/datenschutz': typeof DatenschutzRoute
+  '/dienstleistungen': typeof DienstleistungenRoute
+  '/hof': typeof HofRoute
+  '/impressum': typeof ImpressumRoute
+  '/kontakt': typeof KontaktRoute
   '/latest': typeof LatestRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
   '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
+  '/aktuelles/$slug': typeof AktuellesSlugRoute
+  '/hofladen/$productId': typeof HofladenProductIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
+  '/aktuelles/': typeof AktuellesIndexRoute
+  '/hofladen/': typeof HofladenIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/newsletter/abmelden/$token': typeof NewsletterAbmeldenTokenRoute
   '/newsletter/bestaetigen/$token': typeof NewsletterBestaetigenTokenRoute
@@ -109,13 +179,23 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/agb': typeof AgbRoute
   '/contact': typeof ContactRoute
+  '/datenschutz': typeof DatenschutzRoute
+  '/dienstleistungen': typeof DienstleistungenRoute
+  '/hof': typeof HofRoute
+  '/impressum': typeof ImpressumRoute
+  '/kontakt': typeof KontaktRoute
   '/latest': typeof LatestRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
   '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
+  '/aktuelles/$slug': typeof AktuellesSlugRoute
+  '/hofladen/$productId': typeof HofladenProductIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
+  '/aktuelles': typeof AktuellesIndexRoute
+  '/hofladen': typeof HofladenIndexRoute
   '/products': typeof ProductsIndexRoute
   '/newsletter/abmelden/$token': typeof NewsletterAbmeldenTokenRoute
   '/newsletter/bestaetigen/$token': typeof NewsletterBestaetigenTokenRoute
@@ -125,13 +205,23 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/agb': typeof AgbRoute
   '/contact': typeof ContactRoute
+  '/datenschutz': typeof DatenschutzRoute
+  '/dienstleistungen': typeof DienstleistungenRoute
+  '/hof': typeof HofRoute
+  '/impressum': typeof ImpressumRoute
+  '/kontakt': typeof KontaktRoute
   '/latest': typeof LatestRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
   '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
+  '/aktuelles/$slug': typeof AktuellesSlugRoute
+  '/hofladen/$productId': typeof HofladenProductIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
+  '/aktuelles/': typeof AktuellesIndexRoute
+  '/hofladen/': typeof HofladenIndexRoute
   '/products/': typeof ProductsIndexRoute
   '/newsletter/abmelden/$token': typeof NewsletterAbmeldenTokenRoute
   '/newsletter/bestaetigen/$token': typeof NewsletterBestaetigenTokenRoute
@@ -142,13 +232,23 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/agb'
     | '/contact'
+    | '/datenschutz'
+    | '/dienstleistungen'
+    | '/hof'
+    | '/impressum'
+    | '/kontakt'
     | '/latest'
     | '/legal'
     | '/privacy'
     | '/services'
     | '/terms'
+    | '/aktuelles/$slug'
+    | '/hofladen/$productId'
     | '/products/$productId'
+    | '/aktuelles/'
+    | '/hofladen/'
     | '/products/'
     | '/newsletter/abmelden/$token'
     | '/newsletter/bestaetigen/$token'
@@ -157,13 +257,23 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/agb'
     | '/contact'
+    | '/datenschutz'
+    | '/dienstleistungen'
+    | '/hof'
+    | '/impressum'
+    | '/kontakt'
     | '/latest'
     | '/legal'
     | '/privacy'
     | '/services'
     | '/terms'
+    | '/aktuelles/$slug'
+    | '/hofladen/$productId'
     | '/products/$productId'
+    | '/aktuelles'
+    | '/hofladen'
     | '/products'
     | '/newsletter/abmelden/$token'
     | '/newsletter/bestaetigen/$token'
@@ -172,13 +282,23 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/agb'
     | '/contact'
+    | '/datenschutz'
+    | '/dienstleistungen'
+    | '/hof'
+    | '/impressum'
+    | '/kontakt'
     | '/latest'
     | '/legal'
     | '/privacy'
     | '/services'
     | '/terms'
+    | '/aktuelles/$slug'
+    | '/hofladen/$productId'
     | '/products/$productId'
+    | '/aktuelles/'
+    | '/hofladen/'
     | '/products/'
     | '/newsletter/abmelden/$token'
     | '/newsletter/bestaetigen/$token'
@@ -188,13 +308,23 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AgbRoute: typeof AgbRoute
   ContactRoute: typeof ContactRoute
+  DatenschutzRoute: typeof DatenschutzRoute
+  DienstleistungenRoute: typeof DienstleistungenRoute
+  HofRoute: typeof HofRoute
+  ImpressumRoute: typeof ImpressumRoute
+  KontaktRoute: typeof KontaktRoute
   LatestRoute: typeof LatestRoute
   LegalRoute: typeof LegalRoute
   PrivacyRoute: typeof PrivacyRoute
   ServicesRoute: typeof ServicesRoute
   TermsRoute: typeof TermsRoute
+  AktuellesSlugRoute: typeof AktuellesSlugRoute
+  HofladenProductIdRoute: typeof HofladenProductIdRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
+  AktuellesIndexRoute: typeof AktuellesIndexRoute
+  HofladenIndexRoute: typeof HofladenIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
   NewsletterAbmeldenTokenRoute: typeof NewsletterAbmeldenTokenRoute
   NewsletterBestaetigenTokenRoute: typeof NewsletterBestaetigenTokenRoute
@@ -217,11 +347,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/agb': {
+      id: '/agb'
+      path: '/agb'
+      fullPath: '/agb'
+      preLoaderRoute: typeof AgbRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/datenschutz': {
+      id: '/datenschutz'
+      path: '/datenschutz'
+      fullPath: '/datenschutz'
+      preLoaderRoute: typeof DatenschutzRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dienstleistungen': {
+      id: '/dienstleistungen'
+      path: '/dienstleistungen'
+      fullPath: '/dienstleistungen'
+      preLoaderRoute: typeof DienstleistungenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hof': {
+      id: '/hof'
+      path: '/hof'
+      fullPath: '/hof'
+      preLoaderRoute: typeof HofRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/impressum': {
+      id: '/impressum'
+      path: '/impressum'
+      fullPath: '/impressum'
+      preLoaderRoute: typeof ImpressumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kontakt': {
+      id: '/kontakt'
+      path: '/kontakt'
+      fullPath: '/kontakt'
+      preLoaderRoute: typeof KontaktRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/latest': {
@@ -257,6 +429,34 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aktuelles/': {
+      id: '/aktuelles/'
+      path: '/aktuelles'
+      fullPath: '/aktuelles/'
+      preLoaderRoute: typeof AktuellesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aktuelles/$slug': {
+      id: '/aktuelles/$slug'
+      path: '/aktuelles/$slug'
+      fullPath: '/aktuelles/$slug'
+      preLoaderRoute: typeof AktuellesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hofladen/': {
+      id: '/hofladen/'
+      path: '/hofladen'
+      fullPath: '/hofladen/'
+      preLoaderRoute: typeof HofladenIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hofladen/$productId': {
+      id: '/hofladen/$productId'
+      path: '/hofladen/$productId'
+      fullPath: '/hofladen/$productId'
+      preLoaderRoute: typeof HofladenProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/products/': {
@@ -300,13 +500,23 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AgbRoute: AgbRoute,
   ContactRoute: ContactRoute,
+  DatenschutzRoute: DatenschutzRoute,
+  DienstleistungenRoute: DienstleistungenRoute,
+  HofRoute: HofRoute,
+  ImpressumRoute: ImpressumRoute,
+  KontaktRoute: KontaktRoute,
   LatestRoute: LatestRoute,
   LegalRoute: LegalRoute,
   PrivacyRoute: PrivacyRoute,
   ServicesRoute: ServicesRoute,
   TermsRoute: TermsRoute,
+  AktuellesSlugRoute: AktuellesSlugRoute,
+  HofladenProductIdRoute: HofladenProductIdRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
+  AktuellesIndexRoute: AktuellesIndexRoute,
+  HofladenIndexRoute: HofladenIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
   NewsletterAbmeldenTokenRoute: NewsletterAbmeldenTokenRoute,
   NewsletterBestaetigenTokenRoute: NewsletterBestaetigenTokenRoute,
@@ -316,7 +526,7 @@ export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
 
-import type { getRouter } from '../../../../../../../web/sites/zelglihof/src/router.tsx'
+import type { getRouter } from './router.tsx'
 import type { createStart } from '@tanstack/react-start'
 declare module '@tanstack/react-start' {
   interface Register {

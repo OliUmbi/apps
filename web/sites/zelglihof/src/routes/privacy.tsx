@@ -1,9 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
-
+import { createFileRoute, redirect } from "@tanstack/react-router";
 export const Route = createFileRoute("/privacy")({
-	component: RouteComponent,
+	beforeLoad: () => {
+		throw redirect({ to: "/datenschutz" });
+	},
 });
-
-function RouteComponent() {
-	return <div>Hello "/privacy"!</div>;
-}

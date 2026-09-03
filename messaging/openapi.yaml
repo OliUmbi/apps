@@ -1,0 +1,125 @@
+openapi: 3.1.0
+info:
+  title: Oliumbi Messaging Service
+  version: 0.1.0
+paths:
+  /internal/messages:
+    post:
+      summary: Accept an idempotent message command
+      parameters:
+        - $ref: '#/components/parameters/InternalToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageRequest'
+      responses:
+        '202':
+          description: Accepted, or already accepted with the same message ID
+        '400':
+          description: Invalid message command
+        '401':
+          description: Invalid internal token
+  /internal/messages/failed:
+    get:
+      summary: List messages whose delivery retries are exhausted
+      parameters:
+        - $ref: '#/components/parameters/InternalToken'
+      responses:
+        '200':
+          description: Failed messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FailedMessage'
+  /internal/messages/{id}/retry:
+    post:
+      summary: Retry a failed message
+      parameters:
+        - $ref: '#/components/parameters/InternalToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Message scheduled for another attempt
+        '404':
+          description: Failed message not found
+  /internal/messages/scrub:
+    post:
+      summary: Remove personal data and reject future commands for a correlation key
+      parameters:
+        - $ref: '#/components/parameters/InternalToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [correlationKey]
+              properties:
+                correlationKey:
+                  type: string
+                  minLength: 1
+      responses:
+        '200':
+          description: Existing messages scrubbed and correlation key tombstoned
+        '409':
+          description: A matching message is currently being delivered
+components:
+  parameters:
+    InternalToken:
+      name: X-Internal-Token
+      in: header
+      required: true
+      schema:
+        type: string
+  schemas:
+    MessageRequest:
+      type: object
+      additionalProperties: false
+      required: [id, messageType, recipientEmail, locale, payload]
+      properties:
+        id:
+          type: string
+          format: uuid
+        messageType:
+          type: string
+          enum: [email, newsletter.confirmation, newsletter.welcome]
+        recipientEmail:
+          type: string
+          format: email
+        locale:
+          type: string
+          enum: [de-CH, en]
+        payload:
+          type: object
+          additionalProperties:
+            type: string
+        correlationKey:
+          type: [string, 'null']
+    FailedMessage:
+      type: object
+      required: [id, messageType, recipientEmail, attemptCount, lastError, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        messageType:
+          type: string
+        recipientEmail:
+          type: string
+          format: email
+        attemptCount:
+          type: integer
+        lastError:
+          type: string
+        createdAt:
+          type: string
+          format: date-time

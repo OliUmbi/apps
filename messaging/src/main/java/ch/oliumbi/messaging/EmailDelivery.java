@@ -34,6 +34,7 @@ class EmailDelivery {
         helper.setTo(message.recipientEmail());
 
         switch (message.messageType()) {
+            case "email" -> prepared(helper, payload);
             case "newsletter.confirmation" -> confirmation(helper, payload.path("confirmUrl").asText(), message.locale());
             case "newsletter.welcome" -> welcome(
                     helper,
@@ -43,6 +44,17 @@ class EmailDelivery {
             default -> throw new IllegalArgumentException("Unknown message type: " + message.messageType());
         }
         mail.send(mime);
+    }
+
+    private void prepared(MimeMessageHelper helper, JsonNode payload) throws Exception {
+        String subject = payload.path("subject").asText();
+        String text = payload.path("text").asText();
+        String html = payload.path("html").asText();
+        if (subject.isBlank() || subject.length() > 200 || text.isBlank() || html.isBlank()) {
+            throw new IllegalArgumentException("Prepared email is incomplete");
+        }
+        helper.setSubject(subject);
+        helper.setText(text, html);
     }
 
     private void confirmation(MimeMessageHelper helper, String confirmUrl, String locale) throws Exception {

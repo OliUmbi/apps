@@ -22,94 +22,179 @@ class OutboxRepository {
     }
 
     @Transactional
-    Optional<OutboxMessage> claimNext() {
-        return jdbc.sql("""
-                with candidate as (
-                    select id from messaging.outbox
-                    where available_at <= now()
-                      and (status = 'pending' or (status = 'processing' and locked_at < now() - interval '5 minutes'))
-                    order by created_at
-                    for update skip locked
-                    limit 1
-                )
-                update messaging.outbox o
-                set status = 'processing', locked_at = now(), updated_at = now()
-                from candidate c where o.id = c.id
-                returning o.*
-                """).query(this::map).optional();
+    void enqueue(MessageRequest request, Instant now) {
+        lockCorrelation(request.correlationKey());
+        jdbc.sql("""
+                        insert into messaging.outbox (
+                            id, message_type, recipient_email, locale, payload, correlation_key,
+                            status, attempt_count, available_at, created_at, updated_at
+                        ) select
+                            :id, :messageType, :recipientEmail, :locale, cast(:payload as jsonb), :correlationKey,
+                            'pending', 0, :availableAt, :createdAt, :updatedAt
+                        where :correlationKey is null or not exists (
+                            select 1 from messaging.correlation_tombstone
+                            where correlation_key = :correlationKey
+                        )
+                        on conflict (id) do nothing
+                        """)
+                .param("id", request.id())
+                .param("messageType", request.messageType())
+                .param("recipientEmail", request.recipientEmail())
+                .param("locale", request.locale())
+                .param("payload", request.payload().toString())
+                .param("correlationKey", request.correlationKey())
+                .param("availableAt", Timestamp.from(now))
+                .param("createdAt", Timestamp.from(now))
+                .param("updatedAt", Timestamp.from(now))
+                .update();
     }
 
     @Transactional
-    void markSent(OutboxMessage message) {
+    Optional<OutboxMessage> claimNext(Instant now, Instant staleBefore) {
+        return jdbc.sql("""
+                        with candidate as (
+                            select id from messaging.outbox
+                            where available_at <= :now
+                              and (status = 'pending' or (status = 'processing' and locked_at < :staleBefore))
+                            order by created_at
+                            for update skip locked
+                            limit 1
+                        )
+                        update messaging.outbox o
+                        set status = 'processing', locked_at = :lockedAt, updated_at = :updatedAt
+                        from candidate c where o.id = c.id
+                        returning o.*
+                        """)
+                .param("now", Timestamp.from(now))
+                .param("staleBefore", Timestamp.from(staleBefore))
+                .param("lockedAt", Timestamp.from(now))
+                .param("updatedAt", Timestamp.from(now))
+                .query(this::map)
+                .optional();
+    }
+
+    @Transactional
+    void markSent(OutboxMessage message, Instant now) {
         int attempt = message.attemptCount() + 1;
         jdbc.sql("""
-                update messaging.outbox set status = 'sent', attempt_count = :attempt,
-                    sent_at = now(), locked_at = null, last_error = null, updated_at = now()
-                where id = :id
-                """).param("attempt", attempt).param("id", message.id()).update();
-        attempt(message.id(), attempt, "sent", null);
+                        update messaging.outbox set status = 'sent', attempt_count = :attempt,
+                            sent_at = :sentAt, locked_at = null, last_error = null, updated_at = :updatedAt
+                        where id = :id
+                        """)
+                .param("attempt", attempt)
+                .param("sentAt", Timestamp.from(now))
+                .param("updatedAt", Timestamp.from(now))
+                .param("id", message.id())
+                .update();
+        insertAttempt(message.id(), attempt, "sent", null, now);
     }
 
     @Transactional
-    void markFailed(OutboxMessage message, Exception exception) {
+    void markFailed(OutboxMessage message, Exception exception, Instant now) {
         int attempt = message.attemptCount() + 1;
         boolean finalFailure = attempt % 5 == 0;
         String error = safeError(exception);
-        Instant availableAt = Instant.now().plus(Math.min(30, 1L << attempt), ChronoUnit.MINUTES);
+        long retryMinutes = Math.min(30, 1L << Math.min(attempt, 5));
+        Instant availableAt = now.plus(retryMinutes, ChronoUnit.MINUTES);
         jdbc.sql("""
                         update messaging.outbox
                         set status = :status, attempt_count = :attempt, available_at = :availableAt,
-                            locked_at = null, last_error = :error, updated_at = now()
+                            locked_at = null, last_error = :error, updated_at = :updatedAt
                         where id = :id
-                        """).param("status", finalFailure ? "failed" : "pending")
-                .param("attempt", attempt).param("availableAt", Timestamp.from(availableAt))
-                .param("error", error).param("id", message.id()).update();
-        attempt(message.id(), attempt, finalFailure ? "failed" : "retry", error);
+                        """)
+                .param("status", finalFailure ? "failed" : "pending")
+                .param("attempt", attempt)
+                .param("availableAt", Timestamp.from(availableAt))
+                .param("error", error)
+                .param("updatedAt", Timestamp.from(now))
+                .param("id", message.id())
+                .update();
+        insertAttempt(message.id(), attempt, finalFailure ? "failed" : "retry", error, now);
     }
 
     List<OutboxMessage> failed() {
         return jdbc.sql("""
-                select * from messaging.outbox where status = 'failed'
-                order by updated_at desc limit 100
-                """).query(this::map).list();
+                        select * from messaging.outbox where status = 'failed'
+                        order by updated_at desc limit 100
+                        """)
+                .query(this::map)
+                .list();
     }
 
-    void retry(UUID id) {
+    void retry(UUID id, Instant now) {
         int changed = jdbc.sql("""
-                update messaging.outbox set status = 'pending',
-                    available_at = now(), locked_at = null, last_error = null, updated_at = now()
-                where id = :id and status = 'failed'
-                """).param("id", id).update();
+                        update messaging.outbox set status = 'pending',
+                            available_at = :availableAt, locked_at = null,
+                            last_error = null, updated_at = :updatedAt
+                        where id = :id and status = 'failed'
+                        """)
+                .param("availableAt", Timestamp.from(now))
+                .param("updatedAt", Timestamp.from(now))
+                .param("id", id)
+                .update();
         if (changed == 0) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     @Transactional
-    void scrub(String correlationKey) {
+    void scrub(String correlationKey, Instant now) {
+        lockCorrelation(correlationKey);
         long processing = jdbc.sql("""
-                select count(*) from messaging.outbox
-                where correlation_key = :key and status = 'processing'
-                """).param("key", correlationKey).query(Long.class).single();
-        if (processing > 0) throw new ResponseStatusException(HttpStatus.CONFLICT, "Message is being delivered");
+                        select count(*) from messaging.outbox
+                        where correlation_key = :key and status = 'processing'
+                        """)
+                .param("key", correlationKey)
+                .query(Long.class)
+                .single();
+        if (processing > 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Message is being delivered");
+        }
         jdbc.sql("""
-                update messaging.outbox
-                set recipient_email = 'deleted@invalid.local', payload = '{}'::jsonb,
-                    correlation_key = null, last_error = null, updated_at = now()
-                where correlation_key = :key
-                """).param("key", correlationKey).update();
+                        insert into messaging.correlation_tombstone (correlation_key, created_at)
+                        values (:key, :createdAt)
+                        on conflict (correlation_key) do nothing
+                        """)
+                .param("key", correlationKey)
+                .param("createdAt", Timestamp.from(now))
+                .update();
         jdbc.sql("""
-                update messaging.delivery_attempt set error_message = null
-                where outbox_id in (
-                    select id from messaging.outbox where recipient_email = 'deleted@invalid.local'
-                )
-                """).update();
+                        with scrubbed as (
+                            update messaging.outbox
+                            set recipient_email = 'deleted@invalid.local', payload = '{}'::jsonb,
+                                correlation_key = null, status = 'scrubbed', locked_at = null,
+                                last_error = null, updated_at = :updatedAt
+                            where correlation_key = :key
+                            returning id
+                        )
+                        update messaging.delivery_attempt set error_message = null
+                        where outbox_id in (select id from scrubbed)
+                        """)
+                .param("updatedAt", Timestamp.from(now))
+                .param("key", correlationKey)
+                .update();
     }
 
-    private void attempt(UUID id, int number, String outcome, String error) {
+    private void lockCorrelation(String correlationKey) {
+        if (correlationKey == null) return;
+        jdbc.sql("select pg_advisory_xact_lock(hashtextextended(:key, 0))")
+                .param("key", correlationKey)
+                .query((resultSet, rowNumber) -> true)
+                .single();
+    }
+
+    private void insertAttempt(UUID id, int number, String outcome, String error, Instant now) {
         jdbc.sql("""
-                        insert into messaging.delivery_attempt (outbox_id, attempt_number, outcome, error_message)
-                        values (:id, :number, :outcome, :error)
-                        """).param("id", id).param("number", number).param("outcome", outcome)
-                .param("error", error).update();
+                        insert into messaging.delivery_attempt (
+                            outbox_id, attempt_number, outcome, error_message, created_at
+                        ) values (
+                            :id, :number, :outcome, :error, :createdAt
+                        )
+                        """)
+                .param("id", id)
+                .param("number", number)
+                .param("outcome", outcome)
+                .param("error", error)
+                .param("createdAt", Timestamp.from(now))
+                .update();
     }
 
     private OutboxMessage map(java.sql.ResultSet rs, int row) throws java.sql.SQLException {

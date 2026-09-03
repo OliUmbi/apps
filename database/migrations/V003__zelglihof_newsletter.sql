@@ -1,28 +1,29 @@
-CREATE TABLE zelglihof.newsletter_subscriber (
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    email text NOT NULL,
-    email_normalized text NOT NULL,
-    locale text NOT NULL DEFAULT 'de-CH' CHECK (locale IN ('de-CH', 'en')),
-    status text NOT NULL DEFAULT 'pending'
+CREATE TABLE zelglihof.newsletter_subscriber
+(
+    id                             uuid PRIMARY KEY     DEFAULT gen_random_uuid(),
+    email                          text        NOT NULL,
+    email_normalized               text        NOT NULL,
+    locale                         text        NOT NULL DEFAULT 'de-CH' CHECK (locale IN ('de-CH', 'en')),
+    status                         text        NOT NULL DEFAULT 'pending'
         CHECK (status IN ('pending', 'active', 'unsubscribed')),
-    consent_source text NOT NULL,
-    consent_text_version text NOT NULL,
-    requested_at timestamptz NOT NULL DEFAULT now(),
-    confirmed_at timestamptz,
-    unsubscribed_at timestamptz,
+    consent_source                 text        NOT NULL,
+    consent_text_version           text        NOT NULL,
+    requested_at                   timestamptz NOT NULL DEFAULT now(),
+    confirmed_at                   timestamptz,
+    unsubscribed_at                timestamptz,
     last_confirmation_requested_at timestamptz NOT NULL DEFAULT now(),
-    confirmation_token_hash text NOT NULL,
-    confirmation_expires_at timestamptz,
-    unsubscribe_token text NOT NULL,
-    created_at timestamptz NOT NULL DEFAULT now(),
-    updated_at timestamptz NOT NULL DEFAULT now(),
+    confirmation_token_hash        text        NOT NULL,
+    confirmation_expires_at        timestamptz,
+    unsubscribe_token              text        NOT NULL,
+    created_at                     timestamptz NOT NULL DEFAULT now(),
+    updated_at                     timestamptz NOT NULL DEFAULT now(),
     CONSTRAINT newsletter_subscriber_email_normalized
         CHECK (email_normalized = lower(btrim(email_normalized))),
     CONSTRAINT newsletter_subscriber_confirmation_state
         CHECK (
             (status = 'pending' AND confirmation_expires_at IS NOT NULL)
-            OR (status <> 'pending')
-        )
+                OR (status <> 'pending')
+            )
 );
 
 CREATE UNIQUE INDEX newsletter_subscriber_email_uq

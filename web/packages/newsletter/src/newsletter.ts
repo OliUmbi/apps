@@ -1,4 +1,8 @@
-import { createHash, randomBytes } from "node:crypto";
+import { createHash, randomBytes, randomUUID } from "node:crypto";
+import {
+	createOutgoingMessage,
+	type OutgoingMessage,
+} from "@oliumbi/messaging";
 import type postgres from "postgres";
 
 type Database = ReturnType<typeof postgres>;
@@ -43,6 +47,7 @@ export type UnsubscribeResult = {
 };
 
 const resendDelayMs = 5 * 60 * 1000;
+const confirmationLifetimeMs = 48 * 60 * 60 * 1000;
 
 function normalizeEmail(email: string): string {
 	return email.trim().toLowerCase();
@@ -84,20 +89,17 @@ async function lockEmail(
 
 async function enqueue(
 	sql: Queryable,
-	values: {
-		type: string;
-		recipient: string;
-		locale: "de-CH" | "en";
-		payload: Record<string, string>;
-		correlationKey: string;
-	},
+	message: OutgoingMessage,
 ): Promise<void> {
 	await sql`
-    insert into messaging.outbox (message_type, recipient_email, locale, payload, correlation_key)
-    values (
-      ${values.type}, ${values.recipient}, ${values.locale},
-      ${sql.json(values.payload)}, ${values.correlationKey}
-    )
+		insert into zelglihof.outgoing_message (
+			id, message_type, recipient_email, locale, payload, correlation_key,
+			attempt_count, available_at, created_at, updated_at
+		) values (
+			${message.id}, ${message.messageType}, ${message.recipientEmail},
+			${message.locale}, ${sql.json(message.payload)}, ${message.correlationKey},
+			${0}, ${message.createdAt}, ${message.createdAt}, ${message.createdAt}
+		)
   `;
 }
 
@@ -106,16 +108,21 @@ async function queueConfirmation(
 	subscriber: Pick<SubscriberRow, "id" | "email" | "locale">,
 	token: string,
 	publicBaseUrl: string,
+	now: Date,
 ): Promise<void> {
-	await enqueue(sql, {
-		type: "newsletter.confirmation",
-		recipient: subscriber.email,
-		locale: subscriber.locale,
-		payload: {
-			confirmUrl: tokenUrl(publicBaseUrl, "/newsletter/bestaetigen", token),
-		},
-		correlationKey: `newsletter-subscriber:${subscriber.id}`,
-	});
+	await enqueue(
+		sql,
+		createOutgoingMessage({
+			messageType: "newsletter.confirmation",
+			recipientEmail: subscriber.email,
+			locale: subscriber.locale,
+			payload: {
+				confirmUrl: tokenUrl(publicBaseUrl, "/newsletter/bestaetigen", token),
+			},
+			correlationKey: `newsletter-subscriber:${subscriber.id}`,
+			now,
+		}),
+	);
 }
 
 export async function requestSubscription(
@@ -129,6 +136,10 @@ export async function requestSubscription(
 ): Promise<{ outcome: "accepted" }> {
 	const email = input.email.trim();
 	const normalizedEmail = normalizeEmail(email);
+	const now = new Date();
+	const confirmationExpiresAt = new Date(
+		now.getTime() + confirmationLifetimeMs,
+	);
 
 	await database.begin(async (sql) => {
 		await lockEmail(sql, normalizedEmail);
@@ -143,7 +154,7 @@ export async function requestSubscription(
 		if (
 			existing?.status === "pending" &&
 			existing.last_confirmation_requested_at &&
-			Date.now() - existing.last_confirmation_requested_at.getTime() <
+			now.getTime() - existing.last_confirmation_requested_at.getTime() <
 				resendDelayMs
 		)
 			return;
@@ -155,32 +166,34 @@ export async function requestSubscription(
 		if (existing) {
 			const rows = await sql<SubscriberRow[]>`
         update zelglihof.newsletter_subscriber
-        set email = ${email}, locale = ${input.locale}, status = 'pending',
-            consent_source = ${input.consentSource}, consent_text_version = 'newsletter-v1', requested_at = now(),
-            confirmed_at = null, unsubscribed_at = null,
-            confirmation_token_hash = ${tokenHash},
-            confirmation_expires_at = now() + interval '48 hours',
-            last_confirmation_requested_at = now(), updated_at = now()
+			set email = ${email}, locale = ${input.locale}, status = 'pending',
+				consent_source = ${input.consentSource}, consent_text_version = 'newsletter-v1', requested_at = ${now},
+				confirmed_at = null, unsubscribed_at = null,
+				confirmation_token_hash = ${tokenHash},
+				confirmation_expires_at = ${confirmationExpiresAt},
+				last_confirmation_requested_at = ${now}, updated_at = ${now}
         where id = ${existing.id}
         returning *
       `;
 			subscriber = rows[0];
 		} else {
 			const rows = await sql<SubscriberRow[]>`
-        insert into zelglihof.newsletter_subscriber (
-          email, email_normalized, locale, consent_source, consent_text_version,
-          confirmation_token_hash, confirmation_expires_at,
-          last_confirmation_requested_at, unsubscribe_token
-        ) values (
-          ${email}, ${normalizedEmail}, ${input.locale}, ${input.consentSource}, 'newsletter-v1',
-          ${tokenHash}, now() + interval '48 hours', now(), ${newToken()}
+			insert into zelglihof.newsletter_subscriber (
+				id, email, email_normalized, locale, status, consent_source, consent_text_version,
+				requested_at,
+				confirmation_token_hash, confirmation_expires_at,
+				last_confirmation_requested_at, unsubscribe_token, created_at, updated_at
+			) values (
+				${randomUUID()}, ${email}, ${normalizedEmail}, ${input.locale}, 'pending',
+				${input.consentSource}, 'newsletter-v1', ${now}, ${tokenHash},
+				${confirmationExpiresAt}, ${now}, ${newToken()}, ${now}, ${now}
         )
         returning *
       `;
 			subscriber = rows[0];
 		}
 
-		await queueConfirmation(sql, subscriber, token, input.publicBaseUrl);
+		await queueConfirmation(sql, subscriber, token, input.publicBaseUrl, now);
 	});
 
 	return { outcome: "accepted" };
@@ -191,6 +204,7 @@ export async function confirmSubscription(
 	token: string,
 	publicBaseUrl: string,
 ): Promise<ConfirmationResult> {
+	const now = new Date();
 	return database.begin(async (sql) => {
 		const rows = await sql<SubscriberRow[]>`
       select * from zelglihof.newsletter_subscriber
@@ -202,35 +216,39 @@ export async function confirmSubscription(
 		if (subscriber.status === "active") return { outcome: "already-confirmed" };
 		if (
 			!subscriber.confirmation_expires_at ||
-			subscriber.confirmation_expires_at.getTime() < Date.now()
+			subscriber.confirmation_expires_at.getTime() < now.getTime()
 		) {
 			return { outcome: "expired" };
 		}
 
 		await sql`
       update zelglihof.newsletter_subscriber
-      set status = 'active', confirmed_at = now(), unsubscribed_at = null,
-          confirmation_expires_at = null, updated_at = now()
+		set status = 'active', confirmed_at = ${now}, unsubscribed_at = null,
+			confirmation_expires_at = null, updated_at = ${now}
       where id = ${subscriber.id}
     `;
-		await enqueue(sql, {
-			type: "newsletter.welcome",
-			recipient: subscriber.email,
-			locale: subscriber.locale,
-			payload: {
-				unsubscribeUrl: tokenUrl(
-					publicBaseUrl,
-					"/newsletter/abmelden",
-					subscriber.unsubscribe_token,
-				),
-				oneClickUnsubscribeUrl: tokenUrl(
-					publicBaseUrl,
-					"/api/newsletter/abmelden",
-					subscriber.unsubscribe_token,
-				),
-			},
-			correlationKey: `newsletter-subscriber:${subscriber.id}`,
-		});
+		await enqueue(
+			sql,
+			createOutgoingMessage({
+				messageType: "newsletter.welcome",
+				recipientEmail: subscriber.email,
+				locale: subscriber.locale,
+				payload: {
+					unsubscribeUrl: tokenUrl(
+						publicBaseUrl,
+						"/newsletter/abmelden",
+						subscriber.unsubscribe_token,
+					),
+					oneClickUnsubscribeUrl: tokenUrl(
+						publicBaseUrl,
+						"/api/newsletter/abmelden",
+						subscriber.unsubscribe_token,
+					),
+				},
+				correlationKey: `newsletter-subscriber:${subscriber.id}`,
+				now,
+			}),
+		);
 		return { outcome: "confirmed" };
 	});
 }
@@ -239,6 +257,7 @@ export async function unsubscribeByToken(
 	database: Database,
 	token: string,
 ): Promise<UnsubscribeResult> {
+	const now = new Date();
 	return database.begin(async (sql) => {
 		const rows = await sql<SubscriberRow[]>`
       select * from zelglihof.newsletter_subscriber
@@ -252,7 +271,7 @@ export async function unsubscribeByToken(
 
 		await sql`
       update zelglihof.newsletter_subscriber
-      set status = 'unsubscribed', unsubscribed_at = now(), updated_at = now()
+		set status = 'unsubscribed', unsubscribed_at = ${now}, updated_at = ${now}
       where id = ${subscriber.id}
     `;
 		return { outcome: "unsubscribed" };
@@ -280,9 +299,10 @@ export async function unsubscribeSubscriber(
 	database: Database,
 	id: string,
 ): Promise<void> {
+	const now = new Date();
 	await database`
-    update zelglihof.newsletter_subscriber
-    set status = 'unsubscribed', unsubscribed_at = now(), updated_at = now()
+		update zelglihof.newsletter_subscriber
+		set status = 'unsubscribed', unsubscribed_at = ${now}, updated_at = ${now}
     where id = ${id}
   `;
 }
@@ -292,6 +312,10 @@ export async function resendConfirmation(
 	id: string,
 	publicBaseUrl: string,
 ): Promise<void> {
+	const now = new Date();
+	const confirmationExpiresAt = new Date(
+		now.getTime() + confirmationLifetimeMs,
+	);
 	await database.begin(async (sql) => {
 		const rows = await sql<SubscriberRow[]>`
       select * from zelglihof.newsletter_subscriber where id = ${id} for update
@@ -304,13 +328,13 @@ export async function resendConfirmation(
 		}
 		const token = newToken();
 		await sql`
-      update zelglihof.newsletter_subscriber
-      set confirmation_token_hash = ${hashToken(token)},
-          confirmation_expires_at = now() + interval '48 hours',
-          last_confirmation_requested_at = now(), updated_at = now()
+		update zelglihof.newsletter_subscriber
+		set confirmation_token_hash = ${hashToken(token)},
+			confirmation_expires_at = ${confirmationExpiresAt},
+			last_confirmation_requested_at = ${now}, updated_at = ${now}
       where id = ${id}
     `;
-		await queueConfirmation(sql, subscriber, token, publicBaseUrl);
+		await queueConfirmation(sql, subscriber, token, publicBaseUrl, now);
 	});
 }
 
@@ -322,23 +346,27 @@ export async function correctSubscriberEmail(
 ): Promise<void> {
 	const email = newEmail.trim();
 	const normalizedEmail = normalizeEmail(email);
+	const now = new Date();
+	const confirmationExpiresAt = new Date(
+		now.getTime() + confirmationLifetimeMs,
+	);
 	await database.begin(async (sql) => {
 		await lockEmail(sql, normalizedEmail);
 		const token = newToken();
 		const rows = await sql<SubscriberRow[]>`
       update zelglihof.newsletter_subscriber
       set email = ${email}, email_normalized = ${normalizedEmail}, status = 'pending',
-          consent_source = 'studio-correction', consent_text_version = 'newsletter-v1', requested_at = now(),
+			consent_source = 'studio-correction', consent_text_version = 'newsletter-v1', requested_at = ${now},
           confirmed_at = null, unsubscribed_at = null,
           confirmation_token_hash = ${hashToken(token)},
-          confirmation_expires_at = now() + interval '48 hours',
-          last_confirmation_requested_at = now(), updated_at = now()
+			confirmation_expires_at = ${confirmationExpiresAt},
+			last_confirmation_requested_at = ${now}, updated_at = ${now}
       where id = ${id}
       returning *
     `;
 		const subscriber = rows[0];
 		if (!subscriber) throw new Error("Subscriber not found");
-		await queueConfirmation(sql, subscriber, token, publicBaseUrl);
+		await queueConfirmation(sql, subscriber, token, publicBaseUrl, now);
 	});
 }
 

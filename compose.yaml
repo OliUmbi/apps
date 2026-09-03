@@ -8,6 +8,8 @@ services:
       POSTGRES_USER: ${POSTGRES_MIGRATOR_USER:-apps_migrator}
       POSTGRES_PASSWORD: ${POSTGRES_MIGRATOR_PASSWORD:-dev-migrator-password}
       ZELGLIHOF_DATABASE_PASSWORD: ${ZELGLIHOF_DATABASE_PASSWORD:-dev-zelglihof-password}
+      UNCLET_DATABASE_PASSWORD: ${UNCLET_DATABASE_PASSWORD:-dev-unclet-password}
+      JUBLAWOMA_DATABASE_PASSWORD: ${JUBLAWOMA_DATABASE_PASSWORD:-dev-jublawoma-password}
       STUDIO_DATABASE_PASSWORD: ${STUDIO_DATABASE_PASSWORD:-dev-studio-password}
       IDENTITY_DATABASE_PASSWORD: ${IDENTITY_DATABASE_PASSWORD:-dev-identity-password}
       MESSAGING_DATABASE_PASSWORD: ${MESSAGING_DATABASE_PASSWORD:-dev-messaging-password}
@@ -90,7 +92,11 @@ services:
       dockerfile: sites/zelglihof/Dockerfile
     environment:
       DATABASE_URL: postgres://${ZELGLIHOF_DATABASE_USER:-zelglihof_web}:${ZELGLIHOF_DATABASE_PASSWORD:-dev-zelglihof-password}@postgres:5432/${POSTGRES_DB:-apps}
+      DATABASE_POOL_SIZE: ${WEB_DATABASE_POOL_SIZE:-10}
+      MESSAGING_SERVICE_URL: http://messaging:8082
+      MESSAGING_INTERNAL_TOKEN: ${MESSAGING_INTERNAL_TOKEN:-dev-messaging-internal-token}
       ZELGLIHOF_PUBLIC_URL: ${ZELGLIHOF_PUBLIC_URL:-http://localhost:8003}
+      ZELGLIHOF_OWNER_EMAIL: ${ZELGLIHOF_OWNER_EMAIL:-hof@zelglihof.ch}
     ports:
       - "8003:8003"
     depends_on:
@@ -99,12 +105,44 @@ services:
       messaging:
         condition: service_started
 
+  unclet:
+    build:
+      context: ./web
+      dockerfile: sites/unclet/Dockerfile
+    environment:
+      DATABASE_URL: postgres://${UNCLET_DATABASE_USER:-unclet_web}:${UNCLET_DATABASE_PASSWORD:-dev-unclet-password}@postgres:5432/${POSTGRES_DB:-apps}
+      DATABASE_POOL_SIZE: ${WEB_DATABASE_POOL_SIZE:-10}
+      MESSAGING_SERVICE_URL: http://messaging:8082
+      MESSAGING_INTERNAL_TOKEN: ${MESSAGING_INTERNAL_TOKEN:-dev-messaging-internal-token}
+      UNCLET_OWNER_EMAIL: ${UNCLET_OWNER_EMAIL:-info@uncle-t.ch}
+    ports:
+      - "8002:8002"
+    depends_on:
+      flyway:
+        condition: service_completed_successfully
+      messaging:
+        condition: service_started
+
+  jublawoma:
+    build:
+      context: ./web
+      dockerfile: sites/jublawoma/Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      DATABASE_URL: postgres://${JUBLAWOMA_DATABASE_USER:-jublawoma_web}:${JUBLAWOMA_DATABASE_PASSWORD:-dev-jublawoma-password}@postgres:5432/${POSTGRES_DB:-apps}
+      DATABASE_POOL_SIZE: ${WEB_DATABASE_POOL_SIZE:-10}
+    depends_on:
+      flyway:
+        condition: service_completed_successfully
+
   studio:
     build:
       context: ./web
       dockerfile: sites/studio/Dockerfile
     environment:
       DATABASE_URL: postgres://${STUDIO_DATABASE_USER:-studio_web}:${STUDIO_DATABASE_PASSWORD:-dev-studio-password}@postgres:5432/${POSTGRES_DB:-apps}
+      DATABASE_POOL_SIZE: ${WEB_DATABASE_POOL_SIZE:-10}
       ZELGLIHOF_PUBLIC_URL: ${ZELGLIHOF_PUBLIC_URL:-http://localhost:8003}
       IDENTITY_SERVICE_URL: http://identity:8081
       MESSAGING_SERVICE_URL: http://messaging:8082

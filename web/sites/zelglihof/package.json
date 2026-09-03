@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@oliumbi/database": "workspace:*",
+    "@oliumbi/messaging": "workspace:*",
     "@oliumbi/newsletter": "workspace:*",
     "@base-ui/react": "catalog:",
     "@tailwindcss/vite": "catalog:",

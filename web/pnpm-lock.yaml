@@ -82,8 +82,20 @@ importers:
         specifier: 'catalog:'
         version: 7.0.2
 
+  packages/messaging:
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.2.0
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+
   packages/newsletter:
     dependencies:
+      '@oliumbi/messaging':
+        specifier: workspace:*
+        version: link:../messaging
       postgres:
         specifier: 'catalog:'
         version: 3.4.9
@@ -98,11 +110,66 @@ importers:
         specifier: 'catalog:'
         version: 7.0.2
 
+  sites/jublawoma:
+    dependencies:
+      '@oliumbi/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@tailwindcss/vite':
+        specifier: 'catalog:'
+        version: 4.3.3(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0))
+      '@tanstack/react-router':
+        specifier: 'catalog:'
+        version: 1.170.25(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@tanstack/react-start':
+        specifier: 'catalog:'
+        version: 1.168.42(crossws@0.4.10(srvx@0.11.22))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rolldown@1.2.3)(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0))
+      lucide-react:
+        specifier: 'catalog:'
+        version: 1.31.0(react@19.2.8)
+      react:
+        specifier: 'catalog:'
+        version: 19.2.8
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.8(react@19.2.8)
+      tailwindcss:
+        specifier: 'catalog:'
+        version: 4.3.3
+      zod:
+        specifier: 'catalog:'
+        version: 4.5.4
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.2.0
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.18
+      '@types/react-dom':
+        specifier: 'catalog:'
+        version: 19.2.4(@types/react@19.2.18)
+      '@vitejs/plugin-react':
+        specifier: 'catalog:'
+        version: 6.0.5(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0))
+      nitro:
+        specifier: 'catalog:'
+        version: 3.0.260610-beta(chokidar@5.0.0)(jiti@2.7.0)(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0))
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vite:
+        specifier: 'catalog:'
+        version: 8.2.1(@types/node@26.2.0)(jiti@2.7.0)
+
   sites/studio:
     dependencies:
       '@oliumbi/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@oliumbi/messaging':
+        specifier: workspace:*
+        version: link:../../packages/messaging
       '@oliumbi/newsletter':
         specifier: workspace:*
         version: link:../../packages/newsletter
@@ -115,6 +182,9 @@ importers:
       '@tanstack/react-start':
         specifier: 'catalog:'
         version: 1.168.42(crossws@0.4.10(srvx@0.11.22))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(rolldown@1.2.3)(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0))
+      lucide-react:
+        specifier: 'catalog:'
+        version: 1.31.0(react@19.2.8)
       react:
         specifier: 'catalog:'
         version: 19.2.8
@@ -155,6 +225,12 @@ importers:
       '@base-ui/react':
         specifier: 'catalog:'
         version: 1.7.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@oliumbi/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@oliumbi/messaging':
+        specifier: workspace:*
+        version: link:../../packages/messaging
       '@tailwindcss/vite':
         specifier: 'catalog:'
         version: 4.3.3(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0))
@@ -176,6 +252,9 @@ importers:
       tailwindcss:
         specifier: 'catalog:'
         version: 4.3.3
+      zod:
+        specifier: 'catalog:'
+        version: 4.5.4
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -192,6 +271,9 @@ importers:
       nitro:
         specifier: 'catalog:'
         version: 3.0.260610-beta(chokidar@5.0.0)(jiti@2.7.0)(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0))
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
       vite:
         specifier: 'catalog:'
         version: 8.2.1(@types/node@26.2.0)(jiti@2.7.0)
@@ -204,6 +286,9 @@ importers:
       '@oliumbi/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@oliumbi/messaging':
+        specifier: workspace:*
+        version: link:../../packages/messaging
       '@oliumbi/newsletter':
         specifier: workspace:*
         version: link:../../packages/newsletter
@@ -1619,9 +1704,6 @@ packages:
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
 
-  zod@4.4.3:
-    resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
-
   zod@4.5.4:
     resolution: {integrity: sha512-sC95tT5iHHH9gtpj6A81kh+NEaRAUFN+qlUPDUbRfOMvNf5QCBqsb3WgvnpVtK5Y+4UfA6KqufotuTvMGiTlsA==}
 
@@ -2067,7 +2149,7 @@ snapshots:
       jiti: 2.7.0
       magic-string: 0.30.21
       prettier: 3.9.6
-      zod: 4.4.3
+      zod: 4.5.4
     transitivePeerDependencies:
       - supports-color
 
@@ -2081,7 +2163,7 @@ snapshots:
       '@tanstack/router-utils': 1.162.2
       chokidar: 5.0.0
       unplugin: 3.3.0(rolldown@1.2.3)(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0))
-      zod: 4.4.3
+      zod: 4.5.4
     optionalDependencies:
       '@tanstack/react-router': 1.170.25(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       vite: 8.2.1(@types/node@26.2.0)(jiti@2.7.0)
@@ -2138,7 +2220,7 @@ snapshots:
       ufo: 1.6.4
       vitefu: 1.1.3(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0))
       xmlbuilder2: 4.0.3
-      zod: 4.4.3
+      zod: 4.5.4
     optionalDependencies:
       vite: 8.2.1(@types/node@26.2.0)(jiti@2.7.0)
     transitivePeerDependencies:
@@ -2699,7 +2781,5 @@ snapshots:
       js-yaml: 4.3.1
 
   yallist@3.1.1: {}
-
-  zod@4.4.3: {}
 
   zod@4.5.4: {}

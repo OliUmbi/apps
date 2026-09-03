@@ -5,9 +5,12 @@
   "scripts": {
     "dev": "vite dev --host",
     "build": "vite build",
-    "start": "node .output/server/index.mjs"
+    "start": "node .output/server/index.mjs",
+    "check": "tsc --noEmit"
   },
   "dependencies": {
+    "@oliumbi/database": "workspace:*",
+    "@oliumbi/messaging": "workspace:*",
     "@base-ui/react": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/react-router": "catalog:",
@@ -15,7 +18,8 @@
     "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "tailwindcss": "catalog:"
+    "tailwindcss": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",
@@ -23,6 +27,7 @@
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "nitro": "catalog:",
+    "typescript": "catalog:",
     "vite": "catalog:"
   }
 }
