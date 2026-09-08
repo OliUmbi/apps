@@ -29,7 +29,7 @@ public class SessionController {
         return sessionService.create(sessionCreateRequest);
     }
 
-    @GetMapping
+    @PostMapping("/validate")
     public SessionActorResponse validate(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
             @RequestBody SessionValidateRequest sessionValidateRequest) {
@@ -37,7 +37,7 @@ public class SessionController {
         return sessionService.validate(sessionValidateRequest);
     }
 
-    @DeleteMapping
+    @PostMapping("/revoke")
     public void revoke(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
             @RequestBody SessionRevokeRequest sessionRevokeRequest) {

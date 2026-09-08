@@ -1,6 +1,5 @@
 package ch.oliumbi.identity.services;
 
-import ch.oliumbi.identity.data.entites.Account;
 import ch.oliumbi.identity.data.entites.AccountSession;
 import ch.oliumbi.identity.data.requests.SessionActorResponse;
 import ch.oliumbi.identity.data.requests.SessionCreateResponse;
@@ -52,7 +51,7 @@ public class SessionService {
         }
 
         var token = tokenService.generate();
-        var tokenHash = passwordEncoder.encode(token);
+        var tokenHash = tokenService.hash(token);
         var now = Instant.now(clock);
         var expiresAt = now.plus(sessionExpirationDays, ChronoUnit.DAYS);
 
@@ -64,7 +63,7 @@ public class SessionService {
 
     @Transactional
     public SessionActorResponse validate(SessionValidateRequest sessionValidateRequest) {
-        var tokenHash = passwordEncoder.encode(sessionValidateRequest.token());
+        var tokenHash = tokenService.hash(sessionValidateRequest.token());
         var now = Instant.now(clock);
 
         var accountSession = accountSessionRepository.findValidSession(tokenHash, now)
@@ -76,7 +75,7 @@ public class SessionService {
 
     @Transactional
     public void revoke(SessionRevokeRequest sessionRevokeRequest) {
-        var tokenHash = passwordEncoder.encode(sessionRevokeRequest.token());
+        var tokenHash = tokenService.hash(sessionRevokeRequest.token());
         var now = Instant.now(clock);
 
         var accountSession = accountSessionRepository.findValidSession(tokenHash, now)

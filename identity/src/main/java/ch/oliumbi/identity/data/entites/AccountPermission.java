@@ -1,9 +1,7 @@
 package ch.oliumbi.identity.data.entites;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "account_permission", schema = "identity")
