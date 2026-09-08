@@ -1,7 +1,12 @@
 # OliUmbi Apps
 
+TODO review this
+
 One repository for the OliUmbi websites and the small services they share.
 The first implemented vertical slice is the Zelglihof newsletter lifecycle.
+
+The database is being redesigned; the Java/web consumers still need adapting.
+Open work is tracked only in [planning/open-work.md](documentation/open-work.md).
 
 ## Local development
 
@@ -12,7 +17,8 @@ Copy-Item .env.example .env
 docker compose up -d --build
 ```
 
-This starts the complete slice. For frontend-only development, keep the database
+This starts the development containers; schema integration is unfinished.
+For frontend-only development, keep the database
 and services in Docker, then run `pnpm dev:zelglihof` or `pnpm dev:studio` from
 `web/` instead. The default local URLs are:
 
@@ -46,6 +52,5 @@ Regenerate the readable current snapshot after changing a migration:
 .\database\schema.ps1
 ```
 
-See `planning/` for the concise product and architecture direction. The larger
-`docs/` directory remains reference material.
+See [planning/open-work.md](documentation/open-work.md) for unfinished work.
 

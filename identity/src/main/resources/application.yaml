@@ -3,18 +3,17 @@ server:
 spring:
   datasource:
     url: ${DATABASE_URL}
-    username: ${DATABASE_USER}
-    password: ${DATABASE_PASSWORD}
-    hikari:
-      maximum-pool-size: 5
-      minimum-idle: 1
+    username: ${IDENTITY_DATABASE_USER}
+    password: ${IDENTITY_DATABASE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
 management:
   endpoints:
     web:
       exposure:
         include: health
 identity:
-  internal-token: ${IDENTITY_INTERNAL_TOKEN}
-  bootstrap-username: ${IDENTITY_BOOTSTRAP_USERNAME:}
-  bootstrap-password: ${IDENTITY_BOOTSTRAP_PASSWORD:}
-  session-days: 7
+  authorization-token: ${IDENTITY_INTERNAL_AUTHORIZATION_TOKEN}
+  session-expiration-days: 7
