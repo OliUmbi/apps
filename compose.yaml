@@ -47,7 +47,8 @@ services:
 
   identity:
     build:
-      context: ./identity
+      context: ./services
+      dockerfile: identity/Dockerfile
     environment:
       DATABASE_URL: postgresql://postgres:5432/${POSTGRES_DB:-apps}
       IDENTITY_DATABASE_USER: ${IDENTITY_DATABASE_USER:-identity}
@@ -61,7 +62,8 @@ services:
 
   messaging:
     build:
-      context: ./messaging
+      context: ./services
+      dockerfile: messaging/Dockerfile
     environment:
       DATABASE_URL: postgresql://postgres:5432/${POSTGRES_DB:-apps}
       MESSAGING_DATABASE_USER: ${MESSAGING_DATABASE_USER:-messaging}

@@ -24,7 +24,7 @@
 ## Messaging
 
 The previous services split individual steps without establishing an owner for state. They are
-replaced by a pure, exhaustive state machine and a transactional adapter. See messaging/README.md
+replaced by a pure, exhaustive state machine and a transactional adapter. See services/messaging/README.md
 for the full transition table and the three genuine crash boundaries: intake, SMTP, completion.
 
 Delivery IDs are independent. queue_id is a unique correlation reference without a foreign key
@@ -56,8 +56,7 @@ Errors include an errorId correlated with logs containing exception class and st
 Raw exception messages, SQL parameters, bodies and tokens are excluded. This improves debugging
 without serializing sensitive exception data into responses or logs.
 
-See java-shared-library.md for local/reactor/GitHub options. Shared-library candidates remain marked
-as TODOs because extraction remains a proposed follow-up; the current build layout is unchanged.
+The services reactor now provides shared token verification, HTTP error handling and clock/OpenAPI configuration. See java-shared-library.md for the implemented boundaries and build workflow.
 
 The studio event column remains unchanged: it describes the event key adequately, and renaming
 it provides little benefit before the consumer interface is settled.

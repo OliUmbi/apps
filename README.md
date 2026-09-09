@@ -8,6 +8,11 @@ The first implemented vertical slice is the Zelglihof newsletter lifecycle.
 The database is being redesigned; the Java/web consumers still need adapting.
 Open work is tracked only in [planning/open-work.md](documentation/open-work.md).
 
+## Workspaces
+
+Java applications live in [services](services/README.md), managed by a Maven reactor.
+Web applications live in [web](web/), managed by pnpm.
+
 ## Local development
 
 Requirements: Docker Desktop, Node.js 24+, and pnpm 11+.
