@@ -2,12 +2,16 @@ server:
   port: 8082
 spring:
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USER}
-    password: ${DATABASE_PASSWORD}
+    url: jdbc:${DATABASE_URL}
+    username: ${MESSAGING_DATABASE_USER}
+    password: ${MESSAGING_DATABASE_PASSWORD}
     hikari:
       maximum-pool-size: 5
       minimum-idle: 1
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
   mail:
     host: ${SMTP_HOST}
     port: ${SMTP_PORT}
@@ -24,7 +28,8 @@ management:
     web:
       exposure:
         include: health
+springdoc:
+  swagger-ui:
+    path: /docs
 messaging:
-  internal-token: ${MESSAGING_INTERNAL_TOKEN}
-  from-address: ${SMTP_FROM_ADDRESS}
-  from-name: ${SMTP_FROM_NAME:Zelglihof}
+  authorization-token: ${MESSAGING_INTERNAL_AUTHORIZATION_TOKEN}

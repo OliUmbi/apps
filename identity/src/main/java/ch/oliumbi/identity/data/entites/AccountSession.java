@@ -1,6 +1,7 @@
 package ch.oliumbi.identity.data.entites;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.UpdateTimestamp;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
@@ -41,6 +42,10 @@ public class AccountSession {
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
 
     public AccountSession(
             Account account,

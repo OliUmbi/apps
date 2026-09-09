@@ -36,6 +36,12 @@ Only unresolved questions and unfinished work. Remove items when resolved.
   derivatives and deletion/cache behavior. Snapshot image ids do not preserve files.
 - [ ] Recheck existing lint/build failures; add focused integration checks while
   adapting forms, identity, notifications and the worker.
+- [ ] review if identity account management need session validation so no user edits 
+  another or even has the permission to create an account
+- [ ] logging and testing for java apis
+- [ ] linting for java projects (god classes, line length, etc.)
+- [ ] Recheck if all projects (especially java) are still aligned with their dependencies.
+- [ ] Assess feasibility of creating a shared java lib for all projects to reduce repeated code 
 
 ## Owner requirements
 

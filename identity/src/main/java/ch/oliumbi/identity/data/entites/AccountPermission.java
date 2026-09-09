@@ -1,7 +1,10 @@
 package ch.oliumbi.identity.data.entites;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import lombok.*;
+import java.time.Instant;
 
 @Entity
 @Table(name = "account_permission", schema = "identity")
@@ -16,6 +19,14 @@ public class AccountPermission {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
 
     public AccountPermission(Account account, String permission) {
         this.account = account;

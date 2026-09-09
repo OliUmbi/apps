@@ -1,0 +1,21 @@
+server:
+  port: 8083
+spring:
+  datasource:
+    url: jdbc:${DATABASE_URL}
+    username: ${ASSETS_DATABASE_USER}
+    password: ${ASSETS_DATABASE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+springdoc:
+  swagger-ui:
+    path: /docs
+identity:
+  authorization-token: ${ASSETS_INTERNAL_AUTHORIZATION_TOKEN}

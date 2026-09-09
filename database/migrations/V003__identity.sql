@@ -9,15 +9,17 @@ CREATE TABLE identity.account
     updated_at    timestamptz NOT NULL
 );
 
+-- todo think where to store all available permissions (maybe hardcoded somewhere or dynamically found)
 CREATE TABLE identity.account_permission
 (
-    account_id uuid NOT NULL REFERENCES identity.account (id) ON DELETE CASCADE,
-    permission text NOT NULL,
+    account_id uuid        NOT NULL REFERENCES identity.account (id) ON DELETE CASCADE,
+    permission text        NOT NULL,
+    created_at timestamptz NOT NULL,
+    updated_at timestamptz NOT NULL,
     PRIMARY KEY (account_id, permission)
 );
 
--- todo think where to store all available permissions (maybe hardcoded somewhere or dynamically found)
-
+-- todo maybe add a index on token_hash
 CREATE TABLE identity.account_session
 (
     id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -26,5 +28,6 @@ CREATE TABLE identity.account_session
     expires_at   timestamptz NOT NULL,
     last_seen_at timestamptz NOT NULL,
     revoked_at   timestamptz,
-    created_at   timestamptz NOT NULL
+    created_at   timestamptz NOT NULL,
+    updated_at   timestamptz NOT NULL
 );

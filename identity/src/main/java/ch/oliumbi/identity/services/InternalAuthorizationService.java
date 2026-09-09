@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
+// todo this will be a prime candidate for a shared lib between java projects (will need cleanup and refinement especially at the interfaces)
 @Service
 public class InternalAuthorizationService {
 

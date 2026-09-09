@@ -18,6 +18,8 @@ CREATE TABLE unclet.showcase_image
     showcase_id uuid NOT NULL REFERENCES unclet.showcase (id) ON DELETE CASCADE,
     image_id    uuid NULL REFERENCES assets.image (id) ON DELETE SET NULL,
     description text NOT NULL,
+    created_at  timestamptz NOT NULL,
+    updated_at  timestamptz NOT NULL,
     PRIMARY KEY (showcase_id, image_id)
 );
 
@@ -46,4 +48,3 @@ CREATE TABLE unclet.inquiry
     created_at  timestamptz NOT NULL,
     updated_at  timestamptz NOT NULL
 );
-

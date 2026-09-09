@@ -31,6 +31,8 @@ CREATE TABLE jublawoma.story_image
     story_id    uuid NOT NULL REFERENCES jublawoma.story (id) ON DELETE CASCADE,
     image_id    uuid NULL REFERENCES assets.image (id) ON DELETE SET NULL,
     description text NOT NULL,
+    created_at  timestamptz NOT NULL,
+    updated_at  timestamptz NOT NULL,
     PRIMARY KEY (story_id, image_id)
 );
 

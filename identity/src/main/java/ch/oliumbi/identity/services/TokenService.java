@@ -16,12 +16,16 @@ public class TokenService {
     public String generate() {
         byte[] bytes = new byte[32];
         random.nextBytes(bytes);
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+
+        return Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(bytes);
     }
 
     public String hash(String token) {
         try {
             var digest = MessageDigest.getInstance(HASHING_ALGORITHM);
+
             var bytes = digest.digest(token.getBytes(StandardCharsets.UTF_8));
             return HexFormat.of().formatHex(bytes);
         } catch (NoSuchAlgorithmException e) {
