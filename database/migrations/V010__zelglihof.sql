@@ -28,7 +28,7 @@ CREATE TABLE zelglihof.article
 CREATE TABLE zelglihof.article_image
 (
     article_id  uuid NOT NULL REFERENCES zelglihof.article (id) ON DELETE CASCADE,
-    image_id    uuid NULL REFERENCES assets.image (id) ON DELETE SET NULL,
+    image_id    uuid NOT NULL REFERENCES assets.image (id) ON DELETE CASCADE,
     description text NOT NULL,
     created_at  timestamptz NOT NULL,
     updated_at  timestamptz NOT NULL,

@@ -83,6 +83,23 @@ services:
       mailpit:
         condition: service_started
 
+  assets:
+    build:
+      context: ./services
+      dockerfile: assets/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://postgres:5432/${POSTGRES_DB:-apps}
+      ASSETS_DATABASE_USER: ${ASSETS_DATABASE_USER:-assets}
+      ASSETS_DATABASE_PASSWORD: ${ASSETS_DATABASE_PASSWORD:-assets_password}
+      ASSETS_INTERNAL_AUTHORIZATION_TOKEN: ${ASSETS_INTERNAL_AUTHORIZATION_TOKEN:-dev_assets_internal_authorization}
+      ASSETS_STORAGE_ROOT: /media
+    volumes:
+      - assets-data:/media
+    ports:
+      - "8083:8083"
+    depends_on:
+      flyway:
+        condition: service_completed_successfully
   zelglihof:
     build:
       context: ./web
@@ -154,4 +171,5 @@ services:
         condition: service_started
 
 volumes:
+  assets-data:
   postgres-data:

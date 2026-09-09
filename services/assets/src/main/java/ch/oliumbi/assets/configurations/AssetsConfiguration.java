@@ -1,18 +1,15 @@
 package ch.oliumbi.assets.configurations;
 
 import ch.oliumbi.shared.security.BearerTokenVerifier;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@EnableConfigurationProperties({AssetsProperties.class, ImageProperties.class})
 public class AssetsConfiguration {
-
-    @Value("${identity.authorization-token}")
-    private String authorizationToken;
-
     @Bean
-    public BearerTokenVerifier bearerTokenVerifier() {
-        return new BearerTokenVerifier(authorizationToken);
+    public BearerTokenVerifier bearerTokenVerifier(AssetsProperties properties) {
+        return new BearerTokenVerifier(properties.authorizationToken());
     }
 }

@@ -16,7 +16,7 @@ CREATE TABLE unclet.showcase
 CREATE TABLE unclet.showcase_image
 (
     showcase_id uuid NOT NULL REFERENCES unclet.showcase (id) ON DELETE CASCADE,
-    image_id    uuid NULL REFERENCES assets.image (id) ON DELETE SET NULL,
+    image_id    uuid NOT NULL REFERENCES assets.image (id) ON DELETE CASCADE,
     description text NOT NULL,
     created_at  timestamptz NOT NULL,
     updated_at  timestamptz NOT NULL,

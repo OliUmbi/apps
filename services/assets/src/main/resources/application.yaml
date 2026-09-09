@@ -1,6 +1,16 @@
 server:
   port: 8083
 spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 51MB
+      file-size-threshold: 0
+  data:
+    web:
+      pageable:
+        default-page-size: 50
+        max-page-size: 100
   datasource:
     url: jdbc:${DATABASE_URL}
     username: ${ASSETS_DATABASE_USER}
@@ -17,5 +27,16 @@ management:
 springdoc:
   swagger-ui:
     path: /docs
-identity:
+assets:
   authorization-token: ${ASSETS_INTERNAL_AUTHORIZATION_TOKEN}
+
+  storage-root: ${ASSETS_STORAGE_ROOT:./media}
+  document-max-bytes: 52428800
+  cleanup-grace-hours: 24
+  cleanup-delay-ms: 3600000
+  image:
+    max-bytes: 20971520
+    max-pixels: 40000000
+    max-side: 12000
+    master-max-side: 3072
+    concurrency: 1

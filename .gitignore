@@ -12,3 +12,8 @@ dist
 
 # java
 target
+
+# local asset storage
+services/assets/media/
+services/media/
+/media/
