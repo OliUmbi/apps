@@ -10,8 +10,8 @@ API documentation is available at `/docs`.
 ## Accounts
 
 - `GET /account`: list accounts.
-- `GET /account/{id}`: read an account.
-- `POST /account`: create an account with `name`, `email`, `password` and `enabled`.
+- `GET /account/{id}`: read `{account, permissions}`, with permission records.
+- `POST /account`: create an enabled account with `name`, `email` and `password`.
 - `PUT /account/{id}`: replace `name`, `email` and `enabled`.
 - `PUT /account/{id}/password`: change the password with `{"password":"..."}`.
 - `DELETE /account/{id}`: delete the account and its sessions and permissions.
@@ -33,11 +33,10 @@ The current schema models authorization as permission strings on accounts, witho
 role catalog or role-to-permission groups. Role-like permissions such as `studio.admin` can be
 managed through the dedicated `PermissionController` and `PermissionService`.
 
-- `GET /account/{accountId}/permission`: list assigned permissions.
 - `PUT /account/{accountId}/permission`: grant with `{"permission":"studio.admin"}`.
 - `DELETE /account/{accountId}/permission`: revoke with the same body.
 
-Grant and revoke are idempotent. Permission strings are trimmed and case-sensitive.
+Read permissions through account detail. Grant and revoke are idempotent. Permission strings are trimmed and case-sensitive.
 Existing session endpoints and response contracts remain available.
 
 ## Locking and responsibilities
@@ -66,10 +65,10 @@ entity lifecycle callbacks.
 
 Services explicitly raise expected HTTP failures such as 401, 404 and 409.
 `ApiExceptionHandler` applies to all controllers, using Spring's problem responses for request
-validation and HTTP errors. It translates unique-constraint violations to 409, including races
-detected when transactions commit. Unexpected failures return a generic 500 and log the exception
-type without leaking credentials or SQL parameters. Service-local catches alone cannot reliably
-handle transaction-commit failures.
+validation and HTTP errors. Constraint/concurrency conflicts return 409, transient storage errors
+503, and unexpected failures 500. Errors include a correlation ID; logs include that ID, exception
+class and stack locations without raw exception messages or SQL parameters. Service-local catches
+alone cannot reliably handle transaction-commit failures.
 
 Use Java 25 and `mvn -Dmaven.test.skip=true package`. Automated tests are intentionally deferred.
 

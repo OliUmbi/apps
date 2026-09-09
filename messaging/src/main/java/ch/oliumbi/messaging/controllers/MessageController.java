@@ -1,12 +1,12 @@
 package ch.oliumbi.messaging.controllers;
 
 import ch.oliumbi.messaging.data.responses.*;
-import ch.oliumbi.messaging.services.InternalAuthorizationService;
-import ch.oliumbi.messaging.services.MessageService;
+import ch.oliumbi.messaging.services.*;
+import org.springframework.data.domain.*;
+import org.springframework.data.web.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -21,27 +21,19 @@ public class MessageController {
         this.internalAuthorizationService = internalAuthorizationService;
     }
 
+    // todo if the pagedModel setup is not recommended im happy to move back to a self-built representation
     @GetMapping
-    public MessageHistoryResponse history(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
-                                          @RequestParam(required = false) String status,
-                                          @RequestParam(defaultValue = "0") int page,
-                                          @RequestParam(defaultValue = "50") int size) {
+    public PagedModel<MessageResponse> history(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+                                              @RequestParam(required = false) String status,
+                                              @SortDefault(sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         internalAuthorizationService.requireValid(authorization);
-        return messageService.history(status, page, size);
+        return new PagedModel<>(messageService.history(status, pageable));
     }
 
     @GetMapping("/{id}")
-    public MessageResponse get(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
-                               @PathVariable UUID id) {
+    public MessageDetailResponse get(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+                                     @PathVariable UUID id) {
         internalAuthorizationService.requireValid(authorization);
         return messageService.get(id);
-    }
-
-    // todo maybe fold attempts into the get request of message but not strictly necessary, but would make it simpler
-    @GetMapping("/{id}/attempt")
-    public List<MessageAttemptResponse> attempts(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
-                                                 @PathVariable UUID id) {
-        internalAuthorizationService.requireValid(authorization);
-        return messageService.attempts(id);
     }
 }

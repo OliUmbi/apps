@@ -1,62 +1,44 @@
 package ch.oliumbi.messaging.services;
 
 import ch.oliumbi.messaging.data.responses.*;
-import ch.oliumbi.messaging.repositories.MessageAttemptRepository;
-import ch.oliumbi.messaging.repositories.MessageRepository;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import ch.oliumbi.messaging.domain.MessageStatus;
+import ch.oliumbi.messaging.repositories.*;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Set;
-import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
 public class MessageService {
 
-    // todo a bit weird that we only sparingly check if a status exists i think we shouldn't check if it is in the list or not since if something is searched that does not exists it just returns nothing, and it is something less to keep track of
-    private static final Set<String> STATUSES = Set.of("pending", "processing", "sent", "failed");
+    private final MessageRepository messages;
+    private final MessageAttemptRepository attempts;
 
-    private final MessageRepository messageRepository;
-    private final MessageAttemptRepository messageAttemptRepository;
-
-    public MessageService(MessageRepository messageRepository, MessageAttemptRepository messageAttemptRepository) {
-        this.messageRepository = messageRepository;
-        this.messageAttemptRepository = messageAttemptRepository;
+    public MessageService(MessageRepository messages, MessageAttemptRepository attempts) {
+        this.messages = messages;
+        this.attempts = attempts;
     }
 
-    // todo magic values should be moved to a generic solution (probably in a shared lib)
-    public MessageHistoryResponse history(String status, int page, int size) {
-        if (page < 0 || size < 1 || size > 100 || (status != null && !STATUSES.contains(status))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status or pagination");
+    public Page<MessageResponse> history(String status, Pageable pageable) {
+        if (status == null) return messages.findAll(pageable).map(MessageResponse::fromMessage);
+        MessageStatus requestedStatus;
+        try {
+            requestedStatus = MessageStatus.valueOf(status.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException exception) {
+            return Page.empty(pageable);
         }
-
-        // todo i like the page request structure and direct support by jpa
-        var pageable = PageRequest.of(page, size, Sort.by("createdAt", "id").descending());
-        var messages = status == null ? messageRepository.findAll(pageable) : messageRepository.findByStatus(status, pageable);
-
-        // todo why dont we use a framework returned page object instead of a custom
-        return new MessageHistoryResponse(messages.map(MessageResponse::fromMessage).getContent(),
-                page, size, messages.getTotalElements());
+        return messages.findByStatus(requestedStatus, pageable).map(MessageResponse::fromMessage);
     }
 
-    public MessageResponse get(UUID id) {
-        return messageRepository.findById(id)
-                .map(MessageResponse::fromMessage)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
-
-    // todo as noted in controller maybe just merge with the one to many loading
-    public List<MessageAttemptResponse> attempts(UUID id) {
-        if (!messageRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return messageAttemptRepository.findByMessageIdOrderByAttemptNumber(id).stream()
-                .map(MessageAttemptResponse::fromAttempt)
-                .toList();
+    public MessageDetailResponse get(UUID id) {
+        var message = messages.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        var history = attempts.findByMessageIdOrderByAttemptNumber(id).stream()
+                .map(MessageAttemptResponse::fromAttempt).toList();
+        return new MessageDetailResponse(MessageResponse.fromMessage(message), history);
     }
 }

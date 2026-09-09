@@ -1,36 +1,61 @@
 package ch.oliumbi.identity.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.*;
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
+// todo i like this setup and would like to move it into a shared lib if possible (would minimize potential errors at this critical point)
 @Slf4j
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
-    // todo i dislike the random string sqlstate code and overall i dislike the that only that specific error is handled.
-    // todo this whole block should probably be more generic and also handle all exceptions. i think a DataIntegrityViolationException can and should be handled specifically but overall this should be more generic
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ProblemDetail integrity(DataIntegrityViolationException exception) {
-        Throwable cause = exception;
-        while (cause != null) {
-            if (cause instanceof SQLException sqlException && "23505".equals(sqlException.getSQLState())) {
-                return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, "A record with these unique values already exists.");
-            }
-            cause = cause.getCause();
-        }
-        return unexpected(exception);
+        return problem(HttpStatus.CONFLICT, "The change conflicts with a database constraint.", exception);
     }
 
-    // todo good call to now log sensitive details but i believe we can do a bit better.
+    @ExceptionHandler(ConcurrencyFailureException.class)
+    public ProblemDetail concurrency(ConcurrencyFailureException exception) {
+        return problem(HttpStatus.CONFLICT, "A concurrent change prevented this operation. Try again.", exception);
+    }
+
+    @ExceptionHandler({TransientDataAccessException.class, DataAccessResourceFailureException.class})
+    public ProblemDetail unavailable(Exception exception) {
+        return problem(HttpStatus.SERVICE_UNAVAILABLE, "Storage is temporarily unavailable. Try again later.", exception);
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ProblemDetail invalidProperty(PropertyReferenceException exception) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "An unknown property was requested.");
+    }
+
     @ExceptionHandler(Exception.class)
     public ProblemDetail unexpected(Exception exception) {
-        // Do not expose SQL parameters, passwords, tokens or message contents.
-        log.error("Request failed ({})", exception.getClass().getSimpleName());
-        return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, "The request could not be completed.");
+        return problem(HttpStatus.INTERNAL_SERVER_ERROR, "The request could not be completed.", exception);
+    }
+
+    private ProblemDetail problem(HttpStatus status, String detail, Exception exception) {
+        var errorId = UUID.randomUUID().toString();
+        var problem = ProblemDetail.forStatusAndDetail(status, detail);
+        problem.setProperty("errorId", errorId);
+
+        var locations = Arrays.stream(exception.getStackTrace())
+                .limit(12)
+                .map(StackTraceElement::toString)
+                .collect(Collectors.joining(" <- "));
+
+        if (status.is5xxServerError()) {
+            log.error("Request failure {}: {} at {}", errorId, exception.getClass().getName(), locations);
+        } else {
+            log.warn("Request conflict {}: {} at {}", errorId, exception.getClass().getName(), locations);
+        }
+        return problem;
     }
 }

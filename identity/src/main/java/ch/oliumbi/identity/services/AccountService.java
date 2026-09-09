@@ -4,6 +4,7 @@ import ch.oliumbi.identity.data.entites.Account;
 
 import ch.oliumbi.identity.data.requests.*;
 import ch.oliumbi.identity.data.responses.AccountResponse;
+import ch.oliumbi.identity.data.responses.AccountDetailResponse;
 import ch.oliumbi.identity.repositories.AccountRepository;
 import ch.oliumbi.identity.repositories.AccountSessionRepository;
 import org.springframework.http.HttpStatus;
@@ -42,13 +43,12 @@ public class AccountService {
     }
 
     @Transactional(readOnly = true)
-    public AccountResponse get(UUID id) {
-        return accountRepository.findById(id)
-                .map(AccountResponse::fromAccount)
+    public AccountDetailResponse get(UUID id) {
+        return accountRepository.findDetailedById(id)
+                .map(AccountDetailResponse::fromAccount)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    // todo maybe accounts should be enabled by default and not via request body. just a true in the args or even the constructor seems to make more sense
     @Transactional
     public AccountResponse create(AccountCreateRequest request) {
         var name = normalizeService.normalizeName(request.name());
@@ -58,7 +58,7 @@ public class AccountService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Name or email already in use");
         }
 
-        var account = new Account(name, email, passwordService.encode(request.password()), request.enabled());
+        var account = new Account(name, email, passwordService.encode(request.password()), true);
 
         return AccountResponse.fromAccount(accountRepository.saveAndFlush(account));
     }

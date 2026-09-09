@@ -8,5 +8,5 @@ V001 defines schemas, roles and default permissions. V002 defines the producer i
 V003 defines identity. V004 defines messaging's delivery state and attempt history.
 Every table ends its columns with `created_at` and `updated_at`.
 
-The queue ID is retained as the delivery record's ID after consumption. No foreign key points
-back to the removed inbox row, and no separate idempotency key is required.
+Delivery records have independent IDs. Their unique queue_id correlates with the original request
+and protects against replay. No foreign key points back to the consumed inbox row.

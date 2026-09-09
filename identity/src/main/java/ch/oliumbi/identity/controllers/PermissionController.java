@@ -9,7 +9,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -22,14 +21,6 @@ public class PermissionController {
     public PermissionController(PermissionService permissionService, InternalAuthorizationService internalAuthorizationService) {
         this.permissionService = permissionService;
         this.internalAuthorizationService = internalAuthorizationService;
-    }
-
-    // todo i dislike just returning a raw string list. should be in an record to allow future expansion of the interface
-    @GetMapping
-    public List<String> list(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
-                             @PathVariable UUID accountId) {
-        internalAuthorizationService.requireValid(authorization);
-        return permissionService.list(accountId);
     }
 
     @PutMapping

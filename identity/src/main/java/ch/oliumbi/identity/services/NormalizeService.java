@@ -10,6 +10,13 @@ import java.util.Locale;
 @Service
 public class NormalizeService {
 
+    public String normalizePermission(String permission) {
+        if (permission == null || permission.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Permission is required");
+        }
+        return permission.trim();
+    }
+
     public String normalizeName(String name) {
         if (name == null || name.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name is required");

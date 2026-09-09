@@ -1,6 +1,7 @@
 package ch.oliumbi.identity.controllers;
 
 import ch.oliumbi.identity.data.requests.*;
+import ch.oliumbi.identity.data.responses.AccountDetailResponse;
 import ch.oliumbi.identity.data.responses.AccountResponse;
 import ch.oliumbi.identity.services.AccountService;
 import ch.oliumbi.identity.services.InternalAuthorizationService;
@@ -31,8 +32,8 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public AccountResponse get(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
-                               @PathVariable UUID id) {
+    public AccountDetailResponse get(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+                                     @PathVariable UUID id) {
         internalAuthorizationService.requireValid(authorization);
         return accountService.get(id);
     }

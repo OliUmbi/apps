@@ -1,10 +1,13 @@
 package ch.oliumbi.messaging.data.entites;
 
+import ch.oliumbi.messaging.domain.*;
 import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import lombok.*;
+import org.hibernate.annotations.*;
+import org.hibernate.type.SqlTypes;
+
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -23,22 +26,17 @@ public class MessageAttempt {
     @Column(name = "attempt_number", nullable = false)
     private int attemptNumber;
 
-    @Setter
+    @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "text")
-    private String outcome;
+    private AttemptOutcome outcome;
 
-    @Setter
-    @Column(columnDefinition = "text")
-    private String message;
-
-    @Setter
-    @Column(name = "failure_code", columnDefinition = "text")
-    private String failureCode;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private FailureDetail detail;
 
     @Column(name = "started_at", nullable = false)
     private Instant startedAt;
 
-    @Setter
     @Column(name = "finished_at")
     private Instant finishedAt;
 
@@ -54,5 +52,14 @@ public class MessageAttempt {
         this.messageId = messageId;
         this.attemptNumber = attemptNumber;
         this.startedAt = startedAt;
+    }
+
+    public void finish(AttemptOutcome outcome, Optional<FailureDetail> detail, Instant now) {
+        if (finishedAt != null) {
+            throw new IllegalStateException("Attempt is already finished");
+        }
+        this.outcome = outcome;
+        this.detail = detail.orElse(null);
+        this.finishedAt = now;
     }
 }

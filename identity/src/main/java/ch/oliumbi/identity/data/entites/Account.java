@@ -7,6 +7,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 import java.util.UUID;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "account", schema = "identity")
@@ -41,6 +43,10 @@ public class Account {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    @OrderBy("id.permission ASC")
+    private List<AccountPermission> permissions = new ArrayList<>();
 
     public Account(String name, String email, String passwordHash, boolean enabled) {
         this.name = name;

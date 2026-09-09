@@ -1,5 +1,6 @@
 package ch.oliumbi.messaging.data.entites;
 
+import ch.oliumbi.messaging.domain.*;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,7 +16,11 @@ import java.util.UUID;
 public class Message {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(name = "queue_id", nullable = false, unique = true, updatable = false)
+    private UUID queueId;
 
     @Column(nullable = false, columnDefinition = "text")
     private String site;
@@ -38,36 +43,25 @@ public class Message {
     @Column(columnDefinition = "text")
     private String html;
 
-    @Setter
+    // todo lets use Enumerated states where possible to minimize potential error risk
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "text")
-    private String status;
+    private MessageStatus status;
 
-    @Setter
     @Column(name = "attempt_count", nullable = false)
     private int attemptCount;
 
-    @Setter
-    @Column(name = "available_at", nullable = false)
+    @Column(name = "available_at")
     private Instant availableAt;
 
-    @Setter
     @Column(name = "locked_at")
     private Instant lockedAt;
 
     @Column(name = "requested_at", nullable = false, updatable = false)
     private Instant requestedAt;
 
-    @Setter
     @Column(name = "finished_at")
     private Instant finishedAt;
-
-    @Setter
-    @Column(name = "failure_code", columnDefinition = "text")
-    private String failureCode;
-
-    @Setter
-    @Column(name = "failure_message", columnDefinition = "text")
-    private String failureMessage;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -77,19 +71,56 @@ public class Message {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    public Message(UUID id, String site, String type, String sender, String recipient, String subject,
-                   String text, String html, String status, int attemptCount, Instant availableAt, Instant requestedAt) {
-        this.id = id;
-        this.site = site;
-        this.type = type;
-        this.sender = sender;
-        this.recipient = recipient;
-        this.subject = subject;
-        this.text = text;
-        this.html = html;
-        this.status = status;
-        this.attemptCount = attemptCount;
-        this.availableAt = availableAt;
-        this.requestedAt = requestedAt;
+    public Message(QueuedMessage request, DeliveryState initialState) {
+        this.queueId = request.getId();
+        this.site = request.getSite();
+        this.type = request.getType();
+        this.sender = request.getSender();
+        this.recipient = request.getRecipient();
+        this.subject = request.getSubject();
+        this.text = request.getText();
+        this.html = request.getHtml();
+        this.requestedAt = request.getCreatedAt();
+        apply(initialState);
+    }
+
+    // todo i like this model of handling state tho the different timestamps are a bit hard to keep track of
+    public DeliveryState state() {
+        return switch (status) {
+            case PENDING -> new DeliveryState.Pending(attemptCount, availableAt);
+            case PROCESSING -> new DeliveryState.Processing(attemptCount, lockedAt);
+            case SENT -> new DeliveryState.Sent(attemptCount, finishedAt);
+            case FAILED -> new DeliveryState.Failed(attemptCount, finishedAt);
+        };
+    }
+
+    public void apply(DeliveryState state) {
+        attemptCount = state.attempts();
+        availableAt = null;
+        lockedAt = null;
+        finishedAt = null;
+        switch (state) {
+            case DeliveryState.Pending pending -> {
+                status = MessageStatus.PENDING;
+                availableAt = pending.availableAt();
+            }
+            case DeliveryState.Processing processing -> {
+                status = MessageStatus.PROCESSING;
+                lockedAt = processing.lockedAt();
+            }
+            case DeliveryState.Sent sent -> {
+                status = MessageStatus.SENT;
+                finishedAt = sent.finishedAt();
+            }
+            case DeliveryState.Failed failed -> {
+                status = MessageStatus.FAILED;
+                finishedAt = failed.finishedAt();
+            }
+        }
+    }
+
+    public DeliveryClaim claim() {
+        if (status != MessageStatus.PROCESSING) throw new IllegalStateException("Message is not processing");
+        return new DeliveryClaim(id, attemptCount, site, type, sender, recipient, subject, text, html);
     }
 }

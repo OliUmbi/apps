@@ -1,6 +1,11 @@
 server:
   port: 8082
 spring:
+  data:
+    web:
+      pageable:
+        default-page-size: 50
+        max-page-size: 100
   datasource:
     url: jdbc:${DATABASE_URL}
     username: ${MESSAGING_DATABASE_USER}
@@ -33,3 +38,8 @@ springdoc:
     path: /docs
 messaging:
   authorization-token: ${MESSAGING_INTERNAL_AUTHORIZATION_TOKEN}
+  worker:
+    batch-size: 20
+    poll-delay-ms: 1000
+    lease-duration: 5m
+    retry-delays: [2m, 4m, 8m, 16m]
