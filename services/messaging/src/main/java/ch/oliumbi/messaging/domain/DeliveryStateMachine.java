@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-// todo i very much like the state machine some parts are a bit hard to read but i think we dont need to change any behaviour (if there are nice ways to make it a bit more readable that would be nice)
 public final class DeliveryStateMachine {
 
     public sealed interface ClaimDecision {
@@ -86,15 +85,28 @@ public final class DeliveryStateMachine {
         }
 
         return switch (result) {
-            case DeliveryResult.Sent ignored -> new CompletionDecision.Accepted(new DeliveryState.Sent(claimedAttempt, now), AttemptOutcome.SENT, Optional.empty());
-            case DeliveryResult.Rejected rejected -> new CompletionDecision.Accepted(new DeliveryState.Failed(claimedAttempt, now), AttemptOutcome.REJECTED, Optional.of(rejected.detail()));
-            case DeliveryResult.RetryableFailure failure -> {
-                if (exhausted(claimedAttempt)) {
-                    yield new CompletionDecision.Accepted(new DeliveryState.Failed(claimedAttempt, now), AttemptOutcome.FAILED, Optional.of(failure.detail()));
-                }
-                yield new CompletionDecision.Accepted(new DeliveryState.Pending(claimedAttempt, now.plus(retryDelays.get(claimedAttempt - 1))), AttemptOutcome.RETRY, Optional.of(failure.detail()));
-            }
+            case DeliveryResult.Sent ignored -> new CompletionDecision.Accepted(
+                    new DeliveryState.Sent(claimedAttempt, now),
+                    AttemptOutcome.SENT, Optional.empty());
+            case DeliveryResult.Rejected rejected -> new CompletionDecision.Accepted(
+                    new DeliveryState.Failed(claimedAttempt, now),
+                    AttemptOutcome.REJECTED, Optional.of(rejected.detail()));
+            case DeliveryResult.RetryableFailure failure -> retryOrFail(claimedAttempt, failure.detail(), now);
         };
+    }
+
+    private CompletionDecision.Accepted retryOrFail(int attempt, FailureDetail detail, Instant now) {
+        if (exhausted(attempt)) {
+            return new CompletionDecision.Accepted(
+                    new DeliveryState.Failed(attempt, now),
+                    AttemptOutcome.FAILED, Optional.of(detail));
+        }
+
+        // Attempt one uses the first retry delay; each later failure advances the schedule.
+        var retryAt = now.plus(retryDelays.get(attempt - 1));
+        return new CompletionDecision.Accepted(
+                new DeliveryState.Pending(attempt, retryAt),
+                AttemptOutcome.RETRY, Optional.of(detail));
     }
 
     private boolean exhausted(int attempts) {

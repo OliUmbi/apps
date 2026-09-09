@@ -1,5 +1,6 @@
 package ch.oliumbi.identity.services;
 
+import ch.oliumbi.identity.configurations.IdentityProperties;
 import ch.oliumbi.identity.data.entites.AccountSession;
 import ch.oliumbi.identity.data.requests.*;
 import ch.oliumbi.identity.data.responses.SessionActorResponse;
@@ -24,18 +25,18 @@ public class SessionService {
     private final TokenService tokenService;
     private final Clock clock;
     private final PasswordService passwordService;
-    private final Integer sessionExpirationDays;
+    private final int sessionExpirationDays;
 
     public SessionService(AccountRepository accountRepository, AccountSessionRepository accountSessionRepository,
                           NormalizeService normalizeService, TokenService tokenService, Clock clock,
-                          PasswordService passwordService, Integer sessionExpirationDays) {
+                          PasswordService passwordService, IdentityProperties properties) {
         this.accountRepository = accountRepository;
         this.accountSessionRepository = accountSessionRepository;
         this.normalizeService = normalizeService;
         this.tokenService = tokenService;
         this.clock = clock;
         this.passwordService = passwordService;
-        this.sessionExpirationDays = sessionExpirationDays;
+        this.sessionExpirationDays = properties.sessionExpirationDays();
     }
 
     @Transactional

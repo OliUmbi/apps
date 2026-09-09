@@ -26,6 +26,7 @@ CREATE TABLE jublawoma.story
     updated_at   timestamptz NOT NULL
 );
 
+-- todo image deletion should cascade and delete story_image entry
 CREATE TABLE jublawoma.story_image
 (
     story_id    uuid NOT NULL REFERENCES jublawoma.story (id) ON DELETE CASCADE,

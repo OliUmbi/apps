@@ -11,7 +11,10 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.Optional;
 
-// todo i less like this store. it is well built but the state management across Message, MessageAttempt, DeliveryStateMachine and this class is quite big. I understand that the complexity just exists and we cant necessarily make it simpler but it might as well be caused by the model itself. to keep message and attempts aligned with different errors and how they can be handled as well of the millions of timestamps it seems like we are missing something. maybe there is a better way. and if not this is fine.
+/**
+ * Applies state-machine decisions and attempt history in one transaction.
+ * The message row lock serializes claim, recovery and completion; SMTP runs outside this boundary.
+ */
 @Slf4j
 @Service
 public class DeliveryStore {

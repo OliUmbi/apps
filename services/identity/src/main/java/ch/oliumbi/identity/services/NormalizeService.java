@@ -6,7 +6,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Locale;
 
-// todo another prime candidate for a shared lib
 @Service
 public class NormalizeService {
 

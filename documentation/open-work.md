@@ -41,7 +41,7 @@ Only unresolved questions and unfinished work. Remove items when resolved.
 - [ ] logging and testing for java apis
 - [ ] linting for java projects (god classes, line length, etc.)
 - [ ] Recheck if all projects (especially java) are still aligned with their dependencies.
-- [ ] Assess feasibility of creating a shared java lib for all projects to reduce repeated code 
+- [ ] Review README's and shorten them so a dev can get a good overview at a quick glance (make heavy use of lists, tables and diagrams)
 
 ## Owner requirements
 

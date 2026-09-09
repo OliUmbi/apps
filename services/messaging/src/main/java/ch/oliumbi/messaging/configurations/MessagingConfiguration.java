@@ -1,18 +1,16 @@
 package ch.oliumbi.messaging.configurations;
 
 import ch.oliumbi.shared.security.BearerTokenVerifier;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@EnableConfigurationProperties(MessagingProperties.class)
 public class MessagingConfiguration {
 
-    @Value("${messaging.authorization-token}")
-    private String authorizationToken;
-
     @Bean
-    public BearerTokenVerifier bearerTokenVerifier() {
-        return new BearerTokenVerifier(authorizationToken);
+    public BearerTokenVerifier bearerTokenVerifier(MessagingProperties properties) {
+        return new BearerTokenVerifier(properties.authorizationToken());
     }
 }

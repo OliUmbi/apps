@@ -1,16 +1,14 @@
 package ch.oliumbi.messaging.services.processing;
 
-import ch.oliumbi.messaging.configurations.WorkerConfiguration;
+import ch.oliumbi.messaging.configurations.WorkerProperties;
 import ch.oliumbi.messaging.services.delivery.EmailDelivery;
 import ch.oliumbi.messaging.services.intake.MessageIntakeService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-@ConditionalOnProperty(name = "messaging.worker-enabled", havingValue = "true", matchIfMissing = true) // todo i dont think we will need this since the worker is a core part for this service even existing
 public class MessageWorker {
 
     private final MessageIntakeService intake;
@@ -19,11 +17,11 @@ public class MessageWorker {
     private final int batchSize;
 
     public MessageWorker(MessageIntakeService intake, DeliveryStore store, EmailDelivery delivery,
-                         WorkerConfiguration.Settings settings) {
+                         WorkerProperties properties) {
         this.intake = intake;
         this.store = store;
         this.delivery = delivery;
-        this.batchSize = settings.batchSize();
+        this.batchSize = properties.batchSize();
     }
 
     @Scheduled(fixedDelayString = "${messaging.worker.poll-delay-ms}")

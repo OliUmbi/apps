@@ -1,26 +1,16 @@
 package ch.oliumbi.identity.configurations;
 
 import ch.oliumbi.shared.security.BearerTokenVerifier;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@EnableConfigurationProperties(IdentityProperties.class)
 public class IdentityConfiguration {
 
-    @Value("${identity.authorization-token}")
-    private String authorizationToken;
-
-    @Value("${identity.session-expiration-days}")
-    private Integer sessionExpirationDays;
-
     @Bean
-    public BearerTokenVerifier bearerTokenVerifier() {
-        return new BearerTokenVerifier(authorizationToken);
-    }
-
-    @Bean
-    public Integer sessionExpirationDays() {
-        return sessionExpirationDays;
+    public BearerTokenVerifier bearerTokenVerifier(IdentityProperties properties) {
+        return new BearerTokenVerifier(properties.authorizationToken());
     }
 }

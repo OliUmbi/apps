@@ -1,4 +1,3 @@
--- todo the column event should maybe be renamed (but we can keep it, it is not bad)
 CREATE TABLE studio.account_notification
 (
     account_id uuid        NOT NULL REFERENCES identity.account (id) ON DELETE CASCADE,

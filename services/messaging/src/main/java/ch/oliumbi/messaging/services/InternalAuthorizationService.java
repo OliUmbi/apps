@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+// todo this service does not add a lot of value and could be replaced by just directly using the BearerTokenVerifier in the controller
 @Service
 @RequiredArgsConstructor
 public class InternalAuthorizationService {

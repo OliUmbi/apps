@@ -21,7 +21,6 @@ public class MessageController {
         this.internalAuthorizationService = internalAuthorizationService;
     }
 
-    // todo if the pagedModel setup is not recommended im happy to move back to a self-built representation
     @GetMapping
     public PagedModel<MessageResponse> history(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
                                               @RequestParam(required = false) String status,

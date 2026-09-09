@@ -43,7 +43,6 @@ public class Message {
     @Column(columnDefinition = "text")
     private String html;
 
-    // todo lets use Enumerated states where possible to minimize potential error risk
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "text")
     private MessageStatus status;
@@ -51,12 +50,14 @@ public class Message {
     @Column(name = "attempt_count", nullable = false)
     private int attemptCount;
 
+    // Exactly one lifecycle timestamp is populated, according to status.
     @Column(name = "available_at")
     private Instant availableAt;
 
     @Column(name = "locked_at")
     private Instant lockedAt;
 
+    // Producer time, independent of delivery state and persistence audit times.
     @Column(name = "requested_at", nullable = false, updatable = false)
     private Instant requestedAt;
 
@@ -84,7 +85,6 @@ public class Message {
         apply(initialState);
     }
 
-    // todo i like this model of handling state tho the different timestamps are a bit hard to keep track of
     public DeliveryState state() {
         return switch (status) {
             case PENDING -> new DeliveryState.Pending(attemptCount, availableAt);

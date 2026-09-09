@@ -34,7 +34,6 @@ public class AccountService {
         this.clock = clock;
     }
 
-    // todo we might need to think about pagination in the future but for now we leave it as is until the web implementation got further
     @Transactional(readOnly = true)
     public List<AccountResponse> list() {
         return accountRepository.findAll().stream()

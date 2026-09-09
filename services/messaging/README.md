@@ -12,7 +12,7 @@ Initial migrations are edited in place during development; recreate the database
 5. `services/processing/MessageWorker.java`: claim, send, complete.
 
 `services/intake/MessageIntakeService` handles the separate atomic inbox handoff.
-`services/delivery/SmtpEmailDelivery` validates annotated content and translates SMTP results into
+`services/delivery/EmailDelivery` validates annotated content and translates SMTP results into
 typed outcomes. Its `EmailDelivery` port is explicitly email-only; there is no speculative channel
 router. Add another adapter/port when a second channel is actually required.
 
@@ -88,5 +88,7 @@ Existing legacy web clients/adapters still need migration to this contract.
 ## Build and configuration
 
 Use Java 25 and build from services with `mvn -pl messaging -am package`. Permanent tests remain deferred.
-Database and SMTP settings are in application.yaml; set `messaging.worker-enabled=false` to stop scheduling.
+Database and SMTP settings are in application.yaml. The worker always runs with the service.
 The only remaining services outside intake/processing/delivery are HTTP history and internal authorization.
+
+See [TODO review](../../documentation/java-todo-review.md) for the configuration and persistence decisions.
