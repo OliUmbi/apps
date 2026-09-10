@@ -1,3 +1,4 @@
+import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, MapPin, Sprout } from "lucide-react";
 
@@ -10,32 +11,37 @@ export default function Footer() {
 						<span className="grid size-11 place-items-center rounded-full bg-sun text-ink">
 							<Sprout size={21} />
 						</span>
-						<span className="font-serif text-3xl font-bold">Zelglihof</span>
+						<span className="font-serif text-3xl font-bold">
+							{m.zelglihof_components_footer_footer_text()}
+						</span>
 					</div>
 					<p className="mt-6 text-lg leading-relaxed text-cream/72">
-						Landwirtschaft mit Haltung. Lebensmittel mit Herkunft. Direkt aus
-						Mägenwil.
+						{m.zelglihof_components_footer_footer_paragraph()}
 					</p>
 				</div>
 				<div>
-					<p className="eyebrow text-sun">Entdecken</p>
+					<p className="eyebrow text-sun">
+						{m.zelglihof_components_footer_footer_paragraph_2()}
+					</p>
 					<nav className="mt-6 grid gap-3 text-sm font-semibold">
-						<Link to="/aktuelles" className="hover:text-sun">
-							Aktuelles
+						<Link to="/latest" className="hover:text-sun">
+							{m.zelglihof_components_footer_footer_text_2()}
 						</Link>
-						<Link to="/hofladen" className="hover:text-sun">
-							Hofladen
+						<Link to="/products" className="hover:text-sun">
+							{m.zelglihof_components_footer_footer_text_3()}
 						</Link>
-						<Link to="/hof" className="hover:text-sun">
-							Unser Hof
+						<Link to="/about" className="hover:text-sun">
+							{m.zelglihof_components_footer_footer_text_4()}
 						</Link>
-						<Link to="/kontakt" className="hover:text-sun">
-							Kontakt
+						<Link to="/contact" className="hover:text-sun">
+							{m.zelglihof_components_footer_footer_text_5()}
 						</Link>
 					</nav>
 				</div>
 				<div>
-					<p className="eyebrow text-sun">Hier zuhause</p>
+					<p className="eyebrow text-sun">
+						{m.zelglihof_components_footer_footer_paragraph_3()}
+					</p>
 					<a
 						href="https://www.openstreetmap.org/search?query=Zelgliweg%202%2C%205506%20M%C3%A4genwil"
 						target="_blank"
@@ -44,8 +50,9 @@ export default function Footer() {
 					>
 						<MapPin className="mt-0.5 shrink-0" size={17} />
 						<span>
-							Zelgliweg 2<br />
-							5506 Mägenwil
+							{m.zelglihof_components_footer_footer_text_6()}
+							<br />
+							{m.zelglihof_components_footer_footer_text_7()}
 						</span>
 						<ArrowUpRight className="mt-0.5 shrink-0" size={15} />
 					</a>
@@ -54,17 +61,18 @@ export default function Footer() {
 			<div className="border-t border-white/12">
 				<div className="shell flex flex-col gap-4 py-6 text-xs text-cream/50 md:flex-row md:items-center md:justify-between">
 					<p>
-						© {new Date().getFullYear()} Zelglihof · Familienbetrieb Habegger
+						© {new Date().getFullYear()}
+						{m.zelglihof_components_footer_footer_paragraph_4()}
 					</p>
 					<div className="flex flex-wrap gap-x-5 gap-y-2">
-						<Link to="/impressum" className="hover:text-cream">
-							Impressum
+						<Link to="/legal" className="hover:text-cream">
+							{m.zelglihof_components_footer_footer_text_8()}
 						</Link>
-						<Link to="/datenschutz" className="hover:text-cream">
-							Datenschutz
+						<Link to="/privacy" className="hover:text-cream">
+							{m.zelglihof_components_footer_footer_text_9()}
 						</Link>
-						<Link to="/agb" className="hover:text-cream">
-							AGB
+						<Link to="/terms" className="hover:text-cream">
+							{m.zelglihof_components_footer_footer_text_10()}
 						</Link>
 					</div>
 				</div>

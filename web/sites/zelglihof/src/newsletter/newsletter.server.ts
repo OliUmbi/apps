@@ -1,42 +1,14 @@
-import {
-	confirmSubscription,
-	requestSubscription,
-	unsubscribeByToken,
-} from "@oliumbi/newsletter";
+import { createNewsletterService } from "@oliumbi/zelglihof-data/newsletter.service";
 import { database } from "../server/database.server";
-import { dispatchOutgoingMessages } from "../server/messaging.server";
 
-function publicBaseUrl(): string {
-	return process.env.ZELGLIHOF_PUBLIC_URL ?? "http://localhost:8003";
-}
-
-export async function requestNewsletter(input: {
-	email: string;
-	locale: "de-CH" | "en";
-}) {
-	const result = await requestSubscription(database.sql, {
-		...input,
-		consentSource: "zelglihof-website",
-		publicBaseUrl: publicBaseUrl(),
+function service() {
+	return createNewsletterService(database, {
+		publicUrl: process.env.ZELGLIHOF_PUBLIC_URL ?? "http://localhost:8003",
+		sender: process.env.ZELGLIHOF_OWNER_EMAIL ?? "hof@zelglihof.ch",
 	});
-	void dispatchOutgoingMessages().catch(reportDispatchFailure);
-	return result;
 }
-
-export async function confirmNewsletter(token: string) {
-	const result = await confirmSubscription(
-		database.sql,
-		token,
-		publicBaseUrl(),
-	);
-	void dispatchOutgoingMessages().catch(reportDispatchFailure);
-	return result;
-}
-
-export function unsubscribeNewsletter(token: string) {
-	return unsubscribeByToken(database.sql, token);
-}
-
-function reportDispatchFailure(error: unknown) {
-	console.error("Newsletter notification dispatch failed", error);
-}
+export const requestNewsletter = (input: { email: string; locale: string }) =>
+	service().request(input.email);
+export const confirmNewsletter = (token: string) => service().confirm(token);
+export const unsubscribeNewsletter = (token: string) =>
+	service().unsubscribe(token);

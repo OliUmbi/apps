@@ -10,191 +10,164 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AnlaesseRouteImport } from './routes/anlaesse'
-import { Route as BeitretenRouteImport } from './routes/beitreten'
-import { Route as DatenschutzRouteImport } from './routes/datenschutz'
-import { Route as GeschichtenRouteImport } from './routes/geschichten'
-import { Route as ImpressumRouteImport } from './routes/impressum'
-import { Route as KontaktRouteImport } from './routes/kontakt'
-import { Route as MitmachenRouteImport } from './routes/mitmachen'
-import { Route as NewsRouteImport } from './routes/news'
-import { Route as UeberUnsRouteImport } from './routes/ueber-uns'
-import { Route as VeranstaltungenRouteImport } from './routes/veranstaltungen'
-import { Route as AnlaesseSlugRouteImport } from './routes/anlaesse/$slug'
-import { Route as GeschichtenSlugRouteImport } from './routes/geschichten/$slug'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as DonationsRouteImport } from './routes/donations'
+import { Route as EventsRouteImport } from './routes/events'
+import { Route as JoinRouteImport } from './routes/join'
+import { Route as LegalRouteImport } from './routes/legal'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as StoriesRouteImport } from './routes/stories'
+import { Route as DonationsDonationIdRouteImport } from './routes/donations/$donationId'
+import { Route as EventsEventIdRouteImport } from './routes/events/$eventId'
+import { Route as StoriesSlugRouteImport } from './routes/stories/$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AnlaesseRoute = AnlaesseRouteImport.update({
-  id: '/anlaesse',
-  path: '/anlaesse',
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BeitretenRoute = BeitretenRouteImport.update({
-  id: '/beitreten',
-  path: '/beitreten',
+const DonationsRoute = DonationsRouteImport.update({
+  id: '/donations',
+  path: '/donations',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DatenschutzRoute = DatenschutzRouteImport.update({
-  id: '/datenschutz',
-  path: '/datenschutz',
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GeschichtenRoute = GeschichtenRouteImport.update({
-  id: '/geschichten',
-  path: '/geschichten',
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ImpressumRoute = ImpressumRouteImport.update({
-  id: '/impressum',
-  path: '/impressum',
+const LegalRoute = LegalRouteImport.update({
+  id: '/legal',
+  path: '/legal',
   getParentRoute: () => rootRouteImport,
 } as any)
-const KontaktRoute = KontaktRouteImport.update({
-  id: '/kontakt',
-  path: '/kontakt',
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MitmachenRoute = MitmachenRouteImport.update({
-  id: '/mitmachen',
-  path: '/mitmachen',
+const StoriesRoute = StoriesRouteImport.update({
+  id: '/stories',
+  path: '/stories',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NewsRoute = NewsRouteImport.update({
-  id: '/news',
-  path: '/news',
-  getParentRoute: () => rootRouteImport,
+const DonationsDonationIdRoute = DonationsDonationIdRouteImport.update({
+  id: '/$donationId',
+  path: '/$donationId',
+  getParentRoute: () => DonationsRoute,
 } as any)
-const UeberUnsRoute = UeberUnsRouteImport.update({
-  id: '/ueber-uns',
-  path: '/ueber-uns',
-  getParentRoute: () => rootRouteImport,
+const EventsEventIdRoute = EventsEventIdRouteImport.update({
+  id: '/$eventId',
+  path: '/$eventId',
+  getParentRoute: () => EventsRoute,
 } as any)
-const VeranstaltungenRoute = VeranstaltungenRouteImport.update({
-  id: '/veranstaltungen',
-  path: '/veranstaltungen',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AnlaesseSlugRoute = AnlaesseSlugRouteImport.update({
+const StoriesSlugRoute = StoriesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
-  getParentRoute: () => AnlaesseRoute,
-} as any)
-const GeschichtenSlugRoute = GeschichtenSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => GeschichtenRoute,
+  getParentRoute: () => StoriesRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/anlaesse': typeof AnlaesseRouteWithChildren
-  '/beitreten': typeof BeitretenRoute
-  '/datenschutz': typeof DatenschutzRoute
-  '/geschichten': typeof GeschichtenRouteWithChildren
-  '/impressum': typeof ImpressumRoute
-  '/kontakt': typeof KontaktRoute
-  '/mitmachen': typeof MitmachenRoute
-  '/news': typeof NewsRoute
-  '/ueber-uns': typeof UeberUnsRoute
-  '/veranstaltungen': typeof VeranstaltungenRoute
-  '/anlaesse/$slug': typeof AnlaesseSlugRoute
-  '/geschichten/$slug': typeof GeschichtenSlugRoute
+  '/about': typeof AboutRoute
+  '/donations': typeof DonationsRouteWithChildren
+  '/events': typeof EventsRouteWithChildren
+  '/join': typeof JoinRoute
+  '/legal': typeof LegalRoute
+  '/privacy': typeof PrivacyRoute
+  '/stories': typeof StoriesRouteWithChildren
+  '/donations/$donationId': typeof DonationsDonationIdRoute
+  '/events/$eventId': typeof EventsEventIdRoute
+  '/stories/$slug': typeof StoriesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/anlaesse': typeof AnlaesseRouteWithChildren
-  '/beitreten': typeof BeitretenRoute
-  '/datenschutz': typeof DatenschutzRoute
-  '/geschichten': typeof GeschichtenRouteWithChildren
-  '/impressum': typeof ImpressumRoute
-  '/kontakt': typeof KontaktRoute
-  '/mitmachen': typeof MitmachenRoute
-  '/news': typeof NewsRoute
-  '/ueber-uns': typeof UeberUnsRoute
-  '/veranstaltungen': typeof VeranstaltungenRoute
-  '/anlaesse/$slug': typeof AnlaesseSlugRoute
-  '/geschichten/$slug': typeof GeschichtenSlugRoute
+  '/about': typeof AboutRoute
+  '/donations': typeof DonationsRouteWithChildren
+  '/events': typeof EventsRouteWithChildren
+  '/join': typeof JoinRoute
+  '/legal': typeof LegalRoute
+  '/privacy': typeof PrivacyRoute
+  '/stories': typeof StoriesRouteWithChildren
+  '/donations/$donationId': typeof DonationsDonationIdRoute
+  '/events/$eventId': typeof EventsEventIdRoute
+  '/stories/$slug': typeof StoriesSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/anlaesse': typeof AnlaesseRouteWithChildren
-  '/beitreten': typeof BeitretenRoute
-  '/datenschutz': typeof DatenschutzRoute
-  '/geschichten': typeof GeschichtenRouteWithChildren
-  '/impressum': typeof ImpressumRoute
-  '/kontakt': typeof KontaktRoute
-  '/mitmachen': typeof MitmachenRoute
-  '/news': typeof NewsRoute
-  '/ueber-uns': typeof UeberUnsRoute
-  '/veranstaltungen': typeof VeranstaltungenRoute
-  '/anlaesse/$slug': typeof AnlaesseSlugRoute
-  '/geschichten/$slug': typeof GeschichtenSlugRoute
+  '/about': typeof AboutRoute
+  '/donations': typeof DonationsRouteWithChildren
+  '/events': typeof EventsRouteWithChildren
+  '/join': typeof JoinRoute
+  '/legal': typeof LegalRoute
+  '/privacy': typeof PrivacyRoute
+  '/stories': typeof StoriesRouteWithChildren
+  '/donations/$donationId': typeof DonationsDonationIdRoute
+  '/events/$eventId': typeof EventsEventIdRoute
+  '/stories/$slug': typeof StoriesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/anlaesse'
-    | '/beitreten'
-    | '/datenschutz'
-    | '/geschichten'
-    | '/impressum'
-    | '/kontakt'
-    | '/mitmachen'
-    | '/news'
-    | '/ueber-uns'
-    | '/veranstaltungen'
-    | '/anlaesse/$slug'
-    | '/geschichten/$slug'
+    | '/about'
+    | '/donations'
+    | '/events'
+    | '/join'
+    | '/legal'
+    | '/privacy'
+    | '/stories'
+    | '/donations/$donationId'
+    | '/events/$eventId'
+    | '/stories/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/anlaesse'
-    | '/beitreten'
-    | '/datenschutz'
-    | '/geschichten'
-    | '/impressum'
-    | '/kontakt'
-    | '/mitmachen'
-    | '/news'
-    | '/ueber-uns'
-    | '/veranstaltungen'
-    | '/anlaesse/$slug'
-    | '/geschichten/$slug'
+    | '/about'
+    | '/donations'
+    | '/events'
+    | '/join'
+    | '/legal'
+    | '/privacy'
+    | '/stories'
+    | '/donations/$donationId'
+    | '/events/$eventId'
+    | '/stories/$slug'
   id:
     | '__root__'
     | '/'
-    | '/anlaesse'
-    | '/beitreten'
-    | '/datenschutz'
-    | '/geschichten'
-    | '/impressum'
-    | '/kontakt'
-    | '/mitmachen'
-    | '/news'
-    | '/ueber-uns'
-    | '/veranstaltungen'
-    | '/anlaesse/$slug'
-    | '/geschichten/$slug'
+    | '/about'
+    | '/donations'
+    | '/events'
+    | '/join'
+    | '/legal'
+    | '/privacy'
+    | '/stories'
+    | '/donations/$donationId'
+    | '/events/$eventId'
+    | '/stories/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AnlaesseRoute: typeof AnlaesseRouteWithChildren
-  BeitretenRoute: typeof BeitretenRoute
-  DatenschutzRoute: typeof DatenschutzRoute
-  GeschichtenRoute: typeof GeschichtenRouteWithChildren
-  ImpressumRoute: typeof ImpressumRoute
-  KontaktRoute: typeof KontaktRoute
-  MitmachenRoute: typeof MitmachenRoute
-  NewsRoute: typeof NewsRoute
-  UeberUnsRoute: typeof UeberUnsRoute
-  VeranstaltungenRoute: typeof VeranstaltungenRoute
+  AboutRoute: typeof AboutRoute
+  DonationsRoute: typeof DonationsRouteWithChildren
+  EventsRoute: typeof EventsRouteWithChildren
+  JoinRoute: typeof JoinRoute
+  LegalRoute: typeof LegalRoute
+  PrivacyRoute: typeof PrivacyRoute
+  StoriesRoute: typeof StoriesRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -206,129 +179,122 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/anlaesse': {
-      id: '/anlaesse'
-      path: '/anlaesse'
-      fullPath: '/anlaesse'
-      preLoaderRoute: typeof AnlaesseRouteImport
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/beitreten': {
-      id: '/beitreten'
-      path: '/beitreten'
-      fullPath: '/beitreten'
-      preLoaderRoute: typeof BeitretenRouteImport
+    '/donations': {
+      id: '/donations'
+      path: '/donations'
+      fullPath: '/donations'
+      preLoaderRoute: typeof DonationsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/datenschutz': {
-      id: '/datenschutz'
-      path: '/datenschutz'
-      fullPath: '/datenschutz'
-      preLoaderRoute: typeof DatenschutzRouteImport
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/geschichten': {
-      id: '/geschichten'
-      path: '/geschichten'
-      fullPath: '/geschichten'
-      preLoaderRoute: typeof GeschichtenRouteImport
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/impressum': {
-      id: '/impressum'
-      path: '/impressum'
-      fullPath: '/impressum'
-      preLoaderRoute: typeof ImpressumRouteImport
+    '/legal': {
+      id: '/legal'
+      path: '/legal'
+      fullPath: '/legal'
+      preLoaderRoute: typeof LegalRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/kontakt': {
-      id: '/kontakt'
-      path: '/kontakt'
-      fullPath: '/kontakt'
-      preLoaderRoute: typeof KontaktRouteImport
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/mitmachen': {
-      id: '/mitmachen'
-      path: '/mitmachen'
-      fullPath: '/mitmachen'
-      preLoaderRoute: typeof MitmachenRouteImport
+    '/stories': {
+      id: '/stories'
+      path: '/stories'
+      fullPath: '/stories'
+      preLoaderRoute: typeof StoriesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/news': {
-      id: '/news'
-      path: '/news'
-      fullPath: '/news'
-      preLoaderRoute: typeof NewsRouteImport
-      parentRoute: typeof rootRouteImport
+    '/donations/$donationId': {
+      id: '/donations/$donationId'
+      path: '/$donationId'
+      fullPath: '/donations/$donationId'
+      preLoaderRoute: typeof DonationsDonationIdRouteImport
+      parentRoute: typeof DonationsRoute
     }
-    '/ueber-uns': {
-      id: '/ueber-uns'
-      path: '/ueber-uns'
-      fullPath: '/ueber-uns'
-      preLoaderRoute: typeof UeberUnsRouteImport
-      parentRoute: typeof rootRouteImport
+    '/events/$eventId': {
+      id: '/events/$eventId'
+      path: '/$eventId'
+      fullPath: '/events/$eventId'
+      preLoaderRoute: typeof EventsEventIdRouteImport
+      parentRoute: typeof EventsRoute
     }
-    '/veranstaltungen': {
-      id: '/veranstaltungen'
-      path: '/veranstaltungen'
-      fullPath: '/veranstaltungen'
-      preLoaderRoute: typeof VeranstaltungenRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/anlaesse/$slug': {
-      id: '/anlaesse/$slug'
+    '/stories/$slug': {
+      id: '/stories/$slug'
       path: '/$slug'
-      fullPath: '/anlaesse/$slug'
-      preLoaderRoute: typeof AnlaesseSlugRouteImport
-      parentRoute: typeof AnlaesseRoute
-    }
-    '/geschichten/$slug': {
-      id: '/geschichten/$slug'
-      path: '/$slug'
-      fullPath: '/geschichten/$slug'
-      preLoaderRoute: typeof GeschichtenSlugRouteImport
-      parentRoute: typeof GeschichtenRoute
+      fullPath: '/stories/$slug'
+      preLoaderRoute: typeof StoriesSlugRouteImport
+      parentRoute: typeof StoriesRoute
     }
   }
 }
 
-interface AnlaesseRouteChildren {
-  AnlaesseSlugRoute: typeof AnlaesseSlugRoute
+interface DonationsRouteChildren {
+  DonationsDonationIdRoute: typeof DonationsDonationIdRoute
 }
 
-const AnlaesseRouteChildren: AnlaesseRouteChildren = {
-  AnlaesseSlugRoute: AnlaesseSlugRoute,
+const DonationsRouteChildren: DonationsRouteChildren = {
+  DonationsDonationIdRoute: DonationsDonationIdRoute,
 }
 
-const AnlaesseRouteWithChildren = AnlaesseRoute._addFileChildren(
-  AnlaesseRouteChildren,
+const DonationsRouteWithChildren = DonationsRoute._addFileChildren(
+  DonationsRouteChildren,
 )
 
-interface GeschichtenRouteChildren {
-  GeschichtenSlugRoute: typeof GeschichtenSlugRoute
+interface EventsRouteChildren {
+  EventsEventIdRoute: typeof EventsEventIdRoute
 }
 
-const GeschichtenRouteChildren: GeschichtenRouteChildren = {
-  GeschichtenSlugRoute: GeschichtenSlugRoute,
+const EventsRouteChildren: EventsRouteChildren = {
+  EventsEventIdRoute: EventsEventIdRoute,
 }
 
-const GeschichtenRouteWithChildren = GeschichtenRoute._addFileChildren(
-  GeschichtenRouteChildren,
-)
+const EventsRouteWithChildren =
+  EventsRoute._addFileChildren(EventsRouteChildren)
+
+interface StoriesRouteChildren {
+  StoriesSlugRoute: typeof StoriesSlugRoute
+}
+
+const StoriesRouteChildren: StoriesRouteChildren = {
+  StoriesSlugRoute: StoriesSlugRoute,
+}
+
+const StoriesRouteWithChildren =
+  StoriesRoute._addFileChildren(StoriesRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AnlaesseRoute: AnlaesseRouteWithChildren,
-  BeitretenRoute: BeitretenRoute,
-  DatenschutzRoute: DatenschutzRoute,
-  GeschichtenRoute: GeschichtenRouteWithChildren,
-  ImpressumRoute: ImpressumRoute,
-  KontaktRoute: KontaktRoute,
-  MitmachenRoute: MitmachenRoute,
-  NewsRoute: NewsRoute,
-  UeberUnsRoute: UeberUnsRoute,
-  VeranstaltungenRoute: VeranstaltungenRoute,
+  AboutRoute: AboutRoute,
+  DonationsRoute: DonationsRouteWithChildren,
+  EventsRoute: EventsRouteWithChildren,
+  JoinRoute: JoinRoute,
+  LegalRoute: LegalRoute,
+  PrivacyRoute: PrivacyRoute,
+  StoriesRoute: StoriesRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

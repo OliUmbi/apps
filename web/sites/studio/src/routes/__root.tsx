@@ -1,3 +1,5 @@
+import { m } from "@oliumbi/i18n/messages";
+import { getLocale } from "@oliumbi/i18n/runtime";
 import {
 	createRootRoute,
 	HeadContent,
@@ -5,14 +7,15 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { QueryProvider } from "../components/ui/index";
 import "../styles.css";
 
 export const Route = createRootRoute({
 	head: () => ({
 		meta: [
 			{ charSet: "utf-8" },
-			{ name: "viewport", content: "width=device-width, initial-scale=1" },
-			{ title: "Studio · Oliumbi" },
+			{ name: "viewport", content: m.studio_routes_root_content() },
+			{ title: m.studio_routes_root_title() },
 		],
 	}),
 	component: Root,
@@ -21,14 +24,16 @@ export const Route = createRootRoute({
 function Root() {
 	return (
 		<Document>
-			<Outlet />
+			<QueryProvider>
+				<Outlet />
+			</QueryProvider>
 		</Document>
 	);
 }
 
 function Document({ children }: { children: ReactNode }) {
 	return (
-		<html lang="de" className="min-h-full">
+		<html lang={getLocale()} className="min-h-full">
 			<head>
 				<HeadContent />
 			</head>

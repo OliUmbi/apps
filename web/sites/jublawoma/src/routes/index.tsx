@@ -1,60 +1,62 @@
+import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, CalendarDays, MapPin } from "lucide-react";
+import { Promotions } from "../components/promotions";
 import { dateLabel } from "../content";
-import { getEvents } from "../content/content.functions";
+import { getNextEvent } from "../content/content.functions";
 
 export const Route = createFileRoute("/")({
-	loader: () => getEvents(),
+	loader: () => getNextEvent(),
 	component: Home,
 });
 
 const values = [
 	{
 		n: "01",
-		title: "Zusammen sein",
-		copy: "Alle werden akzeptiert und respektiert. Gemeinsam haben wir Spass.",
+		title: m.jublawoma_routes_index_title(),
+		copy: m.jublawoma_routes_index_copy(),
 		art: "dog.svg",
 	},
 	{
 		n: "02",
-		title: "Mitbestimmen",
-		copy: "Ob gross oder klein: Eigene Ideen gehören dazu und gestalten unser Scharleben.",
+		title: m.jublawoma_routes_index_title_2(),
+		copy: m.jublawoma_routes_index_copy_2(),
 		art: "float.svg",
 	},
 	{
 		n: "03",
-		title: "Natur erleben",
-		copy: "Wir sind draussen unterwegs, entdecken Neues und gehen bewusst mit der Natur um.",
+		title: m.jublawoma_routes_index_title_3(),
+		copy: m.jublawoma_routes_index_copy_3(),
 		art: "plant.svg",
 	},
 ];
 
 function Home() {
-	const events = Route.useLoaderData();
-	const today = new Date().toISOString().slice(0, 10);
-	const next = events.find((event) => event.endsOn >= today) ?? events[0];
+	const next = Route.useLoaderData();
 	return (
 		<>
+			<Promotions />
 			<section className="hero">
 				<div className="hero-noise" />
 				<div className="shell hero-grid">
 					<div className="hero-copy">
-						<p className="kicker light">Jungwacht Blauring · seit 1981</p>
-						<h1>
-							Hier wird aus
-							<br />
-							Freizeit <em>Abenteuer.</em>
-						</h1>
-						<p>
-							Rund 100 Kinder und 40 Leitende aus Wohlenschwil, Mägenwil und
-							Tägerig. Gemeinsam draussen, kreativ und mittendrin.
+						<p className="kicker light">
+							{m.jublawoma_routes_index_paragraph()}
 						</p>
+						<h1>
+							{m.jublawoma_routes_index_heading()}
+							<br />
+							{m.jublawoma_routes_index_heading_2()}
+							<em>{m.jublawoma_routes_index_text()}</em>
+						</h1>
+						<p>{m.jublawoma_routes_index_paragraph_2()}</p>
 						<div className="button-row">
-							<Link to="/mitmachen" className="button light">
-								Jubla kennenlernen <ArrowRight size={18} />
+							<Link to="/join" className="button light">
+								{m.jublawoma_routes_index_text_2()}
+								<ArrowRight size={18} />
 							</Link>
-							<Link to="/anlaesse" className="text-link light">
-								Nächste Anlässe
+							<Link to="/events" className="text-link light">
+								{m.jublawoma_routes_index_text_3()}
 							</Link>
 						</div>
 					</div>
@@ -62,21 +64,21 @@ function Home() {
 						<span className="sun" />
 						<img
 							src="/assets/images/doodles/swinging.svg"
-							alt="Illustrierte Person auf einer Schaukel"
+							alt={m.jublawoma_routes_index_alt()}
 						/>
 					</div>
 				</div>
 				<div className="hero-ticker">
-					<span>Zusammen sein</span>
-					<i /> <span>Mitbestimmen</span>
-					<i /> <span>Kreativ sein</span>
-					<i /> <span>Natur erleben</span>
+					<span>{m.jublawoma_routes_index_text_4()}</span>
+					<i /> <span>{m.jublawoma_routes_index_text_5()}</span>
+					<i /> <span>{m.jublawoma_routes_index_text_6()}</span>
+					<i /> <span>{m.jublawoma_routes_index_text_7()}</span>
 				</div>
 			</section>
 			{next ? (
 				<section className="next-event">
 					<div className="shell event-banner">
-						<p className="kicker">Als Nächstes</p>
+						<p className="kicker">{m.jublawoma_routes_index_paragraph_3()}</p>
 						<div>
 							<strong>{next.title}</strong>
 							<span>
@@ -88,10 +90,10 @@ function Home() {
 							</span>
 						</div>
 						<Link
-							to="/anlaesse/$slug"
-							params={{ slug: next.slug }}
+							to="/events/$eventId"
+							params={{ eventId: next.id }}
 							className="round-link"
-							aria-label="Anlass öffnen"
+							aria-label={m.jublawoma_routes_index_aria_label()}
 						>
 							<ArrowRight />
 						</Link>
@@ -100,11 +102,11 @@ function Home() {
 			) : null}
 			<section className="section shell">
 				<div className="section-intro">
-					<p className="kicker">Was uns bewegt</p>
+					<p className="kicker">{m.jublawoma_routes_index_paragraph_4()}</p>
 					<h2>
-						Fünf Grundsätze.
+						{m.jublawoma_routes_index_heading_3()}
 						<br />
-						<span>Unzählige Erlebnisse.</span>
+						<span>{m.jublawoma_routes_index_text_8()}</span>
 					</h2>
 				</div>
 				<div className="value-grid">
@@ -122,27 +124,24 @@ function Home() {
 				<div className="photo-frame">
 					<img
 						src="/assets/images/people/leiter.jpg"
-						alt="Das Leitungsteam der Jubla Woma"
+						alt={m.jublawoma_routes_index_alt_2()}
 					/>
 					<span>
-						40×
+						{m.jublawoma_routes_index_text_9()}
 						<small>
-							ehrenamtliches
+							{m.jublawoma_routes_index_text_10()}
 							<br />
-							Engagement
+							{m.jublawoma_routes_index_text_11()}
 						</small>
 					</span>
 				</div>
 				<div className="photo-copy">
-					<p className="kicker">Die Menschen dahinter</p>
-					<h2>Jung, ausgebildet und mit ganzem Herzen dabei.</h2>
-					<p>
-						Unser Leitungsteam plant Gruppenstunden, Anlässe und Lager. Die
-						Leitenden übernehmen Verantwortung und bilden sich regelmässig
-						weiter.
-					</p>
-					<Link to="/ueber-uns" className="text-link">
-						Team kennenlernen <ArrowRight size={16} />
+					<p className="kicker">{m.jublawoma_routes_index_paragraph_5()}</p>
+					<h2>{m.jublawoma_routes_index_heading_4()}</h2>
+					<p>{m.jublawoma_routes_index_paragraph_6()}</p>
+					<Link to="/about" className="text-link">
+						{m.jublawoma_routes_index_text_12()}
+						<ArrowRight size={16} />
 					</Link>
 				</div>
 			</section>
@@ -150,14 +149,14 @@ function Home() {
 				<div className="shell join-grid">
 					<img src="/assets/images/doodles/loving.svg" alt="" />
 					<div>
-						<p className="kicker light">Platz für neue Geschichten</p>
-						<h2>Dein Kind ist in der 3. Klasse oder älter?</h2>
-						<p>
-							Dann darf es unverbindlich Jubla-Luft schnuppern und unsere
-							Gemeinschaft kennenlernen.
+						<p className="kicker light">
+							{m.jublawoma_routes_index_paragraph_7()}
 						</p>
-						<Link to="/mitmachen" className="button light">
-							So funktioniert’s <ArrowRight size={18} />
+						<h2>{m.jublawoma_routes_index_heading_5()}</h2>
+						<p>{m.jublawoma_routes_index_paragraph_8()}</p>
+						<Link to="/join" className="button light">
+							{m.jublawoma_routes_index_text_13()}
+							<ArrowRight size={18} />
 						</Link>
 					</div>
 				</div>

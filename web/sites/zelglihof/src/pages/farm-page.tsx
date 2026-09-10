@@ -1,3 +1,4 @@
+import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Beef, Bird, Leaf, Sprout, Wheat } from "lucide-react";
 
@@ -17,14 +18,15 @@ export function FarmPage() {
 	return (
 		<>
 			<section className="shell py-14 md:py-24">
-				<p className="eyebrow text-clay">Unser Hof</p>
+				<p className="eyebrow text-clay">
+					{m.zelglihof_pages_farm_page_paragraph()}
+				</p>
 				<div className="mt-5 grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
 					<h1 className="display-title text-6xl md:text-8xl">
-						Vielseitig aus Überzeugung.
+						{m.zelglihof_pages_farm_page_heading()}
 					</h1>
 					<p className="max-w-xl text-xl leading-relaxed text-ink/60">
-						Der Zelglihof ist ein gemischter Familienbetrieb mit
-						Mutterkuhhaltung, Hühnern, Ackerbau und Spezialkulturen.
+						{m.zelglihof_pages_farm_page_paragraph_2()}
 					</p>
 				</div>
 			</section>
@@ -32,31 +34,31 @@ export function FarmPage() {
 				<div className="relative min-h-[38rem] overflow-hidden rounded-[2rem]">
 					<img
 						src="/images/demo/demo-hof.jpg"
-						alt="Landwirtschaftsbetrieb in der Schweiz"
+						alt={m.zelglihof_pages_farm_page_alt()}
 						className="absolute inset-0 h-full w-full object-cover"
 					/>
 					<div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" />
 					<p className="absolute bottom-8 left-8 max-w-lg font-serif text-4xl font-bold text-cream md:bottom-11 md:left-11 md:text-5xl">
-						Familienbetrieb Habegger in Mägenwil.
+						{m.zelglihof_pages_farm_page_paragraph_3()}
 					</p>
 				</div>
 				<div className="grid gap-5">
 					<Fact
 						icon={<Beef />}
 						value="F1"
-						label="Mutterkühe aus Limousin, Angus und Simmentaler"
+						label={m.zelglihof_pages_farm_page_label()}
 						color="bg-clay text-cream"
 					/>
 					<Fact
 						icon={<Bird />}
 						value="frisch"
-						label="Eier unserer Hühner, täglich direkt ab Hof"
+						label={m.zelglihof_pages_farm_page_label_2()}
 						color="bg-sun text-ink"
 					/>
 					<Fact
 						icon={<Wheat />}
 						value="ÖLN"
-						label="Bewirtschaftung nach ÖLN, SGA und Swiss GAP"
+						label={m.zelglihof_pages_farm_page_label_3()}
 						color="bg-sage text-ink"
 					/>
 				</div>
@@ -64,33 +66,27 @@ export function FarmPage() {
 			<section className="shell py-24 md:py-32">
 				<div className="grid gap-14 lg:grid-cols-2 lg:items-center">
 					<div>
-						<p className="eyebrow text-moss">Unsere Tiere</p>
+						<p className="eyebrow text-moss">
+							{m.zelglihof_pages_farm_page_paragraph_4()}
+						</p>
 						<h2 className="display-title mt-5 text-5xl md:text-6xl">
-							Vom Kalb bis zum Paket: alles bleibt nah.
+							{m.zelglihof_pages_farm_page_heading_2()}
 						</h2>
 						<p className="mt-7 text-lg leading-relaxed text-ink/65">
-							Unsere Mutterkühe haben wir selbst gezüchtet. Die Kälber wachsen
-							bei ihren Müttern auf, und sämtliches Rindfleisch verkaufen wir
-							direkt an unsere Kundschaft. So kennen wir Herkunft, Haltung und
-							Weg jedes Pakets.
+							{m.zelglihof_pages_farm_page_paragraph_5()}
 						</p>
-						<Link
-							to="/hofladen/$productId"
-							params={{ productId: "rindfleisch" }}
-							className="button-primary mt-8"
-						>
-							Mägenwiler Beef <ArrowRight size={17} />
+						<Link to="/products" className="button-primary mt-8">
+							{m.zelglihof_pages_farm_page_text()}
+							<ArrowRight size={17} />
 						</Link>
 					</div>
 					<div className="rounded-[2rem] bg-forest p-8 text-cream md:p-12">
 						<Beef size={58} strokeWidth={1.2} className="text-sun" />
 						<p className="mt-14 font-serif text-4xl font-bold">
-							Tierwohl ist kein Zusatz. Es ist die Grundlage unserer Arbeit.
+							{m.zelglihof_pages_farm_page_paragraph_6()}
 						</p>
 						<p className="mt-6 leading-relaxed text-cream/65">
-							Unsere Bestände verändern sich mit dem Jahreslauf. Entscheidend
-							bleibt, dass jedes Tier Raum, Ruhe und sorgfältige Betreuung
-							erhält.
+							{m.zelglihof_pages_farm_page_paragraph_7()}
 						</p>
 					</div>
 				</div>
@@ -99,16 +95,16 @@ export function FarmPage() {
 				<div className="shell">
 					<div className="grid gap-10 md:grid-cols-[0.8fr_1.2fr]">
 						<div>
-							<p className="eyebrow text-clay">Auf unseren Feldern</p>
+							<p className="eyebrow text-clay">
+								{m.zelglihof_pages_farm_page_paragraph_8()}
+							</p>
 							<h2 className="display-title mt-5 text-5xl md:text-6xl">
-								Mehr als Getreide.
+								{m.zelglihof_pages_farm_page_heading_3()}
 							</h2>
 						</div>
 						<div>
 							<p className="text-xl leading-relaxed text-ink/60">
-								Unser Ackerbau verbindet klassische Kulturen mit einer
-								vielseitigen Auswahl an Gemüse. Das macht jedes
-								Landwirtschaftsjahr anders.
+								{m.zelglihof_pages_farm_page_paragraph_9()}
 							</p>
 							<div className="mt-10 flex flex-wrap gap-3">
 								{crops.map((crop, index) => (
@@ -129,7 +125,7 @@ export function FarmPage() {
 					</div>
 					<img
 						src="/images/demo/demo-saat.jpg"
-						alt="Aussaat einer Feldkultur"
+						alt={m.zelglihof_pages_farm_page_alt_2()}
 						className="mt-14 aspect-[16/7] w-full rounded-[2rem] object-cover"
 					/>
 				</div>
@@ -137,13 +133,16 @@ export function FarmPage() {
 			<section className="shell py-24">
 				<div className="rounded-[2rem] bg-sun p-8 md:flex md:items-center md:justify-between md:p-12">
 					<div>
-						<p className="eyebrow">Du möchtest vorbeikommen?</p>
+						<p className="eyebrow">
+							{m.zelglihof_pages_farm_page_paragraph_10()}
+						</p>
 						<h2 className="mt-5 font-serif text-4xl font-bold">
-							Hofladen und Abholung findest du am Zelgliweg.
+							{m.zelglihof_pages_farm_page_heading_4()}
 						</h2>
 					</div>
-					<Link to="/kontakt" className="button-primary mt-8 md:mt-0">
-						Anfahrt & Kontakt <ArrowRight size={17} />
+					<Link to="/contact" className="button-primary mt-8 md:mt-0">
+						{m.zelglihof_pages_farm_page_text_2()}
+						<ArrowRight size={17} />
 					</Link>
 				</div>
 			</section>

@@ -5,13 +5,12 @@
   "scripts": {
     "dev": "vite dev --host",
     "build": "vite build",
-    "start": "node .output/server/index.mjs",
+    "start": "node --env-file-if-exists=../../../.env .output/server/index.mjs",
     "check": "tsc --noEmit"
   },
   "dependencies": {
     "@oliumbi/database": "workspace:*",
     "@oliumbi/messaging": "workspace:*",
-    "@oliumbi/newsletter": "workspace:*",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-start": "catalog:",
@@ -19,7 +18,19 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "tailwindcss": "catalog:",
-    "zod": "catalog:"
+    "zod": "catalog:",
+    "@oliumbi/contracts": "workspace:*",
+    "@oliumbi/identity": "workspace:*",
+    "@oliumbi/assets": "workspace:*",
+    "@oliumbi/i18n": "workspace:*",
+    "@base-ui/react": "catalog:",
+    "@tanstack/react-query": "^5.90.0",
+    "@tanstack/react-table": "^8.21.0",
+    "@oliumbi/http-client": "workspace:*",
+    "@oliumbi/unclet-data": "workspace:*",
+    "@oliumbi/zelglihof-data": "workspace:*",
+    "@oliumbi/jublawoma-data": "workspace:*",
+    "@oliumbi/query": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "catalog:",
@@ -28,6 +39,7 @@
     "@vitejs/plugin-react": "catalog:",
     "nitro": "catalog:",
     "vite": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "@oliumbi/environment": "workspace:*"
   }
 }

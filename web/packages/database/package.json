@@ -1,9 +1,20 @@
 {
   "name": "@oliumbi/database",
-  "type": "module",
   "private": true,
-  "exports": { ".": "./src/index.ts" },
-  "scripts": { "check": "tsc --noEmit" },
-  "dependencies": { "postgres": "catalog:" },
-  "devDependencies": { "typescript": "catalog:" }
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "postgres": "catalog:",
+    "@oliumbi/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "@types/node": "catalog:"
+  }
 }

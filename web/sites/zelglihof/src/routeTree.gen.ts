@@ -11,27 +11,18 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as AgbRouteImport } from './routes/agb'
 import { Route as ContactRouteImport } from './routes/contact'
-import { Route as DatenschutzRouteImport } from './routes/datenschutz'
-import { Route as DienstleistungenRouteImport } from './routes/dienstleistungen'
-import { Route as HofRouteImport } from './routes/hof'
-import { Route as ImpressumRouteImport } from './routes/impressum'
-import { Route as KontaktRouteImport } from './routes/kontakt'
-import { Route as LatestRouteImport } from './routes/latest'
 import { Route as LegalRouteImport } from './routes/legal'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as TermsRouteImport } from './routes/terms'
-import { Route as AktuellesIndexRouteImport } from './routes/aktuelles/index'
-import { Route as AktuellesSlugRouteImport } from './routes/aktuelles/$slug'
-import { Route as HofladenIndexRouteImport } from './routes/hofladen/index'
-import { Route as HofladenProductIdRouteImport } from './routes/hofladen/$productId'
+import { Route as LatestIndexRouteImport } from './routes/latest/index'
+import { Route as LatestSlugRouteImport } from './routes/latest/$slug'
 import { Route as ProductsIndexRouteImport } from './routes/products/index'
 import { Route as ProductsProductIdRouteImport } from './routes/products/$productId'
-import { Route as NewsletterAbmeldenTokenRouteImport } from './routes/newsletter/abmelden/$token'
-import { Route as NewsletterBestaetigenTokenRouteImport } from './routes/newsletter/bestaetigen/$token'
-import { Route as ApiNewsletterAbmeldenTokenRouteImport } from './routes/api/newsletter/abmelden/$token'
+import { Route as NewsletterConfirmTokenRouteImport } from './routes/newsletter/confirm/$token'
+import { Route as NewsletterUnsubscribeTokenRouteImport } from './routes/newsletter/unsubscribe/$token'
+import { Route as ApiNewsletterUnsubscribeTokenRouteImport } from './routes/api/newsletter/unsubscribe/$token'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -43,44 +34,9 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AgbRoute = AgbRouteImport.update({
-  id: '/agb',
-  path: '/agb',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DatenschutzRoute = DatenschutzRouteImport.update({
-  id: '/datenschutz',
-  path: '/datenschutz',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DienstleistungenRoute = DienstleistungenRouteImport.update({
-  id: '/dienstleistungen',
-  path: '/dienstleistungen',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HofRoute = HofRouteImport.update({
-  id: '/hof',
-  path: '/hof',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ImpressumRoute = ImpressumRouteImport.update({
-  id: '/impressum',
-  path: '/impressum',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const KontaktRoute = KontaktRouteImport.update({
-  id: '/kontakt',
-  path: '/kontakt',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LatestRoute = LatestRouteImport.update({
-  id: '/latest',
-  path: '/latest',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LegalRoute = LegalRouteImport.update({
@@ -103,24 +59,14 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AktuellesIndexRoute = AktuellesIndexRouteImport.update({
-  id: '/aktuelles/',
-  path: '/aktuelles/',
+const LatestIndexRoute = LatestIndexRouteImport.update({
+  id: '/latest/',
+  path: '/latest/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AktuellesSlugRoute = AktuellesSlugRouteImport.update({
-  id: '/aktuelles/$slug',
-  path: '/aktuelles/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HofladenIndexRoute = HofladenIndexRouteImport.update({
-  id: '/hofladen/',
-  path: '/hofladen/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HofladenProductIdRoute = HofladenProductIdRouteImport.update({
-  id: '/hofladen/$productId',
-  path: '/hofladen/$productId',
+const LatestSlugRoute = LatestSlugRouteImport.update({
+  id: '/latest/$slug',
+  path: '/latest/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductsIndexRoute = ProductsIndexRouteImport.update({
@@ -133,202 +79,139 @@ const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
   path: '/products/$productId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NewsletterAbmeldenTokenRoute = NewsletterAbmeldenTokenRouteImport.update({
-  id: '/newsletter/abmelden/$token',
-  path: '/newsletter/abmelden/$token',
+const NewsletterConfirmTokenRoute = NewsletterConfirmTokenRouteImport.update({
+  id: '/newsletter/confirm/$token',
+  path: '/newsletter/confirm/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NewsletterBestaetigenTokenRoute =
-  NewsletterBestaetigenTokenRouteImport.update({
-    id: '/newsletter/bestaetigen/$token',
-    path: '/newsletter/bestaetigen/$token',
+const NewsletterUnsubscribeTokenRoute =
+  NewsletterUnsubscribeTokenRouteImport.update({
+    id: '/newsletter/unsubscribe/$token',
+    path: '/newsletter/unsubscribe/$token',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiNewsletterAbmeldenTokenRoute =
-  ApiNewsletterAbmeldenTokenRouteImport.update({
-    id: '/api/newsletter/abmelden/$token',
-    path: '/api/newsletter/abmelden/$token',
+const ApiNewsletterUnsubscribeTokenRoute =
+  ApiNewsletterUnsubscribeTokenRouteImport.update({
+    id: '/api/newsletter/unsubscribe/$token',
+    path: '/api/newsletter/unsubscribe/$token',
     getParentRoute: () => rootRouteImport,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/agb': typeof AgbRoute
   '/contact': typeof ContactRoute
-  '/datenschutz': typeof DatenschutzRoute
-  '/dienstleistungen': typeof DienstleistungenRoute
-  '/hof': typeof HofRoute
-  '/impressum': typeof ImpressumRoute
-  '/kontakt': typeof KontaktRoute
-  '/latest': typeof LatestRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
   '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
-  '/aktuelles/$slug': typeof AktuellesSlugRoute
-  '/hofladen/$productId': typeof HofladenProductIdRoute
+  '/latest/$slug': typeof LatestSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
-  '/aktuelles/': typeof AktuellesIndexRoute
-  '/hofladen/': typeof HofladenIndexRoute
+  '/latest/': typeof LatestIndexRoute
   '/products/': typeof ProductsIndexRoute
-  '/newsletter/abmelden/$token': typeof NewsletterAbmeldenTokenRoute
-  '/newsletter/bestaetigen/$token': typeof NewsletterBestaetigenTokenRoute
-  '/api/newsletter/abmelden/$token': typeof ApiNewsletterAbmeldenTokenRoute
+  '/newsletter/confirm/$token': typeof NewsletterConfirmTokenRoute
+  '/newsletter/unsubscribe/$token': typeof NewsletterUnsubscribeTokenRoute
+  '/api/newsletter/unsubscribe/$token': typeof ApiNewsletterUnsubscribeTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/agb': typeof AgbRoute
   '/contact': typeof ContactRoute
-  '/datenschutz': typeof DatenschutzRoute
-  '/dienstleistungen': typeof DienstleistungenRoute
-  '/hof': typeof HofRoute
-  '/impressum': typeof ImpressumRoute
-  '/kontakt': typeof KontaktRoute
-  '/latest': typeof LatestRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
   '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
-  '/aktuelles/$slug': typeof AktuellesSlugRoute
-  '/hofladen/$productId': typeof HofladenProductIdRoute
+  '/latest/$slug': typeof LatestSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
-  '/aktuelles': typeof AktuellesIndexRoute
-  '/hofladen': typeof HofladenIndexRoute
+  '/latest': typeof LatestIndexRoute
   '/products': typeof ProductsIndexRoute
-  '/newsletter/abmelden/$token': typeof NewsletterAbmeldenTokenRoute
-  '/newsletter/bestaetigen/$token': typeof NewsletterBestaetigenTokenRoute
-  '/api/newsletter/abmelden/$token': typeof ApiNewsletterAbmeldenTokenRoute
+  '/newsletter/confirm/$token': typeof NewsletterConfirmTokenRoute
+  '/newsletter/unsubscribe/$token': typeof NewsletterUnsubscribeTokenRoute
+  '/api/newsletter/unsubscribe/$token': typeof ApiNewsletterUnsubscribeTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/agb': typeof AgbRoute
   '/contact': typeof ContactRoute
-  '/datenschutz': typeof DatenschutzRoute
-  '/dienstleistungen': typeof DienstleistungenRoute
-  '/hof': typeof HofRoute
-  '/impressum': typeof ImpressumRoute
-  '/kontakt': typeof KontaktRoute
-  '/latest': typeof LatestRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
   '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
-  '/aktuelles/$slug': typeof AktuellesSlugRoute
-  '/hofladen/$productId': typeof HofladenProductIdRoute
+  '/latest/$slug': typeof LatestSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
-  '/aktuelles/': typeof AktuellesIndexRoute
-  '/hofladen/': typeof HofladenIndexRoute
+  '/latest/': typeof LatestIndexRoute
   '/products/': typeof ProductsIndexRoute
-  '/newsletter/abmelden/$token': typeof NewsletterAbmeldenTokenRoute
-  '/newsletter/bestaetigen/$token': typeof NewsletterBestaetigenTokenRoute
-  '/api/newsletter/abmelden/$token': typeof ApiNewsletterAbmeldenTokenRoute
+  '/newsletter/confirm/$token': typeof NewsletterConfirmTokenRoute
+  '/newsletter/unsubscribe/$token': typeof NewsletterUnsubscribeTokenRoute
+  '/api/newsletter/unsubscribe/$token': typeof ApiNewsletterUnsubscribeTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
-    | '/agb'
     | '/contact'
-    | '/datenschutz'
-    | '/dienstleistungen'
-    | '/hof'
-    | '/impressum'
-    | '/kontakt'
-    | '/latest'
     | '/legal'
     | '/privacy'
     | '/services'
     | '/terms'
-    | '/aktuelles/$slug'
-    | '/hofladen/$productId'
+    | '/latest/$slug'
     | '/products/$productId'
-    | '/aktuelles/'
-    | '/hofladen/'
+    | '/latest/'
     | '/products/'
-    | '/newsletter/abmelden/$token'
-    | '/newsletter/bestaetigen/$token'
-    | '/api/newsletter/abmelden/$token'
+    | '/newsletter/confirm/$token'
+    | '/newsletter/unsubscribe/$token'
+    | '/api/newsletter/unsubscribe/$token'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/agb'
     | '/contact'
-    | '/datenschutz'
-    | '/dienstleistungen'
-    | '/hof'
-    | '/impressum'
-    | '/kontakt'
-    | '/latest'
     | '/legal'
     | '/privacy'
     | '/services'
     | '/terms'
-    | '/aktuelles/$slug'
-    | '/hofladen/$productId'
+    | '/latest/$slug'
     | '/products/$productId'
-    | '/aktuelles'
-    | '/hofladen'
+    | '/latest'
     | '/products'
-    | '/newsletter/abmelden/$token'
-    | '/newsletter/bestaetigen/$token'
-    | '/api/newsletter/abmelden/$token'
+    | '/newsletter/confirm/$token'
+    | '/newsletter/unsubscribe/$token'
+    | '/api/newsletter/unsubscribe/$token'
   id:
     | '__root__'
     | '/'
     | '/about'
-    | '/agb'
     | '/contact'
-    | '/datenschutz'
-    | '/dienstleistungen'
-    | '/hof'
-    | '/impressum'
-    | '/kontakt'
-    | '/latest'
     | '/legal'
     | '/privacy'
     | '/services'
     | '/terms'
-    | '/aktuelles/$slug'
-    | '/hofladen/$productId'
+    | '/latest/$slug'
     | '/products/$productId'
-    | '/aktuelles/'
-    | '/hofladen/'
+    | '/latest/'
     | '/products/'
-    | '/newsletter/abmelden/$token'
-    | '/newsletter/bestaetigen/$token'
-    | '/api/newsletter/abmelden/$token'
+    | '/newsletter/confirm/$token'
+    | '/newsletter/unsubscribe/$token'
+    | '/api/newsletter/unsubscribe/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AgbRoute: typeof AgbRoute
   ContactRoute: typeof ContactRoute
-  DatenschutzRoute: typeof DatenschutzRoute
-  DienstleistungenRoute: typeof DienstleistungenRoute
-  HofRoute: typeof HofRoute
-  ImpressumRoute: typeof ImpressumRoute
-  KontaktRoute: typeof KontaktRoute
-  LatestRoute: typeof LatestRoute
   LegalRoute: typeof LegalRoute
   PrivacyRoute: typeof PrivacyRoute
   ServicesRoute: typeof ServicesRoute
   TermsRoute: typeof TermsRoute
-  AktuellesSlugRoute: typeof AktuellesSlugRoute
-  HofladenProductIdRoute: typeof HofladenProductIdRoute
+  LatestSlugRoute: typeof LatestSlugRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
-  AktuellesIndexRoute: typeof AktuellesIndexRoute
-  HofladenIndexRoute: typeof HofladenIndexRoute
+  LatestIndexRoute: typeof LatestIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
-  NewsletterAbmeldenTokenRoute: typeof NewsletterAbmeldenTokenRoute
-  NewsletterBestaetigenTokenRoute: typeof NewsletterBestaetigenTokenRoute
-  ApiNewsletterAbmeldenTokenRoute: typeof ApiNewsletterAbmeldenTokenRoute
+  NewsletterConfirmTokenRoute: typeof NewsletterConfirmTokenRoute
+  NewsletterUnsubscribeTokenRoute: typeof NewsletterUnsubscribeTokenRoute
+  ApiNewsletterUnsubscribeTokenRoute: typeof ApiNewsletterUnsubscribeTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -347,60 +230,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/agb': {
-      id: '/agb'
-      path: '/agb'
-      fullPath: '/agb'
-      preLoaderRoute: typeof AgbRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/contact': {
       id: '/contact'
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/datenschutz': {
-      id: '/datenschutz'
-      path: '/datenschutz'
-      fullPath: '/datenschutz'
-      preLoaderRoute: typeof DatenschutzRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dienstleistungen': {
-      id: '/dienstleistungen'
-      path: '/dienstleistungen'
-      fullPath: '/dienstleistungen'
-      preLoaderRoute: typeof DienstleistungenRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/hof': {
-      id: '/hof'
-      path: '/hof'
-      fullPath: '/hof'
-      preLoaderRoute: typeof HofRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/impressum': {
-      id: '/impressum'
-      path: '/impressum'
-      fullPath: '/impressum'
-      preLoaderRoute: typeof ImpressumRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/kontakt': {
-      id: '/kontakt'
-      path: '/kontakt'
-      fullPath: '/kontakt'
-      preLoaderRoute: typeof KontaktRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/latest': {
-      id: '/latest'
-      path: '/latest'
-      fullPath: '/latest'
-      preLoaderRoute: typeof LatestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/legal': {
@@ -431,32 +265,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/aktuelles/': {
-      id: '/aktuelles/'
-      path: '/aktuelles'
-      fullPath: '/aktuelles/'
-      preLoaderRoute: typeof AktuellesIndexRouteImport
+    '/latest/': {
+      id: '/latest/'
+      path: '/latest'
+      fullPath: '/latest/'
+      preLoaderRoute: typeof LatestIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/aktuelles/$slug': {
-      id: '/aktuelles/$slug'
-      path: '/aktuelles/$slug'
-      fullPath: '/aktuelles/$slug'
-      preLoaderRoute: typeof AktuellesSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/hofladen/': {
-      id: '/hofladen/'
-      path: '/hofladen'
-      fullPath: '/hofladen/'
-      preLoaderRoute: typeof HofladenIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/hofladen/$productId': {
-      id: '/hofladen/$productId'
-      path: '/hofladen/$productId'
-      fullPath: '/hofladen/$productId'
-      preLoaderRoute: typeof HofladenProductIdRouteImport
+    '/latest/$slug': {
+      id: '/latest/$slug'
+      path: '/latest/$slug'
+      fullPath: '/latest/$slug'
+      preLoaderRoute: typeof LatestSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/products/': {
@@ -473,25 +293,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/newsletter/abmelden/$token': {
-      id: '/newsletter/abmelden/$token'
-      path: '/newsletter/abmelden/$token'
-      fullPath: '/newsletter/abmelden/$token'
-      preLoaderRoute: typeof NewsletterAbmeldenTokenRouteImport
+    '/newsletter/confirm/$token': {
+      id: '/newsletter/confirm/$token'
+      path: '/newsletter/confirm/$token'
+      fullPath: '/newsletter/confirm/$token'
+      preLoaderRoute: typeof NewsletterConfirmTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/newsletter/bestaetigen/$token': {
-      id: '/newsletter/bestaetigen/$token'
-      path: '/newsletter/bestaetigen/$token'
-      fullPath: '/newsletter/bestaetigen/$token'
-      preLoaderRoute: typeof NewsletterBestaetigenTokenRouteImport
+    '/newsletter/unsubscribe/$token': {
+      id: '/newsletter/unsubscribe/$token'
+      path: '/newsletter/unsubscribe/$token'
+      fullPath: '/newsletter/unsubscribe/$token'
+      preLoaderRoute: typeof NewsletterUnsubscribeTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/newsletter/abmelden/$token': {
-      id: '/api/newsletter/abmelden/$token'
-      path: '/api/newsletter/abmelden/$token'
-      fullPath: '/api/newsletter/abmelden/$token'
-      preLoaderRoute: typeof ApiNewsletterAbmeldenTokenRouteImport
+    '/api/newsletter/unsubscribe/$token': {
+      id: '/api/newsletter/unsubscribe/$token'
+      path: '/api/newsletter/unsubscribe/$token'
+      fullPath: '/api/newsletter/unsubscribe/$token'
+      preLoaderRoute: typeof ApiNewsletterUnsubscribeTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -500,27 +320,18 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AgbRoute: AgbRoute,
   ContactRoute: ContactRoute,
-  DatenschutzRoute: DatenschutzRoute,
-  DienstleistungenRoute: DienstleistungenRoute,
-  HofRoute: HofRoute,
-  ImpressumRoute: ImpressumRoute,
-  KontaktRoute: KontaktRoute,
-  LatestRoute: LatestRoute,
   LegalRoute: LegalRoute,
   PrivacyRoute: PrivacyRoute,
   ServicesRoute: ServicesRoute,
   TermsRoute: TermsRoute,
-  AktuellesSlugRoute: AktuellesSlugRoute,
-  HofladenProductIdRoute: HofladenProductIdRoute,
+  LatestSlugRoute: LatestSlugRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
-  AktuellesIndexRoute: AktuellesIndexRoute,
-  HofladenIndexRoute: HofladenIndexRoute,
+  LatestIndexRoute: LatestIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
-  NewsletterAbmeldenTokenRoute: NewsletterAbmeldenTokenRoute,
-  NewsletterBestaetigenTokenRoute: NewsletterBestaetigenTokenRoute,
-  ApiNewsletterAbmeldenTokenRoute: ApiNewsletterAbmeldenTokenRoute,
+  NewsletterConfirmTokenRoute: NewsletterConfirmTokenRoute,
+  NewsletterUnsubscribeTokenRoute: NewsletterUnsubscribeTokenRoute,
+  ApiNewsletterUnsubscribeTokenRoute: ApiNewsletterUnsubscribeTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

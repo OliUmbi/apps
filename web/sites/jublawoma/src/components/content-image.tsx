@@ -1,3 +1,4 @@
+import { m } from "@oliumbi/i18n/messages";
 import { ImageOff } from "lucide-react";
 import { useState } from "react";
 
@@ -38,11 +39,12 @@ export function ContentImage({
 		<div
 			className={`content-image-fallback ${className}`}
 			role="img"
-			aria-label={alt || "Kein Bild vorhanden"}
+			aria-label={alt || m.jublawoma_components_content_image_feedback()}
 		>
 			<img src={`/assets/images/doodles/${doodles[index]}`} alt="" />
 			<span>
-				<ImageOff size={14} /> Bild folgt
+				<ImageOff size={14} />
+				{m.jublawoma_components_content_image_text()}
 			</span>
 		</div>
 	);

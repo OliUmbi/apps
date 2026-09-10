@@ -1,6 +1,7 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { m } from "@oliumbi/i18n/messages";
+import { createFileRoute } from "@tanstack/react-router";
+import { TermsPage } from "../pages/legal-pages";
 export const Route = createFileRoute("/terms")({
-	beforeLoad: () => {
-		throw redirect({ to: "/agb" });
-	},
+	head: () => ({ meta: [{ title: m.zelglihof_routes_terms_title() }] }),
+	component: TermsPage,
 });

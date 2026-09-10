@@ -7,17 +7,10 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-apps}
       POSTGRES_USER: ${POSTGRES_MIGRATOR_USER:-apps_migrator}
       POSTGRES_PASSWORD: ${POSTGRES_MIGRATOR_PASSWORD:-dev-migrator-password}
-      ZELGLIHOF_DATABASE_PASSWORD: ${ZELGLIHOF_DATABASE_PASSWORD:-dev-zelglihof-password}
-      UNCLET_DATABASE_PASSWORD: ${UNCLET_DATABASE_PASSWORD:-dev-unclet-password}
-      JUBLAWOMA_DATABASE_PASSWORD: ${JUBLAWOMA_DATABASE_PASSWORD:-dev-jublawoma-password}
-      STUDIO_DATABASE_PASSWORD: ${STUDIO_DATABASE_PASSWORD:-dev-studio-password}
-      IDENTITY_DATABASE_PASSWORD: ${IDENTITY_DATABASE_PASSWORD:-dev-identity-password}
-      MESSAGING_DATABASE_PASSWORD: ${MESSAGING_DATABASE_PASSWORD:-dev-messaging-password}
     ports:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql
-      - ./database/bootstrap:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_MIGRATOR_USER:-apps_migrator} -d ${POSTGRES_DB:-apps}"]
       interval: 2s
@@ -69,7 +62,7 @@ services:
       MESSAGING_DATABASE_USER: ${MESSAGING_DATABASE_USER:-messaging}
       MESSAGING_DATABASE_PASSWORD: ${MESSAGING_DATABASE_PASSWORD:-messaging_password}
       MESSAGING_INTERNAL_AUTHORIZATION_TOKEN: ${MESSAGING_INTERNAL_AUTHORIZATION_TOKEN:-dev_messaging_internal_authorization}
-      SMTP_HOST: ${SMTP_HOST:-mailpit}
+      SMTP_HOST: ${SMTP_CONTAINER_HOST:-mailpit}
       SMTP_PORT: ${SMTP_PORT:-1025}
       SMTP_USERNAME: ${SMTP_USERNAME:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
@@ -104,11 +97,13 @@ services:
     build:
       context: ./web
       dockerfile: sites/zelglihof/Dockerfile
+      args:
+        VITE_ASSETS_PUBLIC_URL: ${ASSETS_PUBLIC_URL:-http://localhost:8083}
     environment:
-      DATABASE_URL: postgres://${ZELGLIHOF_DATABASE_USER:-zelglihof}:${ZELGLIHOF_DATABASE_PASSWORD:-dev-zelglihof-password}@postgres:5432/${POSTGRES_DB:-apps}
-      DATABASE_POOL_SIZE: ${WEB_DATABASE_POOL_SIZE:-10}
+      ASSETS_PUBLIC_URL: ${ASSETS_PUBLIC_URL:-http://localhost:8083}
+      DATABASE_URL: postgres://${ZELGLIHOF_DATABASE_USER:-zelglihof}:${ZELGLIHOF_DATABASE_PASSWORD:-zelglihof_password}@postgres:5432/${POSTGRES_DB:-apps}
+      DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-10}
       MESSAGING_SERVICE_URL: http://messaging:8082
-      MESSAGING_INTERNAL_TOKEN: ${MESSAGING_INTERNAL_TOKEN:-dev-messaging-internal-token}
       ZELGLIHOF_PUBLIC_URL: ${ZELGLIHOF_PUBLIC_URL:-http://localhost:8003}
       ZELGLIHOF_OWNER_EMAIL: ${ZELGLIHOF_OWNER_EMAIL:-hof@zelglihof.ch}
     ports:
@@ -123,11 +118,13 @@ services:
     build:
       context: ./web
       dockerfile: sites/unclet/Dockerfile
+      args:
+        VITE_ASSETS_PUBLIC_URL: ${ASSETS_PUBLIC_URL:-http://localhost:8083}
     environment:
-      DATABASE_URL: postgres://${UNCLET_DATABASE_USER:-unclet}:${UNCLET_DATABASE_PASSWORD:-dev-unclet-password}@postgres:5432/${POSTGRES_DB:-apps}
-      DATABASE_POOL_SIZE: ${WEB_DATABASE_POOL_SIZE:-10}
+      ASSETS_PUBLIC_URL: ${ASSETS_PUBLIC_URL:-http://localhost:8083}
+      DATABASE_URL: postgres://${UNCLET_DATABASE_USER:-unclet}:${UNCLET_DATABASE_PASSWORD:-unclet_password}@postgres:5432/${POSTGRES_DB:-apps}
+      DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-10}
       MESSAGING_SERVICE_URL: http://messaging:8082
-      MESSAGING_INTERNAL_TOKEN: ${MESSAGING_INTERNAL_TOKEN:-dev-messaging-internal-token}
       UNCLET_OWNER_EMAIL: ${UNCLET_OWNER_EMAIL:-info@uncle-t.ch}
     ports:
       - "8002:8002"
@@ -141,11 +138,14 @@ services:
     build:
       context: ./web
       dockerfile: sites/jublawoma/Dockerfile
+      args:
+        VITE_ASSETS_PUBLIC_URL: ${ASSETS_PUBLIC_URL:-http://localhost:8083}
     ports:
       - "8001:8001"
     environment:
-      DATABASE_URL: postgres://${JUBLAWOMA_DATABASE_USER:-jublawoma}:${JUBLAWOMA_DATABASE_PASSWORD:-dev-jublawoma-password}@postgres:5432/${POSTGRES_DB:-apps}
-      DATABASE_POOL_SIZE: ${WEB_DATABASE_POOL_SIZE:-10}
+      ASSETS_PUBLIC_URL: ${ASSETS_PUBLIC_URL:-http://localhost:8083}
+      DATABASE_URL: postgres://${JUBLAWOMA_DATABASE_USER:-jublawoma}:${JUBLAWOMA_DATABASE_PASSWORD:-jublawoma_password}@postgres:5432/${POSTGRES_DB:-apps}
+      DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-10}
     depends_on:
       flyway:
         condition: service_completed_successfully
@@ -155,13 +155,15 @@ services:
       context: ./web
       dockerfile: sites/studio/Dockerfile
     environment:
-      DATABASE_URL: postgres://${STUDIO_DATABASE_USER:-studio}:${STUDIO_DATABASE_PASSWORD:-dev-studio-password}@postgres:5432/${POSTGRES_DB:-apps}
-      DATABASE_POOL_SIZE: ${WEB_DATABASE_POOL_SIZE:-10}
+      DATABASE_URL: postgres://${STUDIO_DATABASE_USER:-studio}:${STUDIO_DATABASE_PASSWORD:-studio_password}@postgres:5432/${POSTGRES_DB:-apps}
+      DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-10}
       ZELGLIHOF_PUBLIC_URL: ${ZELGLIHOF_PUBLIC_URL:-http://localhost:8003}
+      ASSETS_SERVICE_URL: http://assets:8083
+      ASSETS_INTERNAL_AUTHORIZATION_TOKEN: ${ASSETS_INTERNAL_AUTHORIZATION_TOKEN:-dev_assets_internal_authorization}
+      MESSAGING_INTERNAL_AUTHORIZATION_TOKEN: ${MESSAGING_INTERNAL_AUTHORIZATION_TOKEN:-dev_messaging_internal_authorization}
       IDENTITY_SERVICE_URL: http://identity:8081
       MESSAGING_SERVICE_URL: http://messaging:8082
-      IDENTITY_INTERNAL_TOKEN: ${IDENTITY_INTERNAL_TOKEN:-dev-identity-internal-token}
-      MESSAGING_INTERNAL_TOKEN: ${MESSAGING_INTERNAL_TOKEN:-dev-messaging-internal-token}
+      IDENTITY_INTERNAL_AUTHORIZATION_TOKEN: ${IDENTITY_INTERNAL_AUTHORIZATION_TOKEN:-dev_identity_internal_authorization}
     ports:
       - "8000:8000"
     depends_on:

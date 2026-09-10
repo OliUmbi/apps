@@ -1,20 +1,21 @@
+import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 
 const services = [
 	{
 		name: "Saat",
-		text: "Präzise Aussaat mit moderner Technik – abgestimmt auf Kultur, Boden und Bedingungen.",
+		text: m.zelglihof_pages_services_page_text(),
 		image: "/images/demo/demo-saat.jpg",
 	},
 	{
 		name: "Pflanzenschutz",
-		text: "Gezielte Arbeiten im Feld mit Erfahrung, Sorgfalt und dem Blick für den richtigen Zeitpunkt.",
+		text: m.zelglihof_pages_services_page_text_2(),
 		image: "/images/demo/demo-pflanzenschutz.jpg",
 	},
 	{
 		name: "Winterdienst",
-		text: "Zuverlässige Räumung und Unterstützung, wenn Schnee und Eis den Alltag bestimmen.",
+		text: m.zelglihof_pages_services_page_text_3(),
 		image: "/images/demo/demo-winterdienst.jpg",
 	},
 ];
@@ -23,14 +24,15 @@ export function ServicesPage() {
 	return (
 		<>
 			<section className="shell py-14 md:py-24">
-				<p className="eyebrow text-clay">Dienstleistungen</p>
+				<p className="eyebrow text-clay">
+					{m.zelglihof_pages_services_page_paragraph()}
+				</p>
 				<div className="mt-5 grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-end">
 					<h1 className="display-title text-6xl md:text-8xl">
-						Technik, die anpackt.
+						{m.zelglihof_pages_services_page_heading()}
 					</h1>
 					<p className="max-w-xl text-xl leading-relaxed text-ink/60">
-						Ausgewählte landwirtschaftliche Arbeiten für Betriebe und Umgebung –
-						je nach Saison, Bedingungen und verfügbarer Kapazität.
+						{m.zelglihof_pages_services_page_paragraph_2()}
 					</p>
 				</div>
 			</section>
@@ -58,10 +60,11 @@ export function ServicesPage() {
 								</p>
 							</div>
 							<Link
-								to="/kontakt"
+								to="/contact"
 								className="mt-10 inline-flex items-center gap-2 font-bold"
 							>
-								Verfügbarkeit anfragen <ArrowRight size={18} />
+								{m.zelglihof_pages_services_page_text_4()}
+								<ArrowRight size={18} />
 							</Link>
 						</div>
 					</article>

@@ -10,193 +10,140 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AgbRouteImport } from './routes/agb'
-import { Route as AnfragenRouteImport } from './routes/anfragen'
-import { Route as AngebotRouteImport } from './routes/angebot'
-import { Route as CateringRouteImport } from './routes/catering'
-import { Route as DatenschutzRouteImport } from './routes/datenschutz'
-import { Route as EinblickeRouteImport } from './routes/einblicke'
-import { Route as GeschaeftsbedingungRouteImport } from './routes/geschaeftsbedingung'
-import { Route as ImpressumRouteImport } from './routes/impressum'
-import { Route as KontaktRouteImport } from './routes/kontakt'
-import { Route as KurseRouteImport } from './routes/kurse'
-import { Route as PrivatkochRouteImport } from './routes/privatkoch'
-import { Route as UeberMichRouteImport } from './routes/ueber-mich'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as InquiryRouteImport } from './routes/inquiry'
+import { Route as LegalRouteImport } from './routes/legal'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ServicesRouteImport } from './routes/services'
+import { Route as ShowcasesRouteImport } from './routes/showcases'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ShowcasesSlugRouteImport } from './routes/showcases/$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AgbRoute = AgbRouteImport.update({
-  id: '/agb',
-  path: '/agb',
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AnfragenRoute = AnfragenRouteImport.update({
-  id: '/anfragen',
-  path: '/anfragen',
+const InquiryRoute = InquiryRouteImport.update({
+  id: '/inquiry',
+  path: '/inquiry',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AngebotRoute = AngebotRouteImport.update({
-  id: '/angebot',
-  path: '/angebot',
+const LegalRoute = LegalRouteImport.update({
+  id: '/legal',
+  path: '/legal',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CateringRoute = CateringRouteImport.update({
-  id: '/catering',
-  path: '/catering',
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DatenschutzRoute = DatenschutzRouteImport.update({
-  id: '/datenschutz',
-  path: '/datenschutz',
+const ServicesRoute = ServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EinblickeRoute = EinblickeRouteImport.update({
-  id: '/einblicke',
-  path: '/einblicke',
+const ShowcasesRoute = ShowcasesRouteImport.update({
+  id: '/showcases',
+  path: '/showcases',
   getParentRoute: () => rootRouteImport,
 } as any)
-const GeschaeftsbedingungRoute = GeschaeftsbedingungRouteImport.update({
-  id: '/geschaeftsbedingung',
-  path: '/geschaeftsbedingung',
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ImpressumRoute = ImpressumRouteImport.update({
-  id: '/impressum',
-  path: '/impressum',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const KontaktRoute = KontaktRouteImport.update({
-  id: '/kontakt',
-  path: '/kontakt',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const KurseRoute = KurseRouteImport.update({
-  id: '/kurse',
-  path: '/kurse',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivatkochRoute = PrivatkochRouteImport.update({
-  id: '/privatkoch',
-  path: '/privatkoch',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UeberMichRoute = UeberMichRouteImport.update({
-  id: '/ueber-mich',
-  path: '/ueber-mich',
-  getParentRoute: () => rootRouteImport,
+const ShowcasesSlugRoute = ShowcasesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ShowcasesRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/agb': typeof AgbRoute
-  '/anfragen': typeof AnfragenRoute
-  '/angebot': typeof AngebotRoute
-  '/catering': typeof CateringRoute
-  '/datenschutz': typeof DatenschutzRoute
-  '/einblicke': typeof EinblickeRoute
-  '/geschaeftsbedingung': typeof GeschaeftsbedingungRoute
-  '/impressum': typeof ImpressumRoute
-  '/kontakt': typeof KontaktRoute
-  '/kurse': typeof KurseRoute
-  '/privatkoch': typeof PrivatkochRoute
-  '/ueber-mich': typeof UeberMichRoute
+  '/about': typeof AboutRoute
+  '/inquiry': typeof InquiryRoute
+  '/legal': typeof LegalRoute
+  '/privacy': typeof PrivacyRoute
+  '/services': typeof ServicesRoute
+  '/showcases': typeof ShowcasesRouteWithChildren
+  '/terms': typeof TermsRoute
+  '/showcases/$slug': typeof ShowcasesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/agb': typeof AgbRoute
-  '/anfragen': typeof AnfragenRoute
-  '/angebot': typeof AngebotRoute
-  '/catering': typeof CateringRoute
-  '/datenschutz': typeof DatenschutzRoute
-  '/einblicke': typeof EinblickeRoute
-  '/geschaeftsbedingung': typeof GeschaeftsbedingungRoute
-  '/impressum': typeof ImpressumRoute
-  '/kontakt': typeof KontaktRoute
-  '/kurse': typeof KurseRoute
-  '/privatkoch': typeof PrivatkochRoute
-  '/ueber-mich': typeof UeberMichRoute
+  '/about': typeof AboutRoute
+  '/inquiry': typeof InquiryRoute
+  '/legal': typeof LegalRoute
+  '/privacy': typeof PrivacyRoute
+  '/services': typeof ServicesRoute
+  '/showcases': typeof ShowcasesRouteWithChildren
+  '/terms': typeof TermsRoute
+  '/showcases/$slug': typeof ShowcasesSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/agb': typeof AgbRoute
-  '/anfragen': typeof AnfragenRoute
-  '/angebot': typeof AngebotRoute
-  '/catering': typeof CateringRoute
-  '/datenschutz': typeof DatenschutzRoute
-  '/einblicke': typeof EinblickeRoute
-  '/geschaeftsbedingung': typeof GeschaeftsbedingungRoute
-  '/impressum': typeof ImpressumRoute
-  '/kontakt': typeof KontaktRoute
-  '/kurse': typeof KurseRoute
-  '/privatkoch': typeof PrivatkochRoute
-  '/ueber-mich': typeof UeberMichRoute
+  '/about': typeof AboutRoute
+  '/inquiry': typeof InquiryRoute
+  '/legal': typeof LegalRoute
+  '/privacy': typeof PrivacyRoute
+  '/services': typeof ServicesRoute
+  '/showcases': typeof ShowcasesRouteWithChildren
+  '/terms': typeof TermsRoute
+  '/showcases/$slug': typeof ShowcasesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/agb'
-    | '/anfragen'
-    | '/angebot'
-    | '/catering'
-    | '/datenschutz'
-    | '/einblicke'
-    | '/geschaeftsbedingung'
-    | '/impressum'
-    | '/kontakt'
-    | '/kurse'
-    | '/privatkoch'
-    | '/ueber-mich'
+    | '/about'
+    | '/inquiry'
+    | '/legal'
+    | '/privacy'
+    | '/services'
+    | '/showcases'
+    | '/terms'
+    | '/showcases/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/agb'
-    | '/anfragen'
-    | '/angebot'
-    | '/catering'
-    | '/datenschutz'
-    | '/einblicke'
-    | '/geschaeftsbedingung'
-    | '/impressum'
-    | '/kontakt'
-    | '/kurse'
-    | '/privatkoch'
-    | '/ueber-mich'
+    | '/about'
+    | '/inquiry'
+    | '/legal'
+    | '/privacy'
+    | '/services'
+    | '/showcases'
+    | '/terms'
+    | '/showcases/$slug'
   id:
     | '__root__'
     | '/'
-    | '/agb'
-    | '/anfragen'
-    | '/angebot'
-    | '/catering'
-    | '/datenschutz'
-    | '/einblicke'
-    | '/geschaeftsbedingung'
-    | '/impressum'
-    | '/kontakt'
-    | '/kurse'
-    | '/privatkoch'
-    | '/ueber-mich'
+    | '/about'
+    | '/inquiry'
+    | '/legal'
+    | '/privacy'
+    | '/services'
+    | '/showcases'
+    | '/terms'
+    | '/showcases/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AgbRoute: typeof AgbRoute
-  AnfragenRoute: typeof AnfragenRoute
-  AngebotRoute: typeof AngebotRoute
-  CateringRoute: typeof CateringRoute
-  DatenschutzRoute: typeof DatenschutzRoute
-  EinblickeRoute: typeof EinblickeRoute
-  GeschaeftsbedingungRoute: typeof GeschaeftsbedingungRoute
-  ImpressumRoute: typeof ImpressumRoute
-  KontaktRoute: typeof KontaktRoute
-  KurseRoute: typeof KurseRoute
-  PrivatkochRoute: typeof PrivatkochRoute
-  UeberMichRoute: typeof UeberMichRoute
+  AboutRoute: typeof AboutRoute
+  InquiryRoute: typeof InquiryRoute
+  LegalRoute: typeof LegalRoute
+  PrivacyRoute: typeof PrivacyRoute
+  ServicesRoute: typeof ServicesRoute
+  ShowcasesRoute: typeof ShowcasesRouteWithChildren
+  TermsRoute: typeof TermsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -208,107 +155,86 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/agb': {
-      id: '/agb'
-      path: '/agb'
-      fullPath: '/agb'
-      preLoaderRoute: typeof AgbRouteImport
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/anfragen': {
-      id: '/anfragen'
-      path: '/anfragen'
-      fullPath: '/anfragen'
-      preLoaderRoute: typeof AnfragenRouteImport
+    '/inquiry': {
+      id: '/inquiry'
+      path: '/inquiry'
+      fullPath: '/inquiry'
+      preLoaderRoute: typeof InquiryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/angebot': {
-      id: '/angebot'
-      path: '/angebot'
-      fullPath: '/angebot'
-      preLoaderRoute: typeof AngebotRouteImport
+    '/legal': {
+      id: '/legal'
+      path: '/legal'
+      fullPath: '/legal'
+      preLoaderRoute: typeof LegalRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/catering': {
-      id: '/catering'
-      path: '/catering'
-      fullPath: '/catering'
-      preLoaderRoute: typeof CateringRouteImport
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/datenschutz': {
-      id: '/datenschutz'
-      path: '/datenschutz'
-      fullPath: '/datenschutz'
-      preLoaderRoute: typeof DatenschutzRouteImport
+    '/services': {
+      id: '/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof ServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/einblicke': {
-      id: '/einblicke'
-      path: '/einblicke'
-      fullPath: '/einblicke'
-      preLoaderRoute: typeof EinblickeRouteImport
+    '/showcases': {
+      id: '/showcases'
+      path: '/showcases'
+      fullPath: '/showcases'
+      preLoaderRoute: typeof ShowcasesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/geschaeftsbedingung': {
-      id: '/geschaeftsbedingung'
-      path: '/geschaeftsbedingung'
-      fullPath: '/geschaeftsbedingung'
-      preLoaderRoute: typeof GeschaeftsbedingungRouteImport
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/impressum': {
-      id: '/impressum'
-      path: '/impressum'
-      fullPath: '/impressum'
-      preLoaderRoute: typeof ImpressumRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/kontakt': {
-      id: '/kontakt'
-      path: '/kontakt'
-      fullPath: '/kontakt'
-      preLoaderRoute: typeof KontaktRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/kurse': {
-      id: '/kurse'
-      path: '/kurse'
-      fullPath: '/kurse'
-      preLoaderRoute: typeof KurseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privatkoch': {
-      id: '/privatkoch'
-      path: '/privatkoch'
-      fullPath: '/privatkoch'
-      preLoaderRoute: typeof PrivatkochRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ueber-mich': {
-      id: '/ueber-mich'
-      path: '/ueber-mich'
-      fullPath: '/ueber-mich'
-      preLoaderRoute: typeof UeberMichRouteImport
-      parentRoute: typeof rootRouteImport
+    '/showcases/$slug': {
+      id: '/showcases/$slug'
+      path: '/$slug'
+      fullPath: '/showcases/$slug'
+      preLoaderRoute: typeof ShowcasesSlugRouteImport
+      parentRoute: typeof ShowcasesRoute
     }
   }
 }
 
+interface ShowcasesRouteChildren {
+  ShowcasesSlugRoute: typeof ShowcasesSlugRoute
+}
+
+const ShowcasesRouteChildren: ShowcasesRouteChildren = {
+  ShowcasesSlugRoute: ShowcasesSlugRoute,
+}
+
+const ShowcasesRouteWithChildren = ShowcasesRoute._addFileChildren(
+  ShowcasesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AgbRoute: AgbRoute,
-  AnfragenRoute: AnfragenRoute,
-  AngebotRoute: AngebotRoute,
-  CateringRoute: CateringRoute,
-  DatenschutzRoute: DatenschutzRoute,
-  EinblickeRoute: EinblickeRoute,
-  GeschaeftsbedingungRoute: GeschaeftsbedingungRoute,
-  ImpressumRoute: ImpressumRoute,
-  KontaktRoute: KontaktRoute,
-  KurseRoute: KurseRoute,
-  PrivatkochRoute: PrivatkochRoute,
-  UeberMichRoute: UeberMichRoute,
+  AboutRoute: AboutRoute,
+  InquiryRoute: InquiryRoute,
+  LegalRoute: LegalRoute,
+  PrivacyRoute: PrivacyRoute,
+  ServicesRoute: ServicesRoute,
+  ShowcasesRoute: ShowcasesRouteWithChildren,
+  TermsRoute: TermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

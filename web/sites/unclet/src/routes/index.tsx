@@ -1,23 +1,25 @@
+import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowDown, ArrowRight, Award, MapPin, Users } from "lucide-react";
+import { PublicReviews } from "../components/public-reviews";
 
 export const Route = createFileRoute("/")({ component: HomePage });
 
 const formats = [
 	{
 		number: "01",
-		title: "Private Dinner",
-		copy: "Ein persönliches Menü in Ihrem Zuhause – von der Idee bis zum letzten Teller.",
+		title: m.unclet_routes_index_title(),
+		copy: m.unclet_routes_index_copy(),
 	},
 	{
 		number: "02",
-		title: "Feste & Hochzeiten",
-		copy: "Ein stimmiges Essen, das Menschen zusammenbringt und sich selbstverständlich in den Tag einfügt.",
+		title: m.unclet_routes_index_title_2(),
+		copy: m.unclet_routes_index_copy_2(),
 	},
 	{
 		number: "03",
-		title: "Business & Grossanlässe",
-		copy: "Professionelle Abläufe, verlässlicher Service und ein Angebot, das zur Grösse des Anlasses passt.",
+		title: m.unclet_routes_index_title_3(),
+		copy: m.unclet_routes_index_copy_3(),
 	},
 ];
 
@@ -27,31 +29,32 @@ function HomePage() {
 			<section className="relative min-h-[92svh] overflow-hidden pt-20">
 				<img
 					src="/images/private-dinner.jpg"
-					alt="Thomas Habegger serviert ein privates Dinner"
+					alt={m.unclet_routes_index_alt()}
 					className="absolute inset-0 size-full object-cover object-center"
 				/>
 				<div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(17,17,15,.96)_0%,rgba(17,17,15,.72)_47%,rgba(17,17,15,.18)_100%)]" />
 				<div className="shell relative z-10 flex min-h-[calc(92svh-5rem)] items-end pb-14 md:items-center md:pb-0">
 					<div className="max-w-4xl">
 						<p className="eyebrow text-brass-light">
-							Catering · Private Dining · Mägenwil
+							{m.unclet_routes_index_paragraph()}
 						</p>
 						<h1 className="display-title mt-6 text-[clamp(4.1rem,10vw,9.5rem)]">
-							Ihr Anlass.
+							{m.unclet_routes_index_heading()}
 							<br />
-							<span className="text-brass-light italic">Meine Küche.</span>
+							<span className="text-brass-light italic">
+								{m.unclet_routes_index_text()}
+							</span>
 						</h1>
 						<p className="mt-8 max-w-xl text-lg leading-relaxed text-bone/70 md:text-xl">
-							Von zwei Gästen am eigenen Tisch bis zur grossen Firmenfeier:
-							Thomas Habegger entwickelt Essen, Service und Ablauf als ein
-							persönliches Ganzes.
+							{m.unclet_routes_index_paragraph_2()}
 						</p>
 						<div className="mt-10 flex flex-wrap gap-3">
-							<Link to="/anfragen" className="button-primary">
-								Anlass besprechen <ArrowRight size={17} />
+							<Link to="/inquiry" className="button-primary">
+								{m.unclet_routes_index_text_2()}
+								<ArrowRight size={17} />
 							</Link>
-							<Link to="/angebot" className="button-secondary">
-								Angebot entdecken
+							<Link to="/services" className="button-secondary">
+								{m.unclet_routes_index_text_3()}
 							</Link>
 						</div>
 					</div>
@@ -60,18 +63,21 @@ function HomePage() {
 					href="#angebot"
 					className="absolute right-5 bottom-8 z-10 hidden items-center gap-3 text-xs tracking-widest text-bone/55 uppercase md:flex"
 				>
-					Entdecken <ArrowDown size={16} />
+					{m.unclet_routes_index_text_4()}
+					<ArrowDown size={16} />
 				</a>
 			</section>
 
 			<section id="angebot" className="bg-paper py-24 text-night md:py-36">
 				<div className="shell">
 					<div className="grid gap-12 md:grid-cols-[.8fr_1.2fr] md:items-end">
-						<p className="eyebrow text-brass">Ein Gastgeber für jede Grösse</p>
+						<p className="eyebrow text-brass">
+							{m.unclet_routes_index_paragraph_3()}
+						</p>
 						<h2 className="display-title text-5xl md:text-7xl">
-							Nicht von der Stange.
+							{m.unclet_routes_index_heading_2()}
 							<br />
-							Sondern für diesen einen Anlass.
+							{m.unclet_routes_index_heading_3()}
 						</h2>
 					</div>
 					<div className="mt-16 grid border-t border-night/15 md:grid-cols-3">
@@ -91,10 +97,11 @@ function HomePage() {
 						))}
 					</div>
 					<Link
-						to="/angebot"
+						to="/services"
 						className="mt-10 inline-flex items-center gap-2 text-sm font-bold tracking-widest uppercase hover:text-brass"
 					>
-						So entsteht Ihr Angebot <ArrowRight size={16} />
+						{m.unclet_routes_index_text_5()}
+						<ArrowRight size={16} />
 					</Link>
 				</div>
 			</section>
@@ -103,35 +110,37 @@ function HomePage() {
 				<div className="image-treatment min-h-[520px]">
 					<img
 						src="/images/thomas.jpg"
-						alt="Thomas Habegger, Koch und Gastgeber von Uncle-T"
+						alt={m.unclet_routes_index_alt_2()}
 						className="object-top"
 					/>
 				</div>
 				<div className="flex items-center bg-coal px-6 py-20 md:px-16 lg:px-20">
 					<div>
-						<p className="eyebrow text-brass">Thomas Habegger</p>
+						<p className="eyebrow text-brass">
+							{m.unclet_routes_index_paragraph_4()}
+						</p>
 						<h2 className="display-title mt-7 text-5xl md:text-7xl">
-							Erfahrung, die man nicht erklären muss. Man schmeckt sie.
+							{m.unclet_routes_index_heading_4()}
 						</h2>
 						<p className="mt-8 max-w-xl text-lg leading-relaxed text-bone/60">
-							Gusto-Sieger 2013, drei Jahre im Gstaad Palace, internationale
-							Erfahrung als Privatkoch und heute selbständig im Aargau. Hinter
-							Uncle-T steht eine Küche mit Anspruch – und ein Gastgeber, der
-							zuhört.
+							{m.unclet_routes_index_paragraph_5()}
 						</p>
 						<div className="mt-10 flex flex-wrap gap-x-8 gap-y-4 text-sm text-bone/65">
 							<span className="flex items-center gap-2">
-								<Award size={17} className="text-brass" /> Gusto-Sieger 2013
+								<Award size={17} className="text-brass" />
+								{m.unclet_routes_index_text_6()}
 							</span>
 							<span className="flex items-center gap-2">
-								<MapPin size={17} className="text-brass" /> Mägenwil, Aargau
+								<MapPin size={17} className="text-brass" />
+								{m.unclet_routes_index_text_7()}
 							</span>
 							<span className="flex items-center gap-2">
-								<Users size={17} className="text-brass" /> 2 bis viele Gäste
+								<Users size={17} className="text-brass" />
+								{m.unclet_routes_index_text_8()}
 							</span>
 						</div>
-						<Link to="/ueber-mich" className="button-secondary mt-10">
-							Thomas kennenlernen
+						<Link to="/about" className="button-secondary mt-10">
+							{m.unclet_routes_index_text_9()}
 						</Link>
 					</div>
 				</div>
@@ -140,57 +149,59 @@ function HomePage() {
 			<section className="shell py-24 md:py-36">
 				<div className="grid gap-8 md:grid-cols-[1.2fr_.8fr] md:items-end">
 					<div>
-						<p className="eyebrow text-brass">Ausgewählte Einblicke</p>
+						<p className="eyebrow text-brass">
+							{m.unclet_routes_index_paragraph_6()}
+						</p>
 						<h2 className="display-title mt-6 text-5xl md:text-7xl">
-							Jeder Anlass hinterlässt eine eigene Handschrift.
+							{m.unclet_routes_index_heading_5()}
 						</h2>
 					</div>
 					<p className="max-w-md leading-relaxed text-bone/55 md:justify-self-end">
-						Vom gesetzten Dinner über das lebendige Buffet bis zum Essen am
-						offenen Feuer: Format und Menü folgen den Menschen, nicht einem
-						festen Paket.
+						{m.unclet_routes_index_paragraph_7()}
 					</p>
 				</div>
 				<div className="mt-14 grid auto-rows-[280px] gap-3 md:grid-cols-12">
 					<div className="image-treatment md:col-span-7 md:row-span-2">
 						<img
 							src="/images/event-table.jpg"
-							alt="Gedeckte Tafel für einen Anlass"
+							alt={m.unclet_routes_index_alt_3()}
 						/>
 					</div>
 					<div className="image-treatment md:col-span-5">
 						<img
 							src="/images/plating.jpg"
-							alt="Frische Pasta wird angerichtet"
+							alt={m.unclet_routes_index_alt_4()}
 						/>
 					</div>
 					<div className="image-treatment md:col-span-5">
-						<img src="/images/fire.jpg" alt="Kochen am offenen Feuer" />
+						<img src="/images/fire.jpg" alt={m.unclet_routes_index_alt_5()} />
 					</div>
 				</div>
-				<Link to="/einblicke" className="button-secondary mt-10">
-					Mehr Einblicke <ArrowRight size={16} />
+				<Link to="/showcases" className="button-secondary mt-10">
+					{m.unclet_routes_index_text_10()}
+					<ArrowRight size={16} />
 				</Link>
 			</section>
 
+			<PublicReviews />
 			<section className="border-y border-brass/25 bg-brass py-20 text-night md:py-28">
 				<div className="shell grid gap-10 md:grid-cols-[1.3fr_.7fr] md:items-end">
 					<div>
-						<p className="eyebrow">Der nächste Anlass beginnt hier</p>
+						<p className="eyebrow">{m.unclet_routes_index_paragraph_8()}</p>
 						<h2 className="display-title mt-5 text-5xl md:text-7xl">
-							Erzählen Sie mir, was Sie vorhaben.
+							{m.unclet_routes_index_heading_6()}
 						</h2>
 					</div>
 					<div>
 						<p className="leading-relaxed text-night/65">
-							Ein Datum, ein Ort und eine ungefähre Gästezahl reichen für den
-							Anfang. Alles Weitere entsteht im persönlichen Gespräch.
+							{m.unclet_routes_index_paragraph_9()}
 						</p>
 						<Link
-							to="/anfragen"
+							to="/inquiry"
 							className="mt-7 inline-flex min-h-13 items-center gap-2 bg-night px-5 text-xs font-bold tracking-widest text-bone uppercase"
 						>
-							Unverbindlich anfragen <ArrowRight size={16} />
+							{m.unclet_routes_index_text_11()}
+							<ArrowRight size={16} />
 						</Link>
 					</div>
 				</div>

@@ -1,6 +1,8 @@
 server:
   port: 8081
 spring:
+  config:
+    import: "optional:file:${APP_ENV_FILE:.env}[.properties]"
   datasource:
     url: jdbc:${DATABASE_URL}
     username: ${IDENTITY_DATABASE_USER}

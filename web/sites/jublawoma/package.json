@@ -2,11 +2,38 @@
   "name": "jublawoma",
   "private": true,
   "type": "module",
-  "scripts": { "dev": "vite dev --host", "build": "vite build", "start": "node .output/server/index.mjs", "check": "tsc --noEmit" },
+  "scripts": {
+    "dev": "vite dev --host",
+    "build": "vite build",
+    "start": "node --env-file-if-exists=../../../.env .output/server/index.mjs",
+    "check": "tsc --noEmit"
+  },
   "dependencies": {
     "@oliumbi/database": "workspace:*",
-    "@tailwindcss/vite": "catalog:", "@tanstack/react-router": "catalog:", "@tanstack/react-start": "catalog:",
-    "lucide-react": "catalog:", "react": "catalog:", "react-dom": "catalog:", "tailwindcss": "catalog:", "zod": "catalog:"
+    "@tailwindcss/vite": "catalog:",
+    "@tanstack/react-router": "catalog:",
+    "@tanstack/react-start": "catalog:",
+    "lucide-react": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "tailwindcss": "catalog:",
+    "zod": "catalog:",
+    "@oliumbi/contracts": "workspace:*",
+    "@oliumbi/assets": "workspace:*",
+    "@oliumbi/i18n": "workspace:*",
+    "@base-ui/react": "catalog:",
+    "@tanstack/react-query": "^5.90.0",
+    "@oliumbi/jublawoma-data": "workspace:*",
+    "@oliumbi/query": "workspace:*"
   },
-  "devDependencies": { "@types/node": "catalog:", "@types/react": "catalog:", "@types/react-dom": "catalog:", "@vitejs/plugin-react": "catalog:", "nitro": "catalog:", "typescript": "catalog:", "vite": "catalog:" }
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "nitro": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "@oliumbi/environment": "workspace:*"
+  }
 }

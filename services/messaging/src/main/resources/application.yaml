@@ -1,6 +1,8 @@
 server:
   port: 8082
 spring:
+  config:
+    import: "optional:file:${APP_ENV_FILE:.env}[.properties]"
   data:
     web:
       pageable:

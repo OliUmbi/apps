@@ -1,3 +1,5 @@
+import { m } from "@oliumbi/i18n/messages";
+import { getLocale } from "@oliumbi/i18n/runtime";
 import {
 	createRootRoute,
 	HeadContent,
@@ -8,34 +10,36 @@ import {
 import type { ReactNode } from "react";
 import { Footer } from "../components/footer";
 import { Header } from "../components/header";
+import { QueryProvider } from "../components/ui/index";
 import "../styles.css";
 
 export const Route = createRootRoute({
 	head: () => ({
 		meta: [
 			{ charSet: "utf-8" },
-			{ name: "viewport", content: "width=device-width, initial-scale=1" },
-			{ title: "Jubla Woma · Jungwacht Blauring Wohlenschwil Mägenwil" },
+			{ name: "viewport", content: m.jublawoma_routes_root_content() },
+			{ title: m.jublawoma_routes_root_title() },
 			{
 				name: "description",
-				content:
-					"Gemeinschaft, Natur und Abenteuer für Kinder und Jugendliche aus Wohlenschwil, Mägenwil und Tägerig.",
+				content: m.jublawoma_routes_root_content_2(),
 			},
-			{ name: "theme-color", content: "#a63848" },
+			{ name: "theme-color", content: m.jublawoma_routes_root_content_3() },
 		],
 		links: [{ rel: "icon", href: "/assets/images/logos/favicon.ico" }],
 	}),
 	component: () => (
 		<Document>
-			<Outlet />
+			<QueryProvider>
+				<Outlet />
+			</QueryProvider>
 		</Document>
 	),
 	notFoundComponent: () => (
 		<section className="shell not-found">
 			<p className="kicker">404</p>
-			<h1>Hier geht der Weg nicht weiter.</h1>
+			<h1>{m.jublawoma_routes_root_heading()}</h1>
 			<Link to="/" className="button dark">
-				Zur Startseite
+				{m.jublawoma_routes_root_text()}
 			</Link>
 		</section>
 	),
@@ -43,7 +47,7 @@ export const Route = createRootRoute({
 
 function Document({ children }: Readonly<{ children: ReactNode }>) {
 	return (
-		<html lang="de-CH">
+		<html lang={getLocale()}>
 			<head>
 				<HeadContent />
 			</head>

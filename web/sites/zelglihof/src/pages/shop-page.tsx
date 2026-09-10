@@ -1,31 +1,35 @@
+import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Bell, Clock3, ShoppingBag } from "lucide-react";
 import { NewsletterSignup } from "../components/newsletter-signup";
-import { products } from "../content/site-content";
+import type { Product } from "../content/site-content";
 
-export function ShopPage() {
+export function ShopPage({ products }: { products: Product[] }) {
 	return (
 		<>
 			<section className="shell grid gap-8 py-14 md:grid-cols-[0.8fr_1.2fr] md:items-end md:py-24">
 				<div>
-					<p className="eyebrow text-clay">Hofladen</p>
+					<p className="eyebrow text-clay">
+						{m.zelglihof_pages_shop_page_paragraph()}
+					</p>
 					<h1 className="display-title mt-5 text-6xl md:text-8xl">
-						Nah dran.
+						{m.zelglihof_pages_shop_page_heading()}
 						<br />
-						Frisch da.
+						{m.zelglihof_pages_shop_page_heading_2()}
 					</h1>
 				</div>
 				<div className="md:pb-2 md:pl-16">
 					<p className="max-w-xl text-xl leading-relaxed text-ink/65">
-						In unserem kleinen Hofladen findest du täglich frische Eier und je
-						nach Saison weitere Köstlichkeiten direkt vom Feld.
+						{m.zelglihof_pages_shop_page_paragraph_2()}
 					</p>
 					<div className="mt-7 flex flex-wrap gap-5 text-sm font-semibold">
 						<span className="flex items-center gap-2">
-							<ShoppingBag size={18} className="text-clay" /> Direkt ab Hof
+							<ShoppingBag size={18} className="text-clay" />
+							{m.zelglihof_pages_shop_page_text()}
 						</span>
 						<span className="flex items-center gap-2">
-							<Clock3 size={18} className="text-clay" /> Solange Vorrat
+							<Clock3 size={18} className="text-clay" />
+							{m.zelglihof_pages_shop_page_text_2()}
 						</span>
 					</div>
 				</div>
@@ -34,7 +38,7 @@ export function ShopPage() {
 				{products.map((product, index) => (
 					<Link
 						key={product.id}
-						to="/hofladen/$productId"
+						to="/products/$productId"
 						params={{ productId: product.id }}
 						className={`group relative overflow-hidden rounded-[2rem] bg-cream ${index === 0 ? "md:col-span-2 md:grid md:grid-cols-2" : ""}`}
 					>
@@ -64,8 +68,8 @@ export function ShopPage() {
 							</div>
 							<span className="mt-8 inline-flex items-center gap-2 font-bold">
 								{product.kind === "seasonal"
-									? "Produkt ansehen"
-									: "Auswahl ansehen"}
+									? m.zelglihof_pages_shop_page_feedback()
+									: m.zelglihof_pages_shop_page_feedback_2()}
 								<ArrowRight
 									size={18}
 									className="transition-transform group-hover:translate-x-1"
@@ -82,15 +86,14 @@ export function ShopPage() {
 					</span>
 					<div>
 						<h2 className="font-serif text-3xl font-bold">
-							Saisonstart nicht verpassen.
+							{m.zelglihof_pages_shop_page_heading_3()}
 						</h2>
 						<p className="mt-2 text-ink/60">
-							Wir schreiben nur, wenn es vom Hof wirklich etwas zu erzählen oder
-							zu holen gibt.
+							{m.zelglihof_pages_shop_page_paragraph_3()}
 						</p>
 					</div>
 					<a href="#newsletter" className="button-primary">
-						Newsletter abonnieren
+						{m.zelglihof_pages_shop_page_text_3()}
 					</a>
 				</div>
 			</section>

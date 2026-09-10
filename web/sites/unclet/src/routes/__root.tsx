@@ -1,3 +1,5 @@
+import { m } from "@oliumbi/i18n/messages";
+import { getLocale } from "@oliumbi/i18n/runtime";
 import {
 	createRootRoute,
 	HeadContent,
@@ -8,30 +10,29 @@ import {
 import type { ReactNode } from "react";
 import Footer from "../components/footer/footer";
 import Header from "../components/header/header";
+import { QueryProvider } from "../components/ui/index";
 import "../styles/root.css";
 
 export const Route = createRootRoute({
 	head: () => ({
 		meta: [
 			{ charSet: "utf-8" },
-			{ name: "viewport", content: "width=device-width, initial-scale=1" },
-			{ title: "Uncle-T · Catering & Privatkoch aus Mägenwil" },
+			{ name: "viewport", content: m.unclet_routes_root_content() },
+			{ title: m.unclet_routes_root_title() },
 			{
 				name: "description",
-				content:
-					"Massgeschneiderte kulinarische Erlebnisse von privaten Dinnern bis zu grossen Firmenanlässen – persönlich geplant von Thomas Habegger.",
+				content: m.unclet_routes_root_content_2(),
 			},
 			{
 				property: "og:title",
-				content: "Uncle-T · Genuss, der zum Anlass passt",
+				content: m.unclet_routes_root_content_3(),
 			},
 			{
 				property: "og:description",
-				content:
-					"Catering und Private Dining aus Mägenwil für den Aargau und die Region.",
+				content: m.unclet_routes_root_content_4(),
 			},
-			{ property: "og:type", content: "website" },
-			{ name: "theme-color", content: "#11110f" },
+			{ property: "og:type", content: m.unclet_routes_root_content_5() },
+			{ name: "theme-color", content: m.unclet_routes_root_content_6() },
 		],
 		links: [{ rel: "icon", href: "/favicon.ico" }],
 	}),
@@ -42,14 +43,16 @@ export const Route = createRootRoute({
 function RootComponent() {
 	return (
 		<RootDocument>
-			<Outlet />
+			<QueryProvider>
+				<Outlet />
+			</QueryProvider>
 		</RootDocument>
 	);
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 	return (
-		<html lang="de-CH" className="h-full">
+		<html lang={getLocale()} className="h-full">
 			<head>
 				<HeadContent />
 			</head>
@@ -67,12 +70,12 @@ function NotFoundComponent() {
 	return (
 		<section className="shell grid min-h-[75vh] place-items-center pt-28 text-center">
 			<div>
-				<p className="eyebrow text-brass">404 · Nicht auf der Karte</p>
+				<p className="eyebrow text-brass">{m.unclet_routes_root_paragraph()}</p>
 				<h1 className="display-title mt-6 text-6xl md:text-8xl">
-					Dieser Gang wird nicht serviert.
+					{m.unclet_routes_root_heading()}
 				</h1>
 				<Link to="/" className="button-primary mt-10">
-					Zur Startseite
+					{m.unclet_routes_root_text()}
 				</Link>
 			</div>
 		</section>

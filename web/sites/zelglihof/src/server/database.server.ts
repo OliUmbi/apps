@@ -1,6 +1,8 @@
 import { createDatabasePool, databasePoolSize } from "@oliumbi/database";
 
 export const database = createDatabasePool({
+	role: "zelglihof",
+	password: () => process.env.ZELGLIHOF_DATABASE_PASSWORD,
 	applicationName: "zelglihof-web",
 	connectionString: () => process.env.DATABASE_URL,
 	maxConnections: databasePoolSize(process.env.DATABASE_POOL_SIZE),

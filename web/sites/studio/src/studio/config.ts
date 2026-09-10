@@ -1,13 +1,12 @@
-export const siteIds = ["zelglihof", "unclet", "jublawoma", "oliumbi"] as const;
-export type SiteId = (typeof siteIds)[number];
+import type { SiteId } from "@oliumbi/contracts";
+import { type ResourceId, resources } from "./resources";
 
+export { type SiteId, siteIds } from "@oliumbi/contracts";
 export interface StudioSection {
 	id: string;
 	label: string;
 	icon: "home" | "inbox" | "content" | "people" | "commerce" | "newsletter";
-	status?: "ready" | "planned";
 }
-
 export interface StudioSite {
 	id: SiteId;
 	name: string;
@@ -16,36 +15,13 @@ export interface StudioSite {
 	accent: string;
 	sections: StudioSection[];
 }
-
-export const studioSites: StudioSite[] = [
+const siteDetails = [
 	{
 		id: "zelglihof",
 		name: "Zelglihof",
 		domain: "zelglihof.ch",
 		short: "ZH",
 		accent: "#7ca680",
-		sections: [
-			{ id: "overview", label: "Übersicht", icon: "home", status: "ready" },
-			{
-				id: "reservations",
-				label: "Reservationen",
-				icon: "inbox",
-				status: "planned",
-			},
-			{
-				id: "products",
-				label: "Produkte",
-				icon: "commerce",
-				status: "planned",
-			},
-			{ id: "updates", label: "Aktuelles", icon: "content", status: "planned" },
-			{
-				id: "newsletter",
-				label: "Newsletter",
-				icon: "newsletter",
-				status: "ready",
-			},
-		],
 	},
 	{
 		id: "unclet",
@@ -53,41 +29,13 @@ export const studioSites: StudioSite[] = [
 		domain: "uncle-t.ch",
 		short: "UT",
 		accent: "#b99a5b",
-		sections: [
-			{ id: "overview", label: "Übersicht", icon: "home", status: "ready" },
-			{ id: "inquiries", label: "Anfragen", icon: "inbox", status: "ready" },
-			{ id: "events", label: "Einblicke", icon: "content", status: "planned" },
-			{
-				id: "reviews",
-				label: "Bewertungen",
-				icon: "people",
-				status: "planned",
-			},
-		],
 	},
 	{
 		id: "jublawoma",
 		name: "Jubla Woma",
 		domain: "jublawoma.ch",
 		short: "JW",
-		accent: "#9181d6",
-		sections: [
-			{ id: "overview", label: "Übersicht", icon: "home", status: "ready" },
-			{ id: "events", label: "Anlässe", icon: "content", status: "ready" },
-			{
-				id: "stories",
-				label: "Geschichten",
-				icon: "content",
-				status: "ready",
-			},
-			{ id: "members", label: "Mitglieder", icon: "people", status: "planned" },
-			{
-				id: "donations",
-				label: "Spendenaktionen",
-				icon: "commerce",
-				status: "planned",
-			},
-		],
+		accent: "#9baf85",
 	},
 	{
 		id: "oliumbi",
@@ -95,22 +43,26 @@ export const studioSites: StudioSite[] = [
 		domain: "oliumbi.ch",
 		short: "OL",
 		accent: "#6699cc",
-		sections: [
-			{ id: "overview", label: "Übersicht", icon: "home", status: "ready" },
-			{ id: "projects", label: "Projekte", icon: "content", status: "planned" },
-			{
-				id: "profile",
-				label: "Profil & CV",
-				icon: "people",
-				status: "planned",
-			},
-		],
 	},
-];
-
+] as const;
+export const studioSites: StudioSite[] = siteDetails.map((site) => ({
+	...site,
+	sections: [
+		{ id: "overview", label: "Übersicht", icon: "home" },
+		...Object.entries(resources)
+			.filter(([id]) => id.startsWith(`${site.id}.`))
+			.map(([id, resource]) => ({
+				id,
+				label: resource.label,
+				icon: "content" as const,
+			})),
+		{ id: "images", label: "Bilder", icon: "content" },
+		{ id: "documents", label: "Dokumente", icon: "content" },
+	],
+}));
 export function getSite(id: string): StudioSite {
-	const fallback = studioSites[0];
-	if (!fallback)
-		throw new Error("Studio requires at least one configured site");
-	return studioSites.find((site) => site.id === id) ?? fallback;
+	return studioSites.find((site) => site.id === id) ?? studioSites[0];
+}
+export function isResourceId(id: string): id is ResourceId {
+	return Object.hasOwn(resources, id);
 }

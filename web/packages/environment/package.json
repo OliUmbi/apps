@@ -1,0 +1,9 @@
+{
+  "name": "@oliumbi/environment",
+  "private": true,
+  "type": "module",
+  "exports": { "./vite": "./src/vite.ts" },
+  "scripts": { "check": "tsc --noEmit" },
+  "dependencies": { "vite": "catalog:" },
+  "devDependencies": { "typescript": "catalog:", "@types/node": "catalog:" }
+}

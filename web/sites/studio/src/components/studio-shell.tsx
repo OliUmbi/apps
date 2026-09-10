@@ -1,241 +1,99 @@
-import {
-	Bell,
-	ChevronDown,
-	FileText,
-	Home,
-	Inbox,
-	LayoutGrid,
-	LogOut,
-	Mail,
-	Menu,
-	Package,
-	Search,
-	Settings,
-	Users,
-	X,
-} from "lucide-react";
-import type { CSSProperties, ReactNode } from "react";
-import { useState } from "react";
-import type { SiteId, StudioSection, StudioSite } from "../studio/config";
-import { studioSites } from "../studio/config";
-
-const icons = {
-	home: Home,
-	inbox: Inbox,
-	content: FileText,
-	people: Users,
-	commerce: Package,
-	newsletter: Mail,
-} as const;
-
+import { m } from "@oliumbi/i18n/messages";
+import { type ReactNode, useState } from "react";
+import type { SiteId, StudioSite } from "../studio/config";
+import { SiteNavigation } from "./site-navigation";
+import { SiteSwitcher } from "./site-switcher";
+import { Button, Dialog } from "./ui/index";
 export function StudioShell({
 	site,
+	allowedSites,
 	section,
 	actor,
 	onSelectSite,
 	onSelectSection,
 	onLogout,
 	children,
-}: Readonly<{
+}: {
 	site: StudioSite;
+	allowedSites: StudioSite[];
 	section: string;
-	actor: { displayName: string; username?: string };
+	actor: { displayName: string };
 	onSelectSite: (site: SiteId) => void;
 	onSelectSection: (section: string) => void;
 	onLogout: () => Promise<void>;
 	children: ReactNode;
-}>) {
-	const [mobileOpen, setMobileOpen] = useState(false);
+}) {
+	const [open, setOpen] = useState(false);
+	const navigation = (
+		<>
+			<div className="sidebar-brand">
+				<span className="brand-mark">
+					{m.studio_components_studio_shell_text()}
+				</span>
+				{m.studio_components_studio_shell_text_2()}
+			</div>
+			<SiteSwitcher
+				sites={allowedSites}
+				site={site}
+				onSelect={(id) => {
+					onSelectSite(id);
+					setOpen(false);
+				}}
+			/>
+			<SiteNavigation
+				site={site}
+				section={section}
+				onSelect={(value) => {
+					onSelectSection(value);
+					setOpen(false);
+				}}
+			/>
+			<div className="account-card mt-auto">
+				<div className="flex-1 truncate text-sm">{actor.displayName}</div>
+				<Button className="button" onClick={onLogout}>
+					{m.studio_components_studio_shell_text_3()}
+				</Button>
+			</div>
+		</>
+	);
 	return (
 		<div className="studio-app">
-			<button
-				type="button"
-				className="mobile-menu"
-				onClick={() => setMobileOpen(true)}
-				aria-label="Navigation öffnen"
-			>
-				<Menu size={18} />
-			</button>
-			{mobileOpen ? (
-				<button
-					type="button"
-					className="sidebar-backdrop"
-					onClick={() => setMobileOpen(false)}
-					aria-label="Navigation schliessen"
-				/>
-			) : null}
-			<aside className={`studio-sidebar ${mobileOpen ? "is-open" : ""}`}>
-				<div className="sidebar-brand">
-					<span className="brand-mark">O</span>
-					<span>Studio</span>
-					<button
-						type="button"
-						className="icon-button ml-auto md:hidden"
-						onClick={() => setMobileOpen(false)}
-						aria-label="Navigation schliessen"
-					>
-						<X size={16} />
-					</button>
-				</div>
-				<SiteSwitcher
-					site={site}
-					onSelect={(id) => {
-						onSelectSite(id);
-						setMobileOpen(false);
-					}}
-				/>
-				<nav className="site-navigation" aria-label={`${site.name} Navigation`}>
-					<p className="nav-caption">{site.name}</p>
-					{site.sections.map((item) => (
-						<SectionButton
-							key={item.id}
-							item={item}
-							active={item.id === section}
-							onClick={() => {
-								onSelectSection(item.id);
-								setMobileOpen(false);
-							}}
-						/>
-					))}
-				</nav>
-				<nav className="site-navigation mt-auto" aria-label="Studio Navigation">
-					<p className="nav-caption">Studio</p>
-					<button type="button" className="nav-item">
-						<LayoutGrid size={16} /> Medien <span className="planned-dot" />
-					</button>
-					<button type="button" className="nav-item">
-						<Settings size={16} /> Einstellungen{" "}
-						<span className="planned-dot" />
-					</button>
-				</nav>
-				<div className="account-card">
-					<span className="avatar">{initials(actor.displayName)}</span>
-					<div className="min-w-0 flex-1">
-						<p className="truncate text-sm font-medium text-primary">
-							{actor.displayName}
-						</p>
-						<p className="truncate text-xs text-muted">Administrator</p>
-					</div>
-					<button
-						type="button"
-						className="icon-button"
-						onClick={onLogout}
-						title="Abmelden"
-						aria-label="Abmelden"
-					>
-						<LogOut size={15} />
-					</button>
-				</div>
-			</aside>
+			<aside className="studio-sidebar hidden md:flex">{navigation}</aside>
+			<Dialog.Root open={open} onOpenChange={setOpen}>
+				<Dialog.Trigger
+					className="fixed left-3 top-3 z-40 rounded border border-white/15 bg-zinc-900 p-2 md:hidden"
+					aria-label={m.studio_components_studio_shell_aria_label()}
+				>
+					☰
+				</Dialog.Trigger>
+				<Dialog.Portal>
+					<Dialog.Backdrop className="fixed inset-0 z-50 bg-black/60" />
+					<Dialog.Popup className="fixed inset-y-0 left-0 z-60 flex w-72 flex-col bg-zinc-900 text-white">
+						<Dialog.Title className="sr-only">
+							{m.studio_components_studio_shell_text_4()}
+						</Dialog.Title>
+						<Dialog.Close
+							className="absolute right-3 top-3"
+							aria-label={m.studio_components_studio_shell_aria_label_2()}
+						>
+							{m.studio_components_studio_shell_text_5()}
+						</Dialog.Close>
+						{navigation}
+					</Dialog.Popup>
+				</Dialog.Portal>
+			</Dialog.Root>
 			<div className="studio-main">
 				<header className="studio-topbar">
-					<div className="breadcrumb">
+					<div className="breadcrumb ml-12 md:ml-0">
 						<span>{site.name}</span>
-						<span className="text-faint">/</span>
+						<span>/</span>
 						<strong>
-							{site.sections.find((item) => item.id === section)?.label ??
-								"Übersicht"}
+							{site.sections.find((item) => item.id === section)?.label}
 						</strong>
-					</div>
-					<div className="topbar-actions">
-						<button type="button" className="search-trigger">
-							<Search size={14} />
-							<span>Suchen</span>
-							<kbd>⌘ K</kbd>
-						</button>
-						<button type="button" className="icon-button">
-							<Bell size={16} />
-							<span className="notification-dot" />
-						</button>
 					</div>
 				</header>
 				<main className="studio-content">{children}</main>
 			</div>
 		</div>
 	);
-}
-
-function SiteSwitcher({
-	site,
-	onSelect,
-}: Readonly<{ site: StudioSite; onSelect: (site: SiteId) => void }>) {
-	const [open, setOpen] = useState(false);
-	return (
-		<div className="site-switcher">
-			<button
-				type="button"
-				className="site-switcher-button"
-				onClick={() => setOpen((value) => !value)}
-				aria-expanded={open}
-			>
-				<SiteBadge site={site} />
-				<span className="min-w-0 flex-1 text-left">
-					<strong className="block truncate text-sm">{site.name}</strong>
-					<span className="block truncate text-xs text-muted">
-						{site.domain}
-					</span>
-				</span>
-				<ChevronDown size={14} className="text-muted" />
-			</button>
-			{open ? (
-				<div className="site-menu">
-					{studioSites.map((item) => (
-						<button
-							type="button"
-							key={item.id}
-							className={
-								item.id === site.id ? "site-option is-active" : "site-option"
-							}
-							onClick={() => {
-								onSelect(item.id);
-								setOpen(false);
-							}}
-						>
-							<SiteBadge site={item} />
-							<span>
-								<strong>{item.name}</strong>
-								<small>{item.domain}</small>
-							</span>
-						</button>
-					))}
-				</div>
-			) : null}
-		</div>
-	);
-}
-
-function SiteBadge({ site }: Readonly<{ site: StudioSite }>) {
-	return (
-		<span
-			className="site-badge"
-			style={{ "--site-accent": site.accent } as CSSProperties}
-		>
-			{site.short}
-		</span>
-	);
-}
-function SectionButton({
-	item,
-	active,
-	onClick,
-}: Readonly<{ item: StudioSection; active: boolean; onClick: () => void }>) {
-	const Icon = icons[item.icon];
-	return (
-		<button
-			type="button"
-			className={active ? "nav-item is-active" : "nav-item"}
-			onClick={onClick}
-		>
-			<Icon size={16} /> {item.label}
-			{item.status === "planned" ? <span className="planned-dot" /> : null}
-		</button>
-	);
-}
-function initials(name: string) {
-	return name
-		.split(/\s+/)
-		.slice(0, 2)
-		.map((part) => part[0])
-		.join("")
-		.toUpperCase();
 }

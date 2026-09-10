@@ -1,3 +1,5 @@
+import { m } from "@oliumbi/i18n/messages";
+import { getLocale } from "@oliumbi/i18n/runtime";
 import {
 	createRootRoute,
 	HeadContent,
@@ -8,6 +10,7 @@ import {
 import type { ReactNode } from "react";
 import Footer from "../components/footer/footer";
 import Header from "../components/header/header";
+import { QueryProvider } from "../components/ui/index";
 import "../styles/root.css";
 
 export const Route = createRootRoute({
@@ -18,24 +21,22 @@ export const Route = createRootRoute({
 			},
 			{
 				name: "viewport",
-				content: "width=device-width, initial-scale=1",
+				content: m.zelglihof_routes_root_content(),
 			},
 			{
-				title: "Zelglihof Mägenwil · Direkt vom Hof",
+				title: m.zelglihof_routes_root_title(),
 			},
 			{
 				name: "description",
-				content:
-					"Mägenwiler Beef, frische Eier und saisonale Produkte direkt vom Familienbetrieb Habegger.",
+				content: m.zelglihof_routes_root_content_2(),
 			},
-			{ property: "og:title", content: "Zelglihof Mägenwil · Direkt vom Hof" },
+			{ property: "og:title", content: m.zelglihof_routes_root_content_3() },
 			{
 				property: "og:description",
-				content:
-					"Fleisch aus eigener Mutterkuhhaltung, Hofladen und saisonale Produkte aus Mägenwil.",
+				content: m.zelglihof_routes_root_content_4(),
 			},
-			{ property: "og:type", content: "website" },
-			{ name: "theme-color", content: "#24452f" },
+			{ property: "og:type", content: m.zelglihof_routes_root_content_5() },
+			{ name: "theme-color", content: m.zelglihof_routes_root_content_6() },
 		],
 		links: [{ rel: "icon", href: "/favicon.svg", type: "image/svg+xml" }],
 	}),
@@ -46,14 +47,16 @@ export const Route = createRootRoute({
 function RootComponent() {
 	return (
 		<RootDocument>
-			<Outlet />
+			<QueryProvider>
+				<Outlet />
+			</QueryProvider>
 		</RootDocument>
 	);
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 	return (
-		<html lang="de-CH" className="h-full">
+		<html lang={getLocale()} className="h-full">
 			<head>
 				<HeadContent />
 			</head>
@@ -70,15 +73,15 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 function NotFoundComponent() {
 	return (
 		<section className="shell py-24 text-center">
-			<p className="eyebrow text-clay">404 · Falscher Feldweg</p>
+			<p className="eyebrow text-clay">{m.zelglihof_routes_root_paragraph()}</p>
 			<h1 className="display-title mx-auto mt-6 max-w-2xl text-6xl md:text-8xl">
-				Hier wächst gerade nichts.
+				{m.zelglihof_routes_root_heading()}
 			</h1>
 			<p className="mx-auto mt-6 max-w-lg text-lg text-ink/60">
-				Die gesuchte Seite gibt es nicht oder sie wurde verschoben.
+				{m.zelglihof_routes_root_paragraph_2()}
 			</p>
 			<Link to="/" className="button-primary mt-8">
-				Zurück zum Hof
+				{m.zelglihof_routes_root_text()}
 			</Link>
 		</section>
 	);

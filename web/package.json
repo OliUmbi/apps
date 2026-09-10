@@ -3,21 +3,23 @@
   "private": true,
   "packageManager": "pnpm@11.20.0",
   "scripts": {
-    "dev:oliumbi": "pnpm --filter oliumbi dev",
     "dev:jublawoma": "pnpm --filter jublawoma dev",
     "dev:unclet": "pnpm --filter unclet dev",
     "dev:zelglihof": "pnpm --filter zelglihof dev",
     "dev:studio": "pnpm --filter studio dev",
-    "build:oliumbi": "pnpm --filter oliumbi build",
     "build:jublawoma": "pnpm --filter jublawoma build",
     "build:unclet": "pnpm --filter unclet build",
     "build:zelglihof": "pnpm --filter zelglihof build",
     "build:studio": "pnpm --filter studio build",
     "check": "biome check",
-    "fix": "biome check --write"
+    "fix": "biome check --write",
+    "typecheck": "pnpm -r check",
+    "build": "pnpm --workspace-concurrency=1 --filter \"./sites/*\" -r build",
+    "test": "node --test tests/*.test.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "jiti": "^2.7.0"
   }
 }

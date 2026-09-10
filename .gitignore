@@ -6,6 +6,8 @@ legacy/
 
 # web
 node_modules
+.dependencies-before-rework/
+web/packages/i18n/src/paraglide/
 .tanstack
 dist
 .output

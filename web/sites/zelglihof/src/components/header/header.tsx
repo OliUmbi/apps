@@ -1,13 +1,14 @@
 import { Drawer } from "@base-ui/react/drawer";
+import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Menu, Sprout, X } from "lucide-react";
 import { useState } from "react";
 
 const links = [
-	{ label: "Aktuelles", to: "/aktuelles" },
-	{ label: "Hofladen", to: "/hofladen" },
-	{ label: "Unser Hof", to: "/hof" },
-	{ label: "Kontakt", to: "/kontakt" },
+	{ label: m.zelglihof_components_header_header_label(), to: "/latest" },
+	{ label: m.zelglihof_components_header_header_label_2(), to: "/products" },
+	{ label: m.zelglihof_components_header_header_label_3(), to: "/about" },
+	{ label: m.zelglihof_components_header_header_label_4(), to: "/contact" },
 ];
 
 export default function Header() {
@@ -17,7 +18,7 @@ export default function Header() {
 				<Brand />
 				<nav
 					className="hidden items-center gap-7 lg:flex"
-					aria-label="Hauptnavigation"
+					aria-label={m.zelglihof_components_header_header_aria_label()}
 				>
 					{links.map((link) => (
 						<Link
@@ -30,12 +31,9 @@ export default function Header() {
 					))}
 				</nav>
 				<div className="hidden lg:block">
-					<Link
-						to="/hofladen/$productId"
-						params={{ productId: "rindfleisch" }}
-						className="button-primary"
-					>
-						Fleisch reservieren <ArrowUpRight size={17} />
+					<Link to="/products" className="button-primary">
+						{m.zelglihof_components_header_header_text()}
+						<ArrowUpRight size={17} />
 					</Link>
 				</div>
 				<MobileMenu />
@@ -49,17 +47,17 @@ function Brand() {
 		<Link
 			to="/"
 			className="group flex items-center gap-3"
-			aria-label="Zelglihof Startseite"
+			aria-label={m.zelglihof_components_header_header_aria_label_2()}
 		>
 			<span className="grid size-10 place-items-center rounded-full bg-forest text-cream transition-transform group-hover:-rotate-6">
 				<Sprout size={20} strokeWidth={1.8} />
 			</span>
 			<span className="leading-none">
 				<span className="block font-serif text-xl font-bold tracking-tight">
-					Zelglihof
+					{m.zelglihof_components_header_header_text_2()}
 				</span>
 				<span className="mt-1 block text-[0.62rem] font-bold uppercase tracking-[0.18em] text-ink/50">
-					Mägenwil
+					{m.zelglihof_components_header_header_text_3()}
 				</span>
 			</span>
 		</Link>
@@ -72,7 +70,7 @@ function MobileMenu() {
 		<Drawer.Root swipeDirection="right" open={open} onOpenChange={setOpen}>
 			<Drawer.Trigger
 				className="grid size-11 place-items-center rounded-full border border-forest/20 lg:hidden"
-				aria-label="Navigation öffnen"
+				aria-label={m.zelglihof_components_header_header_aria_label_3()}
 			>
 				<Menu size={21} />
 			</Drawer.Trigger>
@@ -83,18 +81,18 @@ function MobileMenu() {
 						<Drawer.Content className="flex h-full flex-col">
 							<div className="flex items-center justify-between">
 								<Drawer.Title className="font-serif text-2xl font-bold">
-									Zelglihof
+									{m.zelglihof_components_header_header_text_4()}
 								</Drawer.Title>
 								<Drawer.Close
 									className="grid size-11 place-items-center rounded-full border border-white/20"
-									aria-label="Navigation schliessen"
+									aria-label={m.zelglihof_components_header_header_aria_label_4()}
 								>
 									<X size={21} />
 								</Drawer.Close>
 							</div>
 							<nav
 								className="my-auto grid gap-2"
-								aria-label="Mobile Navigation"
+								aria-label={m.zelglihof_components_header_header_aria_label_5()}
 							>
 								{links.map((link, index) => (
 									<Link
@@ -111,7 +109,7 @@ function MobileMenu() {
 								))}
 							</nav>
 							<p className="text-sm text-cream/60">
-								Direkt vom Familienbetrieb in Mägenwil.
+								{m.zelglihof_components_header_header_paragraph()}
 							</p>
 						</Drawer.Content>
 					</Drawer.Popup>

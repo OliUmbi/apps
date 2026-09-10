@@ -1,3 +1,4 @@
+import { m } from "@oliumbi/i18n/messages";
 import type { ReactNode } from "react";
 
 function LegalPage({
@@ -22,37 +23,33 @@ function LegalPage({
 
 export function ImprintPage() {
 	return (
-		<LegalPage eyebrow="Rechtliches" title="Impressum">
+		<LegalPage
+			eyebrow={m.zelglihof_pages_legal_pages_eyebrow()}
+			title={m.zelglihof_pages_legal_pages_title()}
+		>
 			<section>
-				<h2>Verantwortlich</h2>
+				<h2>{m.zelglihof_pages_legal_pages_heading()}</h2>
 				<p>
-					Familienbetrieb Habegger
+					{m.zelglihof_pages_legal_pages_paragraph()}
 					<br />
-					Zelgliweg 2<br />
-					5506 Mägenwil
+					{m.zelglihof_pages_legal_pages_paragraph_2()}
 					<br />
-					Schweiz
+					{m.zelglihof_pages_legal_pages_paragraph_3()}
+					<br />
+					{m.zelglihof_pages_legal_pages_paragraph_4()}
 				</p>
 			</section>
 			<section>
-				<h2>Kontakt</h2>
-				<p>Kontaktaufnahme über das Kontaktformular dieser Website.</p>
+				<h2>{m.zelglihof_pages_legal_pages_heading_2()}</h2>
+				<p>{m.zelglihof_pages_legal_pages_paragraph_5()}</p>
 			</section>
 			<section>
-				<h2>Haftung</h2>
-				<p>
-					Wir bemühen uns um aktuelle und korrekte Informationen. Verfügbarkeit,
-					Mengen, Termine und Preise können sich bei landwirtschaftlichen
-					Produkten kurzfristig ändern. Verbindlich ist die persönliche
-					Bestätigung des Betriebs.
-				</p>
+				<h2>{m.zelglihof_pages_legal_pages_heading_3()}</h2>
+				<p>{m.zelglihof_pages_legal_pages_paragraph_6()}</p>
 			</section>
 			<section>
-				<h2>Urheberrecht</h2>
-				<p>
-					Inhalte und Bilder dieser Website dürfen ohne vorherige Zustimmung
-					nicht weiterverwendet werden.
-				</p>
+				<h2>{m.zelglihof_pages_legal_pages_heading_4()}</h2>
+				<p>{m.zelglihof_pages_legal_pages_paragraph_7()}</p>
 			</section>
 		</LegalPage>
 	);
@@ -60,47 +57,29 @@ export function ImprintPage() {
 
 export function PrivacyPage() {
 	return (
-		<LegalPage eyebrow="Rechtliches" title="Datenschutz">
+		<LegalPage
+			eyebrow={m.zelglihof_pages_legal_pages_eyebrow_2()}
+			title={m.zelglihof_pages_legal_pages_title_2()}
+		>
 			<section>
-				<h2>Worum es geht</h2>
-				<p>
-					Wir bearbeiten nur Angaben, die für Newsletter, Reservationen und
-					Anfragen notwendig sind. Dazu gehören insbesondere Name,
-					E-Mail-Adresse, Telefonnummer, Produktauswahl und Nachricht.
-				</p>
+				<h2>{m.zelglihof_pages_legal_pages_heading_5()}</h2>
+				<p>{m.zelglihof_pages_legal_pages_paragraph_8()}</p>
 			</section>
 			<section>
-				<h2>Newsletter</h2>
-				<p>
-					Die Anmeldung erfolgt mit ausdrücklicher Einwilligung und
-					anschliessender Bestätigung per E-Mail. Die Abmeldung ist jederzeit
-					über den Link in einer Nachricht möglich. Wir speichern den Anmelde-
-					und Bestätigungszeitpunkt als Nachweis.
-				</p>
+				<h2>{m.zelglihof_pages_legal_pages_heading_6()}</h2>
+				<p>{m.zelglihof_pages_legal_pages_paragraph_9()}</p>
 			</section>
 			<section>
-				<h2>Reservationen und Kontakt</h2>
-				<p>
-					Deine Angaben werden zur Bearbeitung der Reservation oder Anfrage
-					gespeichert und nicht für fremde Werbezwecke weitergegeben.
-					Gesetzliche Aufbewahrungspflichten bleiben vorbehalten.
-				</p>
+				<h2>{m.zelglihof_pages_legal_pages_heading_7()}</h2>
+				<p>{m.zelglihof_pages_legal_pages_paragraph_10()}</p>
 			</section>
 			<section>
-				<h2>Technischer Betrieb</h2>
-				<p>
-					Beim Aufruf der Website können technisch notwendige Protokolldaten
-					entstehen. Wir setzen für den öffentlichen Inhalt keine Analyse- oder
-					Werbe-Cookies ein.
-				</p>
+				<h2>{m.zelglihof_pages_legal_pages_heading_8()}</h2>
+				<p>{m.zelglihof_pages_legal_pages_paragraph_11()}</p>
 			</section>
 			<section>
-				<h2>Deine Rechte</h2>
-				<p>
-					Du kannst Auskunft, Berichtigung oder Löschung deiner
-					personenbezogenen Daten verlangen, soweit keine gesetzliche Pflicht
-					entgegensteht. Nutze dafür das Kontaktformular.
-				</p>
+				<h2>{m.zelglihof_pages_legal_pages_heading_9()}</h2>
+				<p>{m.zelglihof_pages_legal_pages_paragraph_12()}</p>
 			</section>
 		</LegalPage>
 	);
@@ -108,38 +87,25 @@ export function PrivacyPage() {
 
 export function TermsPage() {
 	return (
-		<LegalPage eyebrow="Rechtliches" title="Reservationsbedingungen">
+		<LegalPage
+			eyebrow={m.zelglihof_pages_legal_pages_eyebrow_3()}
+			title={m.zelglihof_pages_legal_pages_title_3()}
+		>
 			<section>
-				<h2>Keine Online-Zahlung</h2>
-				<p>
-					Eine Reservation über diese Website ist eine Anfrage zum Kauf. Sie
-					wird erst verbindlich, wenn der Zelglihof sie persönlich bestätigt.
-				</p>
+				<h2>{m.zelglihof_pages_legal_pages_heading_10()}</h2>
+				<p>{m.zelglihof_pages_legal_pages_paragraph_13()}</p>
 			</section>
 			<section>
-				<h2>Verfügbarkeit</h2>
-				<p>
-					Die angezeigten Mengen bilden nur den für Online-Reservationen
-					freigegebenen Teil des Vorrats ab. Naturprodukte können in Gewicht,
-					Aussehen und tatsächlicher Menge abweichen. Bei Fleischpaketen sind
-					Gewichtsangaben Richtwerte.
-				</p>
+				<h2>{m.zelglihof_pages_legal_pages_heading_11()}</h2>
+				<p>{m.zelglihof_pages_legal_pages_paragraph_14()}</p>
 			</section>
 			<section>
-				<h2>Abholung und Bezahlung</h2>
-				<p>
-					Abholtermin, Preis und Zahlungsart werden mit der Bestätigung
-					mitgeteilt. Die Ware wird auf dem Zelglihof in Mägenwil abgeholt,
-					sofern nichts anderes vereinbart wurde.
-				</p>
+				<h2>{m.zelglihof_pages_legal_pages_heading_12()}</h2>
+				<p>{m.zelglihof_pages_legal_pages_paragraph_15()}</p>
 			</section>
 			<section>
-				<h2>Änderung oder Absage</h2>
-				<p>
-					Falls du eine Reservation nicht wahrnehmen kannst, melde dich
-					möglichst frühzeitig über das Kontaktformular und nenne deine
-					Referenz.
-				</p>
+				<h2>{m.zelglihof_pages_legal_pages_heading_13()}</h2>
+				<p>{m.zelglihof_pages_legal_pages_paragraph_16()}</p>
 			</section>
 		</LegalPage>
 	);

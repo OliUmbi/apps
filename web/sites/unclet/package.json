@@ -5,12 +5,11 @@
   "scripts": {
     "dev": "vite dev --host",
     "build": "vite build",
-    "start": "node .output/server/index.mjs",
+    "start": "node --env-file-if-exists=../../../.env .output/server/index.mjs",
     "check": "tsc --noEmit"
   },
   "dependencies": {
     "@oliumbi/database": "workspace:*",
-    "@oliumbi/messaging": "workspace:*",
     "@base-ui/react": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/react-router": "catalog:",
@@ -19,7 +18,13 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "tailwindcss": "catalog:",
-    "zod": "catalog:"
+    "zod": "catalog:",
+    "@oliumbi/contracts": "workspace:*",
+    "@oliumbi/assets": "workspace:*",
+    "@oliumbi/i18n": "workspace:*",
+    "@tanstack/react-query": "^5.90.0",
+    "@oliumbi/unclet-data": "workspace:*",
+    "@oliumbi/query": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "catalog:",
@@ -28,6 +33,7 @@
     "@vitejs/plugin-react": "catalog:",
     "nitro": "catalog:",
     "typescript": "catalog:",
-    "vite": "catalog:"
+    "vite": "catalog:",
+    "@oliumbi/environment": "workspace:*"
   }
 }

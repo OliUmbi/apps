@@ -1,44 +1,54 @@
+import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowDown, ArrowRight, Egg, Sprout, Wheat } from "lucide-react";
 import { NewsletterSignup } from "../components/newsletter-signup";
-import { products, updates } from "../content/site-content";
+import { Promotions } from "../components/promotions";
+import { getArticlePage, getProductPage } from "../content/catalog.functions";
 
-export const Route = createFileRoute("/")({ component: HomePage });
+export const Route = createFileRoute("/")({
+	loader: async () => {
+		const [products, updates] = await Promise.all([
+			getProductPage({ data: { page: 0 } }),
+			getArticlePage({ data: { page: 0 } }),
+		]);
+		return { products: products.items, updates: updates.items };
+	},
+	component: HomePage,
+});
 
 function HomePage() {
-	const featured = products[0];
+	const { products, updates } = Route.useLoaderData();
 	return (
 		<>
+			<Promotions />
 			<section className="shell grid gap-5 pt-5 lg:grid-cols-[1.05fr_0.95fr] lg:pt-8">
 				<div className="relative flex min-h-[34rem] flex-col justify-between overflow-hidden rounded-[2rem] bg-forest p-7 text-cream md:p-11 lg:min-h-[42rem]">
 					<div className="absolute -right-24 -top-20 size-72 rounded-full border border-white/10" />
 					<div className="absolute -right-10 top-10 size-44 rounded-full border border-white/10" />
 					<p className="eyebrow relative text-sun">
-						Direkt vom Familienbetrieb
+						{m.zelglihof_routes_index_paragraph()}
 					</p>
 					<div className="relative">
 						<h1 className="display-title max-w-xl text-[clamp(4.2rem,9vw,7.8rem)]">
-							Vom Hof.
+							{m.zelglihof_routes_index_heading()}
 							<br />
-							<span className="text-sun">Für hier.</span>
+							<span className="text-sun">
+								{m.zelglihof_routes_index_text()}
+							</span>
 						</h1>
 						<p className="mt-7 max-w-md text-base leading-relaxed text-cream/72 md:text-lg">
-							Fleisch aus eigener Mutterkuhhaltung, saisonale Produkte und
-							ehrliche Einblicke in unseren Hof in Mägenwil.
+							{m.zelglihof_routes_index_paragraph_2()}
 						</p>
 						<div className="mt-8 flex flex-wrap gap-3">
-							<Link
-								to="/hofladen/$productId"
-								params={{ productId: "rindfleisch" }}
-								className="button-light"
-							>
-								Jetzt reservieren <ArrowRight size={17} />
+							<Link to="/products" className="button-light">
+								{m.zelglihof_routes_index_text_2()}
+								<ArrowRight size={17} />
 							</Link>
 							<Link
-								to="/hof"
+								to="/about"
 								className="button-secondary border-white/25 text-cream hover:border-white hover:bg-white/10"
 							>
-								Den Hof entdecken
+								{m.zelglihof_routes_index_text_3()}
 							</Link>
 						</div>
 					</div>
@@ -46,13 +56,14 @@ function HomePage() {
 						href="#aktuell"
 						className="relative flex w-fit items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-cream/55 hover:text-cream"
 					>
-						<ArrowDown size={16} /> Weiter zum Aktuellen
+						<ArrowDown size={16} />
+						{m.zelglihof_routes_index_text_4()}
 					</a>
 				</div>
 				<div className="relative min-h-[32rem] overflow-hidden rounded-[2rem] lg:min-h-[42rem]">
 					<img
 						src="/images/demo/demo-hof.jpg"
-						alt="Blick auf einen Schweizer Landwirtschaftsbetrieb"
+						alt={m.zelglihof_routes_index_alt()}
 						className="absolute inset-0 h-full w-full object-cover"
 					/>
 					<div className="absolute inset-0 bg-gradient-to-t from-ink/65 via-transparent to-transparent" />
@@ -60,10 +71,10 @@ function HomePage() {
 						<div className="flex items-center justify-between gap-4">
 							<div>
 								<p className="text-xs font-bold uppercase tracking-[0.14em] text-clay">
-									Aktuell auf dem Hof
+									{m.zelglihof_routes_index_paragraph_3()}
 								</p>
 								<p className="mt-1 font-serif text-2xl font-bold">
-									Mägenwiler Beef
+									{products[0]?.name ?? m.zelglihof_routes_index_paragraph_4()}
 								</p>
 							</div>
 							<span
@@ -72,7 +83,7 @@ function HomePage() {
 							/>
 						</div>
 						<p className="mt-3 text-sm leading-relaxed text-ink/65">
-							{featured.description}
+							{products[0]?.description ?? m.zelglihof_routes_index_feedback()}
 						</p>
 					</div>
 				</div>
@@ -81,21 +92,23 @@ function HomePage() {
 			<section id="aktuell" className="shell py-24 md:py-32">
 				<div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:items-end">
 					<div>
-						<p className="eyebrow text-clay">Gerade aktuell</p>
+						<p className="eyebrow text-clay">
+							{m.zelglihof_routes_index_paragraph_5()}
+						</p>
 						<h2 className="display-title mt-5 text-5xl md:text-6xl">
-							Was auf dem Hof läuft.
+							{m.zelglihof_routes_index_heading_2()}
 						</h2>
 					</div>
 					<div className="lg:pl-20">
 						<p className="max-w-xl text-lg leading-relaxed text-ink/65">
-							Erntefenster sind kurz, Tiere haben ihren eigenen Rhythmus. Hier
-							erfährst du, was frisch ist und was als Nächstes kommt.
+							{m.zelglihof_routes_index_paragraph_6()}
 						</p>
 						<Link
-							to="/aktuelles"
+							to="/latest"
 							className="mt-6 inline-flex items-center gap-2 border-b border-ink pb-1 text-sm font-bold"
 						>
-							Alle Neuigkeiten <ArrowRight size={16} />
+							{m.zelglihof_routes_index_text_5()}
+							<ArrowRight size={16} />
 						</Link>
 					</div>
 				</div>
@@ -103,7 +116,7 @@ function HomePage() {
 					{updates.map((update, index) => (
 						<Link
 							key={update.slug}
-							to="/aktuelles/$slug"
+							to="/latest/$slug"
 							params={{ slug: update.slug }}
 							className={`group overflow-hidden rounded-[1.5rem] bg-cream ${index === 0 ? "md:col-span-2" : ""}`}
 						>
@@ -133,20 +146,23 @@ function HomePage() {
 				<div className="shell">
 					<div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
 						<div>
-							<p className="eyebrow text-moss">Im Hofladen</p>
+							<p className="eyebrow text-moss">
+								{m.zelglihof_routes_index_paragraph_7()}
+							</p>
 							<h2 className="display-title mt-5 max-w-2xl text-5xl md:text-6xl">
-								Gutes hat hier einen kurzen Weg.
+								{m.zelglihof_routes_index_heading_3()}
 							</h2>
 						</div>
-						<Link to="/hofladen" className="button-secondary">
-							Zum Hofladen <ArrowRight size={17} />
+						<Link to="/products" className="button-secondary">
+							{m.zelglihof_routes_index_text_6()}
+							<ArrowRight size={17} />
 						</Link>
 					</div>
 					<div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
 						{products.map((product) => (
 							<Link
 								key={product.id}
-								to="/hofladen/$productId"
+								to="/products/$productId"
 								params={{ productId: product.id }}
 								className="group"
 							>
@@ -184,51 +200,50 @@ function HomePage() {
 				<div className="relative min-h-[34rem] overflow-hidden rounded-[2rem]">
 					<img
 						src="/images/demo/demo-saat.jpg"
-						alt="Aussaat auf einem Feld"
+						alt={m.zelglihof_routes_index_alt_2()}
 						className="absolute inset-0 h-full w-full object-cover"
 					/>
 					<div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
 					<p className="absolute bottom-7 left-7 max-w-sm font-serif text-3xl font-bold text-cream md:bottom-10 md:left-10 md:text-4xl">
-						Mutterkühe, Ackerbau und Spezialkulturen.
+						{m.zelglihof_routes_index_paragraph_8()}
 					</p>
 				</div>
 				<div className="flex flex-col justify-between rounded-[2rem] bg-sun p-7 md:p-10">
 					<div>
-						<p className="eyebrow">Familienbetrieb Habegger</p>
+						<p className="eyebrow">{m.zelglihof_routes_index_paragraph_9()}</p>
 						<h2 className="display-title mt-6 text-5xl md:text-6xl">
-							Mit Boden unter den Füssen.
+							{m.zelglihof_routes_index_heading_4()}
 						</h2>
 						<p className="mt-6 text-lg leading-relaxed text-ink/70">
-							Wir bewirtschaften einen vielseitigen Landwirtschaftsbetrieb nach
-							ÖLN-Richtlinien, SGA und Swiss GAP – mit Respekt vor Tier, Boden
-							und Saison.
+							{m.zelglihof_routes_index_paragraph_10()}
 						</p>
 					</div>
 					<div className="mt-12 grid grid-cols-3 gap-3 border-t border-ink/15 pt-6 text-center">
 						<div>
 							<Egg className="mx-auto" size={24} />
 							<p className="mt-2 text-xs font-bold uppercase tracking-wider">
-								Hühner
+								{m.zelglihof_routes_index_paragraph_11()}
 							</p>
 						</div>
 						<div>
 							<Wheat className="mx-auto" size={24} />
 							<p className="mt-2 text-xs font-bold uppercase tracking-wider">
-								Ackerbau
+								{m.zelglihof_routes_index_paragraph_12()}
 							</p>
 						</div>
 						<div>
 							<Sprout className="mx-auto" size={24} />
 							<p className="mt-2 text-xs font-bold uppercase tracking-wider">
-								Saisonal
+								{m.zelglihof_routes_index_paragraph_13()}
 							</p>
 						</div>
 					</div>
 					<Link
-						to="/hof"
+						to="/about"
 						className="mt-8 inline-flex items-center gap-2 font-bold"
 					>
-						Mehr über unseren Hof <ArrowRight size={17} />
+						{m.zelglihof_routes_index_text_7()}
+						<ArrowRight size={17} />
 					</Link>
 				</div>
 			</section>

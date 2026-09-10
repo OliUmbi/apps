@@ -1,0 +1,9 @@
+export { zelglihofArticle } from "./resources/article";
+export { zelglihofArticleImage } from "./resources/article-image";
+export { zelglihofCampaign } from "./resources/campaign";
+export { zelglihofInquiry } from "./resources/inquiry";
+export { zelglihofProduct } from "./resources/product";
+export { zelglihofProductReservation } from "./resources/product-reservation";
+export { zelglihofProductVariant } from "./resources/product-variant";
+export { zelglihofPromotion } from "./resources/promotion";
+export { zelglihofSubscriber } from "./resources/subscriber";

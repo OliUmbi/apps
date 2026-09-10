@@ -1,3 +1,4 @@
+import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { Camera } from "lucide-react";
 
@@ -7,30 +8,31 @@ export function Footer() {
 			<div className="shell footer-grid">
 				<div>
 					<p className="footer-title">
-						Draussen zuhause.
+						{m.jublawoma_components_footer_paragraph()}
 						<br />
-						Miteinander unterwegs.
+						{m.jublawoma_components_footer_paragraph_2()}
 					</p>
-					<p>Jungwacht Blauring Wohlenschwil Mägenwil</p>
+					<p>{m.jublawoma_components_footer_paragraph_3()}</p>
 				</div>
 				<div>
-					<strong>Kontakt</strong>
+					<strong>{m.jublawoma_components_footer_text()}</strong>
 					<a href="mailto:scharleitung@jublawoma.ch">
-						scharleitung@jublawoma.ch
+						{m.jublawoma_components_footer_text_2()}
 					</a>
-					<span>Vogelsangstrasse 2 · 5512 Wohlenschwil</span>
+					<span>{m.jublawoma_components_footer_text_3()}</span>
 				</div>
 				<div>
-					<strong>Mehr</strong>
+					<strong>{m.jublawoma_components_footer_text_4()}</strong>
 					<a
 						href="https://www.instagram.com/jubla_woma/"
 						target="_blank"
 						rel="noreferrer"
 					>
-						<Camera size={16} /> Instagram
+						<Camera size={16} />
+						{m.jublawoma_components_footer_text_5()}
 					</a>
-					<Link to="/impressum">Impressum</Link>
-					<Link to="/datenschutz">Datenschutz</Link>
+					<Link to="/legal">{m.jublawoma_components_footer_text_6()}</Link>
+					<Link to="/privacy">{m.jublawoma_components_footer_text_7()}</Link>
 				</div>
 			</div>
 		</footer>

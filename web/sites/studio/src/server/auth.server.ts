@@ -1,99 +1,81 @@
+import type { SiteId } from "@oliumbi/contracts";
+import { ServiceError } from "@oliumbi/http-client";
 import {
 	getRequestHeader,
 	setResponseHeader,
 } from "@tanstack/react-start/server";
+import { identity } from "./identity.server";
 
-export interface Actor {
-	id: string;
-	username: string;
-	displayName: string;
-}
+const secure = process.env.STUDIO_SECURE_COOKIES === "true";
+const cookieName = secure ? "__Host-studio_session" : "studio_session";
 
-const secureCookies = process.env.STUDIO_SECURE_COOKIES === "true";
-const cookieName = secureCookies ? "__Host-studio_session" : "studio_session";
-
-function identityUrl(path: string): string {
-	return new URL(
-		path,
-		process.env.IDENTITY_SERVICE_URL ?? "http://localhost:8081",
-	).toString();
-}
-
-function internalHeaders(): Record<string, string> {
-	const token = process.env.IDENTITY_INTERNAL_TOKEN;
-	if (!token) throw new Error("IDENTITY_INTERNAL_TOKEN is not configured");
-	return { "X-Internal-Token": token, "Content-Type": "application/json" };
-}
-
-function requestToken(): string | null {
-	const cookie = getRequestHeader("cookie") ?? "";
-	for (const part of cookie.split(";")) {
-		const [name, ...value] = part.trim().split("=");
-		if (name === cookieName) return decodeURIComponent(value.join("="));
+function requestToken() {
+	const cookie = (getRequestHeader("cookie") ?? "")
+		.split(";")
+		.find((part) => part.trim().startsWith(`${cookieName}=`));
+	if (!cookie) return null;
+	try {
+		return decodeURIComponent(cookie.trim().slice(cookieName.length + 1));
+	} catch {
+		return null;
 	}
-	return null;
 }
 
-function setSessionCookie(token: string, expiresAt: string) {
-	const secure = secureCookies ? "; Secure" : "";
+function sessionCookie(value: string, expires: string) {
 	setResponseHeader(
 		"Set-Cookie",
-		`${cookieName}=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax; Expires=${new Date(expiresAt).toUTCString()}${secure}`,
+		cookieName +
+			"=" +
+			encodeURIComponent(value) +
+			"; Path=/; HttpOnly; SameSite=Lax; Expires=" +
+			expires +
+			(secure ? "; Secure" : ""),
 	);
 }
 
 export function clearSessionCookie() {
-	const secure = secureCookies ? "; Secure" : "";
-	setResponseHeader(
-		"Set-Cookie",
-		`${cookieName}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${secure}`,
-	);
+	sessionCookie("", new Date(0).toUTCString());
 }
 
-export async function login(
-	username: string,
-	password: string,
-): Promise<Actor> {
-	const response = await fetch(identityUrl("/internal/sessions"), {
-		method: "POST",
-		headers: internalHeaders(),
-		body: JSON.stringify({ username, password }),
-	});
-	if (!response.ok) throw new Error("Benutzername oder Passwort ist falsch.");
-	const session = (await response.json()) as {
-		token: string;
-		expiresAt: string;
-		actor: Actor;
-	};
-	setSessionCookie(session.token, session.expiresAt);
+export async function login(name: string, password: string) {
+	const session = await identity.createSession(name, password);
+	sessionCookie(session.token, new Date(session.expiresAt).toUTCString());
 	return session.actor;
 }
 
-export async function currentActor(): Promise<Actor | null> {
+export async function currentActor() {
 	const token = requestToken();
 	if (!token) return null;
-	const response = await fetch(identityUrl("/internal/sessions/current"), {
-		headers: { ...internalHeaders(), Authorization: `Bearer ${token}` },
-	});
-	if (!response.ok) {
-		clearSessionCookie();
-		return null;
+	try {
+		const actor = await identity.validateSession(token);
+		const { permissions } = await identity.getAccount(actor.id);
+		return {
+			...actor,
+			displayName: actor.name,
+			username: actor.name,
+			permissions: permissions.map((entry) => entry.permission),
+		};
+	} catch (error) {
+		if (error instanceof ServiceError && [401, 404].includes(error.status)) {
+			clearSessionCookie();
+			return null;
+		}
+		throw error;
 	}
-	return response.json() as Promise<Actor>;
 }
 
-export async function requireActor(): Promise<Actor> {
+export async function requireActor(site?: SiteId) {
 	const actor = await currentActor();
-	if (!actor) throw new Error("Nicht angemeldet");
+	if (!actor) throw new Error("Not authenticated");
+	const allowed = actor.permissions.some(
+		(value) => value === "studio.admin" || (site && value === `${site}.manage`),
+	);
+	if (!allowed) throw new Error("Not authorized");
 	return actor;
 }
 
-export async function logout(): Promise<void> {
+export async function logout() {
 	const token = requestToken();
-	if (token)
-		await fetch(identityUrl("/internal/sessions/current"), {
-			method: "DELETE",
-			headers: { ...internalHeaders(), Authorization: `Bearer ${token}` },
-		});
+	if (token) await identity.revokeSession(token);
 	clearSessionCookie();
 }
