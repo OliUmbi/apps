@@ -73,3 +73,27 @@ for private endpoints
 
 i might have forgotten some.
 
+## Implementation structure
+
+ImageProcessor coordinates the concurrency limit and processing lifecycle. Its package-private
+helpers handle container inspection (ImageInput, PngInspector, JpegInspector), bounded decoding
+and sRGB normalization (ImageDecoder), EXIF transforms (ImageOrientation), sizing and reuse
+(ImageRenditions), and metadata-free encoding with quality budgets (ImageEncoder).
+These helpers can be exercised without starting Spring or connecting to a database.
+
+DocumentProcessor validates the PDF signature and preserves the uploaded bytes. Documents store
+one slug; the response and download filename are derived as `slug + ".pdf"`.
+V005 defines this initial schema without CHECK constraints, retaining NOT NULL, uniqueness
+and foreign keys. As with the other initial migrations, existing development databases need
+their schema brought into line when this migration changes.
+
+LocalBlobStorage owns staged uploads and atomic publication. StorageFiles owns paths and file
+removal; OrphanCleanup owns the age, activity and database-existence checks. Upload handles remain
+active until after the metadata transaction completes. Stage, close and orphan removal share a
+lock so cleanup cannot remove an upload between its activity check and deletion. This activity
+tracking is local to one service instance; multiple instances must not share a storage root.
+Failed or uncertain database commits leave published files for later reconciliation.
+
+StoredFile checksums are SHA-256 content ETags used by ContentResponse for conditional requests.
+They are calculated once on upload, rather than by rereading files on every download.
+

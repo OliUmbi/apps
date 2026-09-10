@@ -50,13 +50,11 @@ public class ImageService {
         try (var upload = storage.stage(id)) {
             var input = storage.upload(upload, file.getInputStream(), properties.maxBytes());
             var renditions = processor.process(input, upload.directory());
+            var image = new Image(id, site, request.visible());
+            renditions.forEach(image::addVariant);
             storage.publish(upload, AssetKind.IMAGE);
-            // If commit outcome is uncertain, leave files for database-aware orphan cleanup.
-            return transactions.execute(status -> {
-                var image = new Image(id, site, request.visible());
-                renditions.forEach(image::addVariant);
-                return ImageDetailResponse.fromImage(images.saveAndFlush(image));
-            });
+            // Keep published files until cleanup can reconcile the database if commit fails.
+            return transactions.execute(status -> ImageDetailResponse.fromImage(images.saveAndFlush(image)));
         }
     }
 
@@ -91,14 +89,20 @@ public class ImageService {
         return ImageResponse.fromImage(image);
     }
 
+    // todo duplicated code in documentService, can probably be moved somewhere else
     public void delete(UUID id, String site) {
+
         boolean deleted = Boolean.TRUE.equals(transactions.execute(status -> {
             var asset = images.findLockedByIdAndSite(id, site);
             if (asset.isEmpty()) return false;
             images.delete(asset.get());
             return true;
         }));
-        if (!deleted) return;
+
+        if (!deleted) {
+            return;
+        }
+
         try {
             storage.delete(AssetKind.IMAGE, id);
         } catch (RuntimeException exception) {

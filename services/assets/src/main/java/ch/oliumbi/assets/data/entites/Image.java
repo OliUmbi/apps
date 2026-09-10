@@ -14,19 +14,15 @@ import java.util.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Image {
+    @OneToMany(mappedBy = "image", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<ImageVariant> variants = new ArrayList<>();
     @Id
     private UUID id;
-
     @Column(nullable = false, columnDefinition = "text")
     private String site;
-
     @Setter
     @Column(name = "public", nullable = false)
     private boolean visible;
-
-    @OneToMany(mappedBy = "image", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<ImageVariant> variants = new ArrayList<>();
-
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;

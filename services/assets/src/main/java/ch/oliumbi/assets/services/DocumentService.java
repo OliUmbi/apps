@@ -8,8 +8,8 @@ import ch.oliumbi.assets.data.responses.DocumentResponse;
 import ch.oliumbi.assets.domain.AssetContent;
 import ch.oliumbi.assets.domain.AssetKind;
 import ch.oliumbi.assets.repositories.DocumentRepository;
+import ch.oliumbi.assets.services.processing.DocumentProcessor;
 import ch.oliumbi.assets.services.storage.BlobStorage;
-import ch.oliumbi.assets.services.storage.FileInspection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.UUID;
 
 @Slf4j
@@ -46,17 +44,11 @@ public class DocumentService {
         var id = UUID.randomUUID();
         try (var upload = storage.stage(id)) {
             var input = storage.upload(upload, file.getInputStream(), properties.documentMaxBytes());
-            try (var stream = Files.newInputStream(input)) {
-                var signature = new String(stream.readNBytes(5), StandardCharsets.US_ASCII);
-                if (!signature.equals("%PDF-"))
-                    throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Only PDF documents are supported");
-            }
-            var output = upload.directory().resolve("original.pdf");
-            Files.move(input, output);
-            var stored = FileInspection.inspect(output, "application/pdf");
+            var stored = DocumentProcessor.process(input);
+            var document = new Document(id, site, request.visible(), request.slug(), stored.bytes(), stored.checksum());
             storage.publish(upload, AssetKind.DOCUMENT);
-            return transactions.execute(status -> DocumentResponse.fromDocument(documents.saveAndFlush(
-                    new Document(id, site, request.visible(), request.slug(), request.slug() + ".pdf", stored.bytes(), stored.checksum()))));
+            // Keep published files until cleanup can reconcile the database if commit fails.
+            return transactions.execute(status -> DocumentResponse.fromDocument(documents.saveAndFlush(document)));
         }
     }
 
@@ -83,7 +75,8 @@ public class DocumentService {
     }
 
     private AssetContent content(Document document) {
-        return new AssetContent(storage.file(AssetKind.DOCUMENT, document.getId(), "original.pdf"), "application/pdf",
+        var path = storage.file(AssetKind.DOCUMENT, document.getId(), DocumentProcessor.FILE_KEY);
+        return new AssetContent(path, DocumentProcessor.CONTENT_TYPE,
                 document.getByteCount(), document.getChecksum(), document.getFilename());
     }
 

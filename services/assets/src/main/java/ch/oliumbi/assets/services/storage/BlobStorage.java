@@ -18,7 +18,7 @@ public interface BlobStorage {
 
     void delete(AssetKind kind, UUID id);
 
-    void cleanup(AssetKind kind, Predicate<UUID> exists);
+    void cleanup(AssetKind kind, Predicate<UUID> metadataExists);
 
     interface Upload extends AutoCloseable {
         UUID id();

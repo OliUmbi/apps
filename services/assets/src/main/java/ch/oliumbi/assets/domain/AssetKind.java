@@ -1,7 +1,9 @@
 package ch.oliumbi.assets.domain;
 
 public enum AssetKind {
-    IMAGE("images"), DOCUMENT("documents");
+    IMAGE("images"),
+    DOCUMENT("documents");
+
     private final String directory;
 
     AssetKind(String directory) {

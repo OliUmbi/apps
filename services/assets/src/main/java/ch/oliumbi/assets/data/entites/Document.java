@@ -26,9 +26,6 @@ public class Document {
     @Column(nullable = false, unique = true, columnDefinition = "text")
     private String slug;
 
-    @Column(name = "filename", nullable = false, columnDefinition = "text")
-    private String filename;
-
     @Column(name = "byte_count", nullable = false)
     private long byteCount;
 
@@ -43,13 +40,16 @@ public class Document {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    public Document(UUID id, String site, boolean visible, String slug, String filename, long byteCount, String checksum) {
+    public Document(UUID id, String site, boolean visible, String slug, long byteCount, String checksum) {
         this.id = id;
         this.site = site;
         this.visible = visible;
         this.slug = slug;
-        this.filename = filename;
         this.byteCount = byteCount;
         this.checksum = checksum;
+    }
+
+    public String getFilename() {
+        return slug + ".pdf";
     }
 }
