@@ -28,7 +28,14 @@ repository root, add -f services/pom.xml.
 
 For local execution, build first and run the application's main class in the IDE
 or its packaged JAR, for example java -jar identity/target/identity-0.1.0.jar.
-Supply the service's documented environment variables.
+The shared startup loader discovers the repository root and reads `.env.development`
+automatically, whether the working directory is the repository, reactor, or a service.
+Create it once from `.env.development.example`. No IntelliJ env-file link is needed.
+Shell/IDE variables, JVM properties and command-line settings take precedence.
+Remove old `APP_ENV_FILE` overrides to use discovery; an explicit `APP_ENV_FILE`
+still selects an alternate file (and fails if unreadable). Outside a checkout,
+services use externally supplied configuration. Use unquoted `KEY=value` entries,
+no interpolation, and forward slashes for paths in the shared file.
 
 Import services/pom.xml as the Maven project in IntelliJ so all modules are linked.
 Permanent tests remain deferred.

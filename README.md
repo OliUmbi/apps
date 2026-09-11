@@ -18,8 +18,8 @@ Web applications live in [web](web/), managed by pnpm.
 Requirements: Docker Desktop, Node.js 24+, and pnpm 11+.
 
 ```powershell
-Copy-Item .env.example .env
-docker compose up -d --build
+Copy-Item .env.development.example .env.development
+docker compose --env-file .env.development up -d --build
 ```
 
 This starts the development containers; schema integration is unfinished.
@@ -33,7 +33,13 @@ and services in Docker, then run `pnpm dev:zelglihof` or `pnpm dev:studio` from
 - Identity health: http://localhost:8081/actuator/health
 - Messaging health: http://localhost:8082/actuator/health
 
-The development maintainer is configured through `.env`. Never use the example
+Local configuration is shared through `.env.development`. Java discovers this file
+from any directory inside the repository; all four Vite development servers load
+it automatically. No IDE environment-file link is required. Rebuild Java after
+pulling changes and restart running services after editing the file. See
+[web development](web/README.md#development) for precedence and startup details.
+
+Never use the example
 passwords in a deployed environment. Set `STUDIO_SECURE_COOKIES=true` when
 Studio is served over HTTPS.
 

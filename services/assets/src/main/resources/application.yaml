@@ -1,8 +1,6 @@
 server:
   port: 8083
 spring:
-  config:
-    import: "optional:file:${APP_ENV_FILE:.env}[.properties]"
   servlet:
     multipart:
       max-file-size: 50MB
