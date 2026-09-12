@@ -1,7 +1,7 @@
 package ch.oliumbi.assets.services;
 
 import ch.oliumbi.assets.configurations.AssetsProperties;
-import ch.oliumbi.assets.data.entites.Document;
+import ch.oliumbi.assets.data.entities.Document;
 import ch.oliumbi.assets.data.requests.DocumentCreateRequest;
 import ch.oliumbi.assets.data.requests.VisibilityRequest;
 import ch.oliumbi.assets.data.responses.DocumentResponse;
@@ -10,12 +10,10 @@ import ch.oliumbi.assets.domain.AssetKind;
 import ch.oliumbi.assets.repositories.DocumentRepository;
 import ch.oliumbi.assets.services.processing.DocumentProcessor;
 import ch.oliumbi.assets.services.storage.BlobStorage;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,20 +22,21 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.util.UUID;
 
-@Slf4j
 @Service
 public class DocumentService {
     private final DocumentRepository documents;
     private final BlobStorage storage;
     private final AssetsProperties properties;
     private final TransactionTemplate transactions;
+    private final AssetDeletionService deletion;
 
     public DocumentService(DocumentRepository documents, BlobStorage storage, AssetsProperties properties,
-                           PlatformTransactionManager transactionManager) {
+                           TransactionTemplate transactions, AssetDeletionService deletion) {
         this.documents = documents;
         this.storage = storage;
         this.properties = properties;
-        this.transactions = new TransactionTemplate(transactionManager);
+        this.transactions = transactions;
+        this.deletion = deletion;
     }
 
     public DocumentResponse create(String site, DocumentCreateRequest request, MultipartFile file) throws IOException {
@@ -89,17 +88,11 @@ public class DocumentService {
     }
 
     public void delete(UUID id, String site) {
-        boolean deleted = Boolean.TRUE.equals(transactions.execute(status -> {
+        deletion.delete(AssetKind.DOCUMENT, id, () -> {
             var asset = documents.findLockedByIdAndSite(id, site);
             if (asset.isEmpty()) return false;
             documents.delete(asset.get());
             return true;
-        }));
-        if (!deleted) return;
-        try {
-            storage.delete(AssetKind.DOCUMENT, id);
-        } catch (RuntimeException exception) {
-            log.warn("Document {} file deletion deferred to cleanup ({})", id, exception.getClass().getSimpleName());
-        }
+        });
     }
 }

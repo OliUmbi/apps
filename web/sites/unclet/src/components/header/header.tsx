@@ -21,12 +21,11 @@ export default function Header() {
 						className="flex items-center gap-3"
 						onClick={() => setOpen(false)}
 					>
-						<span className="grid size-9 place-items-center border border-brass/60 font-serif text-xl text-brass-light">
-							{m.unclet_components_header_header_text()}
-						</span>
-						<span className="text-sm font-bold tracking-[0.22em] uppercase">
-							{m.unclet_components_header_header_text_2()}
-						</span>
+						<img
+							src="/logo.png"
+							alt={m.unclet_components_header_header_text_2()}
+							className="h-10 w-auto brightness-0 invert"
+						/>
 					</Link>
 					<nav
 						className="hidden items-center gap-8 md:flex"

@@ -196,10 +196,7 @@ function HomePage() {
 						<p className="leading-relaxed text-night/65">
 							{m.unclet_routes_index_paragraph_9()}
 						</p>
-						<Link
-							to="/inquiry"
-							className="mt-7 inline-flex min-h-13 items-center gap-2 bg-night px-5 text-xs font-bold tracking-widest text-bone uppercase"
-						>
+						<Link to="/inquiry" className="button-dark mt-7">
 							{m.unclet_routes_index_text_11()}
 							<ArrowRight size={16} />
 						</Link>

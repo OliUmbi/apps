@@ -4,6 +4,7 @@ import { ArrowLeft, CalendarDays, MapPin, PackageCheck } from "lucide-react";
 import { NewsletterSignup } from "../components/newsletter-signup";
 import { ProductVariants } from "../components/product-variants";
 import { ReservationForm } from "../components/reservation-form";
+import { AssetImage } from "../components/ui/asset-image";
 import type { Product } from "../content/site-content";
 
 export function ProductPage({ product }: { product: Product }) {
@@ -34,9 +35,10 @@ export function ProductPage({ product }: { product: Product }) {
 				</Link>
 				<div className="grid overflow-hidden rounded-[2rem] bg-cream lg:grid-cols-[1.1fr_0.9fr]">
 					<div className="relative min-h-[27rem] lg:min-h-[42rem]">
-						<img
+						<AssetImage
 							src={product.image}
 							alt={product.name}
+							sizes="(min-width: 1024px) 55vw, 100vw"
 							className="absolute inset-0 h-full w-full object-cover"
 						/>
 						<span className="absolute left-5 top-5 rounded-full bg-cream/92 px-3 py-2 text-xs font-bold uppercase tracking-wider backdrop-blur">

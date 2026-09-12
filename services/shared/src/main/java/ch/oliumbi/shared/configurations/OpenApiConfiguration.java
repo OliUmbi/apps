@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 
-// todo review and cleanup implementation, maybe add some more details if available
 @Configuration
 public class OpenApiConfiguration {
 
@@ -26,10 +25,8 @@ public class OpenApiConfiguration {
                                         new SecurityScheme()
                                                 .name(SECURITY_NAME)
                                                 .type(SecurityScheme.Type.HTTP)
-                                                .scheme(SECURITY_SCHEME)
-                                )
+                                                .scheme(SECURITY_SCHEME))
                 );
-
     }
 
     @Bean
@@ -37,7 +34,8 @@ public class OpenApiConfiguration {
         return (operation, handlerMethod) -> {
             if (operation.getParameters() != null) {
                 operation.getParameters()
-                        .removeIf(parameter -> "header".equals(parameter.getIn()) && HttpHeaders.AUTHORIZATION.equalsIgnoreCase(parameter.getName()));
+                        .removeIf(parameter -> "header".equals(parameter.getIn())
+                                && HttpHeaders.AUTHORIZATION.equalsIgnoreCase(parameter.getName()));
             }
             return operation;
         };

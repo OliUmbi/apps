@@ -1,4 +1,5 @@
 import { m } from "@oliumbi/i18n/messages";
+import type { EventRecord } from "@oliumbi/jublawoma-data/content.types";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { CalendarDays, MapPin } from "lucide-react";
 import { ContentImage } from "../../components/content-image";
@@ -7,7 +8,9 @@ import { getEvent } from "../../content/content.functions";
 
 export const Route = createFileRoute("/events/$eventId")({
 	loader: async ({ params }) => {
-		const event = await getEvent({ data: { id: params.eventId } });
+		const event = (await getEvent({
+			data: { id: params.eventId },
+		})) as EventRecord | null;
 		if (!event) throw notFound();
 		return event;
 	},

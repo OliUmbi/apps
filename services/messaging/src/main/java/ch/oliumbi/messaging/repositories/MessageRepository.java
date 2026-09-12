@@ -1,6 +1,6 @@
 package ch.oliumbi.messaging.repositories;
 
-import ch.oliumbi.messaging.data.entites.Message;
+import ch.oliumbi.messaging.data.entities.Message;
 import ch.oliumbi.messaging.domain.MessageStatus;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.*;

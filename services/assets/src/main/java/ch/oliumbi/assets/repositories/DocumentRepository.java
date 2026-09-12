@@ -1,6 +1,6 @@
 package ch.oliumbi.assets.repositories;
 
-import ch.oliumbi.assets.data.entites.Document;
+import ch.oliumbi.assets.data.entities.Document;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

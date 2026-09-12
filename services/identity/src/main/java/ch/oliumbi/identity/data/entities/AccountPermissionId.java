@@ -1,4 +1,4 @@
-package ch.oliumbi.identity.data.entites;
+package ch.oliumbi.identity.data.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

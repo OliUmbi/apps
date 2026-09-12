@@ -1,6 +1,6 @@
 package ch.oliumbi.messaging.data.responses;
 
-import ch.oliumbi.messaging.data.entites.MessageAttempt;
+import ch.oliumbi.messaging.data.entities.MessageAttempt;
 import ch.oliumbi.messaging.domain.FailureDetail;
 
 import java.time.Instant;

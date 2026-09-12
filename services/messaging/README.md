@@ -87,8 +87,6 @@ Existing legacy web clients/adapters still need migration to this contract.
 
 ## Build and configuration
 
-Use Java 25 and build from services with `mvn -pl messaging -am package`. Permanent tests remain deferred.
+Use Java 25 and build from services with `mvn -pl messaging -am package`. The reactor does not yet contain permanent automated tests.
 Database and SMTP settings are in application.yaml. The worker always runs with the service.
-The only remaining services outside intake/processing/delivery are HTTP history and internal authorization.
-
-See [TODO review](../../documentation/java-todo-review.md) for the configuration and persistence decisions.
+The only remaining service outside intake/processing/delivery is the read-only HTTP history API.

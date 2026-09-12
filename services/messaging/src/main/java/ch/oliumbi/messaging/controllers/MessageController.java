@@ -1,7 +1,8 @@
 package ch.oliumbi.messaging.controllers;
 
 import ch.oliumbi.messaging.data.responses.*;
-import ch.oliumbi.messaging.services.*;
+import ch.oliumbi.messaging.services.MessageService;
+import ch.oliumbi.shared.security.BearerTokenVerifier;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.*;
 import org.springframework.http.HttpHeaders;
@@ -14,25 +15,25 @@ import java.util.UUID;
 public class MessageController {
 
     private final MessageService messageService;
-    private final InternalAuthorizationService internalAuthorizationService;
+    private final BearerTokenVerifier authorization;
 
-    public MessageController(MessageService messageService, InternalAuthorizationService internalAuthorizationService) {
+    public MessageController(MessageService messageService, BearerTokenVerifier authorization) {
         this.messageService = messageService;
-        this.internalAuthorizationService = internalAuthorizationService;
+        this.authorization = authorization;
     }
 
     @GetMapping
     public PagedModel<MessageResponse> history(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
                                               @RequestParam(required = false) String status,
                                               @SortDefault(sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        internalAuthorizationService.requireValid(authorization);
+        this.authorization.requireValid(authorization);
         return new PagedModel<>(messageService.history(status, pageable));
     }
 
     @GetMapping("/{id}")
     public MessageDetailResponse get(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
                                      @PathVariable UUID id) {
-        internalAuthorizationService.requireValid(authorization);
+        this.authorization.requireValid(authorization);
         return messageService.get(id);
     }
 }

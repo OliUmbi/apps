@@ -13,23 +13,32 @@ const assetInput = z.object({
 	site: siteSchema,
 	kind: z.enum(["images", "documents"]),
 });
+const listAssetInput = assetInput.extend(pageSchema.shape);
+const visibilityInput = assetInput.extend({
+	id: idSchema,
+	visible: z.boolean(),
+});
+const deleteAssetInput = assetInput.extend({ id: idSchema });
 export const listAssets = createServerFn({ method: "GET" })
-	.validator(assetInput.extend(pageSchema.shape))
+	.validator(listAssetInput)
 	.handler(async ({ data }) => {
-		await requireActor(data.site);
-		return client[data.kind].list(data.site, data.page, data.size);
+		const input = data as z.infer<typeof listAssetInput>;
+		await requireActor(input.site);
+		return client[input.kind].list(input.site, input.page, input.size);
 	});
 export const setAssetVisibility = createServerFn({ method: "POST" })
-	.validator(assetInput.extend({ id: idSchema, visible: z.boolean() }))
+	.validator(visibilityInput)
 	.handler(async ({ data }) => {
-		await requireActor(data.site);
-		await client[data.kind].visibility(data.site, data.id, data.visible);
+		const input = data as z.infer<typeof visibilityInput>;
+		await requireActor(input.site);
+		await client[input.kind].visibility(input.site, input.id, input.visible);
 	});
 export const deleteAsset = createServerFn({ method: "POST" })
-	.validator(assetInput.extend({ id: idSchema }))
+	.validator(deleteAssetInput)
 	.handler(async ({ data }) => {
-		await requireActor(data.site);
-		await client[data.kind].delete(data.site, data.id);
+		const input = data as z.infer<typeof deleteAssetInput>;
+		await requireActor(input.site);
+		await client[input.kind].delete(input.site, input.id);
 	});
 export const uploadAsset = createServerFn({ method: "POST" })
 	.validator((input: FormData) => input)
@@ -42,7 +51,7 @@ export const uploadAsset = createServerFn({ method: "POST" })
 			input.kind === "documents"
 				? slugSchema.parse(data.get("slug"))
 				: undefined;
-		await client[input.kind].upload(input.site, file, {
+		return client[input.kind].upload(input.site, file, {
 			visible: data.get("visible") === "true",
 			slug,
 		});

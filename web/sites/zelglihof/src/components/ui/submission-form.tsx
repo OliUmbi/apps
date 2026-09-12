@@ -4,6 +4,7 @@ import { Form } from "@base-ui/react/form";
 import { Select } from "@base-ui/react/select";
 import { m } from "@oliumbi/i18n/messages";
 import { useMutation } from "@tanstack/react-query";
+import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import type { z } from "zod";
 import { FormFeedback } from "./form-feedback";
@@ -16,6 +17,10 @@ export interface SubmissionField {
 	required?: boolean;
 	min?: number;
 	step?: number;
+	max?: number;
+	placeholder?: string;
+	autoComplete?: string;
+	wide?: boolean;
 	options?: { value: string; label: string }[];
 }
 
@@ -26,6 +31,7 @@ export function SubmissionForm<T, R extends { outcome: string }>({
 	defaults = {},
 	success = m.sent(),
 	className = "",
+	submitLabel = m.submit(),
 }: {
 	schema: z.ZodType<T>;
 	fields: SubmissionField[];
@@ -33,6 +39,7 @@ export function SubmissionForm<T, R extends { outcome: string }>({
 	defaults?: Record<string, unknown>;
 	success?: string;
 	className?: string;
+	submitLabel?: string;
 }) {
 	const [validation, setValidation] = useState("");
 	const mutation = useMutation({ mutationFn: submit });
@@ -40,7 +47,7 @@ export function SubmissionForm<T, R extends { outcome: string }>({
 		return <FormFeedback success={success} />;
 	return (
 		<Form
-			className={`grid gap-5 ${className}`}
+			className={`submission-form grid gap-5 ${className}`}
 			onSubmit={(event) => {
 				event.preventDefault();
 				const values: Record<string, unknown> = {
@@ -60,7 +67,12 @@ export function SubmissionForm<T, R extends { outcome: string }>({
 			}}
 		>
 			{fields.map((field) => (
-				<SubmissionControl key={field.name} field={field} />
+				<div
+					key={field.name}
+					className={`form-control-wrap ${field.wide ? "is-wide" : ""}`}
+				>
+					<SubmissionControl field={field} />
+				</div>
 			))}
 			<FormFeedback
 				error={
@@ -77,7 +89,7 @@ export function SubmissionForm<T, R extends { outcome: string }>({
 				className="button-primary disabled:opacity-50"
 				disabled={mutation.isPending}
 			>
-				{mutation.isPending ? m.saving() : m.submit()}
+				{mutation.isPending ? m.saving() : submitLabel}
 			</Button>
 		</Form>
 	);
@@ -90,11 +102,13 @@ function SubmissionControl({ field }: { field: SubmissionField }) {
 				<Field.Label>{field.label}</Field.Label>
 				<Select.Root
 					name={field.name}
+					items={field.options}
 					defaultValue={field.options[0]?.value}
 					required={field.required}
 				>
-					<Select.Trigger className="rounded-lg border border-current/20 px-3 py-2 text-left">
+					<Select.Trigger className="flex min-h-12 items-center justify-between rounded-xl border border-forest/20 bg-cream px-4 text-left">
 						<Select.Value />
+						<ChevronDown size={17} aria-hidden="true" />
 					</Select.Trigger>
 					<Select.Portal>
 						<Select.Positioner className="z-70">
@@ -122,7 +136,10 @@ function SubmissionControl({ field }: { field: SubmissionField }) {
 			render={field.type === "textarea" ? <textarea rows={5} /> : undefined}
 			required={field.required}
 			min={field.min}
+			max={field.max}
 			step={field.step}
+			placeholder={field.placeholder}
+			autoComplete={field.autoComplete}
 			defaultValue={field.type === "number" ? (field.min ?? 1) : undefined}
 		/>
 	);

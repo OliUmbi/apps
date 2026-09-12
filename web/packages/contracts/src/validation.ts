@@ -20,12 +20,13 @@ export const slugSchema = z
 	.string()
 	.regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
 	.max(limits.name);
-export const statusSchema = z.enum([
+export const statusValues = [
 	"new",
 	"in-progress",
 	"completed",
 	"cancelled",
-]);
+] as const;
+export const statusSchema = z.enum(statusValues);
 export const pageSchema = z.object({
 	page: z.number().int().nonnegative().default(0),
 	size: z.number().int().min(1).max(limits.maxPage).default(limits.page),

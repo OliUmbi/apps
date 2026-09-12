@@ -14,9 +14,10 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as InquiryRouteImport } from './routes/inquiry'
 import { Route as LegalRouteImport } from './routes/legal'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ReviewRouteImport } from './routes/review'
 import { Route as ServicesRouteImport } from './routes/services'
-import { Route as ShowcasesRouteImport } from './routes/showcases'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ShowcasesIndexRouteImport } from './routes/showcases/index'
 import { Route as ShowcasesSlugRouteImport } from './routes/showcases/$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -44,14 +45,14 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReviewRoute = ReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ShowcasesRoute = ShowcasesRouteImport.update({
-  id: '/showcases',
-  path: '/showcases',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -59,10 +60,15 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShowcasesIndexRoute = ShowcasesIndexRouteImport.update({
+  id: '/showcases/',
+  path: '/showcases/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShowcasesSlugRoute = ShowcasesSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => ShowcasesRoute,
+  id: '/showcases/$slug',
+  path: '/showcases/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -71,10 +77,11 @@ export interface FileRoutesByFullPath {
   '/inquiry': typeof InquiryRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
+  '/review': typeof ReviewRoute
   '/services': typeof ServicesRoute
-  '/showcases': typeof ShowcasesRouteWithChildren
   '/terms': typeof TermsRoute
   '/showcases/$slug': typeof ShowcasesSlugRoute
+  '/showcases/': typeof ShowcasesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -82,10 +89,11 @@ export interface FileRoutesByTo {
   '/inquiry': typeof InquiryRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
+  '/review': typeof ReviewRoute
   '/services': typeof ServicesRoute
-  '/showcases': typeof ShowcasesRouteWithChildren
   '/terms': typeof TermsRoute
   '/showcases/$slug': typeof ShowcasesSlugRoute
+  '/showcases': typeof ShowcasesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -94,10 +102,11 @@ export interface FileRoutesById {
   '/inquiry': typeof InquiryRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
+  '/review': typeof ReviewRoute
   '/services': typeof ServicesRoute
-  '/showcases': typeof ShowcasesRouteWithChildren
   '/terms': typeof TermsRoute
   '/showcases/$slug': typeof ShowcasesSlugRoute
+  '/showcases/': typeof ShowcasesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -107,10 +116,11 @@ export interface FileRouteTypes {
     | '/inquiry'
     | '/legal'
     | '/privacy'
+    | '/review'
     | '/services'
-    | '/showcases'
     | '/terms'
     | '/showcases/$slug'
+    | '/showcases/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -118,10 +128,11 @@ export interface FileRouteTypes {
     | '/inquiry'
     | '/legal'
     | '/privacy'
+    | '/review'
     | '/services'
-    | '/showcases'
     | '/terms'
     | '/showcases/$slug'
+    | '/showcases'
   id:
     | '__root__'
     | '/'
@@ -129,10 +140,11 @@ export interface FileRouteTypes {
     | '/inquiry'
     | '/legal'
     | '/privacy'
+    | '/review'
     | '/services'
-    | '/showcases'
     | '/terms'
     | '/showcases/$slug'
+    | '/showcases/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -141,9 +153,11 @@ export interface RootRouteChildren {
   InquiryRoute: typeof InquiryRoute
   LegalRoute: typeof LegalRoute
   PrivacyRoute: typeof PrivacyRoute
+  ReviewRoute: typeof ReviewRoute
   ServicesRoute: typeof ServicesRoute
-  ShowcasesRoute: typeof ShowcasesRouteWithChildren
   TermsRoute: typeof TermsRoute
+  ShowcasesSlugRoute: typeof ShowcasesSlugRoute
+  ShowcasesIndexRoute: typeof ShowcasesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -183,18 +197,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/review': {
+      id: '/review'
+      path: '/review'
+      fullPath: '/review'
+      preLoaderRoute: typeof ReviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services': {
       id: '/services'
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/showcases': {
-      id: '/showcases'
-      path: '/showcases'
-      fullPath: '/showcases'
-      preLoaderRoute: typeof ShowcasesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -204,27 +218,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/showcases/': {
+      id: '/showcases/'
+      path: '/showcases'
+      fullPath: '/showcases/'
+      preLoaderRoute: typeof ShowcasesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/showcases/$slug': {
       id: '/showcases/$slug'
-      path: '/$slug'
+      path: '/showcases/$slug'
       fullPath: '/showcases/$slug'
       preLoaderRoute: typeof ShowcasesSlugRouteImport
-      parentRoute: typeof ShowcasesRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
-
-interface ShowcasesRouteChildren {
-  ShowcasesSlugRoute: typeof ShowcasesSlugRoute
-}
-
-const ShowcasesRouteChildren: ShowcasesRouteChildren = {
-  ShowcasesSlugRoute: ShowcasesSlugRoute,
-}
-
-const ShowcasesRouteWithChildren = ShowcasesRoute._addFileChildren(
-  ShowcasesRouteChildren,
-)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -232,9 +241,11 @@ const rootRouteChildren: RootRouteChildren = {
   InquiryRoute: InquiryRoute,
   LegalRoute: LegalRoute,
   PrivacyRoute: PrivacyRoute,
+  ReviewRoute: ReviewRoute,
   ServicesRoute: ServicesRoute,
-  ShowcasesRoute: ShowcasesRouteWithChildren,
   TermsRoute: TermsRoute,
+  ShowcasesSlugRoute: ShowcasesSlugRoute,
+  ShowcasesIndexRoute: ShowcasesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

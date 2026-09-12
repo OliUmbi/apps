@@ -1,6 +1,6 @@
 package ch.oliumbi.messaging.services.processing;
 
-import ch.oliumbi.messaging.data.entites.*;
+import ch.oliumbi.messaging.data.entities.*;
 import ch.oliumbi.messaging.domain.*;
 import ch.oliumbi.messaging.repositories.*;
 import lombok.extern.slf4j.Slf4j;

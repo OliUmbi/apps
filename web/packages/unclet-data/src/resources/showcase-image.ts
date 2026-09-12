@@ -16,7 +16,7 @@ export const uncletShowcaseImage = {
 		{
 			name: "description",
 			label: "description",
-			kind: "textarea",
+			kind: "text",
 		},
 	],
 	public: "all",

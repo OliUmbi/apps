@@ -44,7 +44,7 @@ final class ImageDecoder {
     private void validateDimensions(int width, int height) {
         if (width < 1 || height < 1 || width > properties.maxSide() || height > properties.maxSide()
                 || (long) width * height > properties.maxPixels()) {
-            throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE, "Image dimensions exceed the limit");
+            throw new ResponseStatusException(HttpStatus.CONTENT_TOO_LARGE, "Image dimensions exceed the limit");
         }
     }
 

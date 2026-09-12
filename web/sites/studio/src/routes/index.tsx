@@ -7,7 +7,10 @@ import { getSession } from "../server/resources.functions";
 export const Route = createFileRoute("/")({
 	validateSearch: z.object({
 		site: z.enum(siteIds).catch("zelglihof"),
+		area: z.enum(["site", "administration", "profile"]).catch("site"),
 		section: z.string().catch("overview"),
+		mode: z.enum(["list", "create", "detail"]).catch("list"),
+		record: z.uuid().optional(),
 	}),
 	loader: () => getSession(),
 	component: Studio,

@@ -1,0 +1,19 @@
+{
+  "name": "@oliumbi/ui",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./responsive-image": "./src/responsive-image.tsx",
+    "./simple-markdown": "./src/simple-markdown.tsx"
+  },
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "typescript": "catalog:"
+  }
+}

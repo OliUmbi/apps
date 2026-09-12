@@ -24,7 +24,8 @@
     "@oliumbi/i18n": "workspace:*",
     "@tanstack/react-query": "^5.90.0",
     "@oliumbi/unclet-data": "workspace:*",
-    "@oliumbi/query": "workspace:*"
+    "@oliumbi/query": "workspace:*",
+    "@oliumbi/ui": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "catalog:",

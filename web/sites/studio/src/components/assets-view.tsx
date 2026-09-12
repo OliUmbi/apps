@@ -136,7 +136,7 @@ export function AssetsView({
 								<p className="text-sm text-zinc-400">
 									{asset.visible
 										? m.studio_components_assets_view_feedback_2()
-										: "Privat"}
+										: m.studio_asset_private()}
 								</p>
 							</div>
 							<div className="flex gap-2">
@@ -155,7 +155,7 @@ export function AssetsView({
 									}
 								>
 									{asset.visible
-										? "Verbergen"
+										? m.studio_asset_hide()
 										: m.studio_components_assets_view_feedback_3()}
 								</Button>
 								<Button

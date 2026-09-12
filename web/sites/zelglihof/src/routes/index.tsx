@@ -1,15 +1,18 @@
+import type { Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
+import type { Product, Update } from "@oliumbi/zelglihof-data/content.types";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowDown, ArrowRight, Egg, Sprout, Wheat } from "lucide-react";
 import { NewsletterSignup } from "../components/newsletter-signup";
 import { Promotions } from "../components/promotions";
+import { AssetImage } from "../components/ui/asset-image";
 import { getArticlePage, getProductPage } from "../content/catalog.functions";
 
 export const Route = createFileRoute("/")({
 	loader: async () => {
 		const [products, updates] = await Promise.all([
-			getProductPage({ data: { page: 0 } }),
-			getArticlePage({ data: { page: 0 } }),
+			getProductPage({ data: { page: 0 } }) as Promise<Page<Product>>,
+			getArticlePage({ data: { page: 0 } }) as Promise<Page<Update>>,
 		]);
 		return { products: products.items, updates: updates.items };
 	},
@@ -113,6 +116,22 @@ function HomePage() {
 					</div>
 				</div>
 				<div className="mt-12 grid gap-5 md:grid-cols-3">
+					{updates.length === 0 ? (
+						<div className="updates-empty md:col-span-3">
+							<Sprout size={34} aria-hidden="true" />
+							<div>
+								<p className="eyebrow text-clay">
+									{m.zelglihof_updates_empty_eyebrow()}
+								</p>
+								<h3 className="mt-3 font-serif text-3xl font-bold">
+									{m.zelglihof_updates_empty_title()}
+								</h3>
+								<p className="mt-2 text-ink/60">
+									{m.zelglihof_updates_empty_copy()}
+								</p>
+							</div>
+						</div>
+					) : null}
 					{updates.map((update, index) => (
 						<Link
 							key={update.slug}
@@ -123,9 +142,14 @@ function HomePage() {
 							<div
 								className={`overflow-hidden ${index === 0 ? "aspect-[16/9]" : "aspect-[4/5]"}`}
 							>
-								<img
+								<AssetImage
 									src={update.image}
 									alt=""
+									sizes={
+										index === 0
+											? "(min-width: 768px) 66vw, 100vw"
+											: "(min-width: 768px) 33vw, 100vw"
+									}
 									className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
 								/>
 							</div>
@@ -167,9 +191,10 @@ function HomePage() {
 								className="group"
 							>
 								<div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem]">
-									<img
+									<AssetImage
 										src={product.image}
 										alt={product.shortName}
+										sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
 										className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
 									/>
 									<span className="absolute left-4 top-4 rounded-full bg-cream/90 px-3 py-1.5 text-[0.68rem] font-bold uppercase tracking-wider backdrop-blur">

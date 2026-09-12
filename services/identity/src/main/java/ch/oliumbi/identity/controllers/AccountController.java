@@ -4,7 +4,7 @@ import ch.oliumbi.identity.data.requests.*;
 import ch.oliumbi.identity.data.responses.AccountDetailResponse;
 import ch.oliumbi.identity.data.responses.AccountResponse;
 import ch.oliumbi.identity.services.AccountService;
-import ch.oliumbi.identity.services.InternalAuthorizationService;
+import ch.oliumbi.shared.security.BearerTokenVerifier;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,23 +18,23 @@ import java.util.UUID;
 public class AccountController {
 
     private final AccountService accountService;
-    private final InternalAuthorizationService internalAuthorizationService;
+    private final BearerTokenVerifier authorization;
 
-    public AccountController(AccountService accountService, InternalAuthorizationService internalAuthorizationService) {
+    public AccountController(AccountService accountService, BearerTokenVerifier authorization) {
         this.accountService = accountService;
-        this.internalAuthorizationService = internalAuthorizationService;
+        this.authorization = authorization;
     }
 
     @GetMapping
     public List<AccountResponse> list(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
-        internalAuthorizationService.requireValid(authorization);
+        this.authorization.requireValid(authorization);
         return accountService.list();
     }
 
     @GetMapping("/{id}")
     public AccountDetailResponse get(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
                                      @PathVariable UUID id) {
-        internalAuthorizationService.requireValid(authorization);
+        this.authorization.requireValid(authorization);
         return accountService.get(id);
     }
 
@@ -42,7 +42,7 @@ public class AccountController {
     @ResponseStatus(HttpStatus.CREATED)
     public AccountResponse create(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
                                   @Valid @RequestBody AccountCreateRequest request) {
-        internalAuthorizationService.requireValid(authorization);
+        this.authorization.requireValid(authorization);
         return accountService.create(request);
     }
 
@@ -50,7 +50,7 @@ public class AccountController {
     public AccountResponse update(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
                                   @PathVariable UUID id,
                                   @Valid @RequestBody AccountUpdateRequest request) {
-        internalAuthorizationService.requireValid(authorization);
+        this.authorization.requireValid(authorization);
         return accountService.update(id, request);
     }
 
@@ -59,7 +59,7 @@ public class AccountController {
     public void changePassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
                                @PathVariable UUID id,
                                @Valid @RequestBody AccountPasswordRequest request) {
-        internalAuthorizationService.requireValid(authorization);
+        this.authorization.requireValid(authorization);
         accountService.changePassword(id, request);
     }
 
@@ -67,7 +67,7 @@ public class AccountController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
                        @PathVariable UUID id) {
-        internalAuthorizationService.requireValid(authorization);
+        this.authorization.requireValid(authorization);
         accountService.delete(id);
     }
 }

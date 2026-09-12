@@ -1,7 +1,7 @@
 package ch.oliumbi.identity.services;
 
-import ch.oliumbi.identity.data.entites.AccountPermission;
-import ch.oliumbi.identity.data.entites.AccountPermissionId;
+import ch.oliumbi.identity.data.entities.AccountPermission;
+import ch.oliumbi.identity.data.entities.AccountPermissionId;
 import ch.oliumbi.identity.data.requests.PermissionGrantRequest;
 import ch.oliumbi.identity.data.requests.PermissionRevokeRequest;
 import ch.oliumbi.identity.repositories.AccountPermissionRepository;

@@ -1,6 +1,6 @@
 package ch.oliumbi.assets.repositories;
 
-import ch.oliumbi.assets.data.entites.ImageVariant;
+import ch.oliumbi.assets.data.entities.ImageVariant;
 import ch.oliumbi.assets.domain.ImageSize;
 import org.springframework.data.jpa.repository.JpaRepository;
 

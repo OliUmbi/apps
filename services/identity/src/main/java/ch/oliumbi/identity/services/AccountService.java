@@ -1,6 +1,6 @@
 package ch.oliumbi.identity.services;
 
-import ch.oliumbi.identity.data.entites.Account;
+import ch.oliumbi.identity.data.entities.Account;
 
 import ch.oliumbi.identity.data.requests.*;
 import ch.oliumbi.identity.data.responses.AccountResponse;

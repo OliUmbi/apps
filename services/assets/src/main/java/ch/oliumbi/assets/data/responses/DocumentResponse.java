@@ -1,6 +1,6 @@
 package ch.oliumbi.assets.data.responses;
 
-import ch.oliumbi.assets.data.entites.Document;
+import ch.oliumbi.assets.data.entities.Document;
 
 import java.time.Instant;
 import java.util.UUID;

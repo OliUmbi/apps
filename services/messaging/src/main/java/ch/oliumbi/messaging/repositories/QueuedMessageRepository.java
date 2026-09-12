@@ -1,6 +1,6 @@
 package ch.oliumbi.messaging.repositories;
 
-import ch.oliumbi.messaging.data.entites.QueuedMessage;
+import ch.oliumbi.messaging.data.entities.QueuedMessage;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 

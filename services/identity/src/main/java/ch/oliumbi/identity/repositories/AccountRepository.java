@@ -1,6 +1,6 @@
 package ch.oliumbi.identity.repositories;
 
-import ch.oliumbi.identity.data.entites.Account;
+import ch.oliumbi.identity.data.entities.Account;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.JpaRepository;

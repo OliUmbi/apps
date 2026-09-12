@@ -3,6 +3,13 @@ import type { Account } from "@oliumbi/identity";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
+	ArrowLeft,
+	Check,
+	KeyRound,
+	ShieldCheck,
+	UserRound,
+} from "lucide-react";
+import {
 	changePassword,
 	getAccount,
 	setPermission,
@@ -16,7 +23,6 @@ import {
 import {
 	Button,
 	Checkbox,
-	Dialog,
 	Field,
 	Form,
 	FormFeedback,
@@ -37,7 +43,11 @@ export function AccountEditor({
 	const permission = useServerFn(setPermission);
 	const details = useQuery({
 		queryKey: ["account", account.id],
-		queryFn: () => get({ data: account.id }),
+		queryFn: () =>
+			get({ data: account.id }) as Promise<{
+				account: Account;
+				permissions: { permission: string }[];
+			}>,
 	});
 	const save = useMutation({
 		mutationFn: async (form: FormData) =>
@@ -48,10 +58,7 @@ export function AccountEditor({
 					enabled: form.get("enabled") === "on",
 				}),
 			}),
-		onSuccess: async () => {
-			await cache.invalidateQueries({ queryKey: ["accounts"] });
-			onClose();
-		},
+		onSuccess: () => cache.invalidateQueries({ queryKey: ["accounts"] }),
 	});
 	const reset = useMutation({
 		mutationFn: async (form: FormData) =>
@@ -68,18 +75,26 @@ export function AccountEditor({
 			cache.invalidateQueries({ queryKey: ["account", account.id] }),
 	});
 	return (
-		<Dialog.Root
-			open
-			onOpenChange={(open) => {
-				if (!open && !save.isPending && !grant.isPending && !reset.isPending)
-					onClose();
-			}}
-		>
-			<Dialog.Portal>
-				<Dialog.Backdrop className="fixed inset-0 z-50 bg-black/60" />
-				<Dialog.Popup className="fixed left-1/2 top-1/2 z-60 grid max-h-[90vh] w-[min(95vw,40rem)] -translate-x-1/2 -translate-y-1/2 gap-6 overflow-auto rounded-xl bg-zinc-900 p-6 text-white">
-					<Dialog.Title>{account.name}</Dialog.Title>
-					<Dialog.Description>{m.studio_account_settings()}</Dialog.Description>
+		<div className="content-stack workspace-page">
+			<Button className="workspace-back" onClick={onClose}>
+				<ArrowLeft size={16} /> {m.studio_back_to_accounts()}
+			</Button>
+			<header className="page-heading">
+				<div>
+					<p className="page-kicker">{m.studio_account_workspace()}</p>
+					<h1>{account.name}</h1>
+					<p>{m.studio_account_settings()}</p>
+				</div>
+			</header>
+			<div className="settings-grid">
+				<section className="settings-panel">
+					<header>
+						<UserRound size={19} />
+						<div>
+							<h2>{m.studio_profile_details()}</h2>
+							<p>{m.studio_account_identity_help()}</p>
+						</div>
+					</header>
 					<Form
 						className="grid gap-4"
 						onSubmit={(event) => {
@@ -104,25 +119,40 @@ export function AccountEditor({
 							<Checkbox.Root
 								name="enabled"
 								defaultChecked={account.enabled}
-								className="grid size-5 place-items-center rounded border border-white/40 data-checked:bg-violet-600"
+								className="studio-checkbox"
 							>
-								<Checkbox.Indicator>✓</Checkbox.Indicator>
+								<Checkbox.Indicator>
+									<Check size={13} aria-hidden="true" />
+								</Checkbox.Indicator>
 							</Checkbox.Root>
 							<Field.Label>{m.studio_account_enabled()}</Field.Label>
 						</Field.Root>
-						<Button
-							type="submit"
-							className="button primary"
-							disabled={save.isPending}
-						>
-							{m.save()}
-						</Button>
-						<FormFeedback error={save.isError ? m.error_generic() : null} />
+						<div className="settings-actions">
+							<Button
+								type="submit"
+								className="button primary"
+								disabled={save.isPending}
+							>
+								{m.save()}
+							</Button>
+						</div>
+						<FormFeedback
+							error={save.isError ? m.error_generic() : null}
+							success={save.isSuccess ? m.studio_profile_saved() : null}
+						/>
 					</Form>
-					<section className="grid gap-3">
-						<h2>{m.studio_permissions()}</h2>
+				</section>
+				<section className="settings-panel">
+					<header>
+						<ShieldCheck size={19} />
+						<div>
+							<h2>{m.studio_permissions()}</h2>
+							<p>{m.studio_permissions_help()}</p>
+						</div>
+					</header>
+					<div className="permission-list">
 						{permissionSchema.options.map((value) => (
-							<Field.Root key={value} className="flex items-center gap-3">
+							<Field.Root key={value} className="permission-row">
 								<Checkbox.Root
 									checked={
 										details.data?.permissions.some(
@@ -135,24 +165,39 @@ export function AccountEditor({
 											data: { id: account.id, permission: value, granted },
 										})
 									}
-									className="grid size-5 place-items-center rounded border border-white/40 data-checked:bg-violet-600"
+									className="studio-checkbox"
 								>
-									<Checkbox.Indicator>✓</Checkbox.Indicator>
+									<Checkbox.Indicator>
+										<Check size={13} aria-hidden="true" />
+									</Checkbox.Indicator>
 								</Checkbox.Root>
-								<Field.Label>{value}</Field.Label>
+								<div>
+									<Field.Label>{permissionLabel(value)}</Field.Label>
+									<small>{value}</small>
+								</div>
 							</Field.Root>
 						))}
-						<FormFeedback
-							error={
-								details.isError || grant.isError ? m.error_generic() : null
-							}
-						/>
-					</section>
+					</div>
+					<FormFeedback
+						error={details.isError || grant.isError ? m.error_generic() : null}
+					/>
+				</section>
+				<section className="settings-panel settings-panel-wide">
+					<header>
+						<KeyRound size={19} />
+						<div>
+							<h2>{m.studio_password_reset()}</h2>
+							<p>{m.studio_password_reset_help()}</p>
+						</div>
+					</header>
 					<Form
-						className="grid gap-4"
+						className="password-reset-form"
 						onSubmit={(event) => {
 							event.preventDefault();
-							reset.mutate(new FormData(event.currentTarget));
+							const form = event.currentTarget;
+							reset.mutate(new FormData(event.currentTarget), {
+								onSuccess: () => form.reset(),
+							});
 						}}
 					>
 						<InputField
@@ -163,18 +208,21 @@ export function AccountEditor({
 							required
 						/>
 						<Button type="submit" className="button" disabled={reset.isPending}>
-							{m.save()}
+							{m.studio_change_password()}
 						</Button>
-						<FormFeedback
-							error={reset.isError ? m.error_generic() : null}
-							success={reset.isSuccess ? m.studio_password_saved() : null}
-						/>
 					</Form>
-					<Button className="button" onClick={onClose}>
-						{m.cancel()}
-					</Button>
-				</Dialog.Popup>
-			</Dialog.Portal>
-		</Dialog.Root>
+					<FormFeedback
+						error={reset.isError ? m.error_generic() : null}
+						success={reset.isSuccess ? m.studio_password_saved() : null}
+					/>
+				</section>
+			</div>
+		</div>
 	);
+}
+
+function permissionLabel(value: string) {
+	if (value === "studio.admin") return m.studio_administrator();
+	const site = value.split(".")[0] ?? value;
+	return `${site.charAt(0).toUpperCase()}${site.slice(1)}`;
 }

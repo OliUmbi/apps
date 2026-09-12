@@ -1,7 +1,7 @@
 package ch.oliumbi.identity.services;
 
 import ch.oliumbi.identity.configurations.IdentityProperties;
-import ch.oliumbi.identity.data.entites.AccountSession;
+import ch.oliumbi.identity.data.entities.AccountSession;
 import ch.oliumbi.identity.data.requests.*;
 import ch.oliumbi.identity.data.responses.SessionActorResponse;
 import ch.oliumbi.identity.data.responses.SessionCreateResponse;

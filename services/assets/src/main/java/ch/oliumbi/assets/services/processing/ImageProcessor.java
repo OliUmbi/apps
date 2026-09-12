@@ -13,7 +13,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-// todo overall the structure of the processing is quite nice. i honestly dont understand how everything works in detail and the code is not the most readable. but overall i think this is good enough to work with. but will be a part to review later.
 @Service
 public class ImageProcessor {
     private final ImageDecoder decoder;

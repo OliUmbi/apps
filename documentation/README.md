@@ -1,3 +1,4 @@
 # Documentation
 
-Keep only open work in [open-work.md](open-work.md). No architecture or decision for now
+This directory tracks only unresolved work in [open-work.md](open-work.md).
+Architecture and implementation details stay close to the code they describe.

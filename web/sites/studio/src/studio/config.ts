@@ -1,4 +1,5 @@
 import type { SiteId } from "@oliumbi/contracts";
+import { isNestedOnlyResource } from "./hierarchy";
 import { type ResourceId, resources } from "./resources";
 
 export { type SiteId, siteIds } from "@oliumbi/contracts";
@@ -50,11 +51,18 @@ export const studioSites: StudioSite[] = siteDetails.map((site) => ({
 	sections: [
 		{ id: "overview", label: "Übersicht", icon: "home" },
 		...Object.entries(resources)
-			.filter(([id]) => id.startsWith(`${site.id}.`))
+			.filter(
+				([id]) =>
+					id.startsWith(`${site.id}.`) &&
+					!isNestedOnlyResource(id as ResourceId),
+			)
 			.map(([id, resource]) => ({
 				id,
-				label: resource.label,
-				icon: "content" as const,
+				label:
+					id === "zelglihof.product_reservation"
+						? "Alle Reservationen"
+						: resource.label,
+				icon: sectionIcon(id as ResourceId),
 			})),
 		{ id: "images", label: "Bilder", icon: "content" },
 		{ id: "documents", label: "Dokumente", icon: "content" },
@@ -65,4 +73,22 @@ export function getSite(id: string): StudioSite {
 }
 export function isResourceId(id: string): id is ResourceId {
 	return Object.hasOwn(resources, id);
+}
+
+function sectionIcon(id: ResourceId): StudioSection["icon"] {
+	if (id.endsWith(".inquiry")) return "inbox";
+	if (
+		id.endsWith(".member") ||
+		id.endsWith(".review") ||
+		id.endsWith(".subscriber")
+	)
+		return "people";
+	if (id.endsWith(".campaign")) return "newsletter";
+	if (
+		id.endsWith(".donation") ||
+		id.endsWith(".product") ||
+		id.endsWith(".product_reservation")
+	)
+		return "commerce";
+	return "content";
 }

@@ -1,6 +1,6 @@
 package ch.oliumbi.messaging.repositories;
 
-import ch.oliumbi.messaging.data.entites.MessageAttempt;
+import ch.oliumbi.messaging.data.entities.MessageAttempt;
 import org.springframework.data.repository.CrudRepository;
 import java.util.*;
 

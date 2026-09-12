@@ -1,15 +1,18 @@
+import type { Page, ResourceRecord } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { PageHero } from "../components/page-hero";
-import { ShowcaseCard } from "../components/showcase-card";
-import { PaginatedList } from "../components/ui/paginated-list";
-import { listPublicRecords } from "../content/public.functions";
+import { PageHero } from "../../components/page-hero";
+import { ShowcaseCard } from "../../components/showcase-card";
+import { PaginatedList } from "../../components/ui/paginated-list";
+import { listPublicRecords } from "../../content/public.functions";
 
-export const Route = createFileRoute("/showcases")({
+export const Route = createFileRoute("/showcases/")({
 	head: () => ({ meta: [{ title: m.unclet_routes_showcases_title() }] }),
 	loader: () =>
-		listPublicRecords({ data: { resource: "unclet.showcase", page: 0 } }),
+		listPublicRecords({
+			data: { resource: "unclet.showcase", page: 0 },
+		}) as Promise<Page<ResourceRecord>>,
 	component: InsightsPage,
 });
 
@@ -30,18 +33,24 @@ function InsightsPage() {
 				intro={m.unclet_routes_showcases_intro()}
 			/>
 			<section className="shell py-20 md:py-28">
-				<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-					<PaginatedList
+				<div className="grid gap-16 md:gap-24">
+					<PaginatedList<ResourceRecord>
 						queryKey={["showcases"]}
 						initialPage={Route.useLoaderData()}
 						load={(page) =>
-							listPublicRecords({ data: { resource: "unclet.showcase", page } })
+							listPublicRecords({
+								data: { resource: "unclet.showcase", page },
+							}) as Promise<Page<ResourceRecord>>
 						}
 					>
 						{(items) => (
 							<>
-								{items.map((item) => (
-									<ShowcaseCard key={String(item.id)} item={item} />
+								{items.map((item, index) => (
+									<ShowcaseCard
+										key={String(item.id)}
+										item={item}
+										index={index}
+									/>
 								))}
 							</>
 						)}

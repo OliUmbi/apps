@@ -1,3 +1,4 @@
+import type { StoryRecord } from "@oliumbi/jublawoma-data/content.types";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ContentImage } from "../../components/content-image";
 import { MarkdownContent } from "../../components/markdown-content";
@@ -5,7 +6,9 @@ import { getStory } from "../../content/content.functions";
 
 export const Route = createFileRoute("/stories/$slug")({
 	loader: async ({ params }) => {
-		const story = await getStory({ data: { slug: params.slug } });
+		const story = (await getStory({
+			data: { slug: params.slug },
+		})) as StoryRecord | null;
 		if (!story) throw notFound();
 		return story;
 	},

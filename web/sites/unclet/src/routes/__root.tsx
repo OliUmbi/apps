@@ -3,13 +3,13 @@ import { getLocale } from "@oliumbi/i18n/runtime";
 import {
 	createRootRoute,
 	HeadContent,
-	Link,
 	Outlet,
 	Scripts,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import Footer from "../components/footer/footer";
 import Header from "../components/header/header";
+import { NotFound } from "../components/not-found";
 import { QueryProvider } from "../components/ui/index";
 import "../styles/root.css";
 
@@ -37,7 +37,7 @@ export const Route = createRootRoute({
 		links: [{ rel: "icon", href: "/favicon.ico" }],
 	}),
 	component: RootComponent,
-	notFoundComponent: NotFoundComponent,
+	notFoundComponent: NotFound,
 });
 
 function RootComponent() {
@@ -63,21 +63,5 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 				<Scripts />
 			</body>
 		</html>
-	);
-}
-
-function NotFoundComponent() {
-	return (
-		<section className="shell grid min-h-[75vh] place-items-center pt-28 text-center">
-			<div>
-				<p className="eyebrow text-brass">{m.unclet_routes_root_paragraph()}</p>
-				<h1 className="display-title mt-6 text-6xl md:text-8xl">
-					{m.unclet_routes_root_heading()}
-				</h1>
-				<Link to="/" className="button-primary mt-10">
-					{m.unclet_routes_root_text()}
-				</Link>
-			</div>
-		</section>
 	);
 }

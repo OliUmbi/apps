@@ -25,6 +25,18 @@ const values = [
 	},
 	{
 		n: "03",
+		title: m.jublawoma_value_faith_title(),
+		copy: m.jublawoma_value_faith_copy(),
+		art: "meditating.svg",
+	},
+	{
+		n: "04",
+		title: m.jublawoma_value_creative_title(),
+		copy: m.jublawoma_value_creative_copy(),
+		art: "messy.svg",
+	},
+	{
+		n: "05",
 		title: m.jublawoma_routes_index_title_3(),
 		copy: m.jublawoma_routes_index_copy_3(),
 		art: "plant.svg",
@@ -35,7 +47,6 @@ function Home() {
 	const next = Route.useLoaderData();
 	return (
 		<>
-			<Promotions />
 			<section className="hero">
 				<div className="hero-noise" />
 				<div className="shell hero-grid">
@@ -75,6 +86,7 @@ function Home() {
 					<i /> <span>{m.jublawoma_routes_index_text_7()}</span>
 				</div>
 			</section>
+			<Promotions />
 			{next ? (
 				<section className="next-event">
 					<div className="shell event-banner">

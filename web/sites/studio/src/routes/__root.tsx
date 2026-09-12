@@ -7,6 +7,7 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { NotFound } from "../components/not-found";
 import { QueryProvider } from "../components/ui/index";
 import "../styles.css";
 
@@ -16,9 +17,11 @@ export const Route = createRootRoute({
 			{ charSet: "utf-8" },
 			{ name: "viewport", content: m.studio_routes_root_content() },
 			{ title: m.studio_routes_root_title() },
+			{ name: "robots", content: "noindex, nofollow" },
 		],
 	}),
 	component: Root,
+	notFoundComponent: NotFound,
 });
 
 function Root() {

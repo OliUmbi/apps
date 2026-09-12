@@ -4,7 +4,7 @@ import ch.oliumbi.assets.data.requests.DocumentCreateRequest;
 import ch.oliumbi.assets.data.requests.VisibilityRequest;
 import ch.oliumbi.assets.data.responses.DocumentResponse;
 import ch.oliumbi.assets.services.DocumentService;
-import ch.oliumbi.assets.services.InternalAuthorizationService;
+import ch.oliumbi.shared.security.BearerTokenVerifier;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -25,10 +25,10 @@ import java.util.UUID;
 @RestController
 public class DocumentController {
     private final DocumentService service;
-    private final InternalAuthorizationService authorization;
+    private final BearerTokenVerifier authorization;
     private final ContentResponse contentResponse;
 
-    public DocumentController(DocumentService service, InternalAuthorizationService authorization, ContentResponse contentResponse) {
+    public DocumentController(DocumentService service, BearerTokenVerifier authorization, ContentResponse contentResponse) {
         this.service = service;
         this.authorization = authorization;
         this.contentResponse = contentResponse;

@@ -1,4 +1,3 @@
--- todo review checks
 CREATE TABLE messaging.message
 (
     id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -22,11 +21,11 @@ CREATE TABLE messaging.message
         (status = 'PENDING' AND available_at IS NOT NULL AND locked_at IS NULL AND finished_at IS NULL) OR
         (status = 'PROCESSING' AND attempt_count > 0 AND available_at IS NULL AND locked_at IS NOT NULL AND
          finished_at IS NULL) OR
-        (status IN ('SENT', 'FAILED') AND available_at IS NULL AND locked_at IS NULL AND finished_at IS NOT NULL)
+        (status IN ('SENT', 'FAILED') AND attempt_count > 0 AND available_at IS NULL AND locked_at IS NULL AND
+         finished_at IS NOT NULL)
         )
 );
 
--- todo review checks
 CREATE TABLE messaging.message_attempt
 (
     id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),

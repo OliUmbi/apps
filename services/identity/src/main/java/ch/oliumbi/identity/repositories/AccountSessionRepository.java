@@ -1,6 +1,6 @@
 package ch.oliumbi.identity.repositories;
 
-import ch.oliumbi.identity.data.entites.AccountSession;
+import ch.oliumbi.identity.data.entities.AccountSession;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.EntityGraph;

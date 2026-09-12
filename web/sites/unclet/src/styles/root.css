@@ -156,6 +156,141 @@ img {
 	color: rgb(242 238 229 / 38%);
 }
 
+.button-dark {
+	display: inline-flex;
+	min-height: 3.25rem;
+	align-items: center;
+	justify-content: center;
+	gap: 0.65rem;
+	border: 1px solid #11110f;
+	padding: 0.75rem 1.25rem;
+	color: #f2eee5;
+	background: #11110f;
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.11em;
+	text-transform: uppercase;
+}
+.button-dark:hover {
+	color: #11110f;
+	background: #dbc38f;
+}
+.inquiry-form-card,
+.review-form-card {
+	position: relative;
+	overflow: hidden;
+	border: 1px solid rgb(242 238 229 / 15%);
+	padding: clamp(1.5rem, 5vw, 4rem);
+	background:
+		linear-gradient(135deg, rgb(185 154 91 / 10%), transparent 46%), #1a1a17;
+}
+.inquiry-form-card::before,
+.review-form-card::before {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 7rem;
+	height: 2px;
+	content: "";
+	background: #b99a5b;
+}
+.inquiry-form-card > header {
+	margin-bottom: 3rem;
+}
+.two-column-form {
+	display: grid;
+	gap: 1.4rem 2rem;
+}
+.two-column-form .form-control-wrap.is-wide,
+.two-column-form > [role="alert"],
+.two-column-form > button {
+	grid-column: 1 / -1;
+}
+.rating-control {
+	display: flex;
+	gap: 0.35rem;
+}
+.rating-control label {
+	position: relative;
+	padding: 0.2rem;
+	color: rgb(242 238 229 / 25%);
+	cursor: pointer;
+}
+.rating-control input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	opacity: 0;
+}
+.rating-control label:hover,
+.rating-control label.is-active {
+	color: #dbc38f;
+}
+.rating-control label:has(input:focus-visible) {
+	outline: 2px solid #dbc38f;
+	outline-offset: 3px;
+}
+.review-grid {
+	display: grid;
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+	gap: 1rem;
+}
+.review-card {
+	grid-column: span 4;
+	min-height: 18rem;
+	border: 1px solid rgb(242 238 229 / 12%);
+	padding: 1.75rem;
+	background: rgb(242 238 229 / 2%);
+}
+.review-card:first-child {
+	grid-column: span 8;
+	background: linear-gradient(135deg, rgb(185 154 91 / 10%), transparent);
+}
+.review-quote {
+	font-family: var(--font-serif);
+	font-size: clamp(1.2rem, 2vw, 1.7rem);
+}
+.showcase-cover {
+	min-height: 30rem;
+	aspect-ratio: 4 / 5;
+}
+.unclet-markdown {
+	color: rgb(242 238 229 / 68%);
+	font-size: 1.02rem;
+	line-height: 1.8;
+}
+.unclet-markdown h1,
+.unclet-markdown h2,
+.unclet-markdown h3 {
+	margin: 2.4rem 0 0.8rem;
+	color: #f2eee5;
+	font-family: var(--font-serif);
+	line-height: 1.1;
+}
+.unclet-markdown h1 {
+	font-size: 2.4rem;
+}
+.unclet-markdown h2 {
+	font-size: 1.9rem;
+}
+.unclet-markdown h3 {
+	font-size: 1.4rem;
+}
+.unclet-markdown p {
+	margin: 0 0 1.3rem;
+}
+.unclet-markdown a {
+	color: #dbc38f;
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
+}
+.unclet-markdown hr {
+	margin: 2.5rem 0;
+	border: 0;
+	border-top: 1px solid rgb(242 238 229 / 15%);
+}
+
 @media (min-width: 768px) {
 	.shell,
 	.measure {
@@ -163,6 +298,25 @@ img {
 	}
 	.measure {
 		--page-width: 920px;
+	}
+	.two-column-form {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+@media (max-width: 900px) {
+	.review-card,
+	.review-card:first-child {
+		grid-column: span 6;
+	}
+}
+@media (max-width: 640px) {
+	.review-card,
+	.review-card:first-child {
+		grid-column: 1 / -1;
+	}
+	.showcase-cover {
+		min-height: 24rem;
+		aspect-ratio: 4 / 5;
 	}
 }
 @media (prefers-reduced-motion: reduce) {

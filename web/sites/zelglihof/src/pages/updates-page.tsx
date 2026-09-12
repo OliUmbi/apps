@@ -1,7 +1,8 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sprout } from "lucide-react";
 import { NewsletterSignup } from "../components/newsletter-signup";
+import { AssetImage } from "../components/ui/asset-image";
 import type { Update } from "../content/site-content";
 
 export function UpdatesPage({ updates }: { updates: Update[] }) {
@@ -21,6 +22,22 @@ export function UpdatesPage({ updates }: { updates: Update[] }) {
 				</div>
 			</section>
 			<section className="shell grid gap-7 pb-24">
+				{updates.length === 0 ? (
+					<div className="updates-empty">
+						<Sprout size={34} aria-hidden="true" />
+						<div>
+							<p className="eyebrow text-clay">
+								{m.zelglihof_updates_empty_eyebrow()}
+							</p>
+							<h2 className="mt-3 font-serif text-4xl font-bold">
+								{m.zelglihof_updates_empty_title()}
+							</h2>
+							<p className="mt-3 max-w-xl leading-relaxed text-ink/60">
+								{m.zelglihof_updates_empty_copy()}
+							</p>
+						</div>
+					</div>
+				) : null}
 				{updates.map((update, index) => (
 					<article
 						key={update.slug}
@@ -31,9 +48,10 @@ export function UpdatesPage({ updates }: { updates: Update[] }) {
 							params={{ slug: update.slug }}
 							className={`relative overflow-hidden ${index === 0 ? "min-h-[28rem]" : "min-h-[22rem]"}`}
 						>
-							<img
+							<AssetImage
 								src={update.image}
 								alt=""
+								sizes="(min-width: 768px) 52vw, 100vw"
 								className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
 							/>
 						</Link>

@@ -65,12 +65,17 @@ export async function currentActor() {
 }
 
 export async function requireActor(site?: SiteId) {
-	const actor = await currentActor();
-	if (!actor) throw new Error("Not authenticated");
+	const actor = await requireAuthenticatedActor();
 	const allowed = actor.permissions.some(
 		(value) => value === "studio.admin" || (site && value === `${site}.manage`),
 	);
 	if (!allowed) throw new Error("Not authorized");
+	return actor;
+}
+
+export async function requireAuthenticatedActor() {
+	const actor = await currentActor();
+	if (!actor) throw new Error("Not authenticated");
 	return actor;
 }
 

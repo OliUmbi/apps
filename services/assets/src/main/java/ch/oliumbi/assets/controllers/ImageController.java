@@ -5,7 +5,7 @@ import ch.oliumbi.assets.data.requests.VisibilityRequest;
 import ch.oliumbi.assets.data.responses.ImageDetailResponse;
 import ch.oliumbi.assets.data.responses.ImageResponse;
 import ch.oliumbi.assets.services.ImageService;
-import ch.oliumbi.assets.services.InternalAuthorizationService;
+import ch.oliumbi.shared.security.BearerTokenVerifier;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -26,10 +26,10 @@ import java.util.UUID;
 @RestController
 public class ImageController {
     private final ImageService service;
-    private final InternalAuthorizationService authorization;
+    private final BearerTokenVerifier authorization;
     private final ContentResponse contentResponse;
 
-    public ImageController(ImageService service, InternalAuthorizationService authorization, ContentResponse contentResponse) {
+    public ImageController(ImageService service, BearerTokenVerifier authorization, ContentResponse contentResponse) {
         this.service = service;
         this.authorization = authorization;
         this.contentResponse = contentResponse;

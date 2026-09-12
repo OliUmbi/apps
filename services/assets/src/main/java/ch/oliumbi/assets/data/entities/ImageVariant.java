@@ -1,4 +1,4 @@
-package ch.oliumbi.assets.data.entites;
+package ch.oliumbi.assets.data.entities;
 
 import ch.oliumbi.assets.domain.*;
 import jakarta.persistence.*;

@@ -1,99 +1,56 @@
 # Assets
 
-Short description on how this service should work.
+The assets service stores image and PDF metadata in PostgreSQL and file content
+under a configured local storage root. Public reads are unauthenticated only for
+visible assets; every management operation requires the assets internal bearer
+token.
 
-The main purpose is to facilitate blob files that are not stored in the db.
-Parts of this API will most likely be directly accessible to the web, to make image access faster
-So only management operations should be locked via internal token.
-Media is stored on a provided folder and should be structured for efficient lookup.
-My proposed file structure will be based on the first 8 uuid chars, each representing a deeper folder structure. (8 is arbitrary so it can be less)
-to my knowledge this should make lookup much faster without going too deep. a flat folder structure can become burdensome quite quickly.
-this is heavily based on the legacy implementation which worked well (review it as well legacy\api\src\main\java\ch\oliumbi\api\endpoints\shared\image\create\ImageCreate.java)
-it should look something like this (example uuid: 415de823-576d-48b0-b9e6-c9fab674ca20))
-```
-media/
---4/
-  --1/
-    --5/
-      --d/
-        --e/
-          --8/
-            --2/
-              --3/
-                --415de823-576d-48b0-b9e6-c9fab674ca20/
-                  --original.jpg
-                  --xs.jpg
-                  --sm.jpg
-                  --md.jpg
-                  --lg.jpg
-                  --xl.jpg
+## API behavior
+
+- Image upload accepts JPEG and PNG, normalizes orientation and color, strips
+  source metadata, and creates bounded responsive renditions.
+- Document upload accepts PDFs and preserves their bytes.
+- Images are addressed by UUID; documents have a globally unique slug.
+- Content responses include content-derived ETags and explicit cache policies.
+- Visibility can change, but stored content is immutable. Replacing content
+  creates a new asset.
+- Deletion commits metadata first and removes files afterward. A failed file
+  removal is logged and left for orphan cleanup, without resurrecting metadata.
+
+## Storage layout
+
+UUIDs use two shard directories to avoid very large flat folders:
+
+```text
+media/images/41/5d/415de823-576d-48b0-b9e6-c9fab674ca20/master.jpg
+media/images/41/5d/415de823-576d-48b0-b9e6-c9fab674ca20/md.jpg
+media/documents/41/5d/415de823-576d-48b0-b9e6-c9fab674ca20/original.pdf
 ```
 
-!!! if there is a better way to structure and access these files please let me know. 
+Uploads are staged on the same volume and atomically published. Cleanup removes
+old staging files and unreferenced asset directories after a grace period. A
+storage root must not be shared by multiple service instances because upload
+activity tracking is process-local.
 
-metadata is stored in the db where notably the site, *slug and availablilty is noted.
+## Processing and limits
 
-the management is based for each site where they can access a paginated list of all available images to them
-images can be created, deleted, but not updated (for caching purposes, except visibility)
-images are converted to different sizes to optimize for aspect rations and general size need
-some compression should also be considered especially with large sizes 
+`ImageProcessor` coordinates validation and the processing concurrency limit.
+Its focused helpers inspect containers, decode bounded pixel data, normalize
+orientation and color, resize images, and encode metadata-free output.
 
-for the sizes i would have oriented them to tailwind (measured at width)
-xs  20rem (320px) (this one is made up but would be useful for the large management list to reduce bandwidth)
-sm	40rem (640px)	
-md	48rem (768px)	
-lg	64rem (1024px)	
-xl	80rem (1280px)	
-2xl	96rem (1536px)	
+Current upload limits are 20 MiB, 40 megapixels, and a 12,000 px maximum side for
+images; PDFs are limited to 50 MiB. Image variants follow the configured width,
+quality, and byte budgets. Detailed rationale is retained in
+[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
-for the file size targets and subsequent compression i would like to get a good recommendation from you.
+## Development
 
-for documents (mainly pdfs) i just want a clean management and distribution. if possible algin it closely to the image system to keep it simpler. 
+Run from `services/`:
 
-for public endpoints:
-- get image via id
-  - optional arg of size
-- get document via slug
+```text
+mvn -pl assets -am package
+```
 
-for private endpoints
-- get image via id
-  - even private ones
-- get image metadata via id
-- get document via id
-  - even private ones
-- get document metadata via id
-- create image metadata (maybe combine together if possible but not necessary, linking can happen later)
-- create image
-- create document metadata
-- create document
-- change visibility of image
-- change visibility of document
-- delete image
-- delete document
-
-i might have forgotten some.
-
-## Implementation structure
-
-ImageProcessor coordinates the concurrency limit and processing lifecycle. Its package-private
-helpers handle container inspection (ImageInput, PngInspector, JpegInspector), bounded decoding
-and sRGB normalization (ImageDecoder), EXIF transforms (ImageOrientation), sizing and reuse
-(ImageRenditions), and metadata-free encoding with quality budgets (ImageEncoder).
-These helpers can be exercised without starting Spring or connecting to a database.
-
-DocumentProcessor validates the PDF signature and preserves the uploaded bytes. Documents store
-one slug; the response and download filename are derived as `slug + ".pdf"`.
-V005 defines this initial schema without CHECK constraints, retaining NOT NULL, uniqueness
-and foreign keys. As with the other initial migrations, existing development databases need
-their schema brought into line when this migration changes.
-
-LocalBlobStorage owns staged uploads and atomic publication. StorageFiles owns paths and file
-removal; OrphanCleanup owns the age, activity and database-existence checks. Upload handles remain
-active until after the metadata transaction completes. Stage, close and orphan removal share a
-lock so cleanup cannot remove an upload between its activity check and deletion. This activity
-tracking is local to one service instance; multiple instances must not share a storage root.
-Failed or uncertain database commits leave published files for later reconciliation.
-
-StoredFile checksums are SHA-256 content ETags used by ContentResponse for conditional requests.
-They are calculated once on upload, rather than by rereading files on every download.
-
+The service listens on port 8083 by default. Configuration lives in
+`src/main/resources/application.yaml`; the shared startup loader reads the
+repository's `.env.development` for local runs.

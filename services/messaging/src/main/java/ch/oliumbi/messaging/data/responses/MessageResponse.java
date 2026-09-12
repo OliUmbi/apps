@@ -1,6 +1,6 @@
 package ch.oliumbi.messaging.data.responses;
 
-import ch.oliumbi.messaging.data.entites.Message;
+import ch.oliumbi.messaging.data.entities.Message;
 
 import java.time.Instant;
 import java.util.Locale;

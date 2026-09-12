@@ -1,6 +1,6 @@
 package ch.oliumbi.assets.data.responses;
 
-import ch.oliumbi.assets.data.entites.ImageVariant;
+import ch.oliumbi.assets.data.entities.ImageVariant;
 
 public record VariantResponse(String size, String contentType, int width, int height, long bytes, String checksum) {
     public static VariantResponse fromVariant(ImageVariant variant) {

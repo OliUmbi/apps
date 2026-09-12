@@ -2,7 +2,7 @@ package ch.oliumbi.identity.controllers;
 
 import ch.oliumbi.identity.data.requests.PermissionGrantRequest;
 import ch.oliumbi.identity.data.requests.PermissionRevokeRequest;
-import ch.oliumbi.identity.services.InternalAuthorizationService;
+import ch.oliumbi.shared.security.BearerTokenVerifier;
 import ch.oliumbi.identity.services.PermissionService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
@@ -16,11 +16,11 @@ import java.util.UUID;
 public class PermissionController {
 
     private final PermissionService permissionService;
-    private final InternalAuthorizationService internalAuthorizationService;
+    private final BearerTokenVerifier authorization;
 
-    public PermissionController(PermissionService permissionService, InternalAuthorizationService internalAuthorizationService) {
+    public PermissionController(PermissionService permissionService, BearerTokenVerifier authorization) {
         this.permissionService = permissionService;
-        this.internalAuthorizationService = internalAuthorizationService;
+        this.authorization = authorization;
     }
 
     @PutMapping
@@ -28,7 +28,7 @@ public class PermissionController {
     public void grant(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
                       @PathVariable UUID accountId,
                       @Valid @RequestBody PermissionGrantRequest request) {
-        internalAuthorizationService.requireValid(authorization);
+        this.authorization.requireValid(authorization);
         permissionService.grant(accountId, request);
     }
 
@@ -37,7 +37,7 @@ public class PermissionController {
     public void revoke(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
                        @PathVariable UUID accountId,
                        @Valid @RequestBody PermissionRevokeRequest request) {
-        internalAuthorizationService.requireValid(authorization);
+        this.authorization.requireValid(authorization);
         permissionService.revoke(accountId, request);
     }
 }

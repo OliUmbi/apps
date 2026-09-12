@@ -16,6 +16,11 @@ const record = z.record(
 	z.union([z.string(), z.number(), z.boolean(), z.null()]),
 );
 const mutation = identity.extend({ key: record, values: record });
+const relation = identity.extend({
+	field: z.string().min(1).max(80),
+	value: z.uuid(),
+	...pageSchema.shape,
+});
 export const getSession = createServerFn({ method: "GET" }).handler(
 	currentActor,
 );
@@ -24,6 +29,24 @@ export const listRecords = createServerFn({ method: "GET" })
 	.handler(async ({ data }) => {
 		await requireActor(data.resource.split(".")[0] as SiteId);
 		return createResourceService(database.sql, data.resource).list(data);
+	});
+export const listRelatedRecords = createServerFn({ method: "GET" })
+	.validator(relation)
+	.handler(async ({ data }) => {
+		await requireActor(data.resource.split(".")[0] as SiteId);
+		return createResourceService(database.sql, data.resource).listRelated(
+			data,
+			data.field,
+			data.value,
+		);
+	});
+export const getRecord = createServerFn({ method: "GET" })
+	.validator(identity.extend({ id: z.uuid() }))
+	.handler(async ({ data }) => {
+		await requireActor(data.resource.split(".")[0] as SiteId);
+		return createResourceService(database.sql, data.resource).find({
+			id: data.id,
+		});
 	});
 export const createRecord = createServerFn({ method: "POST" })
 	.validator(identity.extend({ values: record }))

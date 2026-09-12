@@ -57,7 +57,7 @@ public class LocalBlobStorage implements BlobStorage {
             while ((count = input.read(buffer)) != -1) {
                 total += count;
                 if (total > maxBytes)
-                    throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE, "Upload exceeds the size limit"); // todo PAYLOAD_TOO_LARGE deprecated use CONTENT_TOO_LARGE
+                    throw new ResponseStatusException(HttpStatus.CONTENT_TOO_LARGE, "Upload exceeds the size limit");
                 output.write(buffer, 0, count);
             }
             if (total == 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File is empty");

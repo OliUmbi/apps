@@ -1,4 +1,5 @@
 import { m } from "@oliumbi/i18n/messages";
+import { SimpleMarkdown } from "@oliumbi/ui/simple-markdown";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { AssetImage } from "../components/ui/asset-image";
@@ -52,8 +53,8 @@ export function UpdatePage({ update }: { update: Update }) {
 						{m.zelglihof_pages_update_page_paragraph_2()}
 					</p>
 				</aside>
-				<div className="max-w-2xl space-y-6 text-lg leading-relaxed text-ink/70">
-					<p className="whitespace-pre-wrap">{update.body}</p>
+				<div className="max-w-2xl text-lg leading-relaxed text-ink/70">
+					<SimpleMarkdown value={update.body} className="farm-markdown" />
 					<hr className="my-10 border-forest/15" />
 					<h2 className="font-serif text-4xl font-bold">
 						{m.zelglihof_pages_update_page_heading_2()}

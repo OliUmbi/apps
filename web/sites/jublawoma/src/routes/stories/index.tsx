@@ -1,20 +1,25 @@
+import type { Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
+import type { StoryRecord } from "@oliumbi/jublawoma-data/content.types";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Camera } from "lucide-react";
-import { ContentImage } from "../components/content-image";
-import { PaginatedList } from "../components/ui/paginated-list";
-import { getStoryPage } from "../content/content.functions";
-export const Route = createFileRoute("/stories")({
-	loader: () => getStoryPage({ data: { page: 0 } }),
+import { ContentImage } from "../../components/content-image";
+import { PaginatedList } from "../../components/ui/paginated-list";
+import { getStoryPage } from "../../content/content.functions";
+export const Route = createFileRoute("/stories/")({
+	loader: () =>
+		getStoryPage({ data: { page: 0 } }) as Promise<Page<StoryRecord>>,
 	component: Stories,
 });
 function Stories() {
 	const initialPage = Route.useLoaderData();
 	return (
-		<PaginatedList
+		<PaginatedList<StoryRecord>
 			queryKey={["stories"]}
 			initialPage={initialPage}
-			load={(page) => getStoryPage({ data: { page } })}
+			load={(page) =>
+				getStoryPage({ data: { page } }) as Promise<Page<StoryRecord>>
+			}
 		>
 			{(stories) => (
 				<>

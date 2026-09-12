@@ -39,7 +39,7 @@ Visual components stay under each site's `src/components`. Studio owns its edito
 
 Use the pinned pnpm version from `package.json`. Install from `web` with `pnpm install --frozen-lockfile`. Apply the repository's database migrations before running the applications. Supply `DATABASE_URL` without a username plus the site's `*_DATABASE_PASSWORD`, or supply that site's role and password in the URL. Never use the migrator's credentials for a web application.
 
-Copy the root `.env.development.example` to `.env.development` once and adjust it for your local database. The real file is ignored by Git. All four Vite development servers load it automatically, regardless of which site you start. Existing root `.env` values remain a fallback; `.env.development` overrides them. Site-local files override shared values, and shell/IDE environment variables override both. Only `VITE_` variables are exposed to browser code. Restart the dev process after changing environment files.
+The checked-in root `.env.development` contains development-only defaults. All four Vite development servers load it automatically, regardless of which site you start. Existing root `.env` values remain a fallback; `.env.development` overrides them. Site-local files override shared values, and shell/IDE environment variables override both. Only `VITE_` variables are exposed to browser code. Restart the dev process after changing environment files, and never reuse the development credentials in a deployed environment.
 
 Run a built site locally with `pnpm --filter studio start:dev` (or another site name). This uses Node's native loader for the same root `.env.development`, with shell variables taking precedence. `start:dev` loads only that shared file; Vite-specific site overrides do not apply. The regular `start` command uses the deployment's environment. Production builds do not load `.env.development`.
 
@@ -65,9 +65,6 @@ From `web`:
 pnpm build
 pnpm typecheck
 pnpm check
-pnpm test
 ```
 
-Build before checking a clean checkout so that route trees and Paraglide output exist. Integration tests additionally require `TEST_DATABASE_URL` for a disposable PostgreSQL database whose name ends in `_test`, with all migrations applied. They create test records and must never target application data. Without this variable, the database test is explicitly skipped.
-
-Tests cover role enforcement, HTTP contracts, queue boundaries, schema compatibility, reservation/donation concurrency, publication visibility, CRUD, newsletter consent/cooldown and concurrent campaign sends. Browser verification used an isolated migrated database and local identity/assets/messaging fixtures. The identity and assets clients were also tested against running Java services and isolated storage. Set `TEST_IDENTITY_URL` and `TEST_ASSETS_URL` to local disposable services to run those opt-in tests. SMTP delivery and the complete deployed stack still need an environment integration pass.
+Build before checking a clean checkout so that route trees and Paraglide output exist. SMTP delivery and the complete deployed stack still need an environment integration pass.

@@ -1,6 +1,6 @@
 package ch.oliumbi.identity.data.responses;
 
-import ch.oliumbi.identity.data.entites.Account;
+import ch.oliumbi.identity.data.entities.Account;
 
 import java.util.List;
 

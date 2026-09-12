@@ -26,6 +26,7 @@ export function SubmissionForm<T, R extends { outcome: string }>({
 	submit,
 	defaults = {},
 	success = m.sent(),
+	submitLabel = m.submit(),
 	className = "",
 }: {
 	schema: z.ZodType<T>;
@@ -33,6 +34,7 @@ export function SubmissionForm<T, R extends { outcome: string }>({
 	submit: (data: T) => Promise<R>;
 	defaults?: Record<string, unknown>;
 	success?: string;
+	submitLabel?: string;
 	className?: string;
 }) {
 	const [validation, setValidation] = useState("");
@@ -78,7 +80,7 @@ export function SubmissionForm<T, R extends { outcome: string }>({
 				className="button dark disabled:opacity-50"
 				disabled={mutation.isPending}
 			>
-				{mutation.isPending ? m.saving() : m.submit()}
+				{mutation.isPending ? m.saving() : submitLabel}
 			</Button>
 		</Form>
 	);

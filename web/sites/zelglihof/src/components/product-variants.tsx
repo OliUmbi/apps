@@ -13,6 +13,7 @@ export function ProductVariants({ product }: { product: Product }) {
 						<AssetImage
 							src={variant.image}
 							alt={variant.name}
+							sizes="(min-width: 768px) 50vw, 100vw"
 							className="mb-5 aspect-[4/3] w-full rounded-2xl object-cover"
 						/>
 					)}

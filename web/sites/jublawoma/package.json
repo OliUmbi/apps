@@ -24,7 +24,8 @@
     "@base-ui/react": "catalog:",
     "@tanstack/react-query": "^5.90.0",
     "@oliumbi/jublawoma-data": "workspace:*",
-    "@oliumbi/query": "workspace:*"
+    "@oliumbi/query": "workspace:*",
+    "@oliumbi/ui": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "catalog:",

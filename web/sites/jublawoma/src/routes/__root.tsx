@@ -3,13 +3,13 @@ import { getLocale } from "@oliumbi/i18n/runtime";
 import {
 	createRootRoute,
 	HeadContent,
-	Link,
 	Outlet,
 	Scripts,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { Footer } from "../components/footer";
 import { Header } from "../components/header";
+import { NotFound } from "../components/not-found";
 import { QueryProvider } from "../components/ui/index";
 import "../styles.css";
 
@@ -23,6 +23,15 @@ export const Route = createRootRoute({
 				name: "description",
 				content: m.jublawoma_routes_root_content_2(),
 			},
+			{
+				property: "og:title",
+				content: m.jublawoma_routes_root_title(),
+			},
+			{
+				property: "og:description",
+				content: m.jublawoma_routes_root_content_2(),
+			},
+			{ property: "og:type", content: "website" },
 			{ name: "theme-color", content: m.jublawoma_routes_root_content_3() },
 		],
 		links: [{ rel: "icon", href: "/assets/images/logos/favicon.ico" }],
@@ -34,15 +43,7 @@ export const Route = createRootRoute({
 			</QueryProvider>
 		</Document>
 	),
-	notFoundComponent: () => (
-		<section className="shell not-found">
-			<p className="kicker">404</p>
-			<h1>{m.jublawoma_routes_root_heading()}</h1>
-			<Link to="/" className="button dark">
-				{m.jublawoma_routes_root_text()}
-			</Link>
-		</section>
-	),
+	notFoundComponent: NotFound,
 });
 
 function Document({ children }: Readonly<{ children: ReactNode }>) {

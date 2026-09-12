@@ -22,6 +22,7 @@ export function createResourceService(sql: Database, id: ResourceId) {
 	}
 	return {
 		list: repository.list,
+		listRelated: repository.listRelated,
 		find: repository.find,
 		findBySlug: repository.findBySlug,
 		async create(input: ResourceRecord) {

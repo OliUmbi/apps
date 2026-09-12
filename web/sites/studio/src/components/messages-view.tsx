@@ -1,64 +1,70 @@
 import { limits } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
+import type { Message } from "@oliumbi/messaging";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { getMessage, listMessages } from "../server/messages.functions";
-import { Button, Dialog, FormFeedback } from "./ui/index";
+import { Button, FormFeedback } from "./ui/index";
 
 function MessageDetail({ id, onClose }: { id: string; onClose: () => void }) {
 	const get = useServerFn(getMessage);
 	const query = useQuery({
 		queryKey: ["message", id],
-		queryFn: () => get({ data: id }),
+		queryFn: () =>
+			get({ data: id }) as Promise<{
+				message: Message;
+				attempts: DeliveryAttempt[];
+			}>,
 	});
 	return (
-		<Dialog.Root
-			open
-			onOpenChange={(open) => {
-				if (!open) onClose();
-			}}
-		>
-			<Dialog.Portal>
-				<Dialog.Backdrop className="fixed inset-0 z-50 bg-black/60" />
-				<Dialog.Popup className="fixed left-1/2 top-1/2 z-60 max-h-[85vh] w-[min(95vw,40rem)] -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-xl bg-zinc-900 p-6 text-white">
-					<Dialog.Title>
-						{query.data?.message.subject ?? m.loading()}
-					</Dialog.Title>
-					<Dialog.Description>
-						{m.studio_delivery_attempts()}
-					</Dialog.Description>
-					<FormFeedback error={query.isError ? m.error_generic() : null} />
-					<ol className="my-6 grid gap-3">
-						{query.data?.attempts.map((attempt) => (
-							<li
-								key={attempt.attemptNumber}
-								className="border-t border-white/20 pt-3"
-							>
-								<p>
-									{attempt.attemptNumber} · {attempt.outcome} ·{" "}
-									{new Date(attempt.startedAt).toLocaleString()}
-								</p>
+		<div className="content-stack workspace-page">
+			<Button className="workspace-back" onClick={onClose}>
+				<ArrowLeft size={15} aria-hidden="true" />
+				{m.studio_messages()}
+			</Button>
+			<section className="message-detail">
+				<header className="editor-heading">
+					<div>
+						<p className="page-kicker">{m.studio_delivery_attempts()}</p>
+						<h2>{query.data?.message.subject ?? m.loading()}</h2>
+					</div>
+					{query.data && <StatusPill status={query.data.message.status} />}
+				</header>
+				<FormFeedback error={query.isError ? m.error_generic() : null} />
+				<ol className="attempt-list">
+					{query.data?.attempts.map((attempt) => (
+						<li key={attempt.attemptNumber}>
+							<span>{String(attempt.attemptNumber).padStart(2, "0")}</span>
+							<div>
+								<strong>{attempt.outcome ?? m.studio_status_pending()}</strong>
+								<p>{formatDate(attempt.startedAt)}</p>
 								{attempt.detail && (
-									<p>
+									<pre>
 										{attempt.detail.code}: {attempt.detail.message}
-									</p>
+									</pre>
 								)}
-							</li>
-						))}
-					</ol>
-					<Button className="button" onClick={onClose}>
-						{m.cancel()}
-					</Button>
-				</Dialog.Popup>
-			</Dialog.Portal>
-		</Dialog.Root>
+							</div>
+						</li>
+					))}
+				</ol>
+			</section>
+		</div>
 	);
+}
+
+interface DeliveryAttempt {
+	attemptNumber: number;
+	outcome: string | null;
+	detail: { code: string; message: string } | null;
+	startedAt: string;
 }
 
 export function MessagesView() {
 	const list = useServerFn(listMessages);
 	const [selected, setSelected] = useState<string | null>(null);
+	const [filter, setFilter] = useState<"all" | "failed">("all");
 	const query = useInfiniteQuery({
 		queryKey: ["messages"],
 		initialPageParam: 0,
@@ -66,32 +72,65 @@ export function MessagesView() {
 			list({ data: { page: pageParam, size: limits.page, search: "" } }),
 		getNextPageParam: (page) => page.nextPage,
 	});
+	if (selected)
+		return <MessageDetail id={selected} onClose={() => setSelected(null)} />;
+
+	const messages = query.data?.pages.flatMap((page) => page.items) ?? [];
+	const failures = messages.filter((message) => isFailure(message.status));
+	const visible = filter === "failed" ? failures : messages;
 	return (
 		<div className="content-stack">
 			<header className="page-heading">
-				<h1>{m.studio_messages()}</h1>
+				<div>
+					<p className="page-kicker">SYSTEM / DELIVERY</p>
+					<h1>{m.studio_messages()}</h1>
+				</div>
 			</header>
+			<div className="message-metrics">
+				<Button
+					className={filter === "all" ? "metric-card is-active" : "metric-card"}
+					onClick={() => setFilter("all")}
+				>
+					<span>{String(messages.length).padStart(2, "0")}</span>
+					{m.studio_message_all()}
+				</Button>
+				<Button
+					className={
+						filter === "failed"
+							? "metric-card failure is-active"
+							: "metric-card failure"
+					}
+					onClick={() => setFilter("failed")}
+				>
+					<span>{String(failures.length).padStart(2, "0")}</span>
+					{m.studio_message_failures()}
+				</Button>
+			</div>
 			<FormFeedback error={query.isError ? m.error_generic() : null} />
 			{query.isPending && <p>{m.loading()}</p>}
-			{query.data?.pages
-				.flatMap((page) => page.items)
-				.map((message) => (
+			<div className="message-list">
+				{visible.map((message) => (
 					<Button
 						key={message.id}
-						className="panel grid gap-2 p-5 text-left"
+						className="message-row"
 						onClick={() => setSelected(message.id)}
 					>
-						<strong>{message.subject}</strong>
-						<span>
-							{message.recipient} · {message.site}
+						<StatusPill status={message.status} />
+						<span className="message-copy">
+							<strong>{message.subject}</strong>
+							<small>
+								{message.recipient} · {message.site}
+							</small>
 						</span>
-						<span>
-							{message.status} ·{" "}
-							{new Date(message.requestedAt).toLocaleString()}
+						<span className="message-meta">
+							{message.attemptCount} {m.studio_attempts()}
+							<small>{formatDate(message.requestedAt)}</small>
 						</span>
+						<ArrowRight size={15} aria-hidden="true" />
 					</Button>
 				))}
-			{query.data?.pages[0]?.items.length === 0 && <p>{m.empty()}</p>}
+			</div>
+			{visible.length === 0 && !query.isPending && <p>{m.empty()}</p>}
 			{query.hasNextPage && (
 				<Button
 					className="button"
@@ -101,9 +140,25 @@ export function MessagesView() {
 					{m.load_more()}
 				</Button>
 			)}
-			{selected && (
-				<MessageDetail id={selected} onClose={() => setSelected(null)} />
-			)}
 		</div>
 	);
+}
+
+function StatusPill({ status }: { status: string }) {
+	return (
+		<span className={isFailure(status) ? "status-pill failure" : "status-pill"}>
+			{status}
+		</span>
+	);
+}
+
+function isFailure(status: string): boolean {
+	return /fail|error|dead|reject/i.test(status);
+}
+
+function formatDate(value: string): string {
+	return new Intl.DateTimeFormat("de-CH", {
+		dateStyle: "medium",
+		timeStyle: "short",
+	}).format(new Date(value));
 }

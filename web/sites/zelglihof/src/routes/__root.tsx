@@ -3,13 +3,13 @@ import { getLocale } from "@oliumbi/i18n/runtime";
 import {
 	createRootRoute,
 	HeadContent,
-	Link,
 	Outlet,
 	Scripts,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import Footer from "../components/footer/footer";
 import Header from "../components/header/header";
+import { NotFound } from "../components/not-found";
 import { QueryProvider } from "../components/ui/index";
 import "../styles/root.css";
 
@@ -41,7 +41,7 @@ export const Route = createRootRoute({
 		links: [{ rel: "icon", href: "/favicon.svg", type: "image/svg+xml" }],
 	}),
 	component: RootComponent,
-	notFoundComponent: NotFoundComponent,
+	notFoundComponent: NotFound,
 });
 
 function RootComponent() {
@@ -67,22 +67,5 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 				<Scripts />
 			</body>
 		</html>
-	);
-}
-
-function NotFoundComponent() {
-	return (
-		<section className="shell py-24 text-center">
-			<p className="eyebrow text-clay">{m.zelglihof_routes_root_paragraph()}</p>
-			<h1 className="display-title mx-auto mt-6 max-w-2xl text-6xl md:text-8xl">
-				{m.zelglihof_routes_root_heading()}
-			</h1>
-			<p className="mx-auto mt-6 max-w-lg text-lg text-ink/60">
-				{m.zelglihof_routes_root_paragraph_2()}
-			</p>
-			<Link to="/" className="button-primary mt-8">
-				{m.zelglihof_routes_root_text()}
-			</Link>
-		</section>
 	);
 }

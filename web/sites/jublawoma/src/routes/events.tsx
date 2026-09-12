@@ -1,4 +1,6 @@
+import type { Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
+import type { EventRecord } from "@oliumbi/jublawoma-data/content.types";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarDays, Download, MapPin } from "lucide-react";
 import { ContentImage } from "../components/content-image";
@@ -7,16 +9,19 @@ import { dateLabel } from "../content";
 import { getEventPage } from "../content/content.functions";
 
 export const Route = createFileRoute("/events")({
-	loader: () => getEventPage({ data: { page: 0 } }),
+	loader: () =>
+		getEventPage({ data: { page: 0 } }) as Promise<Page<EventRecord>>,
 	component: Events,
 });
 function Events() {
 	const initialPage = Route.useLoaderData();
 	return (
-		<PaginatedList
+		<PaginatedList<EventRecord>
 			queryKey={["events"]}
 			initialPage={initialPage}
-			load={(page) => getEventPage({ data: { page } })}
+			load={(page) =>
+				getEventPage({ data: { page } }) as Promise<Page<EventRecord>>
+			}
 		>
 			{(events) => (
 				<>

@@ -4,10 +4,6 @@ Only unresolved questions and unfinished work. Remove items when resolved.
 
 ## Technical
 
-- [ ] Port Java/web queries to the new schema, direct publication filters, showcase
-  naming and shared queue. The application still targets the previous tables.
-- [ ] Settle user permissions and enforce them in Studio; currently sign-in grants
-  access to all screens. Candidate: one permission per site feature, without roles.
 - [ ] Wire account_notification to the settings UI and recipient selection; require
   account access to the event's site. Notification opt-in must not grant permission.
 - [ ] Agree username/email case handling, shared normalization and account email
@@ -17,11 +13,6 @@ Only unresolved questions and unfinished work. Remove items when resolved.
   never silently restore stock to another variant.
 - [ ] Implement atomic online allocation and duplicate-submit protection for
   reservations. Donation commitments remain simple manual administration.
-- [ ] Implement one producer adapter and one email retry worker. Reuse the producer's
-  UUID per logical delivery; decide whether mismatched reuse needs a content hash.
-- [ ] Worker: use available_at for backoff, locked_at for stale work and monotonic
-  attempt_count to reject old completions. Never reset attempt_count on retry.
-  Decide retry delays/limit and handling of uncertain SMTP acceptance.
 - [ ] Campaign: recipient-level progress, duplicate-send protection, failed-recipient
   review and cancellation of queued mail after unsubscribe. Never retry a whole
   campaign just because some recipients failed.
@@ -32,16 +23,17 @@ Only unresolved questions and unfinished work. Remove items when resolved.
   compose text/HTML. Decide payload/key retention and deletion of recipient data.
 - [ ] Shared queue/media access is deliberately broad: site isolation within them
   and all public visibility filtering must be handled by application code.
-- [ ] Media: images/PDFs, file metadata, UUID directory depth, upload limits,
-  derivatives and deletion/cache behavior. Snapshot image ids do not preserve files.
-- [ ] Recheck existing lint/build failures; add focused integration checks while
-  adapting forms, identity, notifications and the worker.
-- [ ] review if identity account management need session validation so no user edits 
-  another or even has the permission to create an account
-- [ ] logging and testing for java apis
-- [ ] linting for java projects (god classes, line length, etc.)
-- [ ] Recheck if all projects (especially java) are still aligned with their dependencies.
-- [ ] Review README's and shorten them so a dev can get a good overview at a quick glance (make heavy use of lists, tables and diagrams)
+- [ ] Define how referenced images are retained when content snapshots outlive the
+  source record or asset visibility changes.
+- [ ] Add focused integration checks for forms, identity, notifications, asset
+  lifecycle, and messaging delivery. The Java reactor currently has no tests.
+- [ ] Validate internationalization throughout the applications. Studio and the
+  future Oliumbi site should support English and German; the three customer sites
+  are German-only.
+- [ ] Document intentional route changes from the legacy applications and provide
+  redirects for URLs that must remain stable.
+- [ ] Establish structured logging conventions and Java API integration tests.
+- [ ] Add a Java static-analysis baseline for class size, complexity, and style.
 
 ## Owner requirements
 

@@ -1,6 +1,6 @@
 package ch.oliumbi.messaging.services.intake;
 
-import ch.oliumbi.messaging.data.entites.Message;
+import ch.oliumbi.messaging.data.entities.Message;
 import ch.oliumbi.messaging.domain.DeliveryState;
 import ch.oliumbi.messaging.repositories.MessageRepository;
 import ch.oliumbi.messaging.repositories.QueuedMessageRepository;

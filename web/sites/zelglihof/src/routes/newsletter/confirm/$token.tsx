@@ -11,7 +11,8 @@ function Page() {
 	const { token } = Route.useParams();
 	const submit = useServerFn(confirmNewsletterSignup);
 	const mutation = useMutation({
-		mutationFn: () => submit({ data: { token } }),
+		mutationFn: () =>
+			submit({ data: { token } }) as Promise<{ outcome: string }>,
 	});
 	const done = ["confirmed", "already-confirmed"].includes(
 		mutation.data?.outcome ?? "",

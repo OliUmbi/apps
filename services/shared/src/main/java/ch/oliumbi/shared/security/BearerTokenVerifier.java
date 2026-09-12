@@ -1,5 +1,8 @@
 package ch.oliumbi.shared.security;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
@@ -21,5 +24,11 @@ public final class BearerTokenVerifier {
         }
         var providedToken = authorization.substring(BEARER_PREFIX.length()).getBytes(StandardCharsets.UTF_8);
         return MessageDigest.isEqual(expectedToken, providedToken);
+    }
+
+    public void requireValid(String authorization) {
+        if (!valid(authorization)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
     }
 }

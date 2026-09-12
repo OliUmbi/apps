@@ -1,4 +1,4 @@
-package ch.oliumbi.messaging.data.entites;
+package ch.oliumbi.messaging.data.entities;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;

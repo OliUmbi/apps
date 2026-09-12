@@ -1,67 +1,61 @@
 # OliUmbi Apps
 
-TODO review this
+Monorepo for four web applications, three supporting Java services, and their
+shared PostgreSQL schema.
 
-One repository for the OliUmbi websites and the small services they share.
-The first implemented vertical slice is the Zelglihof newsletter lifecycle.
+## Applications
 
-The database is being redesigned; the Java/web consumers still need adapting.
-Open work is tracked only in [planning/open-work.md](documentation/open-work.md).
+| Application | Purpose | Local URL |
+| --- | --- | --- |
+| Studio | Content and account administration | <http://localhost:8000> |
+| Jublawoma | Club website | <http://localhost:8001> |
+| Uncle-T | Catering website | <http://localhost:8002> |
+| Zelglihof | Farm website | <http://localhost:8003> |
+| Identity | Accounts, sessions, and permissions | <http://localhost:8081> |
+| Messaging | Email queue and delivery history | <http://localhost:8082> |
+| Assets | Image and document storage | <http://localhost:8083> |
 
-## Workspaces
-
-Java applications live in [services](services/README.md), managed by a Maven reactor.
-Web applications live in [web](web/), managed by pnpm.
+The web workspace is documented in [web/README.md](web/README.md), the Java
+reactor in [services/README.md](services/README.md), and outstanding work in
+[documentation/open-work.md](documentation/open-work.md).
 
 ## Local development
 
-Requirements: Docker Desktop, Node.js 24+, and pnpm 11+.
+Requirements: Docker Desktop, Node.js 24+, pnpm 11+, JDK 25, and Maven 3.9.12.
+
+The checked-in `.env.development` contains local-only defaults. Override values
+through your shell or IDE when needed, and never reuse the development
+credentials in a deployed environment.
+
+Start the complete stack from the repository root:
 
 ```powershell
-Copy-Item .env.development.example .env.development
 docker compose --env-file .env.development up -d --build
 ```
 
-This starts the development containers; schema integration is unfinished.
-For frontend-only development, keep the database
-and services in Docker, then run `pnpm dev:zelglihof` or `pnpm dev:studio` from
-`web/` instead. The default local URLs are:
+Mailpit receives development email at <http://localhost:8025>. To work on a
+frontend locally while infrastructure stays in Docker, start PostgreSQL,
+Flyway, and Mailpit, then run the relevant `pnpm dev:*` command from `web/`.
 
-- Zelglihof: http://localhost:8003
-- Studio: http://localhost:8000
-- Mailpit: http://localhost:8025
-- Identity health: http://localhost:8081/actuator/health
-- Messaging health: http://localhost:8082/actuator/health
-
-Local configuration is shared through `.env.development`. Java discovers this file
-from any directory inside the repository; all four Vite development servers load
-it automatically. No IDE environment-file link is required. Rebuild Java after
-pulling changes and restart running services after editing the file. See
-[web development](web/README.md#development) for precedence and startup details.
-
-Never use the example
-passwords in a deployed environment. Set `STUDIO_SECURE_COOKIES=true` when
-Studio is served over HTTPS.
-
-Useful commands:
-
-```powershell
-docker compose ps
-docker compose logs -f messaging
-docker compose down
-```
-
-Mailpit catches all development email; the stack does not contact a real SMTP
-provider with the example configuration.
+Set `STUDIO_SECURE_COOKIES=true` whenever Studio is served over HTTPS. Restart
+running processes after changing environment values, and rebuild Java services
+after changing the shared module.
 
 ## Database
 
 Flyway migrations in `database/migrations/` are the schema source of truth.
-Regenerate the readable current snapshot after changing a migration:
+During development they are edited in place, so recreate the local database
+after a migration changes. See [database/README.md](database/README.md) for the
+schema ownership summary.
+
+## Verification
 
 ```powershell
-.\database\schema.ps1
+cd web
+pnpm build
+pnpm typecheck
+pnpm check
+
+cd ../services
+mvn test
 ```
-
-See [planning/open-work.md](documentation/open-work.md) for unfinished work.
-

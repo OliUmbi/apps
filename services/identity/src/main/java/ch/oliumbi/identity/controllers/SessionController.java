@@ -3,7 +3,7 @@ package ch.oliumbi.identity.controllers;
 import ch.oliumbi.identity.data.responses.SessionActorResponse;
 import ch.oliumbi.identity.data.responses.SessionCreateResponse;
 import ch.oliumbi.identity.data.requests.*;
-import ch.oliumbi.identity.services.InternalAuthorizationService;
+import ch.oliumbi.shared.security.BearerTokenVerifier;
 import ch.oliumbi.identity.services.SessionService;
 import org.springframework.http.HttpHeaders;
 import jakarta.validation.Valid;
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 public class SessionController {
 
     private final SessionService sessionService;
-    private final InternalAuthorizationService internalAuthorizationService;
+    private final BearerTokenVerifier authorization;
 
-    public SessionController(SessionService sessionService, InternalAuthorizationService internalAuthorizationService) {
+    public SessionController(SessionService sessionService, BearerTokenVerifier authorization) {
         this.sessionService = sessionService;
-        this.internalAuthorizationService = internalAuthorizationService;
+        this.authorization = authorization;
     }
 
     @PostMapping
@@ -27,7 +27,7 @@ public class SessionController {
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
             @Valid @RequestBody SessionCreateRequest sessionCreateRequest
     ) {
-        internalAuthorizationService.requireValid(authorization);
+        this.authorization.requireValid(authorization);
         return sessionService.create(sessionCreateRequest);
     }
 
@@ -35,7 +35,7 @@ public class SessionController {
     public SessionActorResponse validate(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
             @Valid @RequestBody SessionValidateRequest sessionValidateRequest) {
-        internalAuthorizationService.requireValid(authorization);
+        this.authorization.requireValid(authorization);
         return sessionService.validate(sessionValidateRequest);
     }
 
@@ -44,7 +44,7 @@ public class SessionController {
     public void revoke(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
             @Valid @RequestBody SessionRevokeRequest sessionRevokeRequest) {
-        internalAuthorizationService.requireValid(authorization);
+        this.authorization.requireValid(authorization);
         sessionService.revoke(sessionRevokeRequest);
     }
 }

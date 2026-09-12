@@ -1,8 +1,19 @@
-import type { RecordValue, ResourceField, SiteId } from "@oliumbi/contracts";
+import type { AssetImage } from "@oliumbi/assets";
+import type {
+	Page,
+	RecordValue,
+	ResourceField,
+	ResourceRecord,
+	SiteId,
+} from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+	useInfiniteQuery,
+	useMutation,
+	useQueryClient,
+} from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { listAssets } from "../server/assets.functions";
+import { listAssets, uploadAsset } from "../server/assets.functions";
 import { listRecords } from "../server/resources.functions";
 import { type ResourceId, resourceIds } from "../studio/resources";
 import { Button, Field, FormFeedback, Select } from "./ui/index";
@@ -19,28 +30,30 @@ export function ReferenceField({
 	onChange: (value: RecordValue) => void;
 }) {
 	const site = resourceId.split(".")[0] as SiteId;
+	const cache = useQueryClient();
 	const images = field.name === "image_id";
 	const parent = `${site}.${field.name.replace(/_id$/, "")}`;
 	const target = resourceIds.find((id) => id === parent);
 	const loadImages = useServerFn(listAssets);
+	const uploadImage = useServerFn(uploadAsset);
 	const loadRecords = useServerFn(listRecords);
 	const query = useInfiniteQuery({
 		queryKey: ["reference", site, field.name],
 		initialPageParam: 0,
 		queryFn: async ({ pageParam }) => {
 			if (images) {
-				const page = await loadImages({
+				const page = (await loadImages({
 					data: { site, kind: "images", page: pageParam, size: 30, search: "" },
-				});
+				})) as Page<AssetImage>;
 				return {
 					...page,
 					items: page.items.map((image) => ({ id: image.id, label: image.id })),
 				};
 			}
 			if (!target) throw new Error("Unknown reference");
-			const page = await loadRecords({
+			const page = (await loadRecords({
 				data: { resource: target, page: pageParam, size: 30, search: "" },
-			});
+			})) as Page<ResourceRecord>;
 			return {
 				...page,
 				items: page.items.map((record) => ({
@@ -53,6 +66,22 @@ export function ReferenceField({
 	});
 	const options = query.data?.pages.flatMap((page) => page.items) ?? [];
 	const selected = options.find((option) => option.id === value);
+	const upload = useMutation({
+		mutationFn: (file: File) => {
+			const data = new FormData();
+			data.set("site", site);
+			data.set("kind", "images");
+			data.set("visible", "false");
+			data.set("file", file);
+			return uploadImage({ data });
+		},
+		onSuccess: async (image) => {
+			await cache.invalidateQueries({
+				queryKey: ["reference", site, field.name],
+			});
+			onChange("image" in image ? image.image.id : image.id);
+		},
+	});
 	return (
 		<Field.Root name={field.name} className="grid gap-2">
 			<Field.Label>{field.label}</Field.Label>
@@ -116,6 +145,21 @@ export function ReferenceField({
 					</Select.Positioner>
 				</Select.Portal>
 			</Select.Root>
+			{images && (
+				<label className="image-upload-control">
+					<span>{m.studio_upload_image_here()}</span>
+					<input
+						type="file"
+						accept="image/jpeg,image/png,image/webp"
+						disabled={upload.isPending}
+						onChange={(event) => {
+							const file = event.target.files?.[0];
+							if (file) upload.mutate(file);
+						}}
+					/>
+				</label>
+			)}
+			<FormFeedback error={upload.isError ? m.error_generic() : null} />
 		</Field.Root>
 	);
 }

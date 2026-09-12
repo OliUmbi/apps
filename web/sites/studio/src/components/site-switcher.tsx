@@ -1,3 +1,4 @@
+import { Check, ChevronsUpDown } from "lucide-react";
 import type { SiteId, StudioSite } from "../studio/config";
 import { Menu } from "./ui/index";
 export function SiteSwitcher({
@@ -17,18 +18,19 @@ export function SiteSwitcher({
 					<strong className="block text-sm">{site.name}</strong>
 					<span className="text-xs text-muted">{site.domain}</span>
 				</span>
-				⌄
+				<ChevronsUpDown size={15} aria-hidden="true" />
 			</Menu.Trigger>
 			<Menu.Portal>
 				<Menu.Positioner className="z-70" sideOffset={6}>
-					<Menu.Popup className="w-60 rounded-lg border border-zinc-700 bg-zinc-900 p-2 text-white shadow-xl">
+					<Menu.Popup className="studio-menu">
 						{sites.map((item) => (
 							<Menu.Item
 								key={item.id}
-								className="rounded p-3 data-highlighted:bg-white/10"
+								className="studio-menu-item"
 								onClick={() => onSelect(item.id)}
 							>
-								{item.name}
+								<span className="flex-1">{item.name}</span>
+								{item.id === site.id && <Check size={15} aria-hidden="true" />}
 							</Menu.Item>
 						))}
 					</Menu.Popup>

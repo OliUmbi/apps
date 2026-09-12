@@ -1,5 +1,5 @@
 import { imageUrl } from "@oliumbi/assets/urls";
-import type { ResourceRecord } from "@oliumbi/contracts";
+import type { Page, ResourceRecord } from "@oliumbi/contracts";
 import { createContentRepository } from "@oliumbi/jublawoma-data";
 import type {
 	EventRecord,
@@ -66,28 +66,30 @@ function story(
 		media: media(record, children),
 	};
 }
-export async function nextEvent() {
+export async function nextEvent(): Promise<EventRecord | null> {
 	const record = await createEventRepository(database.sql).next();
 	return record ? event(record) : null;
 }
-export async function publishedStories(page = 0) {
+export async function publishedStories(page = 0): Promise<StoryRecord[]> {
 	return (await repository().list("jublawoma.story", page)).items.map(
 		(record) => story(record),
 	);
 }
-export async function publishedEvent(id: string) {
+export async function publishedEvent(id: string): Promise<EventRecord | null> {
 	const result = await repository().detail("jublawoma.event", id);
 	return result ? event(result.record) : null;
 }
-export async function publishedStory(slug: string) {
+export async function publishedStory(
+	slug: string,
+): Promise<StoryRecord | null> {
 	const result = await repository().detail("jublawoma.story", slug, true);
 	return result ? story(result.record, result.children) : null;
 }
-export async function eventPage(page: number) {
+export async function eventPage(page: number): Promise<Page<EventRecord>> {
 	const result = await repository().list("jublawoma.event", page);
 	return { ...result, items: result.items.map(event) };
 }
-export async function storyPage(page: number) {
+export async function storyPage(page: number): Promise<Page<StoryRecord>> {
 	const result = await repository().list("jublawoma.story", page);
 	return { ...result, items: result.items.map((record) => story(record)) };
 }

@@ -1,7 +1,7 @@
 package ch.oliumbi.assets.services;
 
 import ch.oliumbi.assets.configurations.ImageProperties;
-import ch.oliumbi.assets.data.entites.Image;
+import ch.oliumbi.assets.data.entities.Image;
 import ch.oliumbi.assets.data.requests.ImageCreateRequest;
 import ch.oliumbi.assets.data.requests.VisibilityRequest;
 import ch.oliumbi.assets.data.responses.ImageDetailResponse;
@@ -11,12 +11,10 @@ import ch.oliumbi.assets.repositories.ImageRepository;
 import ch.oliumbi.assets.repositories.ImageVariantRepository;
 import ch.oliumbi.assets.services.processing.ImageProcessor;
 import ch.oliumbi.assets.services.storage.BlobStorage;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +23,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.util.UUID;
 
-@Slf4j
 @Service
 public class ImageService {
     private final ImageRepository images;
@@ -34,15 +31,18 @@ public class ImageService {
     private final ImageProcessor processor;
     private final ImageProperties properties;
     private final TransactionTemplate transactions;
+    private final AssetDeletionService deletion;
 
     public ImageService(ImageRepository images, ImageVariantRepository variants, BlobStorage storage,
-                        ImageProcessor processor, ImageProperties properties, PlatformTransactionManager transactionManager) {
+                        ImageProcessor processor, ImageProperties properties, TransactionTemplate transactions,
+                        AssetDeletionService deletion) {
         this.images = images;
         this.variants = variants;
         this.storage = storage;
         this.processor = processor;
         this.properties = properties;
-        this.transactions = new TransactionTemplate(transactionManager);
+        this.transactions = transactions;
+        this.deletion = deletion;
     }
 
     public ImageDetailResponse create(String site, ImageCreateRequest request, MultipartFile file) throws IOException {
@@ -89,24 +89,12 @@ public class ImageService {
         return ImageResponse.fromImage(image);
     }
 
-    // todo duplicated code in documentService, can probably be moved somewhere else
     public void delete(UUID id, String site) {
-
-        boolean deleted = Boolean.TRUE.equals(transactions.execute(status -> {
+        deletion.delete(AssetKind.IMAGE, id, () -> {
             var asset = images.findLockedByIdAndSite(id, site);
             if (asset.isEmpty()) return false;
             images.delete(asset.get());
             return true;
-        }));
-
-        if (!deleted) {
-            return;
-        }
-
-        try {
-            storage.delete(AssetKind.IMAGE, id);
-        } catch (RuntimeException exception) {
-            log.warn("Image {} file deletion deferred to cleanup ({})", id, exception.getClass().getSimpleName());
-        }
+        });
     }
 }

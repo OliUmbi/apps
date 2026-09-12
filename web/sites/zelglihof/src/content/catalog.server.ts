@@ -1,5 +1,5 @@
 import { imageUrl } from "@oliumbi/assets/urls";
-import type { ResourceRecord } from "@oliumbi/contracts";
+import type { Page, ResourceRecord } from "@oliumbi/contracts";
 import { createContentRepository } from "@oliumbi/zelglihof-data";
 import type { Product, Update } from "@oliumbi/zelglihof-data/content.types";
 import { database } from "../server/database.server";
@@ -59,28 +59,28 @@ function article(
 		})),
 	};
 }
-export async function productPage(page: number) {
+export async function productPage(page: number): Promise<Page<Product>> {
 	const result = await createContentRepository(database.sql).list(
 		"zelglihof.product",
 		page,
 	);
 	return { ...result, items: result.items.map((row) => product(row)) };
 }
-export async function articlePage(page: number) {
+export async function articlePage(page: number): Promise<Page<Update>> {
 	const result = await createContentRepository(database.sql).list(
 		"zelglihof.article",
 		page,
 	);
 	return { ...result, items: result.items.map((row) => article(row)) };
 }
-export async function productDetail(id: string) {
+export async function productDetail(id: string): Promise<Product | null> {
 	const result = await createContentRepository(database.sql).detail(
 		"zelglihof.product",
 		id,
 	);
 	return result ? product(result.record, result.children) : null;
 }
-export async function articleDetail(slug: string) {
+export async function articleDetail(slug: string): Promise<Update | null> {
 	const result = await createContentRepository(database.sql).detail(
 		"zelglihof.article",
 		slug,

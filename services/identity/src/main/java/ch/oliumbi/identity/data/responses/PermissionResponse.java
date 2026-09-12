@@ -1,6 +1,6 @@
 package ch.oliumbi.identity.data.responses;
 
-import ch.oliumbi.identity.data.entites.AccountPermission;
+import ch.oliumbi.identity.data.entities.AccountPermission;
 
 public record PermissionResponse(
         String permission) {

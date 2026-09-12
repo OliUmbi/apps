@@ -1,6 +1,7 @@
-# Assets implementation plan
+# Assets design notes
 
-Revised proposal based on [your README](README.md) and subsequent decisions. This changes documentation only.
+This document records the rationale behind the current implementation and the
+tradeoffs to revisit when production usage provides representative data.
 
 ## Agreed direction
 
@@ -88,6 +89,8 @@ Detect animation/multiple images explicitly before processing: do not trust a de
 ## Open questions
 
 None remain blocking. The master settings above are implementation defaults to validate with real uploads, not additional approval requests.
-## Implementation order
+## Verification priorities
 
-Add the selected dependencies/properties and expand initial tables. Implement storage, combined uploads and simple deletion, then image processing and public/private reads. Verify metadata absence, orientation, transparency, format rejection, cache behavior and partial failures on Java 25. Keep permanent test implementation deferred as requested.
+Verify metadata absence, orientation, transparency, format rejection, cache
+behavior, and partial failures on Java 25. Add representative tests before
+tuning storage or quality limits.

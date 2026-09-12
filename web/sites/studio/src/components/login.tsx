@@ -27,7 +27,7 @@ export function Login() {
 					<p>{m.studio_components_login_paragraph_2()}</p>
 				</div>
 				<Form
-					className="grid gap-5"
+					className="grid gap-5 px-7 pt-6 pb-7"
 					onSubmit={(event) => {
 						event.preventDefault();
 						const form = new FormData(event.currentTarget);
@@ -58,7 +58,7 @@ export function Login() {
 						type="submit"
 						disabled={mutation.isPending}
 					>
-						{mutation.isPending ? m.loading() : "Anmelden"}
+						{mutation.isPending ? m.loading() : m.studio_login()}
 					</Button>
 				</Form>
 			</section>
