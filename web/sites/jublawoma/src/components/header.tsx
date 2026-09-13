@@ -32,8 +32,8 @@ export function Header() {
 					{open ? <X /> : <Menu />}
 				</Dialog.Trigger>
 				<Dialog.Portal>
-					<Dialog.Backdrop className="fixed inset-0 z-50 bg-bark/35" />
-					<Dialog.Popup className="fixed inset-x-4 top-4 z-60 rounded-3xl bg-oat p-6 text-bark shadow-xl">
+					<Dialog.Backdrop className="fixed inset-0 z-50 bg-bark/35 min-[851px]:hidden" />
+					<Dialog.Popup className="fixed inset-y-0 right-0 z-60 w-full max-w-sm bg-oat p-7 text-bark shadow-2xl min-[851px]:hidden">
 						<div className="flex items-center justify-between">
 							<Dialog.Title>
 								{m.jublawoma_components_header_aria_label()}
@@ -71,7 +71,6 @@ export function Header() {
 						key={item.to}
 						to={item.to}
 						activeProps={{ className: "active" }}
-						onClick={() => setOpen(false)}
 					>
 						{item.label}
 					</Link>

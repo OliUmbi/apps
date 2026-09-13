@@ -17,6 +17,7 @@ export interface SubmissionField {
 	min?: number;
 	max?: number;
 	step?: number;
+	rows?: number;
 	options?: { value: string; label: string }[];
 }
 
@@ -122,7 +123,11 @@ function SubmissionControl({ field }: { field: SubmissionField }) {
 			name={field.name}
 			label={field.label}
 			type={field.type === "textarea" ? undefined : (field.type ?? "text")}
-			render={field.type === "textarea" ? <textarea rows={5} /> : undefined}
+			render={
+				field.type === "textarea" ? (
+					<textarea rows={field.rows ?? 5} />
+				) : undefined
+			}
 			required={field.required}
 			min={field.min}
 			max={field.max}

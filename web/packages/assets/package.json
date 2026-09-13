@@ -4,7 +4,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./urls": "./src/urls.ts"
+    "./urls": "./src/urls.ts",
+    "./public-image.server": "./src/public-image.server.ts"
   },
   "scripts": {
     "check": "tsc --noEmit"

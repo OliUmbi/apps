@@ -2,6 +2,7 @@ import { m } from "@oliumbi/i18n/messages";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, ArrowUpRight, Plus, UserRound } from "lucide-react";
+import { useState } from "react";
 import { Route } from "../routes/index";
 import {
 	createAccount,
@@ -14,6 +15,7 @@ import { DeleteConfirmation } from "./delete-confirmation";
 import { Button, Form, FormFeedback, InputField } from "./ui/index";
 
 export function AccountsView() {
+	const [deleting, setDeleting] = useState<string | null>(null);
 	const search = Route.useSearch();
 	const navigate = Route.useNavigate();
 	const cache = useQueryClient();
@@ -35,7 +37,30 @@ export function AccountsView() {
 	const go = (mode: "list" | "create" | "detail", record?: string) =>
 		void navigate({ search: { ...search, mode, record } });
 	if (search.mode === "detail" && selected)
-		return <AccountEditor account={selected} onClose={() => go("list")} />;
+		return (
+			<>
+				<AccountEditor
+					account={selected}
+					onClose={() => go("list")}
+					onDelete={() => setDeleting(selected.id)}
+				/>
+				{deleting ? (
+					<DeleteConfirmation
+						pending={deletion.isPending}
+						error={deletion.isError}
+						onConfirm={() =>
+							deletion.mutate(deleting, {
+								onSuccess: () => {
+									setDeleting(null);
+									go("list");
+								},
+							})
+						}
+						onClose={() => setDeleting(null)}
+					/>
+				) : null}
+			</>
+		);
 	if (search.mode === "create")
 		return (
 			<div className="content-stack workspace-page">
@@ -116,7 +141,12 @@ export function AccountsView() {
 			{query.isPending ? <p>{m.loading()}</p> : null}
 			<div className="account-list">
 				{query.data?.map((account) => (
-					<article key={account.id} className="account-row">
+					<button
+						type="button"
+						key={account.id}
+						className="account-row cursor-pointer"
+						onClick={() => go("detail", account.id)}
+					>
 						<div className="account-avatar">
 							{account.name.slice(0, 1).toUpperCase()}
 						</div>
@@ -133,30 +163,10 @@ export function AccountsView() {
 								? m.studio_account_enabled()
 								: m.studio_account_disabled()}
 						</span>
-						<Button className="button" onClick={() => go("detail", account.id)}>
-							{m.studio_manage()} <ArrowUpRight size={15} />
-						</Button>
-						<Button
-							className="button danger"
-							onClick={() => go("list", account.id)}
-						>
-							{m.delete_record()}
-						</Button>
-					</article>
+						<ArrowUpRight size={18} aria-hidden="true" />
+					</button>
 				))}
 			</div>
-			{search.mode === "list" && search.record ? (
-				<DeleteConfirmation
-					pending={deletion.isPending}
-					error={deletion.isError}
-					onConfirm={() =>
-						deletion.mutate(search.record as string, {
-							onSuccess: () => go("list"),
-						})
-					}
-					onClose={() => go("list")}
-				/>
-			) : null}
 		</div>
 	);
 }

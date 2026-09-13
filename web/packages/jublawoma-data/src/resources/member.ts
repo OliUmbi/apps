@@ -19,6 +19,12 @@ export const jublawomaMember = {
 			label: "group name",
 			kind: "text",
 		},
+		{
+			name: "leadership",
+			label: "leadership",
+			kind: "checkbox",
+			defaultValue: false,
+		},
 	],
 	public: "all",
 	create: true,

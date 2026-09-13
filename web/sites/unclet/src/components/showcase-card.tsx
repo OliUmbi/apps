@@ -1,4 +1,4 @@
-import { imageUrl } from "@oliumbi/assets/urls";
+import { publicImageUrl } from "@oliumbi/assets/urls";
 import type { ResourceRecord } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
@@ -19,15 +19,7 @@ export function ShowcaseCard({
 		>
 			<div className="image-treatment aspect-[16/10] md:aspect-[16/9]">
 				<AssetImage
-					src={
-						item.image_id
-							? imageUrl(
-									import.meta.env.VITE_ASSETS_PUBLIC_URL ??
-										"http://localhost:8083",
-									String(item.image_id),
-								)
-							: null
-					}
+					src={item.image_id ? publicImageUrl(String(item.image_id)) : null}
 					alt={String(item.title)}
 					sizes="(min-width: 768px) 58vw, 100vw"
 					className="h-full w-full object-cover"

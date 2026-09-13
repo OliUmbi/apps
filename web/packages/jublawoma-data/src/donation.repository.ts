@@ -6,7 +6,7 @@ export function createDonationRepository(sql: Transaction) {
 	return {
 		async lockItem(input: CommitmentInput) {
 			const [item] = await sql<DonationItem[]>`
-				SELECT d.title, i.name, i.description, i.quantity::float8, i.step::float8,
+				SELECT d.title, i.name, i.detail, i.quantity::float8, i.step::float8,
 						i.unit, (d.starts_at <= now() AND d.ends_at >= now()) AS active
 				FROM jublawoma.donation d
 				JOIN jublawoma.donation_item i ON i.donation_id = d.id
@@ -26,11 +26,11 @@ export function createDonationRepository(sql: Transaction) {
 		async insert(input: CommitmentInput, item: DonationItem, now: Date) {
 			await sql`
 				INSERT INTO jublawoma.donation_commitment (
-					donation_id, donation_item_id, donation_title, item_name, item_description,
+					donation_id, donation_item_id, donation_title, item_name, item_detail,
 					item_quantity, step, unit, name, phone, quantity, note, created_at, updated_at
 				) VALUES (
 					${input.donationId}, ${input.itemId}, ${item.title}, ${item.name},
-					${item.description}, ${item.quantity}, ${item.step}, ${item.unit},
+					${item.detail}, ${item.quantity}, ${item.step}, ${item.unit},
 					${input.name}, ${input.phone}, ${input.quantity}, ${input.note || null},
 					${now}, ${now}
 				)

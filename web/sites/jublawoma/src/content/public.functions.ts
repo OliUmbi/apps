@@ -1,11 +1,15 @@
 import { idSchema, pageSchema, slugSchema } from "@oliumbi/contracts";
 import { createContentRepository } from "@oliumbi/jublawoma-data";
 import { publicResourceIds } from "@oliumbi/jublawoma-data/contracts";
+import { createMemberRepository } from "@oliumbi/jublawoma-data/member.repository";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { database } from "../server/database.server";
 
 const resource = z.enum(publicResourceIds);
+export const getLeadership = createServerFn({ method: "GET" }).handler(() =>
+	createMemberRepository(database.sql).leadership(),
+);
 export const listPublicRecords = createServerFn({ method: "GET" })
 	.validator(z.object({ resource, page: pageSchema.shape.page }))
 	.handler(({ data }) =>

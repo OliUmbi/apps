@@ -32,9 +32,11 @@ import {
 export function AccountEditor({
 	account,
 	onClose,
+	onDelete,
 }: {
 	account: Account;
 	onClose: () => void;
+	onDelete: () => void;
 }) {
 	const cache = useQueryClient();
 	const get = useServerFn(getAccount);
@@ -217,6 +219,15 @@ export function AccountEditor({
 					/>
 				</section>
 			</div>
+			<section className="record-danger-zone">
+				<div>
+					<strong>{m.delete_record()}</strong>
+					<p>{m.confirm_delete_description()}</p>
+				</div>
+				<Button className="button danger" onClick={onDelete}>
+					{m.delete_record()}
+				</Button>
+			</section>
 		</div>
 	);
 }

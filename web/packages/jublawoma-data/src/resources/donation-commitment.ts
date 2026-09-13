@@ -26,9 +26,10 @@ export const jublawomaDonationCommitment = {
 			kind: "text",
 		},
 		{
-			name: "item_description",
-			label: "item description",
+			name: "item_detail",
+			label: "item detail",
 			kind: "text",
+			nullable: true,
 		},
 		{
 			name: "item_quantity",
@@ -71,4 +72,5 @@ export const jublawomaDonationCommitment = {
 	create: false,
 	edit: false,
 	delete: true,
+	tableFields: ["name", "phone", "item_name", "quantity", "unit", "note"],
 } as const satisfies ResourceDefinition;

@@ -9,6 +9,7 @@ function Privacy() {
 			<h1>{m.jublawoma_routes_privacy_heading()}</h1>
 			<p>{m.jublawoma_routes_privacy_paragraph_2()}</p>
 			<p>{m.jublawoma_routes_privacy_paragraph_3()}</p>
+			<p>{m.jublawoma_routes_privacy_paragraph_4()}</p>
 			<a
 				className="button dark"
 				href="/assets/documents/Datenschutzerklärung-Jubla-Woma.pdf"

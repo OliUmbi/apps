@@ -1,7 +1,12 @@
 import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute } from "@tanstack/react-router";
-export const Route = createFileRoute("/legal")({ component: Imprint });
+import { getLeadership } from "../content/public.functions";
+export const Route = createFileRoute("/legal")({
+	loader: () => getLeadership(),
+	component: Imprint,
+});
 function Imprint() {
+	const leadership = Route.useLoaderData();
 	return (
 		<section className="shell legal">
 			<p className="kicker">{m.jublawoma_routes_legal_paragraph()}</p>
@@ -20,7 +25,11 @@ function Imprint() {
 				</a>
 			</p>
 			<h2>{m.jublawoma_routes_legal_heading_3()}</h2>
-			<p>{m.jublawoma_routes_legal_paragraph_5()}</p>
+			<p>
+				{leadership.length
+					? leadership.map((member) => member.name).join(" · ")
+					: m.jublawoma_routes_legal_paragraph_5()}
+			</p>
 			<h2>{m.jublawoma_routes_legal_heading_4()}</h2>
 			<p>{m.jublawoma_routes_legal_paragraph_6()}</p>
 		</section>

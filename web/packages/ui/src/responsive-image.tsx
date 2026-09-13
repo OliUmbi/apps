@@ -68,8 +68,9 @@ export function ResponsiveImage({
 
 export function responsiveSrcSet(src: string): string | undefined {
 	let url: URL;
+	const relative = src.startsWith("/");
 	try {
-		url = new URL(src);
+		url = new URL(src, "http://local");
 	} catch {
 		return undefined;
 	}
@@ -79,7 +80,7 @@ export function responsiveSrcSet(src: string): string | undefined {
 		.map(([size, width]) => {
 			const rendition = new URL(url);
 			rendition.searchParams.set("size", size);
-			return `${rendition.href} ${width}w`;
+			return `${relative ? `${rendition.pathname}${rendition.search}` : rendition.href} ${width}w`;
 		})
 		.join(", ");
 }

@@ -3,9 +3,9 @@ import { m } from "@oliumbi/i18n/messages";
 import type { StoryRecord } from "@oliumbi/jublawoma-data/content.types";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Camera } from "lucide-react";
-import { ContentImage } from "../../components/content-image";
-import { PaginatedList } from "../../components/ui/paginated-list";
-import { getStoryPage } from "../../content/content.functions";
+import { ContentImage } from "../components/content-image";
+import { PaginatedList } from "../components/ui/paginated-list";
+import { getStoryPage } from "../content/content.functions";
 export const Route = createFileRoute("/stories/")({
 	loader: () =>
 		getStoryPage({ data: { page: 0 } }) as Promise<Page<StoryRecord>>,

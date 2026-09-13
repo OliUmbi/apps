@@ -53,7 +53,7 @@ Run `pnpm dev:studio`, `pnpm dev:jublawoma`, `pnpm dev:unclet` or `pnpm dev:zelg
 
 Studio requires the identity and assets service URLs and their `*_INTERNAL_AUTHORIZATION_TOKEN` values; delivery history also requires the messaging service. Access is granted by `studio.admin` or the corresponding `<site>.manage` permission. Account administration and delivery history require `studio.admin`. No default administrator is created by the web apps.
 
-For hosted environments set `STUDIO_SECURE_COOKIES=true`, the site public URL, owner email addresses, and `ASSETS_PUBLIC_URL`. Browser asset URLs use `VITE_ASSETS_PUBLIC_URL` at build time; Compose passes `ASSETS_PUBLIC_URL` into that build argument. Rebuild when changing that URL.
+For hosted environments set `STUDIO_SECURE_COOKIES=true`, the site public URL, owner email addresses, and `ASSETS_PUBLIC_URL`. Public sites proxy images through their own origin, so `ASSETS_PUBLIC_URL` may safely use the internal asset-service hostname and can change at runtime without rebuilding the browser bundle.
 
 Paraglide generates its runtime during Vite builds. Source messages are in `packages/i18n/messages/de-CH.json`; generated code is ignored. Only Swiss German is currently configured. English source routes are canonical, without German route wrapper files.
 

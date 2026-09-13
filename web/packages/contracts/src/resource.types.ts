@@ -18,6 +18,9 @@ export interface ResourceField {
 	max?: number;
 	integer?: boolean;
 	readOnly?: boolean;
+	defaultValue?: RecordValue;
+	rows?: number;
+	suggestions?: readonly string[];
 }
 export interface ResourceDefinition {
 	table: string;
@@ -28,6 +31,7 @@ export interface ResourceDefinition {
 	edit?: boolean;
 	delete?: boolean;
 	keys?: readonly string[];
+	tableFields?: readonly string[];
 	createDefaults?: ResourceRecord;
 	editableWhen?: { field: string; value: RecordValue };
 }

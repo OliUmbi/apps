@@ -1,8 +1,8 @@
 import type { StoryRecord } from "@oliumbi/jublawoma-data/content.types";
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { ContentImage } from "../../components/content-image";
-import { MarkdownContent } from "../../components/markdown-content";
-import { getStory } from "../../content/content.functions";
+import { ContentImage } from "../components/content-image";
+import { MarkdownContent } from "../components/markdown-content";
+import { getStory } from "../content/content.functions";
 
 export const Route = createFileRoute("/stories/$slug")({
 	loader: async ({ params }) => {
@@ -30,6 +30,7 @@ function StoryDetail() {
 							)
 						: "Geschichte"}
 				</p>
+				<p className="story-author">{story.author}</p>
 				<h1>{story.title}</h1>
 				{story.summary ? <p>{story.summary}</p> : null}
 			</header>

@@ -6,9 +6,14 @@ import {
 import type { Database } from "./index";
 import { createResourceRepository } from "./resource.repository";
 
+export interface PublicRelation {
+	table: string;
+	column: string;
+}
+
 export function createPublicRepository(
 	sql: Database,
-	relations: Record<string, { table: string; column: string }>,
+	relations: Readonly<Record<string, PublicRelation>>,
 ) {
 	return {
 		list: (resource: ResourceDefinition, page = 0) =>
@@ -26,24 +31,27 @@ export function createPublicRepository(
 			if (!record) return null;
 			const relation = relations[resource.table];
 			const children = relation
-				? await sql<ResourceRecord[]>`
+				? normalizeRecords(
+						await sql<ResourceRecord[]>`
 					SELECT *
 					FROM ${sql(relation.table)}
 					WHERE ${sql(relation.column)} = ${record.id}
 					ORDER BY created_at
-				`
+				`,
+					)
 				: [];
-			return {
-				record,
-				children: children.map((row) =>
-					Object.fromEntries(
-						Object.entries(row).map(([key, value]) => [
-							key,
-							key.endsWith("_at") ? String(value) : value,
-						]),
-					),
-				),
-			};
+			return { record, children };
 		},
 	};
+}
+
+function normalizeRecords(records: ResourceRecord[]) {
+	return records.map((record) =>
+		Object.fromEntries(
+			Object.entries(record).map(([key, value]) => [
+				key,
+				key.endsWith("_at") ? String(value) : value,
+			]),
+		),
+	);
 }

@@ -1,7 +1,7 @@
 import type { Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import type { EventRecord } from "@oliumbi/jublawoma-data/content.types";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { CalendarDays, Download, MapPin } from "lucide-react";
 import { ContentImage } from "../components/content-image";
 import { PaginatedList } from "../components/ui/paginated-list";
@@ -48,32 +48,26 @@ function Events() {
 					</section>
 					<section className="shell event-list">
 						{events.map((event, index) => (
-							<Link
-								to="/events/$eventId"
-								params={{ eventId: event.id }}
-								key={event.id}
-							>
-								<article>
-									<div className="event-number">
-										{String(index + 1).padStart(2, "0")}
-									</div>
-									<ContentImage
-										src={event.media[0]?.storageKey}
-										alt={event.media[0]?.altText || event.title}
-										seed={event.id}
-									/>
-									<div>
-										<p className="kicker">
-											{dateLabel(event.startsOn, event.endsOn)}
-										</p>
-										<h2>{event.title}</h2>
-										<p>
-											<MapPin size={16} /> {event.location}
-										</p>
-									</div>
-									<CalendarDays className="event-icon" />
-								</article>
-							</Link>
+							<article key={event.id}>
+								<div className="event-number">
+									{String(index + 1).padStart(2, "0")}
+								</div>
+								<ContentImage
+									src={event.media[0]?.storageKey}
+									alt={event.media[0]?.altText || event.title}
+									seed={event.id}
+								/>
+								<div>
+									<p className="kicker">
+										{dateLabel(event.startsOn, event.endsOn)}
+									</p>
+									<h2>{event.title}</h2>
+									<p>
+										<MapPin size={16} /> {event.location}
+									</p>
+								</div>
+								<CalendarDays className="event-icon" />
+							</article>
 						))}
 					</section>
 				</>

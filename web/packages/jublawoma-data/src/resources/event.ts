@@ -12,6 +12,8 @@ export const jublawomaEvent = {
 			name: "description",
 			label: "description",
 			kind: "textarea",
+			nullable: true,
+			rows: 3,
 		},
 		{
 			name: "location",

@@ -7,6 +7,7 @@ import {
 import { useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { CalendarDays, HeartHandshake, Phone } from "lucide-react";
+import { useState } from "react";
 import { submitCommitment } from "../content/donation.functions";
 import { SubmissionForm } from "./ui/submission-form";
 
@@ -19,6 +20,12 @@ export function DonationCampaign({
 }) {
 	const router = useRouter();
 	const submit = useServerFn(submitCommitment);
+	const [selectedId, setSelectedId] = useState<string | null>(null);
+	const availableItems = items.filter((item) => number(item.remaining) > 0);
+	const selected = availableItems.find(
+		(item) => String(item.id) === selectedId,
+	);
+
 	return (
 		<section className="donation-campaign shell">
 			<header className="donation-focus">
@@ -45,42 +52,54 @@ export function DonationCampaign({
 						<h2>{m.jublawoma_donation_items_title()}</h2>
 					</div>
 				</div>
-				{items.map((item) => (
-					<DonationItem
-						key={String(item.id)}
+				<div className="donation-item-list">
+					{items.map((item) => (
+						<DonationItem
+							key={String(item.id)}
+							item={item}
+							selected={String(item.id) === selectedId}
+							onSelect={() => setSelectedId(String(item.id))}
+						/>
+					))}
+				</div>
+				{selected ? (
+					<CommitmentPanel
+						key={String(selected.id)}
 						record={record}
-						item={item}
+						item={selected}
 						onSubmit={async (data) => {
 							const result = await submit({ data });
 							await router.invalidate();
 							return result;
 						}}
 					/>
-				))}
+				) : availableItems.length ? (
+					<p className="donation-select-help">
+						{m.jublawoma_donation_select_help()}
+					</p>
+				) : null}
 			</div>
 		</section>
 	);
 }
 
 function DonationItem({
-	record,
 	item,
-	onSubmit,
+	selected,
+	onSelect,
 }: {
-	record: ResourceRecord;
 	item: ResourceRecord;
-	onSubmit: (data: CommitmentInput) => Promise<{ outcome: string }>;
+	selected: boolean;
+	onSelect: () => void;
 }) {
-	const remaining = cleanNumber(item.remaining);
-	const quantity = cleanNumber(item.quantity);
-	const step = cleanNumber(item.step);
-	const donated = Math.max(0, quantity - remaining);
-	const progress = quantity > 0 ? (donated / quantity) * 100 : 0;
+	const remaining = number(item.remaining);
+	const quantity = number(item.quantity);
+	const progress = quantity > 0 ? ((quantity - remaining) / quantity) * 100 : 0;
 	return (
-		<article className="donation-item">
+		<article className={`donation-item ${selected ? "is-selected" : ""}`}>
 			<div className="donation-item-copy">
 				<h3>{item.name}</h3>
-				{item.description ? <p>{item.description}</p> : null}
+				{item.detail ? <p>{item.detail}</p> : null}
 				<div className="donation-progress" aria-hidden="true">
 					<span style={{ width: `${Math.min(100, progress)}%` }} />
 				</div>
@@ -89,54 +108,77 @@ function DonationItem({
 					{m.jublawoma_donation_remaining()}
 				</p>
 			</div>
-			<div className="donation-action">
-				{remaining > 0 ? (
-					<SubmissionForm
-						className="donation-form"
-						schema={commitmentSchema}
-						defaults={{ donationId: record.id, itemId: item.id }}
-						submit={onSubmit}
-						success={m.jublawoma_routes_donations_donationId_success()}
-						submitLabel={m.jublawoma_donation_submit()}
-						fields={[
-							{
-								name: "name",
-								label: m.jublawoma_routes_donations_donationId_label(),
-								required: true,
-							},
-							{
-								name: "phone",
-								label: m.jublawoma_routes_donations_donationId_label_2(),
-								type: "tel",
-								required: true,
-							},
-							{
-								name: "quantity",
-								label: String(item.unit),
-								type: "number",
-								min: step,
-								max: remaining,
-								step,
-								required: true,
-							},
-							{
-								name: "note",
-								label: m.jublawoma_routes_donations_donationId_label_3(),
-								type: "textarea",
-							},
-						]}
-					/>
-				) : (
-					<p className="donation-complete">{m.jublawoma_donation_complete()}</p>
-				)}
-			</div>
+			{remaining > 0 ? (
+				<button className="button dark" type="button" onClick={onSelect}>
+					{selected
+						? m.jublawoma_donation_selected()
+						: m.jublawoma_donation_choose()}
+				</button>
+			) : (
+				<p className="donation-complete">{m.jublawoma_donation_complete()}</p>
+			)}
 		</article>
 	);
 }
 
-function cleanNumber(value: unknown): number {
-	const number = Number(value);
-	return Number.isFinite(number) ? Number(number.toPrecision(10)) : 0;
+function CommitmentPanel({
+	record,
+	item,
+	onSubmit,
+}: {
+	record: ResourceRecord;
+	item: ResourceRecord;
+	onSubmit: (data: CommitmentInput) => Promise<{ outcome: string }>;
+}) {
+	const remaining = number(item.remaining);
+	const step = number(item.step);
+	return (
+		<aside className="donation-action">
+			<p className="kicker">{m.jublawoma_donation_form_eyebrow()}</p>
+			<h3>{item.name}</h3>
+			<SubmissionForm
+				className="donation-form"
+				schema={commitmentSchema}
+				defaults={{ donationId: record.id, itemId: item.id }}
+				submit={onSubmit}
+				success={m.jublawoma_routes_donations_donationId_success()}
+				submitLabel={m.jublawoma_donation_submit()}
+				fields={[
+					{
+						name: "name",
+						label: m.jublawoma_routes_donations_donationId_label(),
+						required: true,
+					},
+					{
+						name: "phone",
+						label: m.jublawoma_routes_donations_donationId_label_2(),
+						type: "tel",
+						required: true,
+					},
+					{
+						name: "quantity",
+						label: String(item.unit),
+						type: "number",
+						min: step,
+						max: remaining,
+						step,
+						required: true,
+					},
+					{
+						name: "note",
+						label: m.jublawoma_routes_donations_donationId_label_3(),
+						type: "textarea",
+						rows: 2,
+					},
+				]}
+			/>
+		</aside>
+	);
+}
+
+function number(value: unknown): number {
+	const parsed = Number(value);
+	return Number.isFinite(parsed) ? Number(parsed.toPrecision(10)) : 0;
 }
 
 function dateRange(start: unknown, end: unknown): string {

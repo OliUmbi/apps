@@ -15,41 +15,49 @@ export function ResourceTable({
 	resourceId,
 	rows,
 	onView,
-	onDelete,
 }: {
 	resourceId: ResourceId;
 	rows: ResourceRecord[];
 	onView: (record: ResourceRecord) => void;
-	onDelete: (record: ResourceRecord) => void;
 }) {
 	const resource = getResource(resourceId);
+	const displayedFields = resource.tableFields
+		? resource.tableFields
+				.map((name) => resource.fields.find((field) => field.name === name))
+				.filter((field) => field !== undefined)
+		: resource.fields
+				.filter(
+					(field) =>
+						field.kind !== "textarea" &&
+						(field.kind !== "uuid" || field.name === "image_id"),
+				)
+				.slice(0, 5);
 	const columns: ColumnDef<ResourceRecord>[] = [
-		...resource.fields
-			.filter(
-				(field) =>
-					field.kind !== "textarea" &&
-					(field.kind !== "uuid" || field.name === "image_id"),
-			)
-			.slice(0, 5)
-			.map((field) => ({
-				accessorKey: field.name,
-				header: field.label,
-				cell: ({ getValue }: { getValue: () => unknown }) =>
-					field.name === "image_id" && getValue() ? (
-						<img
-							src={`/api/assets/${String(getValue())}?site=${resourceId.split(".")[0]}`}
-							alt=""
-							className="table-thumbnail"
-						/>
-					) : (
-						displayRecordValue(field, getValue() as RecordValue)
-					),
-			})),
+		...displayedFields.map((field) => ({
+			accessorKey: field.name,
+			header: field.label,
+			cell: ({ getValue }: { getValue: () => unknown }) =>
+				field.name === "image_id" && getValue() ? (
+					<img
+						src={`/api/assets/${String(getValue())}?site=${resourceId.split(".")[0]}`}
+						alt=""
+						className="table-thumbnail"
+					/>
+				) : (
+					displayRecordValue(field, getValue() as RecordValue)
+				),
+		})),
 		{
 			id: "actions",
 			header: "",
 			cell: ({ row }) => (
-				<div className="flex justify-end gap-2">
+				<div
+					className="flex justify-end gap-2"
+					role="toolbar"
+					aria-label={m.studio_record_actions()}
+					onClick={(event) => event.stopPropagation()}
+					onKeyDown={(event) => event.stopPropagation()}
+				>
 					<Button
 						className="button open-record"
 						onClick={() => onView(row.original)}
@@ -61,14 +69,6 @@ export function ResourceTable({
 						row.original.status === "draft" && (
 							<CampaignSend id={String(row.original.id)} />
 						)}
-					{resource.delete && (
-						<Button
-							className="button danger"
-							onClick={() => onDelete(row.original)}
-						>
-							{m.delete_record()}
-						</Button>
-					)}
 				</div>
 			),
 		},
@@ -81,17 +81,13 @@ export function ResourceTable({
 			(resource.keys ?? ["id"]).map((key) => row[key]).join(":"),
 	});
 	return (
-		<div className="overflow-x-auto rounded-xl border border-white/10">
+		<div className="data-table">
 			<table className="w-full text-left text-sm">
 				<thead className="bg-white/5 text-zinc-400">
 					{table.getHeaderGroups().map((group) => (
 						<tr key={group.id}>
 							{group.headers.map((header) => (
-								<th
-									key={header.id}
-									className="px-4 py-3 font-medium"
-									scope="col"
-								>
+								<th key={header.id} className="font-medium" scope="col">
 									{flexRender(
 										header.column.columnDef.header,
 										header.getContext(),
@@ -105,13 +101,11 @@ export function ResourceTable({
 					{table.getRowModel().rows.map((row) => (
 						<tr
 							key={row.id}
-							className="border-t border-white/10 hover:bg-white/3"
+							className="cursor-pointer border-t border-white/10 hover:bg-white/3 focus-visible:outline-2 focus-visible:outline-violet-400"
+							onClick={() => onView(row.original)}
 						>
 							{row.getVisibleCells().map((cell) => (
-								<td
-									key={cell.id}
-									className="max-w-sm px-4 py-3 whitespace-normal"
-								>
+								<td key={cell.id} className="max-w-sm whitespace-normal">
 									{flexRender(cell.column.columnDef.cell, cell.getContext())}
 								</td>
 							))}

@@ -1,16 +1,10 @@
-import { imageUrl } from "@oliumbi/assets/urls";
+import { publicImageUrl } from "@oliumbi/assets/urls";
 import type { Page, ResourceRecord } from "@oliumbi/contracts";
 import { createContentRepository } from "@oliumbi/zelglihof-data";
 import type { Product, Update } from "@oliumbi/zelglihof-data/content.types";
 import { database } from "../server/database.server";
 
-const assetUrl = (id: unknown) =>
-	id
-		? imageUrl(
-				process.env.ASSETS_PUBLIC_URL ?? "http://localhost:8083",
-				String(id),
-			)
-		: "";
+const assetUrl = (id: unknown) => (id ? publicImageUrl(String(id)) : "");
 function product(
 	record: ResourceRecord,
 	children: ResourceRecord[] = [],

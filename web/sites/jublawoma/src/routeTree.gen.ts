@@ -11,15 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as DonationsRouteImport } from './routes/donations'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as LegalRouteImport } from './routes/legal'
 import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as DonationsIndexRouteImport } from './routes/donations/index'
-import { Route as DonationsDonationIdRouteImport } from './routes/donations/$donationId'
-import { Route as EventsEventIdRouteImport } from './routes/events/$eventId'
-import { Route as StoriesIndexRouteImport } from './routes/stories/index'
-import { Route as StoriesSlugRouteImport } from './routes/stories/$slug'
+import { Route as StoriesIndexRouteImport } from './routes/stories.index'
+import { Route as StoriesSlugRouteImport } from './routes/stories.$slug'
+import { Route as ApiAssetsIdRouteImport } from './routes/api/assets/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,6 +28,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DonationsRoute = DonationsRouteImport.update({
+  id: '/donations',
+  path: '/donations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventsRoute = EventsRouteImport.update({
@@ -51,21 +55,6 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DonationsIndexRoute = DonationsIndexRouteImport.update({
-  id: '/donations/',
-  path: '/donations/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DonationsDonationIdRoute = DonationsDonationIdRouteImport.update({
-  id: '/donations/$donationId',
-  path: '/donations/$donationId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EventsEventIdRoute = EventsEventIdRouteImport.update({
-  id: '/$eventId',
-  path: '/$eventId',
-  getParentRoute: () => EventsRoute,
-} as any)
 const StoriesIndexRoute = StoriesIndexRouteImport.update({
   id: '/stories/',
   path: '/stories/',
@@ -76,100 +65,99 @@ const StoriesSlugRoute = StoriesSlugRouteImport.update({
   path: '/stories/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAssetsIdRoute = ApiAssetsIdRouteImport.update({
+  id: '/api/assets/$id',
+  path: '/api/assets/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/events': typeof EventsRouteWithChildren
+  '/donations': typeof DonationsRoute
+  '/events': typeof EventsRoute
   '/join': typeof JoinRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
-  '/donations/$donationId': typeof DonationsDonationIdRoute
-  '/events/$eventId': typeof EventsEventIdRoute
   '/stories/$slug': typeof StoriesSlugRoute
-  '/donations/': typeof DonationsIndexRoute
   '/stories/': typeof StoriesIndexRoute
+  '/api/assets/$id': typeof ApiAssetsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/events': typeof EventsRouteWithChildren
+  '/donations': typeof DonationsRoute
+  '/events': typeof EventsRoute
   '/join': typeof JoinRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
-  '/donations/$donationId': typeof DonationsDonationIdRoute
-  '/events/$eventId': typeof EventsEventIdRoute
   '/stories/$slug': typeof StoriesSlugRoute
-  '/donations': typeof DonationsIndexRoute
   '/stories': typeof StoriesIndexRoute
+  '/api/assets/$id': typeof ApiAssetsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/events': typeof EventsRouteWithChildren
+  '/donations': typeof DonationsRoute
+  '/events': typeof EventsRoute
   '/join': typeof JoinRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
-  '/donations/$donationId': typeof DonationsDonationIdRoute
-  '/events/$eventId': typeof EventsEventIdRoute
   '/stories/$slug': typeof StoriesSlugRoute
-  '/donations/': typeof DonationsIndexRoute
   '/stories/': typeof StoriesIndexRoute
+  '/api/assets/$id': typeof ApiAssetsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/donations'
     | '/events'
     | '/join'
     | '/legal'
     | '/privacy'
-    | '/donations/$donationId'
-    | '/events/$eventId'
     | '/stories/$slug'
-    | '/donations/'
     | '/stories/'
+    | '/api/assets/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/donations'
     | '/events'
     | '/join'
     | '/legal'
     | '/privacy'
-    | '/donations/$donationId'
-    | '/events/$eventId'
     | '/stories/$slug'
-    | '/donations'
     | '/stories'
+    | '/api/assets/$id'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/donations'
     | '/events'
     | '/join'
     | '/legal'
     | '/privacy'
-    | '/donations/$donationId'
-    | '/events/$eventId'
     | '/stories/$slug'
-    | '/donations/'
     | '/stories/'
+    | '/api/assets/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  EventsRoute: typeof EventsRouteWithChildren
+  DonationsRoute: typeof DonationsRoute
+  EventsRoute: typeof EventsRoute
   JoinRoute: typeof JoinRoute
   LegalRoute: typeof LegalRoute
   PrivacyRoute: typeof PrivacyRoute
-  DonationsDonationIdRoute: typeof DonationsDonationIdRoute
   StoriesSlugRoute: typeof StoriesSlugRoute
-  DonationsIndexRoute: typeof DonationsIndexRoute
   StoriesIndexRoute: typeof StoriesIndexRoute
+  ApiAssetsIdRoute: typeof ApiAssetsIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -186,6 +174,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/donations': {
+      id: '/donations'
+      path: '/donations'
+      fullPath: '/donations'
+      preLoaderRoute: typeof DonationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events': {
@@ -216,27 +211,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/donations/': {
-      id: '/donations/'
-      path: '/donations'
-      fullPath: '/donations/'
-      preLoaderRoute: typeof DonationsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/donations/$donationId': {
-      id: '/donations/$donationId'
-      path: '/donations/$donationId'
-      fullPath: '/donations/$donationId'
-      preLoaderRoute: typeof DonationsDonationIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/events/$eventId': {
-      id: '/events/$eventId'
-      path: '/$eventId'
-      fullPath: '/events/$eventId'
-      preLoaderRoute: typeof EventsEventIdRouteImport
-      parentRoute: typeof EventsRoute
-    }
     '/stories/': {
       id: '/stories/'
       path: '/stories'
@@ -251,31 +225,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StoriesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/assets/$id': {
+      id: '/api/assets/$id'
+      path: '/api/assets/$id'
+      fullPath: '/api/assets/$id'
+      preLoaderRoute: typeof ApiAssetsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
-
-interface EventsRouteChildren {
-  EventsEventIdRoute: typeof EventsEventIdRoute
-}
-
-const EventsRouteChildren: EventsRouteChildren = {
-  EventsEventIdRoute: EventsEventIdRoute,
-}
-
-const EventsRouteWithChildren =
-  EventsRoute._addFileChildren(EventsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  EventsRoute: EventsRouteWithChildren,
+  DonationsRoute: DonationsRoute,
+  EventsRoute: EventsRoute,
   JoinRoute: JoinRoute,
   LegalRoute: LegalRoute,
   PrivacyRoute: PrivacyRoute,
-  DonationsDonationIdRoute: DonationsDonationIdRoute,
   StoriesSlugRoute: StoriesSlugRoute,
-  DonationsIndexRoute: DonationsIndexRoute,
   StoriesIndexRoute: StoriesIndexRoute,
+  ApiAssetsIdRoute: ApiAssetsIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

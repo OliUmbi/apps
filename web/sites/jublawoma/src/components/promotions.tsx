@@ -1,4 +1,4 @@
-import { imageUrl } from "@oliumbi/assets/urls";
+import { publicImageUrl } from "@oliumbi/assets/urls";
 import type { ResourceRecord } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { safeLinkHref } from "@oliumbi/ui/simple-markdown";
@@ -13,8 +13,6 @@ export function Promotions() {
 			listPublicRecords({ data: { resource: "jublawoma.promotion", page: 0 } }),
 	});
 	if (!query.data?.items.length) return null;
-	const assetBase =
-		import.meta.env.VITE_ASSETS_PUBLIC_URL ?? "http://localhost:8083";
 	return (
 		<div className="shell promotion-list">
 			{query.data?.items.map((item: ResourceRecord) => (
@@ -25,11 +23,7 @@ export function Promotions() {
 				>
 					<div className="promotion-image">
 						<AssetImage
-							src={
-								item.image_id
-									? imageUrl(assetBase, String(item.image_id))
-									: null
-							}
+							src={item.image_id ? publicImageUrl(String(item.image_id)) : null}
 							alt={String(item.title)}
 							sizes="(min-width: 850px) 38vw, 100vw"
 							className="h-full w-full object-cover"

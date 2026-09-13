@@ -20,6 +20,7 @@ import { Route as LatestIndexRouteImport } from './routes/latest/index'
 import { Route as LatestSlugRouteImport } from './routes/latest/$slug'
 import { Route as ProductsIndexRouteImport } from './routes/products/index'
 import { Route as ProductsProductIdRouteImport } from './routes/products/$productId'
+import { Route as ApiAssetsIdRouteImport } from './routes/api/assets/$id'
 import { Route as NewsletterConfirmTokenRouteImport } from './routes/newsletter/confirm/$token'
 import { Route as NewsletterUnsubscribeTokenRouteImport } from './routes/newsletter/unsubscribe/$token'
 import { Route as ApiNewsletterUnsubscribeTokenRouteImport } from './routes/api/newsletter/unsubscribe/$token'
@@ -79,6 +80,11 @@ const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
   path: '/products/$productId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAssetsIdRoute = ApiAssetsIdRouteImport.update({
+  id: '/api/assets/$id',
+  path: '/api/assets/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NewsletterConfirmTokenRoute = NewsletterConfirmTokenRouteImport.update({
   id: '/newsletter/confirm/$token',
   path: '/newsletter/confirm/$token',
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/products/$productId': typeof ProductsProductIdRoute
   '/latest/': typeof LatestIndexRoute
   '/products/': typeof ProductsIndexRoute
+  '/api/assets/$id': typeof ApiAssetsIdRoute
   '/newsletter/confirm/$token': typeof NewsletterConfirmTokenRoute
   '/newsletter/unsubscribe/$token': typeof NewsletterUnsubscribeTokenRoute
   '/api/newsletter/unsubscribe/$token': typeof ApiNewsletterUnsubscribeTokenRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/products/$productId': typeof ProductsProductIdRoute
   '/latest': typeof LatestIndexRoute
   '/products': typeof ProductsIndexRoute
+  '/api/assets/$id': typeof ApiAssetsIdRoute
   '/newsletter/confirm/$token': typeof NewsletterConfirmTokenRoute
   '/newsletter/unsubscribe/$token': typeof NewsletterUnsubscribeTokenRoute
   '/api/newsletter/unsubscribe/$token': typeof ApiNewsletterUnsubscribeTokenRoute
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/products/$productId': typeof ProductsProductIdRoute
   '/latest/': typeof LatestIndexRoute
   '/products/': typeof ProductsIndexRoute
+  '/api/assets/$id': typeof ApiAssetsIdRoute
   '/newsletter/confirm/$token': typeof NewsletterConfirmTokenRoute
   '/newsletter/unsubscribe/$token': typeof NewsletterUnsubscribeTokenRoute
   '/api/newsletter/unsubscribe/$token': typeof ApiNewsletterUnsubscribeTokenRoute
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/products/$productId'
     | '/latest/'
     | '/products/'
+    | '/api/assets/$id'
     | '/newsletter/confirm/$token'
     | '/newsletter/unsubscribe/$token'
     | '/api/newsletter/unsubscribe/$token'
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/products/$productId'
     | '/latest'
     | '/products'
+    | '/api/assets/$id'
     | '/newsletter/confirm/$token'
     | '/newsletter/unsubscribe/$token'
     | '/api/newsletter/unsubscribe/$token'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/products/$productId'
     | '/latest/'
     | '/products/'
+    | '/api/assets/$id'
     | '/newsletter/confirm/$token'
     | '/newsletter/unsubscribe/$token'
     | '/api/newsletter/unsubscribe/$token'
@@ -209,6 +221,7 @@ export interface RootRouteChildren {
   ProductsProductIdRoute: typeof ProductsProductIdRoute
   LatestIndexRoute: typeof LatestIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
+  ApiAssetsIdRoute: typeof ApiAssetsIdRoute
   NewsletterConfirmTokenRoute: typeof NewsletterConfirmTokenRoute
   NewsletterUnsubscribeTokenRoute: typeof NewsletterUnsubscribeTokenRoute
   ApiNewsletterUnsubscribeTokenRoute: typeof ApiNewsletterUnsubscribeTokenRoute
@@ -293,6 +306,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/assets/$id': {
+      id: '/api/assets/$id'
+      path: '/api/assets/$id'
+      fullPath: '/api/assets/$id'
+      preLoaderRoute: typeof ApiAssetsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/newsletter/confirm/$token': {
       id: '/newsletter/confirm/$token'
       path: '/newsletter/confirm/$token'
@@ -329,6 +349,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProductsProductIdRoute: ProductsProductIdRoute,
   LatestIndexRoute: LatestIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
+  ApiAssetsIdRoute: ApiAssetsIdRoute,
   NewsletterConfirmTokenRoute: NewsletterConfirmTokenRoute,
   NewsletterUnsubscribeTokenRoute: NewsletterUnsubscribeTokenRoute,
   ApiNewsletterUnsubscribeTokenRoute: ApiNewsletterUnsubscribeTokenRoute,

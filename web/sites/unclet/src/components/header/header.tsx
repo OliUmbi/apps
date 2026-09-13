@@ -59,8 +59,8 @@ export default function Header() {
 					</Dialog.Trigger>
 				</div>
 				<Dialog.Portal>
-					<Dialog.Backdrop className="fixed inset-0 z-50 bg-black/60" />
-					<Dialog.Popup className="fixed inset-x-4 top-4 z-60 max-h-[90vh] overflow-auto border border-bone/20 bg-night p-5 text-bone">
+					<Dialog.Backdrop className="fixed inset-0 z-50 bg-black/60 md:hidden" />
+					<Dialog.Popup className="fixed inset-y-0 right-0 z-60 w-full max-w-sm overflow-auto border-l border-bone/20 bg-night p-6 text-bone shadow-2xl md:hidden">
 						<div className="flex items-center justify-between">
 							<Dialog.Title>
 								{m.unclet_components_header_header_aria_label_2()}
@@ -70,7 +70,7 @@ export default function Header() {
 							</Dialog.Close>
 						</div>
 						<nav
-							className="border-t border-bone/10 bg-night px-4 py-6 md:hidden"
+							className="mt-4 border-t border-bone/10 bg-night px-1 py-6"
 							aria-label={m.unclet_components_header_header_aria_label_2()}
 						>
 							<div className="flex flex-col gap-1">

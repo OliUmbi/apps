@@ -121,7 +121,7 @@ export function StudioShell({
 		</>
 	);
 	return (
-		<div className="studio-app">
+		<div className={`studio-app ${administration ? "is-administration" : ""}`}>
 			<aside className="studio-sidebar hidden md:flex">{navigation}</aside>
 			<Dialog.Root open={open} onOpenChange={setOpen}>
 				<Dialog.Trigger
@@ -148,15 +148,14 @@ export function StudioShell({
 			</Dialog.Root>
 			<div className="studio-main">
 				<header className="studio-topbar">
-					<div className="breadcrumb ml-12 md:ml-0">
-						<span>
+					<div className="workspace-context ml-12 md:ml-0">
+						<small>
 							{administration
 								? m.studio_system()
 								: profile
 									? m.studio_personal_workspace()
 									: site.name}
-						</span>
-						<span>/</span>
+						</small>
 						<strong>
 							{profile
 								? m.studio_my_profile()

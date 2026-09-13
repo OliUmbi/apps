@@ -105,6 +105,7 @@ export function ResourceView({ resourceId }: { resourceId: ResourceId }) {
 		onSuccess: async () => {
 			await cache.invalidateQueries({ queryKey: key });
 			setDeleting(null);
+			closeWorkspace();
 		},
 	});
 
@@ -159,7 +160,29 @@ export function ResourceView({ resourceId }: { resourceId: ResourceId }) {
 						{resourceId === "zelglihof.subscriber" && (
 							<SubscriberActions record={detail.data} />
 						)}
+						{resource.delete ? (
+							<section className="record-danger-zone">
+								<div>
+									<strong>{m.delete_record()}</strong>
+									<p>{m.confirm_delete_description()}</p>
+								</div>
+								<Button
+									className="button danger"
+									onClick={() => setDeleting(detail.data)}
+								>
+									{m.delete_record()}
+								</Button>
+							</section>
+						) : null}
 					</>
+				) : null}
+				{deleting ? (
+					<DeleteConfirmation
+						pending={deletion.isPending}
+						error={deletion.isError}
+						onConfirm={() => deletion.mutate(deleting)}
+						onClose={() => setDeleting(null)}
+					/>
 				) : null}
 			</div>
 		);
@@ -210,7 +233,6 @@ export function ResourceView({ resourceId }: { resourceId: ResourceId }) {
 					resourceId={resourceId}
 					rows={rows}
 					onView={openRecord}
-					onDelete={setDeleting}
 				/>
 			) : !query.isError ? (
 				<p>{m.empty()}</p>
@@ -223,14 +245,6 @@ export function ResourceView({ resourceId }: { resourceId: ResourceId }) {
 				>
 					{query.isFetchingNextPage ? m.loading() : m.load_more()}
 				</Button>
-			)}
-			{deleting && (
-				<DeleteConfirmation
-					pending={deletion.isPending}
-					error={deletion.isError}
-					onConfirm={() => deletion.mutate(deleting)}
-					onClose={() => setDeleting(null)}
-				/>
 			)}
 		</div>
 	);

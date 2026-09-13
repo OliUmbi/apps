@@ -82,9 +82,16 @@ export function ResourceField({
 				? undefined
 				: field.kind;
 	const displayed = String(value ?? "");
+	const suggestionsId = field.suggestions?.length
+		? `${resourceId}-${field.name}-suggestions`
+		: undefined;
 	return (
 		<div
-			className={field.kind === "textarea" ? "editor-field-wide" : undefined}
+			className={
+				field.kind === "textarea"
+					? `editor-field-wide ${field.rows && field.rows <= 3 ? "is-compact" : ""}`
+					: undefined
+			}
 		>
 			<InputField
 				label={field.label}
@@ -94,10 +101,11 @@ export function ResourceField({
 				required={!field.nullable}
 				min={field.min}
 				max={field.max}
-				step={field.integer ? 1 : "any"}
+				step={field.integer ? 1 : field.name === "step" ? 0.5 : "any"}
+				list={suggestionsId}
 				render={
 					field.kind === "textarea" ? (
-						<textarea rows={field.name === "body" ? 18 : 6} />
+						<textarea rows={field.rows ?? (field.name === "body" ? 18 : 6)} />
 					) : undefined
 				}
 				onChange={(event) => {
@@ -111,6 +119,29 @@ export function ResourceField({
 					);
 				}}
 			/>
+			{suggestionsId ? (
+				<>
+					<datalist id={suggestionsId}>
+						{field.suggestions?.map((suggestion) => (
+							<option key={suggestion} value={suggestion} />
+						))}
+					</datalist>
+					<fieldset
+						className="field-suggestions"
+						aria-label={`${field.label} Vorschläge`}
+					>
+						{field.suggestions?.map((suggestion) => (
+							<button
+								type="button"
+								key={suggestion}
+								onClick={() => onChange(suggestion)}
+							>
+								{suggestion}
+							</button>
+						))}
+					</fieldset>
+				</>
+			) : null}
 			{field.kind === "slug" && displayed && (
 				<p className="slug-preview">
 					{m.studio_slug_preview()}: {slugPath(resourceId, displayed)}

@@ -97,8 +97,6 @@ services:
     build:
       context: ./web
       dockerfile: sites/zelglihof/Dockerfile
-      args:
-        VITE_ASSETS_PUBLIC_URL: ${ASSETS_PUBLIC_URL:-http://localhost:8083}
     environment:
       ASSETS_PUBLIC_URL: ${ASSETS_PUBLIC_URL:-http://localhost:8083}
       DATABASE_URL: postgres://${ZELGLIHOF_DATABASE_USER:-zelglihof}:${ZELGLIHOF_DATABASE_PASSWORD:-zelglihof_password}@postgres:5432/${POSTGRES_DB:-apps}
@@ -118,8 +116,6 @@ services:
     build:
       context: ./web
       dockerfile: sites/unclet/Dockerfile
-      args:
-        VITE_ASSETS_PUBLIC_URL: ${ASSETS_PUBLIC_URL:-http://localhost:8083}
     environment:
       ASSETS_PUBLIC_URL: ${ASSETS_PUBLIC_URL:-http://localhost:8083}
       DATABASE_URL: postgres://${UNCLET_DATABASE_USER:-unclet}:${UNCLET_DATABASE_PASSWORD:-unclet_password}@postgres:5432/${POSTGRES_DB:-apps}
@@ -138,8 +134,6 @@ services:
     build:
       context: ./web
       dockerfile: sites/jublawoma/Dockerfile
-      args:
-        VITE_ASSETS_PUBLIC_URL: ${ASSETS_PUBLIC_URL:-http://localhost:8083}
     ports:
       - "8001:8001"
     environment:

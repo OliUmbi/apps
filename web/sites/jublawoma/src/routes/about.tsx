@@ -1,6 +1,6 @@
 import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute } from "@tanstack/react-router";
-import { ExternalLink } from "lucide-react";
+import { PartnerOrganizations } from "../components/partner-organizations";
 import { PublicMembers } from "../components/public-members";
 export const Route = createFileRoute("/about")({ component: About });
 function About() {
@@ -34,35 +34,7 @@ function About() {
 				</div>
 			</section>
 			<PublicMembers />
-			<section className="network">
-				<div className="shell">
-					<p className="kicker light">
-						{m.jublawoma_routes_about_paragraph_5()}
-					</p>
-					<div className="network-links">
-						<a href="https://www.jubla.ch/" target="_blank" rel="noreferrer">
-							{m.jublawoma_routes_about_text_2()}
-							<ExternalLink />
-						</a>
-						<a
-							href="https://www.jublaaargau.ch/"
-							target="_blank"
-							rel="noreferrer"
-						>
-							{m.jublawoma_routes_about_text_3()}
-							<ExternalLink />
-						</a>
-						<a
-							href="https://www.jugendundsport.ch/de"
-							target="_blank"
-							rel="noreferrer"
-						>
-							{m.jublawoma_routes_about_text_4()}
-							<ExternalLink />
-						</a>
-					</div>
-				</div>
-			</section>
+			<PartnerOrganizations />
 		</>
 	);
 }

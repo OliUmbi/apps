@@ -168,7 +168,6 @@ function RelatedResource({
 							setEditing(record);
 						} else setViewing(record);
 					}}
-					onDelete={setDeleting}
 				/>
 			) : (
 				<p className="related-empty">{m.empty()}</p>
@@ -182,6 +181,17 @@ function RelatedResource({
 					{m.load_more()}
 				</Button>
 			)}
+			{(editing || viewing) && resource.delete ? (
+				<div className="record-danger-zone compact">
+					<span>{m.delete_record()}</span>
+					<Button
+						className="button danger"
+						onClick={() => setDeleting((editing ?? viewing) as ResourceRecord)}
+					>
+						{m.delete_record()}
+					</Button>
+				</div>
+			) : null}
 			{deleting && (
 				<DeleteConfirmation
 					pending={deletion.isPending}

@@ -20,6 +20,7 @@ export interface StoryRecord {
 	title: string;
 	summary: string;
 	bodyMarkdown: string;
+	author: string;
 	publishedOn: string | null;
 	media: MediaAsset[];
 }

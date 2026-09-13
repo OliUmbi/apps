@@ -118,6 +118,7 @@ export function RecordEditor({
 }
 
 function emptyValue(field: FieldDefinition) {
+	if (field.defaultValue !== undefined) return field.defaultValue;
 	if (field.kind === "checkbox") return false;
 	if (field.nullable) return null;
 	if (field.kind === "number") return field.min ?? 0;

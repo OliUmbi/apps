@@ -1,9 +1,10 @@
-import { imageUrl } from "@oliumbi/assets/urls";
+import { publicImageUrl } from "@oliumbi/assets/urls";
 import type { ResourceRecord } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { SimpleMarkdown } from "@oliumbi/ui/simple-markdown";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
+import { ShowcaseFacts } from "../../components/showcase-facts";
 import { AssetImage } from "../../components/ui/asset-image";
 import { getPublicRecord } from "../../content/public.functions";
 export const Route = createFileRoute("/showcases/$slug")({
@@ -18,16 +19,12 @@ export const Route = createFileRoute("/showcases/$slug")({
 });
 function Showcase() {
 	const { record, children } = Route.useLoaderData();
-	const image = (id: unknown) =>
-		imageUrl(
-			import.meta.env.VITE_ASSETS_PUBLIC_URL ?? "http://localhost:8083",
-			String(id),
-		);
+	const image = (id: unknown) => publicImageUrl(String(id));
 	return (
 		<article className="showcase-detail shell pb-24 pt-32 md:pb-32 md:pt-36">
 			<Link
 				to="/showcases"
-				className="mb-10 inline-flex items-center gap-2 text-sm text-bone/55 transition hover:text-brass-light"
+				className="mb-12 inline-flex min-h-11 items-center gap-3 border border-brass/45 px-5 text-sm font-semibold text-brass-light transition hover:bg-brass hover:text-night"
 			>
 				<ArrowLeft size={17} aria-hidden="true" />
 				{m.unclet_showcase_back()}
@@ -61,13 +58,11 @@ function Showcase() {
 					) : null}
 				</div>
 				<aside className="showcase-copy lg:sticky lg:top-28 lg:self-start">
-					<p className="eyebrow text-brass">
-						{record.location} · {record.guest_count}
-						{m.unclet_routes_showcases_slug_paragraph()}
-					</p>
+					<p className="eyebrow text-brass">{m.unclet_showcase_event()}</p>
 					<h1 className="display-title mt-7 text-5xl md:text-6xl xl:text-7xl">
 						{record.title}
 					</h1>
+					<ShowcaseFacts record={record} />
 					<div className="rule my-8" />
 					<SimpleMarkdown
 						value={String(record.body ?? "")}

@@ -19,6 +19,7 @@ import { Route as ServicesRouteImport } from './routes/services'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ShowcasesIndexRouteImport } from './routes/showcases/index'
 import { Route as ShowcasesSlugRouteImport } from './routes/showcases/$slug'
+import { Route as ApiAssetsIdRouteImport } from './routes/api/assets/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -70,6 +71,11 @@ const ShowcasesSlugRoute = ShowcasesSlugRouteImport.update({
   path: '/showcases/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAssetsIdRoute = ApiAssetsIdRouteImport.update({
+  id: '/api/assets/$id',
+  path: '/api/assets/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/showcases/$slug': typeof ShowcasesSlugRoute
   '/showcases/': typeof ShowcasesIndexRoute
+  '/api/assets/$id': typeof ApiAssetsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/showcases/$slug': typeof ShowcasesSlugRoute
   '/showcases': typeof ShowcasesIndexRoute
+  '/api/assets/$id': typeof ApiAssetsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/showcases/$slug': typeof ShowcasesSlugRoute
   '/showcases/': typeof ShowcasesIndexRoute
+  '/api/assets/$id': typeof ApiAssetsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/showcases/$slug'
     | '/showcases/'
+    | '/api/assets/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/showcases/$slug'
     | '/showcases'
+    | '/api/assets/$id'
   id:
     | '__root__'
     | '/'
@@ -145,6 +156,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/showcases/$slug'
     | '/showcases/'
+    | '/api/assets/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,6 +170,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   ShowcasesSlugRoute: typeof ShowcasesSlugRoute
   ShowcasesIndexRoute: typeof ShowcasesIndexRoute
+  ApiAssetsIdRoute: typeof ApiAssetsIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -232,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShowcasesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/assets/$id': {
+      id: '/api/assets/$id'
+      path: '/api/assets/$id'
+      fullPath: '/api/assets/$id'
+      preLoaderRoute: typeof ApiAssetsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -246,6 +266,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   ShowcasesSlugRoute: ShowcasesSlugRoute,
   ShowcasesIndexRoute: ShowcasesIndexRoute,
+  ApiAssetsIdRoute: ApiAssetsIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
