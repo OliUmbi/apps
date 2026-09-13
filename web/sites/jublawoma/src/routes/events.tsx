@@ -1,12 +1,12 @@
 import type { Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import type { EventRecord } from "@oliumbi/jublawoma-data/content.types";
+import type { EventRecord } from "@oliumbi/jublawoma-data/public.types";
 import { createFileRoute } from "@tanstack/react-router";
 import { CalendarDays, Download, MapPin } from "lucide-react";
-import { ContentImage } from "../components/content-image";
-import { PaginatedList } from "../components/ui/paginated-list";
-import { dateLabel } from "../content";
-import { getEventPage } from "../content/content.functions";
+import { MediaImage } from "../components/media-image";
+import { PaginatedList } from "../components/paginated-list";
+import { dateLabel } from "../data/dates";
+import { getEventPage } from "../data/events";
 
 export const Route = createFileRoute("/events")({
 	loader: () =>
@@ -52,7 +52,7 @@ function Events() {
 								<div className="event-number">
 									{String(index + 1).padStart(2, "0")}
 								</div>
-								<ContentImage
+								<MediaImage
 									src={event.media[0]?.storageKey}
 									alt={event.media[0]?.altText || event.title}
 									seed={event.id}

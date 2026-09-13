@@ -10,24 +10,18 @@ import {
 	UserRound,
 } from "lucide-react";
 import {
+	passwordSchema,
+	permissionSchema,
+	updateAccountSchema,
+} from "../model/accounts";
+import {
 	changePassword,
 	getAccount,
 	setPermission,
 	updateAccount,
 } from "../server/accounts.functions";
-import {
-	passwordSchema,
-	permissionSchema,
-	updateAccountSchema,
-} from "../studio/account.schema";
-import {
-	Button,
-	Checkbox,
-	Field,
-	Form,
-	FormFeedback,
-	InputField,
-} from "./ui/index";
+import { FormFeedback } from "./form-feedback";
+import { InputField } from "./input-field";
 
 export function AccountEditor({
 	account,
@@ -237,3 +231,8 @@ function permissionLabel(value: string) {
 	const site = value.split(".")[0] ?? value;
 	return `${site.charAt(0).toUpperCase()}${site.slice(1)}`;
 }
+
+import { Button } from "@base-ui/react/button";
+import { Checkbox } from "@base-ui/react/checkbox";
+import { Field } from "@base-ui/react/field";
+import { Form } from "@base-ui/react/form";

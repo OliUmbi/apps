@@ -1,8 +1,8 @@
 import { m } from "@oliumbi/i18n/messages";
-import type { EventRecord } from "@oliumbi/jublawoma-data/content.types";
+import type { EventRecord } from "@oliumbi/jublawoma-data/public.types";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, CalendarDays, MapPin } from "lucide-react";
-import { dateLabel } from "../../content";
+import { dateLabel } from "../../data/dates";
 
 export function NextEvent({ event }: { event: EventRecord }) {
 	return (

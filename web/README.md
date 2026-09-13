@@ -26,6 +26,26 @@ The generic database package contains no site table names. Studio selects a repo
 
 Visual components stay under each site's `src/components`. Studio owns its editor, record details, tables, selectors and dialogs. Base UI supplies interactive primitives, Tailwind supplies styling, and TanStack Query handles paginated reads and mutations. Adding a site feature does not require changing another site's UI.
 
+## Source layout
+
+Every public site uses the same small set of source directories:
+
+```text
+src/
+  components/  visual components named for what they render
+  data/        feature-specific reads, mutations and server functions
+  routes/      TanStack route definitions only
+  server/      runtime infrastructure such as database setup
+  fonts.css
+  styles.css
+```
+
+Studio follows the same layout and adds `model/` for resource schemas, labels and site configuration. It does not nest another `studio/` directory inside the Studio app.
+
+Components stay flat until a page has several meaningful sections; those sections may share a page-named folder, as Jublawoma's `components/home` does. Avoid generic buckets such as `ui`, `content` and `pages`, one-file component directories, and barrel files that hide the real dependency. Empty directories are not kept.
+
+Package modules use descriptive feature and role names. Related files use `<feature>.<role>.ts` (for example `newsletter.server.ts` or `donation.reader.ts`), while each site's public record adapter is named `public.repository.ts` and its corresponding shared shape is `public.types.ts`.
+
 ## Implemented application workflows
 
 - Jublawoma: upcoming events, stories and galleries, members, active promotions, donation needs and commitments. Studio manages their source records and reads commitment snapshots.

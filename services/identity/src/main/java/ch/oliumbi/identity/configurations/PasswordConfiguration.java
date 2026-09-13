@@ -11,4 +11,8 @@ public class PasswordConfiguration {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
     }
+
+    static void main() {
+        System.out.println(new BCryptPasswordEncoder().encode("root"));
+    }
 }

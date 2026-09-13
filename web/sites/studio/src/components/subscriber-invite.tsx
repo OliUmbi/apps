@@ -3,7 +3,8 @@ import { m } from "@oliumbi/i18n/messages";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { requestSubscriberConfirmation } from "../server/newsletter.functions";
-import { Button, Form, FormFeedback, InputField } from "./ui/index";
+import { FormFeedback } from "./form-feedback";
+import { InputField } from "./input-field";
 
 export function SubscriberInvite() {
 	const request = useServerFn(requestSubscriberConfirmation);
@@ -47,3 +48,6 @@ export function SubscriberInvite() {
 		</Form>
 	);
 }
+
+import { Button } from "@base-ui/react/button";
+import { Form } from "@base-ui/react/form";

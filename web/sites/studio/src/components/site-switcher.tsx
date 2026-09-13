@@ -1,6 +1,5 @@
 import { Check, ChevronsUpDown } from "lucide-react";
-import type { SiteId, StudioSite } from "../studio/config";
-import { Menu } from "./ui/index";
+import type { SiteId, StudioSite } from "../model/sites";
 export function SiteSwitcher({
 	site,
 	sites,
@@ -39,3 +38,5 @@ export function SiteSwitcher({
 		</Menu.Root>
 	);
 }
+
+import { Menu } from "@base-ui/react/menu";

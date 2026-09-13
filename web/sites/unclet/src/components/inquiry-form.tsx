@@ -1,8 +1,8 @@
 import { m } from "@oliumbi/i18n/messages";
 import { inquirySchema } from "@oliumbi/unclet-data/contracts";
 import { useServerFn } from "@tanstack/react-start";
-import { sendInquiry } from "../inquiry/inquiry.functions";
-import { SubmissionForm } from "./ui/submission-form";
+import { sendInquiry } from "../data/inquiries";
+import { SubmissionForm } from "./submission-form";
 export function InquiryForm() {
 	const submit = useServerFn(sendInquiry);
 	return (

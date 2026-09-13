@@ -7,10 +7,9 @@ import {
 	useReactTable,
 } from "@tanstack/react-table";
 import { ArrowRight } from "lucide-react";
-import { displayRecordValue } from "../studio/record-display";
-import { getResource, type ResourceId } from "../studio/resources";
+import { displayRecordValue } from "../model/record-display";
+import { getResource, type ResourceId } from "../model/resources";
 import { CampaignSend } from "./campaign-send";
-import { Button } from "./ui/index";
 export function ResourceTable({
 	resourceId,
 	rows,
@@ -116,3 +115,5 @@ export function ResourceTable({
 		</div>
 	);
 }
+
+import { Button } from "@base-ui/react/button";

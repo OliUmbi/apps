@@ -3,16 +3,17 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, ArrowUpRight, Plus, UserRound } from "lucide-react";
 import { useState } from "react";
+import { newAccountSchema } from "../model/accounts";
 import { Route } from "../routes/index";
 import {
 	createAccount,
 	deleteAccount,
 	listAccounts,
 } from "../server/accounts.functions";
-import { newAccountSchema } from "../studio/account.schema";
 import { AccountEditor } from "./account-editor";
 import { DeleteConfirmation } from "./delete-confirmation";
-import { Button, Form, FormFeedback, InputField } from "./ui/index";
+import { FormFeedback } from "./form-feedback";
+import { InputField } from "./input-field";
 
 export function AccountsView() {
 	const [deleting, setDeleting] = useState<string | null>(null);
@@ -170,3 +171,6 @@ export function AccountsView() {
 		</div>
 	);
 }
+
+import { Button } from "@base-ui/react/button";
+import { Form } from "@base-ui/react/form";

@@ -1,5 +1,5 @@
 import { m } from "@oliumbi/i18n/messages";
-import { AlertDialog, Button, FormFeedback } from "./ui/index";
+import { FormFeedback } from "./form-feedback";
 export function DeleteConfirmation({
 	pending,
 	error,
@@ -45,3 +45,6 @@ export function DeleteConfirmation({
 		</AlertDialog.Root>
 	);
 }
+
+import { AlertDialog } from "@base-ui/react/alert-dialog";
+import { Button } from "@base-ui/react/button";

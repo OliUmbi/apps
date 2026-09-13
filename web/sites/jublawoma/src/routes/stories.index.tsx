@@ -1,11 +1,11 @@
 import type { Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import type { StoryRecord } from "@oliumbi/jublawoma-data/content.types";
+import type { StoryRecord } from "@oliumbi/jublawoma-data/public.types";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Camera } from "lucide-react";
-import { ContentImage } from "../components/content-image";
-import { PaginatedList } from "../components/ui/paginated-list";
-import { getStoryPage } from "../content/content.functions";
+import { MediaImage } from "../components/media-image";
+import { PaginatedList } from "../components/paginated-list";
+import { getStoryPage } from "../data/stories";
 export const Route = createFileRoute("/stories/")({
 	loader: () =>
 		getStoryPage({ data: { page: 0 } }) as Promise<Page<StoryRecord>>,
@@ -55,7 +55,7 @@ function Stories() {
 									key={story.id}
 								>
 									<article>
-										<ContentImage
+										<MediaImage
 											src={story.media[0]?.storageKey}
 											alt={story.media[0]?.altText || story.title}
 											seed={story.id}

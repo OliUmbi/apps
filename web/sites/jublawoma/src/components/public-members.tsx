@@ -1,10 +1,10 @@
+import { Button } from "@base-ui/react/button";
 import { publicImageUrl } from "@oliumbi/assets/urls";
 import type { ResourceRecord } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { listPublicRecords } from "../content/public.functions";
-import { AssetImage } from "./ui/asset-image";
-import { Button } from "./ui/index";
+import { listPublicRecords } from "../data/public-records";
+import { AssetImage } from "./asset-image";
 
 export function PublicMembers() {
 	const query = useInfiniteQuery({

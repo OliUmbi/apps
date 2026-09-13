@@ -5,10 +5,10 @@ import {
 } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { useState } from "react";
-import { isEditorialResource } from "../studio/hierarchy";
-import { getResource, type ResourceId } from "../studio/resources";
+import { isEditorialResource } from "../model/resource-relations";
+import { getResource, type ResourceId } from "../model/resources";
+import { FormFeedback } from "./form-feedback";
 import { ResourceField } from "./resource-field";
-import { Button, Form, FormFeedback } from "./ui/index";
 
 export function RecordEditor({
 	resourceId,
@@ -139,3 +139,6 @@ function slugify(value: string): string {
 		.replace(/^-+|-+$/g, "")
 		.slice(0, 120);
 }
+
+import { Button } from "@base-ui/react/button";
+import { Form } from "@base-ui/react/form";

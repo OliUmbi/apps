@@ -1,8 +1,7 @@
 import type { ResourceRecord } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import { displayRecordValue } from "../studio/record-display";
-import { getResource, type ResourceId } from "../studio/resources";
-import { Button } from "./ui/index";
+import { displayRecordValue } from "../model/record-display";
+import { getResource, type ResourceId } from "../model/resources";
 
 export function RecordDetail({
 	resourceId,
@@ -43,3 +42,5 @@ export function RecordDetail({
 		</section>
 	);
 }
+
+import { Button } from "@base-ui/react/button";

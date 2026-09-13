@@ -18,7 +18,7 @@ import { Route as LegalRouteImport } from './routes/legal'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as StoriesIndexRouteImport } from './routes/stories.index'
 import { Route as StoriesSlugRouteImport } from './routes/stories.$slug'
-import { Route as ApiAssetsIdRouteImport } from './routes/api/assets/$id'
+import { Route as ApiAssetsIdRouteImport } from './routes/api.assets.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',

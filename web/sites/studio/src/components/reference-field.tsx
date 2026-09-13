@@ -13,10 +13,10 @@ import {
 	useQueryClient,
 } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { type ResourceId, resourceIds } from "../model/resources";
 import { listAssets, uploadAsset } from "../server/assets.functions";
 import { listRecords } from "../server/resources.functions";
-import { type ResourceId, resourceIds } from "../studio/resources";
-import { Button, Field, FormFeedback, Select } from "./ui/index";
+import { FormFeedback } from "./form-feedback";
 
 export function ReferenceField({
 	field,
@@ -163,3 +163,7 @@ export function ReferenceField({
 		</Field.Root>
 	);
 }
+
+import { Button } from "@base-ui/react/button";
+import { Field } from "@base-ui/react/field";
+import { Select } from "@base-ui/react/select";

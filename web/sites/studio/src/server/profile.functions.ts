@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { profilePasswordSchema, profileSchema } from "../studio/profile.schema";
+import { profilePasswordSchema, profileSchema } from "../model/profile";
 import { requireAuthenticatedActor } from "./auth.server";
 import { identity } from "./identity.server";
 

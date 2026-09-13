@@ -6,7 +6,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { getMessage, listMessages } from "../server/messages.functions";
-import { Button, FormFeedback } from "./ui/index";
+import { FormFeedback } from "./form-feedback";
 
 function MessageDetail({ id, onClose }: { id: string; onClose: () => void }) {
 	const get = useServerFn(getMessage);
@@ -162,3 +162,5 @@ function formatDate(value: string): string {
 		timeStyle: "short",
 	}).format(new Date(value));
 }
+
+import { Button } from "@base-ui/react/button";

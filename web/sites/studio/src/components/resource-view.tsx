@@ -9,6 +9,8 @@ import {
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, Plus } from "lucide-react";
 import { useState } from "react";
+import { relationsFor } from "../model/resource-relations";
+import { getResource, type ResourceId } from "../model/resources";
 import { Route } from "../routes/index";
 import {
 	createRecord,
@@ -17,16 +19,15 @@ import {
 	listRecords,
 	updateRecord,
 } from "../server/resources.functions";
-import { relationsFor } from "../studio/hierarchy";
-import { getResource, type ResourceId } from "../studio/resources";
 import { DeleteConfirmation } from "./delete-confirmation";
+import { FormFeedback } from "./form-feedback";
+import { InputField } from "./input-field";
 import { RecordDetail } from "./record-detail";
 import { RecordEditor } from "./record-editor";
 import { RelatedResources } from "./related-resources";
 import { ResourceTable } from "./resource-table";
 import { SubscriberActions } from "./subscriber-actions";
 import { SubscriberInvite } from "./subscriber-invite";
-import { Button, FormFeedback, InputField } from "./ui/index";
 
 export function ResourceView({ resourceId }: { resourceId: ResourceId }) {
 	const resource = getResource(resourceId);
@@ -258,3 +259,5 @@ function WorkspaceBack({ onClick }: { onClick: () => void }) {
 		</Button>
 	);
 }
+
+import { Button } from "@base-ui/react/button";

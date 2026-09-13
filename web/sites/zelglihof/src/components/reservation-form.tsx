@@ -1,9 +1,9 @@
 import { m } from "@oliumbi/i18n/messages";
-import type { Product } from "@oliumbi/zelglihof-data/content.types";
 import { reservationSchema } from "@oliumbi/zelglihof-data/contracts";
+import type { Product } from "@oliumbi/zelglihof-data/public.types";
 import { useServerFn } from "@tanstack/react-start";
-import { createReservation } from "../shop/reservation.functions";
-import { SubmissionForm } from "./ui/submission-form";
+import { createReservation } from "../data/reservations";
+import { SubmissionForm } from "./submission-form";
 export function ReservationForm({ product }: { product: Product }) {
 	const submit = useServerFn(createReservation);
 	if (

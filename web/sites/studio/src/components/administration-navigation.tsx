@@ -1,6 +1,5 @@
 import { m } from "@oliumbi/i18n/messages";
 import { ArrowLeft, Mail, Users } from "lucide-react";
-import { Button } from "./ui/index";
 
 const administrationSections = [
 	{ id: "accounts", label: m.studio_accounts, icon: Users },
@@ -44,3 +43,5 @@ export function AdministrationNavigation({
 		</>
 	);
 }
+
+import { Button } from "@base-ui/react/button";

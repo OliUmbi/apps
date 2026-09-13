@@ -1,8 +1,8 @@
 import { siteIds } from "@oliumbi/contracts";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import { Dashboard } from "../components/dashboard";
-import { Login } from "../components/login";
+import { DashboardView } from "../components/dashboard-view";
+import { LoginView } from "../components/login-view";
 import { getSession } from "../server/resources.functions";
 export const Route = createFileRoute("/")({
 	validateSearch: z.object({
@@ -17,5 +17,5 @@ export const Route = createFileRoute("/")({
 });
 function Studio() {
 	const actor = Route.useLoaderData();
-	return actor ? <Dashboard actor={actor} /> : <Login />;
+	return actor ? <DashboardView actor={actor} /> : <LoginView />;
 }

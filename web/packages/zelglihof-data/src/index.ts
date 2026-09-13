@@ -1,2 +1,2 @@
-export { createContentRepository } from "./content.repository";
+export { createPublicRepository } from "./public.repository";
 export { createResourceRepository } from "./resource.repository";

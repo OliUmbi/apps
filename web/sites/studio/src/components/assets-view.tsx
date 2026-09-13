@@ -14,7 +14,8 @@ import {
 	uploadAsset,
 } from "../server/assets.functions";
 import { DeleteConfirmation } from "./delete-confirmation";
-import { Button, Form, FormFeedback, InputField } from "./ui/index";
+import { FormFeedback } from "./form-feedback";
+import { InputField } from "./input-field";
 export function AssetsView({
 	site,
 	kind,
@@ -190,3 +191,6 @@ export function AssetsView({
 		</div>
 	);
 }
+
+import { Button } from "@base-ui/react/button";
+import { Form } from "@base-ui/react/form";

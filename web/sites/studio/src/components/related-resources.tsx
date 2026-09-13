@@ -8,19 +8,19 @@ import {
 import { useServerFn } from "@tanstack/react-start";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import type { ResourceRelation } from "../model/resource-relations";
+import { getResource } from "../model/resources";
 import {
 	createRecord,
 	deleteRecord,
 	listRelatedRecords,
 	updateRecord,
 } from "../server/resources.functions";
-import type { ResourceRelation } from "../studio/hierarchy";
-import { getResource } from "../studio/resources";
 import { DeleteConfirmation } from "./delete-confirmation";
+import { FormFeedback } from "./form-feedback";
 import { RecordDetail } from "./record-detail";
 import { RecordEditor } from "./record-editor";
 import { ResourceTable } from "./resource-table";
-import { Button, FormFeedback } from "./ui/index";
 
 export function RelatedResources({
 	parentId,
@@ -207,3 +207,5 @@ function RelatedResource({
 function recordKey(record: ResourceRecord): string {
 	return String(record.id);
 }
+
+import { Button } from "@base-ui/react/button";

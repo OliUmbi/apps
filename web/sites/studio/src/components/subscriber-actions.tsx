@@ -8,7 +8,8 @@ import {
 	requestSubscriberConfirmation,
 	unsubscribeSubscriber,
 } from "../server/newsletter.functions";
-import { Button, Form, FormFeedback, InputField } from "./ui";
+import { FormFeedback } from "./form-feedback";
+import { InputField } from "./input-field";
 
 export function SubscriberActions({ record }: { record: ResourceRecord }) {
 	const cache = useQueryClient();
@@ -99,3 +100,6 @@ export function SubscriberActions({ record }: { record: ResourceRecord }) {
 		</section>
 	);
 }
+
+import { Button } from "@base-ui/react/button";
+import { Form } from "@base-ui/react/form";

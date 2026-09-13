@@ -6,7 +6,6 @@ import { de } from "date-fns/locale";
 import { CalendarDays } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
-import { Field } from "./ui/index";
 
 export function DateField({
 	field,
@@ -90,3 +89,5 @@ export function DateField({
 		</Field.Root>
 	);
 }
+
+import { Field } from "@base-ui/react/field";

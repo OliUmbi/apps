@@ -1,18 +1,19 @@
 import type { Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import type { Product, Update } from "@oliumbi/zelglihof-data/content.types";
+import type { Product, Update } from "@oliumbi/zelglihof-data/public.types";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowDown, ArrowRight, Egg, Sprout, Wheat } from "lucide-react";
+import { AssetImage } from "../components/asset-image";
 import { NewsletterSignup } from "../components/newsletter-signup";
 import { Promotions } from "../components/promotions";
-import { AssetImage } from "../components/ui/asset-image";
-import { getArticlePage, getProductPage } from "../content/catalog.functions";
+import { getProductPage } from "../data/products";
+import { getUpdatePage } from "../data/updates";
 
 export const Route = createFileRoute("/")({
 	loader: async () => {
 		const [products, updates] = await Promise.all([
 			getProductPage({ data: { page: 0 } }) as Promise<Page<Product>>,
-			getArticlePage({ data: { page: 0 } }) as Promise<Page<Update>>,
+			getUpdatePage({ data: { page: 0 } }) as Promise<Page<Update>>,
 		]);
 		return { products: products.items, updates: updates.items };
 	},

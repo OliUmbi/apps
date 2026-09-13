@@ -8,8 +8,8 @@ import { useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { CalendarDays, HeartHandshake, Phone } from "lucide-react";
 import { useState } from "react";
-import { submitCommitment } from "../content/donation.functions";
-import { SubmissionForm } from "./ui/submission-form";
+import { submitCommitment } from "../data/donations";
+import { SubmissionForm } from "./submission-form";
 
 export function DonationCampaign({
 	record,

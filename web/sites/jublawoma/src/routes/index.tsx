@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { HomeHero } from "../components/home/home-hero";
+import { Hero } from "../components/home/hero";
 import { JoinSection } from "../components/home/join-section";
 import { NextEvent } from "../components/home/next-event";
+import { Promotions } from "../components/home/promotions";
 import { TeamSection } from "../components/home/team-section";
 import { ValuesSection } from "../components/home/values-section";
-import { Promotions } from "../components/promotions";
-import { getNextEvent } from "../content/content.functions";
+import { getNextEvent } from "../data/events";
 
 export const Route = createFileRoute("/")({
 	loader: () => getNextEvent(),
@@ -16,7 +16,7 @@ function Home() {
 	const nextEvent = Route.useLoaderData();
 	return (
 		<>
-			<HomeHero />
+			<Hero />
 			<Promotions />
 			{nextEvent ? <NextEvent event={nextEvent} /> : null}
 			<ValuesSection />

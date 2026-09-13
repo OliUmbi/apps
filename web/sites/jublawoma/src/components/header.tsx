@@ -1,8 +1,8 @@
+import { Dialog } from "@base-ui/react/dialog";
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import { Dialog } from "./ui/index";
 
 const links = [
 	{ to: "/donations", label: m.jublawoma_components_header_label() },

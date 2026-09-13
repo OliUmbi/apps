@@ -5,10 +5,10 @@ import {
 } from "@oliumbi/contracts";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { resourceIds } from "../studio/resources";
+import { resourceIds } from "../model/resources";
 import { currentActor, requireActor } from "./auth.server";
 import { database } from "./database.server";
-import { createResourceService } from "./resource.service";
+import { createResourceService } from "./resources.service";
 
 const identity = z.object({ resource: z.enum(resourceIds) });
 const record = z.record(

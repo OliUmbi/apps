@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { sendCampaign } from "../server/newsletter.functions";
-import { AlertDialog, Button, FormFeedback } from "./ui";
+import { FormFeedback } from "./form-feedback";
 export function CampaignSend({ id }: { id: string }) {
 	const [open, setOpen] = useState(false);
 	const send = useServerFn(sendCampaign);
@@ -59,3 +59,6 @@ export function CampaignSend({ id }: { id: string }) {
 		</AlertDialog.Root>
 	);
 }
+
+import { AlertDialog } from "@base-ui/react/alert-dialog";
+import { Button } from "@base-ui/react/button";

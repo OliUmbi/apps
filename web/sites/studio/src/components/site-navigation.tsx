@@ -6,8 +6,7 @@ import {
 	ShoppingBasket,
 	Users,
 } from "lucide-react";
-import type { StudioSite } from "../studio/config";
-import { Button } from "./ui/index";
+import type { StudioSite } from "../model/sites";
 export function SiteNavigation({
 	site,
 	section,
@@ -50,3 +49,5 @@ function NavigationIcon({
 	}[icon];
 	return <Icon size={15} strokeWidth={1.7} aria-hidden="true" />;
 }
+
+import { Button } from "@base-ui/react/button";

@@ -2,13 +2,14 @@ import { m } from "@oliumbi/i18n/messages";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { KeyRound, UserRound } from "lucide-react";
+import { profilePasswordSchema, profileSchema } from "../model/profile";
 import {
 	changeProfilePassword,
 	getProfile,
 	updateProfile,
 } from "../server/profile.functions";
-import { profilePasswordSchema, profileSchema } from "../studio/profile.schema";
-import { Button, Form, FormFeedback, InputField } from "./ui/index";
+import { FormFeedback } from "./form-feedback";
+import { InputField } from "./input-field";
 
 export function ProfileView() {
 	const cache = useQueryClient();
@@ -135,3 +136,6 @@ export function ProfileView() {
 		</div>
 	);
 }
+
+import { Button } from "@base-ui/react/button";
+import { Form } from "@base-ui/react/form";

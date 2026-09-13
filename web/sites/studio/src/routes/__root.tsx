@@ -1,5 +1,6 @@
 import { m } from "@oliumbi/i18n/messages";
 import { getLocale } from "@oliumbi/i18n/runtime";
+import { QueryProvider } from "@oliumbi/query";
 import {
 	createRootRoute,
 	HeadContent,
@@ -8,7 +9,6 @@ import {
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { NotFound } from "../components/not-found";
-import { QueryProvider } from "../components/ui/index";
 import "../styles.css";
 
 export const Route = createRootRoute({

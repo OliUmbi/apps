@@ -17,9 +17,9 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ReviewRouteImport } from './routes/review'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as TermsRouteImport } from './routes/terms'
-import { Route as ShowcasesIndexRouteImport } from './routes/showcases/index'
-import { Route as ShowcasesSlugRouteImport } from './routes/showcases/$slug'
-import { Route as ApiAssetsIdRouteImport } from './routes/api/assets/$id'
+import { Route as ShowcasesIndexRouteImport } from './routes/showcases.index'
+import { Route as ShowcasesSlugRouteImport } from './routes/showcases.$slug'
+import { Route as ApiAssetsIdRouteImport } from './routes/api.assets.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',

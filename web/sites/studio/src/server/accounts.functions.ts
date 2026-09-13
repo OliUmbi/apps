@@ -6,7 +6,7 @@ import {
 	passwordSchema,
 	permissionSchema,
 	updateAccountSchema,
-} from "../studio/account.schema";
+} from "../model/accounts";
 import { requireActor } from "./auth.server";
 import { identity } from "./identity.server";
 

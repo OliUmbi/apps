@@ -2,9 +2,8 @@ import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { PageHero } from "../components/page-hero";
-import { SubmissionForm } from "../components/ui/submission-form";
-import { sendReview } from "../review/review.functions";
-import { reviewSchema } from "../review/review.schema";
+import { SubmissionForm } from "../components/submission-form";
+import { reviewSchema, sendReview } from "../data/reviews";
 
 export const Route = createFileRoute("/review")({
 	head: () => ({ meta: [{ title: m.unclet_review_page_title() }] }),

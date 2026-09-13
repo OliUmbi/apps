@@ -1,8 +1,8 @@
-import type { StoryRecord } from "@oliumbi/jublawoma-data/content.types";
+import type { StoryRecord } from "@oliumbi/jublawoma-data/public.types";
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { ContentImage } from "../components/content-image";
 import { MarkdownContent } from "../components/markdown-content";
-import { getStory } from "../content/content.functions";
+import { MediaImage } from "../components/media-image";
+import { getStory } from "../data/stories";
 
 export const Route = createFileRoute("/stories/$slug")({
 	loader: async ({ params }) => {
@@ -35,7 +35,7 @@ function StoryDetail() {
 				{story.summary ? <p>{story.summary}</p> : null}
 			</header>
 			<div className="shell story-cover">
-				<ContentImage
+				<MediaImage
 					src={cover?.storageKey}
 					alt={cover?.altText || story.title}
 					seed={story.id}
@@ -47,7 +47,7 @@ function StoryDetail() {
 			{gallery.length ? (
 				<section className="shell media-gallery">
 					{gallery.map((image) => (
-						<ContentImage
+						<MediaImage
 							key={image.id}
 							src={image.storageKey}
 							alt={image.altText}

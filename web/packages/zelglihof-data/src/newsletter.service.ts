@@ -1,8 +1,8 @@
 import type { DatabasePool } from "@oliumbi/database";
+import { confirmSubscription } from "./newsletter.confirm";
+import { requestSubscription } from "./newsletter.subscribe";
 import type { NewsletterOptions } from "./newsletter.types";
-import { confirmSubscription } from "./newsletter-confirm";
-import { requestSubscription } from "./newsletter-subscribe";
-import { unsubscribeByToken } from "./newsletter-unsubscribe";
+import { unsubscribeByToken } from "./newsletter.unsubscribe";
 export function createNewsletterService(
 	database: DatabasePool,
 	options: NewsletterOptions,

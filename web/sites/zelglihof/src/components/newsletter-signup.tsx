@@ -2,8 +2,8 @@ import { m } from "@oliumbi/i18n/messages";
 import { newsletterSignupSchema } from "@oliumbi/zelglihof-data/contracts";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, Mail } from "lucide-react";
-import { signupForNewsletter } from "../newsletter/newsletter.functions";
-import { SubmissionForm } from "./ui/submission-form";
+import { signupForNewsletter } from "../data/newsletter";
+import { SubmissionForm } from "./submission-form";
 export function NewsletterSignup() {
 	const submit = useServerFn(signupForNewsletter);
 	return (

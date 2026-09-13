@@ -4,11 +4,11 @@ import type {
 } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { Check } from "lucide-react";
-import { editableStatuses } from "../studio/record-display";
-import type { ResourceId } from "../studio/resources";
+import { editableStatuses } from "../model/record-display";
+import type { ResourceId } from "../model/resources";
 import { DateField } from "./date-field";
+import { InputField } from "./input-field";
 import { ReferenceField } from "./reference-field";
-import { Checkbox, Field, InputField, Select } from "./ui/index";
 export function ResourceField({
 	field,
 	value,
@@ -163,3 +163,7 @@ function slugPath(resourceId: ResourceId, slug: string): string {
 	const base = paths[resourceId];
 	return `${base ?? "/"}${slug}`;
 }
+
+import { Checkbox } from "@base-ui/react/checkbox";
+import { Field } from "@base-ui/react/field";
+import { Select } from "@base-ui/react/select";

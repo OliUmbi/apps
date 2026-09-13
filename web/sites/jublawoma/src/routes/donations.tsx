@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DonationCampaign } from "../components/donation-campaign";
 import { NoCurrentDonations } from "../components/no-current-donations";
-import { getDonation } from "../content/donation.functions";
-import { listPublicRecords } from "../content/public.functions";
+import { getDonation } from "../data/donations";
+import { listPublicRecords } from "../data/public-records";
 
 export const Route = createFileRoute("/donations")({
 	loader: async () => {

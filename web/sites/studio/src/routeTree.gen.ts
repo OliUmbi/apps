@@ -10,7 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiAssetsIdRouteImport } from './routes/api/assets/$id'
+import { Route as ApiAssetsIdRouteImport } from './routes/api.assets.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
