@@ -4,21 +4,21 @@ import {
 	newStoryInput,
 	storyInputSchema,
 	storySchema,
-} from "../sites/studio/src/model/content/jublawoma/story";
-import { storyImageKeySchema } from "../sites/studio/src/model/content/jublawoma/story-image";
-import { slugify } from "../sites/studio/src/model/content/slug";
-import { campaignInputSchema } from "../sites/studio/src/model/content/zelglihof/campaign";
+} from "../packages/jublawoma-data/src/content/story";
+import { storyImageKeySchema } from "../packages/jublawoma-data/src/content/story-image";
+import { campaignInputSchema } from "../packages/zelglihof-data/src/content/campaign";
 import {
 	newProductInput,
 	productInputSchema,
-} from "../sites/studio/src/model/content/zelglihof/product";
-import { productReservationInputSchema } from "../sites/studio/src/model/content/zelglihof/product-reservation";
-import { productVariantInputSchema } from "../sites/studio/src/model/content/zelglihof/product-variant";
+} from "../packages/zelglihof-data/src/content/product";
+import { productReservationInputSchema } from "../packages/zelglihof-data/src/content/product-reservation";
+import { productVariantInputSchema } from "../packages/zelglihof-data/src/content/product-variant";
 import {
 	newPromotionInput,
 	promotionInputSchema,
-} from "../sites/studio/src/model/content/zelglihof/promotion";
-import { subscriberSchema } from "../sites/studio/src/model/content/zelglihof/subscriber";
+} from "../packages/zelglihof-data/src/content/promotion";
+import { subscriberSchema } from "../packages/zelglihof-data/src/content/subscriber";
+import { slugify } from "../sites/studio/src/model/content/slug";
 
 const id = "6c7e6880-5e35-48d7-9a5a-82dfd56e439b";
 const now = new Date("2026-09-17T12:00:00Z");

@@ -5,7 +5,7 @@ import {
 	type StoryInput,
 	storyInputFromRecord,
 	storyInputSchema,
-} from "../../../model/content/jublawoma/story";
+} from "@oliumbi/jublawoma-data/content/story";
 import {
 	createStory,
 	deleteStory,

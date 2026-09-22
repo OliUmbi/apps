@@ -1,26 +1,30 @@
 import { idSchema, pageSchema } from "@oliumbi/contracts";
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import {
 	articleImageInputSchema,
 	articleImageKeySchema,
-} from "../../../model/content/zelglihof/article-image";
+} from "@oliumbi/zelglihof-data/content/article-image";
+import { createArticleImageRepository } from "@oliumbi/zelglihof-data/content/article-image.repository";
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { assets } from "../../assets.server";
 import { requireActor } from "../../auth.server";
-import { articleImageStore } from "./article-image.server";
+import { database } from "../../database.server";
 
 export const listArticleImages = createServerFn({ method: "GET" })
 	.validator(pageSchema.extend({ articleId: idSchema }))
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return articleImageStore().list(data, { article_id: data.articleId });
+		return createArticleImageRepository(database.sql).listForArticle(
+			data,
+			data.articleId,
+		);
 	});
 
 export const getArticleImage = createServerFn({ method: "GET" })
 	.validator(articleImageKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return articleImageStore().get(data);
+		return createArticleImageRepository(database.sql).get(data);
 	});
 
 export const createArticleImage = createServerFn({ method: "POST" })
@@ -28,7 +32,7 @@ export const createArticleImage = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
 		if (data.imageId) await assets.images.get("zelglihof", data.imageId);
-		return articleImageStore().create(data);
+		return createArticleImageRepository(database.sql).create(data);
 	});
 
 export const updateArticleImage = createServerFn({ method: "POST" })
@@ -42,12 +46,15 @@ export const updateArticleImage = createServerFn({ method: "POST" })
 		await requireActor("zelglihof");
 		if (data.values.imageId)
 			await assets.images.get("zelglihof", data.values.imageId);
-		return articleImageStore().update(data.key, data.values);
+		return createArticleImageRepository(database.sql).update(
+			data.key,
+			data.values,
+		);
 	});
 
 export const deleteArticleImage = createServerFn({ method: "POST" })
 	.validator(articleImageKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		await articleImageStore().delete(data);
+		await createArticleImageRepository(database.sql).delete(data);
 	});

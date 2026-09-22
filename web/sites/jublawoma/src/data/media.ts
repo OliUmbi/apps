@@ -1,28 +1,27 @@
 import { publicImageUrl } from "@oliumbi/assets/urls";
-import type { ResourceRecord } from "@oliumbi/contracts";
-import type { MediaAsset } from "@oliumbi/jublawoma-data/public.types";
+import type { MediaAsset } from "../model/content";
 
-export function mediaFromRecord(
-	record: ResourceRecord,
-	children: ResourceRecord[] = [],
+export function mediaFromImages(
+	coverId: string | null,
+	coverAlt: string,
+	images: readonly { imageId: string; description: string }[] = [],
 ): MediaAsset[] {
-	const cover: MediaAsset[] = record.image_id
-		? [
-				{
-					id: String(record.image_id),
-					storageKey: publicImageUrl(String(record.image_id)),
-					altText: String(record.title ?? record.name),
-					role: "cover",
-					position: 0,
-				},
-			]
-		: [];
 	return [
-		...cover,
-		...children.map((image, index) => ({
-			id: String(image.image_id),
-			storageKey: publicImageUrl(String(image.image_id)),
-			altText: String(image.description),
+		...(coverId
+			? [
+					{
+						id: coverId,
+						src: publicImageUrl(coverId),
+						alt: coverAlt,
+						role: "cover" as const,
+						position: 0,
+					},
+				]
+			: []),
+		...images.map((image, index) => ({
+			id: image.imageId,
+			src: publicImageUrl(image.imageId),
+			alt: image.description,
 			role: "gallery" as const,
 			position: index + 1,
 		})),

@@ -2,15 +2,15 @@ import { Button } from "@base-ui/react/button";
 import { m } from "@oliumbi/i18n/messages";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Quote, Star } from "lucide-react";
-import { listPublicRecords } from "../data/public-records";
+import { getReviewPage } from "../data/reviews";
 
 export function PublicReviews() {
 	const query = useInfiniteQuery({
 		queryKey: ["reviews"],
 		initialPageParam: 0,
 		queryFn: ({ pageParam }) =>
-			listPublicRecords({
-				data: { resource: "unclet.review", page: pageParam },
+			getReviewPage({
+				data: { page: pageParam },
 			}),
 		getNextPageParam: (page) => page.nextPage,
 	});
@@ -37,19 +37,16 @@ export function PublicReviews() {
 					{query.data?.pages
 						.flatMap((page) => page.items)
 						.map((review) => (
-							<blockquote key={String(review.id)} className="review-card">
+							<blockquote key={review.id} className="review-card">
 								<div className="flex items-center justify-between gap-5">
 									<p
 										role="img"
 										className="flex gap-1 text-brass"
 										aria-label={`${review.stars} von 5 Sternen`}
 									>
-										{Array.from(
-											{ length: Number(review.stars) },
-											(_, index) => (
-												<Star key={index} size={16} fill="currentColor" />
-											),
-										)}
+										{Array.from({ length: review.stars }, (_, index) => (
+											<Star key={index} size={16} fill="currentColor" />
+										))}
 									</p>
 									<Quote
 										size={28}

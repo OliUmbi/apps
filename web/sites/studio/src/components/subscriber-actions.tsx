@@ -2,10 +2,10 @@ import { Button } from "@base-ui/react/button";
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
+import type { Subscriber } from "@oliumbi/zelglihof-data/content/subscriber";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { MailCheck } from "lucide-react";
-import type { Subscriber } from "../model/content/zelglihof/subscriber";
 import {
 	correctSubscriberEmail,
 	requestSubscriberConfirmation,

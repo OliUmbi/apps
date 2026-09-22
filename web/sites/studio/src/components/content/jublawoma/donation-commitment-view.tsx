@@ -1,5 +1,5 @@
 import { m } from "@oliumbi/i18n/messages";
-import type { DonationCommitment } from "../../../model/content/jublawoma/donation-commitment";
+import type { DonationCommitment } from "@oliumbi/jublawoma-data/content/donation-commitment";
 import {
 	deleteDonationCommitment,
 	getDonationCommitment,

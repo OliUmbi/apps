@@ -1,57 +1,49 @@
 import { publicImageUrl } from "@oliumbi/assets/urls";
-import {
-	type Page,
-	pageSchema,
-	type ResourceRecord,
-	slugSchema,
-} from "@oliumbi/contracts";
+import { pageSchema, slugSchema } from "@oliumbi/contracts";
 import { createPublicRepository } from "@oliumbi/zelglihof-data";
-import type { Update } from "@oliumbi/zelglihof-data/public.types";
+import type { Article } from "@oliumbi/zelglihof-data/content/article";
+import type { ArticleImage } from "@oliumbi/zelglihof-data/content/article-image";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import type { Update } from "../model/content";
 import { database } from "../server/database.server";
 
 function updateFromRecord(
-	record: ResourceRecord,
-	children: ResourceRecord[] = [],
+	record: Article,
+	images: ArticleImage[] = [],
 ): Update {
 	return {
-		id: String(record.id),
-		slug: String(record.slug),
-		title: String(record.title),
-		description: String(record.description),
-		body: String(record.body),
-		image: record.image_id ? publicImageUrl(String(record.image_id)) : "",
-		date: String(record.published_on ?? "").slice(0, 10),
+		id: record.id,
+		slug: record.slug,
+		title: record.title,
+		description: record.description,
+		body: record.body,
+		image: record.imageId ? publicImageUrl(record.imageId) : "",
+		date: record.publishedOn ?? "",
 		category: "Vom Hof",
-		images: children.map((row) => ({
-			id: String(row.image_id),
-			src: row.image_id ? publicImageUrl(String(row.image_id)) : "",
-			description: String(row.description),
+		images: images.map((image) => ({
+			id: image.imageId,
+			src: publicImageUrl(image.imageId),
+			description: image.description,
 		})),
 	};
 }
-
 export const getUpdatePage = createServerFn({ method: "GET" })
 	.validator(z.object({ page: pageSchema.shape.page }))
-	.handler(async ({ data }): Promise<Page<Update>> => {
-		const result = await createPublicRepository(database.sql).list(
-			"zelglihof.article",
+	.handler(async ({ data }) => {
+		const page = await createPublicRepository(database.sql).listArticles(
 			data.page,
 		);
 		return {
-			...result,
-			items: result.items.map((row) => updateFromRecord(row)),
+			...page,
+			items: page.items.map((article) => updateFromRecord(article)),
 		};
 	});
-
 export const getUpdate = createServerFn({ method: "GET" })
 	.validator(z.object({ slug: slugSchema }))
-	.handler(async ({ data }): Promise<Update | null> => {
-		const result = await createPublicRepository(database.sql).detail(
-			"zelglihof.article",
+	.handler(async ({ data }) => {
+		const result = await createPublicRepository(database.sql).findArticle(
 			data.slug,
-			true,
 		);
-		return result ? updateFromRecord(result.record, result.children) : null;
+		return result ? updateFromRecord(result.article, result.images) : null;
 	});

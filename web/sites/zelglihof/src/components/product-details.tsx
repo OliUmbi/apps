@@ -1,7 +1,7 @@
 import { m } from "@oliumbi/i18n/messages";
-import type { Product } from "@oliumbi/zelglihof-data/public.types";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, CalendarDays, MapPin, PackageCheck } from "lucide-react";
+import type { Product } from "../model/content";
 import { AssetImage } from "./asset-image";
 import { NewsletterSignup } from "./newsletter-signup";
 import { ProductVariants } from "./product-variants";

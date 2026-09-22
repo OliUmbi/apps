@@ -5,7 +5,7 @@ import {
 	campaignInputFromRecord,
 	campaignInputSchema,
 	newCampaignInput,
-} from "../../../model/content/zelglihof/campaign";
+} from "@oliumbi/zelglihof-data/content/campaign";
 import {
 	createCampaign,
 	deleteCampaign,

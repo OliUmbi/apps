@@ -1,9 +1,9 @@
 import { Button } from "@base-ui/react/button";
 import { publicImageUrl } from "@oliumbi/assets/urls";
-import type { ResourceRecord } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
+import type { Member } from "@oliumbi/jublawoma-data/content/member";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { listPublicRecords } from "../data/public-records";
+import { getMemberPage } from "../data/members";
 import { AssetImage } from "./asset-image";
 
 export function PublicMembers() {
@@ -11,8 +11,8 @@ export function PublicMembers() {
 		queryKey: ["members"],
 		initialPageParam: 0,
 		queryFn: ({ pageParam }) =>
-			listPublicRecords({
-				data: { resource: "jublawoma.member", page: pageParam },
+			getMemberPage({
+				data: { page: pageParam },
 			}),
 		getNextPageParam: (page) => page.nextPage,
 	});
@@ -31,7 +31,7 @@ export function PublicMembers() {
 					</div>
 					<div className="mt-6 grid gap-3 text-2xl font-semibold md:mt-0">
 						{leadership.map((member) => (
-							<p className="m-0" key={String(member.id)}>
+							<p className="m-0" key={member.id}>
 								{member.name}
 							</p>
 						))}
@@ -44,7 +44,7 @@ export function PublicMembers() {
 			{query.isError ? <p role="alert">{m.error_generic()}</p> : null}
 			<div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
 				{members.map((member) => (
-					<MemberCard key={String(member.id)} member={member} />
+					<MemberCard key={member.id} member={member} />
 				))}
 			</div>
 			{query.hasNextPage ? (
@@ -60,17 +60,17 @@ export function PublicMembers() {
 	);
 }
 
-function MemberCard({ member }: { member: ResourceRecord }) {
+function MemberCard({ member }: { member: Member }) {
 	return (
 		<article>
 			<AssetImage
-				src={member.image_id ? publicImageUrl(String(member.image_id)) : null}
-				alt={String(member.name)}
+				src={member.imageId ? publicImageUrl(member.imageId) : null}
+				alt={member.name}
 				className="aspect-square rounded-3xl object-cover"
 			/>
 			<h3 className="mt-4 text-xl font-bold">{member.name}</h3>
 			<p>
-				{member.group_name}
+				{member.groupName}
 				{member.leadership ? ` · ${m.jublawoma_leadership_title()}` : ""}
 			</p>
 		</article>

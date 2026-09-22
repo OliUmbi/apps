@@ -5,7 +5,7 @@ import {
 	inquiryInputFromRecord,
 	inquiryInputSchema,
 	newInquiryInput,
-} from "../../../model/content/unclet/inquiry";
+} from "@oliumbi/unclet-data/content/inquiry";
 import {
 	deleteInquiry,
 	getInquiry,

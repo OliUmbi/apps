@@ -5,7 +5,7 @@ import {
 	type PromotionInput,
 	promotionInputFromRecord,
 	promotionInputSchema,
-} from "../../../model/content/zelglihof/promotion";
+} from "@oliumbi/zelglihof-data/content/promotion";
 import {
 	createPromotion,
 	deletePromotion,

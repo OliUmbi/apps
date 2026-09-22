@@ -5,7 +5,7 @@ import {
 	articleInputFromRecord,
 	articleInputSchema,
 	newArticleInput,
-} from "../../../model/content/zelglihof/article";
+} from "@oliumbi/zelglihof-data/content/article";
 import {
 	createArticle,
 	deleteArticle,

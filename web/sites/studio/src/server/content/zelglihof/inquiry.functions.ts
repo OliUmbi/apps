@@ -1,25 +1,26 @@
 import { pageSchema } from "@oliumbi/contracts";
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import {
 	inquiryInputSchema,
 	inquiryKeySchema,
-} from "../../../model/content/zelglihof/inquiry";
+} from "@oliumbi/zelglihof-data/content/inquiry";
+import { createInquiryRepository } from "@oliumbi/zelglihof-data/content/inquiry.repository";
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { requireActor } from "../../auth.server";
-import { inquiryStore } from "./inquiry.server";
+import { database } from "../../database.server";
 
 export const listInquiries = createServerFn({ method: "GET" })
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return inquiryStore().list(data);
+		return createInquiryRepository(database.sql).list(data);
 	});
 
 export const getInquiry = createServerFn({ method: "GET" })
 	.validator(inquiryKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return inquiryStore().get(data);
+		return createInquiryRepository(database.sql).get(data);
 	});
 
 export const updateInquiry = createServerFn({ method: "POST" })
@@ -28,12 +29,12 @@ export const updateInquiry = createServerFn({ method: "POST" })
 	)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return inquiryStore().update(data.key, data.values);
+		return createInquiryRepository(database.sql).update(data.key, data.values);
 	});
 
 export const deleteInquiry = createServerFn({ method: "POST" })
 	.validator(inquiryKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		await inquiryStore().delete(data);
+		await createInquiryRepository(database.sql).delete(data);
 	});

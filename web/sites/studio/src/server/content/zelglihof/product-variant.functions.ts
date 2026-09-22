@@ -1,26 +1,30 @@
 import { idSchema, pageSchema } from "@oliumbi/contracts";
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import {
 	productVariantInputSchema,
 	productVariantKeySchema,
-} from "../../../model/content/zelglihof/product-variant";
+} from "@oliumbi/zelglihof-data/content/product-variant";
+import { createProductVariantRepository } from "@oliumbi/zelglihof-data/content/product-variant.repository";
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { assets } from "../../assets.server";
 import { requireActor } from "../../auth.server";
-import { productVariantStore } from "./product-variant.server";
+import { database } from "../../database.server";
 
 export const listProductVariants = createServerFn({ method: "GET" })
 	.validator(pageSchema.extend({ productId: idSchema }))
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return productVariantStore().list(data, { product_id: data.productId });
+		return createProductVariantRepository(database.sql).listForProduct(
+			data,
+			data.productId,
+		);
 	});
 
 export const getProductVariant = createServerFn({ method: "GET" })
 	.validator(productVariantKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return productVariantStore().get(data);
+		return createProductVariantRepository(database.sql).get(data);
 	});
 
 export const createProductVariant = createServerFn({ method: "POST" })
@@ -28,7 +32,7 @@ export const createProductVariant = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
 		if (data.imageId) await assets.images.get("zelglihof", data.imageId);
-		return productVariantStore().create(data);
+		return createProductVariantRepository(database.sql).create(data);
 	});
 
 export const updateProductVariant = createServerFn({ method: "POST" })
@@ -42,12 +46,15 @@ export const updateProductVariant = createServerFn({ method: "POST" })
 		await requireActor("zelglihof");
 		if (data.values.imageId)
 			await assets.images.get("zelglihof", data.values.imageId);
-		return productVariantStore().update(data.key, data.values);
+		return createProductVariantRepository(database.sql).update(
+			data.key,
+			data.values,
+		);
 	});
 
 export const deleteProductVariant = createServerFn({ method: "POST" })
 	.validator(productVariantKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		await productVariantStore().delete(data);
+		await createProductVariantRepository(database.sql).delete(data);
 	});

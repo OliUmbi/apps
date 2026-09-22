@@ -1,32 +1,33 @@
 import { pageSchema } from "@oliumbi/contracts";
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import {
 	donationInputSchema,
 	donationKeySchema,
-} from "../../../model/content/jublawoma/donation";
+} from "@oliumbi/jublawoma-data/content/donation";
+import { createDonationRepository } from "@oliumbi/jublawoma-data/content/donation.repository";
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { requireActor } from "../../auth.server";
-import { donationStore } from "./donation.server";
+import { database } from "../../database.server";
 
 export const listDonations = createServerFn({ method: "GET" })
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return donationStore().list(data);
+		return createDonationRepository(database.sql).list(data);
 	});
 
 export const getDonation = createServerFn({ method: "GET" })
 	.validator(donationKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return donationStore().get(data);
+		return createDonationRepository(database.sql).get(data);
 	});
 
 export const createDonation = createServerFn({ method: "POST" })
 	.validator(donationInputSchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return donationStore().create(data);
+		return createDonationRepository(database.sql).create(data);
 	});
 
 export const updateDonation = createServerFn({ method: "POST" })
@@ -35,12 +36,12 @@ export const updateDonation = createServerFn({ method: "POST" })
 	)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return donationStore().update(data.key, data.values);
+		return createDonationRepository(database.sql).update(data.key, data.values);
 	});
 
 export const deleteDonation = createServerFn({ method: "POST" })
 	.validator(donationKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		await donationStore().delete(data);
+		await createDonationRepository(database.sql).delete(data);
 	});

@@ -5,7 +5,7 @@ import {
 	eventInputFromRecord,
 	eventInputSchema,
 	newEventInput,
-} from "../../../model/content/jublawoma/event";
+} from "@oliumbi/jublawoma-data/content/event";
 import {
 	createEvent,
 	deleteEvent,

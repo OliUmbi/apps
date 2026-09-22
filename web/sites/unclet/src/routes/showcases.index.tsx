@@ -1,18 +1,17 @@
-import type { Page, ResourceRecord } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { PaginatedList } from "@oliumbi/ui/paginated-list";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { PageHero } from "../components/page-hero";
 import { ShowcaseCard } from "../components/showcase-card";
-import { listPublicRecords } from "../data/public-records";
+import { getShowcasePage } from "../data/showcases";
 
 export const Route = createFileRoute("/showcases/")({
 	head: () => ({ meta: [{ title: m.unclet_routes_showcases_title() }] }),
 	loader: () =>
-		listPublicRecords({
-			data: { resource: "unclet.showcase", page: 0 },
-		}) as Promise<Page<ResourceRecord>>,
+		getShowcasePage({
+			data: { page: 0 },
+		}),
 	component: InsightsPage,
 });
 
@@ -34,23 +33,19 @@ function InsightsPage() {
 			/>
 			<section className="shell py-20 md:py-28">
 				<div className="grid gap-16 md:gap-24">
-					<PaginatedList<ResourceRecord>
+					<PaginatedList
 						queryKey={["showcases"]}
 						initialPage={Route.useLoaderData()}
 						load={(page) =>
-							listPublicRecords({
-								data: { resource: "unclet.showcase", page },
-							}) as Promise<Page<ResourceRecord>>
+							getShowcasePage({
+								data: { page },
+							})
 						}
 					>
 						{(items) => (
 							<>
 								{items.map((item, index) => (
-									<ShowcaseCard
-										key={String(item.id)}
-										item={item}
-										index={index}
-									/>
+									<ShowcaseCard key={item.id} item={item} index={index} />
 								))}
 							</>
 						)}

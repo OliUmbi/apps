@@ -1,6 +1,4 @@
-import type { Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import type { Product, Update } from "@oliumbi/zelglihof-data/public.types";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowDown, ArrowRight, Egg, Sprout, Wheat } from "lucide-react";
 import { AssetImage } from "../components/asset-image";
@@ -12,8 +10,8 @@ import { getUpdatePage } from "../data/updates";
 export const Route = createFileRoute("/")({
 	loader: async () => {
 		const [products, updates] = await Promise.all([
-			getProductPage({ data: { page: 0 } }) as Promise<Page<Product>>,
-			getUpdatePage({ data: { page: 0 } }) as Promise<Page<Update>>,
+			getProductPage({ data: { page: 0 } }),
+			getUpdatePage({ data: { page: 0 } }),
 		]);
 		return { products: products.items, updates: updates.items };
 	},

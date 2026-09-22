@@ -1,15 +1,13 @@
-import type { Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import type { StoryRecord } from "@oliumbi/jublawoma-data/public.types";
 import { PaginatedList } from "@oliumbi/ui/paginated-list";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Camera } from "lucide-react";
 import { MediaImage } from "../components/media-image";
 import { getStoryPage } from "../data/stories";
+import type { StoryRecord } from "../model/content";
 
 export const Route = createFileRoute("/stories/")({
-	loader: () =>
-		getStoryPage({ data: { page: 0 } }) as Promise<Page<StoryRecord>>,
+	loader: () => getStoryPage({ data: { page: 0 } }),
 	component: Stories,
 });
 function Stories() {
@@ -18,9 +16,7 @@ function Stories() {
 		<PaginatedList<StoryRecord>
 			queryKey={["stories"]}
 			initialPage={initialPage}
-			load={(page) =>
-				getStoryPage({ data: { page } }) as Promise<Page<StoryRecord>>
-			}
+			load={(page) => getStoryPage({ data: { page } })}
 		>
 			{(stories) => (
 				<>
@@ -57,8 +53,8 @@ function Stories() {
 								>
 									<article>
 										<MediaImage
-											src={story.media[0]?.storageKey}
-											alt={story.media[0]?.altText || story.title}
+											src={story.media[0]?.src}
+											alt={story.media[0]?.alt || story.title}
 											seed={story.id}
 										/>
 										<p className="kicker">

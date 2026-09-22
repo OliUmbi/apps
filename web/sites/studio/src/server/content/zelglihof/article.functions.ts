@@ -1,26 +1,27 @@
 import { pageSchema } from "@oliumbi/contracts";
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import {
 	articleInputSchema,
 	articleKeySchema,
-} from "../../../model/content/zelglihof/article";
+} from "@oliumbi/zelglihof-data/content/article";
+import { createArticleRepository } from "@oliumbi/zelglihof-data/content/article.repository";
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { assets } from "../../assets.server";
 import { requireActor } from "../../auth.server";
-import { articleStore } from "./article.server";
+import { database } from "../../database.server";
 
 export const listArticles = createServerFn({ method: "GET" })
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return articleStore().list(data);
+		return createArticleRepository(database.sql).list(data);
 	});
 
 export const getArticle = createServerFn({ method: "GET" })
 	.validator(articleKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return articleStore().get(data);
+		return createArticleRepository(database.sql).get(data);
 	});
 
 export const createArticle = createServerFn({ method: "POST" })
@@ -28,7 +29,7 @@ export const createArticle = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
 		if (data.imageId) await assets.images.get("zelglihof", data.imageId);
-		return articleStore().create(data);
+		return createArticleRepository(database.sql).create(data);
 	});
 
 export const updateArticle = createServerFn({ method: "POST" })
@@ -39,12 +40,12 @@ export const updateArticle = createServerFn({ method: "POST" })
 		await requireActor("zelglihof");
 		if (data.values.imageId)
 			await assets.images.get("zelglihof", data.values.imageId);
-		return articleStore().update(data.key, data.values);
+		return createArticleRepository(database.sql).update(data.key, data.values);
 	});
 
 export const deleteArticle = createServerFn({ method: "POST" })
 	.validator(articleKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		await articleStore().delete(data);
+		await createArticleRepository(database.sql).delete(data);
 	});

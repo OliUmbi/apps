@@ -1,4 +1,4 @@
-import type { Product } from "@oliumbi/zelglihof-data/public.types";
+import type { Product } from "../model/content";
 import { AssetImage } from "./asset-image";
 
 export function ProductVariants({ product }: { product: Product }) {

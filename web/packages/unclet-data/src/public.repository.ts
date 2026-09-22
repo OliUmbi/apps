@@ -1,18 +1,31 @@
-import type { Database } from "@oliumbi/database";
-import { createPublicRepository as createDatabasePublicRepository } from "@oliumbi/database/public.repository";
-import { getResource, type ResourceId } from "./catalog";
+import { pageSchema } from "@oliumbi/contracts";
+import type { SqlExecutor } from "@oliumbi/database";
+import { createReviewRepository } from "./content/review.repository";
+import { createShowcaseRepository } from "./content/showcase.repository";
+import { createShowcaseImageRepository } from "./content/showcase-image.repository";
 
-const relations = {
-	"unclet.showcase": {
-		resource: getResource("unclet.showcase_image"),
-		column: "showcase_id",
-	},
-};
-export function createPublicRepository(sql: Database) {
-	const repository = createDatabasePublicRepository(sql, relations);
+export function createPublicRepository(sql: SqlExecutor) {
+	const showcases = createShowcaseRepository(sql).read;
+	const images = createShowcaseImageRepository(sql).read;
+	const reviews = createReviewRepository(sql).read;
+	const published = sql`published = true AND published_on <= current_date`;
 	return {
-		list: (id: ResourceId, page = 0) => repository.list(getResource(id), page),
-		detail: (id: ResourceId, value: string, bySlug = false) =>
-			repository.detail(getResource(id), value, bySlug),
+		listShowcases: (page: number) =>
+			showcases.page(pageSchema.parse({ page }), published),
+		async findShowcase(slug: string) {
+			const showcase = await showcases.find(
+				sql`slug = ${slug} AND ${published}`,
+			);
+			if (!showcase) return null;
+			return {
+				showcase,
+				images: await images.all(
+					sql`showcase_id = ${showcase.id}`,
+					sql`created_at, image_id`,
+				),
+			};
+		},
+		listReviews: (page: number) =>
+			reviews.page(pageSchema.parse({ page }), sql`visible = true`),
 	};
 }

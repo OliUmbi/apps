@@ -5,7 +5,7 @@ import {
 	inquiryInputFromRecord,
 	inquiryInputSchema,
 	newInquiryInput,
-} from "../../../model/content/zelglihof/inquiry";
+} from "@oliumbi/zelglihof-data/content/inquiry";
 import {
 	deleteInquiry,
 	getInquiry,

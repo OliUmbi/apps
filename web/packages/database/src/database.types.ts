@@ -15,3 +15,6 @@ export interface DatabasePool {
 	transaction<T>(work: (sql: Transaction) => Promise<T>): Promise<T>;
 	close(): Promise<void>;
 }
+
+export type SqlExecutor = Database | Transaction;
+export type SqlFragment = postgres.PendingQuery<postgres.Row[]>;

@@ -1,7 +1,7 @@
 import { m } from "@oliumbi/i18n/messages";
-import type { Product } from "@oliumbi/zelglihof-data/public.types";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Bell, Clock3, ShoppingBag } from "lucide-react";
+import type { Product } from "../model/content";
 import { NewsletterSignup } from "./newsletter-signup";
 
 export function ProductCatalog({ products }: { products: Product[] }) {

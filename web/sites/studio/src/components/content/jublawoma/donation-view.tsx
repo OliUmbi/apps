@@ -5,7 +5,7 @@ import {
 	donationInputFromRecord,
 	donationInputSchema,
 	newDonationInput,
-} from "../../../model/content/jublawoma/donation";
+} from "@oliumbi/jublawoma-data/content/donation";
 import {
 	createDonation,
 	deleteDonation,

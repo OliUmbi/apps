@@ -5,7 +5,7 @@ import {
 	memberInputFromRecord,
 	memberInputSchema,
 	newMemberInput,
-} from "../../../model/content/jublawoma/member";
+} from "@oliumbi/jublawoma-data/content/member";
 import {
 	createMember,
 	deleteMember,

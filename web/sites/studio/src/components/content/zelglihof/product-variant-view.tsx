@@ -5,7 +5,7 @@ import {
 	type ProductVariantInput,
 	productVariantInputFromRecord,
 	productVariantInputSchema,
-} from "../../../model/content/zelglihof/product-variant";
+} from "@oliumbi/zelglihof-data/content/product-variant";
 import {
 	createProductVariant,
 	deleteProductVariant,

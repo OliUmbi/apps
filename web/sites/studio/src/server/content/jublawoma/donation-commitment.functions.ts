@@ -1,28 +1,30 @@
 import { idSchema, pageSchema } from "@oliumbi/contracts";
+import { donationCommitmentKeySchema } from "@oliumbi/jublawoma-data/content/donation-commitment";
+import { createDonationCommitmentRepository } from "@oliumbi/jublawoma-data/content/donation-commitment.repository";
 import { createServerFn } from "@tanstack/react-start";
-import { donationCommitmentKeySchema } from "../../../model/content/jublawoma/donation-commitment";
 import { requireActor } from "../../auth.server";
-import { donationCommitmentStore } from "./donation-commitment.server";
+import { database } from "../../database.server";
 
 export const listDonationCommitments = createServerFn({ method: "GET" })
 	.validator(pageSchema.extend({ donationId: idSchema }))
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return donationCommitmentStore().list(data, {
-			donation_id: data.donationId,
-		});
+		return createDonationCommitmentRepository(database.sql).listForDonation(
+			data,
+			data.donationId,
+		);
 	});
 
 export const getDonationCommitment = createServerFn({ method: "GET" })
 	.validator(donationCommitmentKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return donationCommitmentStore().get(data);
+		return createDonationCommitmentRepository(database.sql).get(data);
 	});
 
 export const deleteDonationCommitment = createServerFn({ method: "POST" })
 	.validator(donationCommitmentKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		await donationCommitmentStore().delete(data);
+		await createDonationCommitmentRepository(database.sql).delete(data);
 	});

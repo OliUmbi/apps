@@ -1,9 +1,10 @@
-import type { ResourceRecord } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
+import type { Donation } from "@oliumbi/jublawoma-data/content/donation";
 import {
 	type CommitmentInput,
 	commitmentSchema,
 } from "@oliumbi/jublawoma-data/contracts";
+import type { DonationAvailability } from "@oliumbi/jublawoma-data/donation-availability";
 import { useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { CalendarDays, HeartHandshake, Phone } from "lucide-react";
@@ -15,16 +16,16 @@ export function DonationCampaign({
 	record,
 	items,
 }: {
-	record: ResourceRecord;
-	items: ResourceRecord[];
+	record: Donation;
+	items: DonationAvailability[];
 }) {
 	const router = useRouter();
 	const submit = useServerFn(submitCommitment);
 	const [selectedId, setSelectedId] = useState<string | null>(null);
-	const availableItems = items.filter((item) => number(item.remaining) > 0);
-	const selected = availableItems.find(
-		(item) => String(item.id) === selectedId,
+	const availableItems = items.filter(
+		(item) => roundQuantity(item.remaining) > 0,
 	);
+	const selected = availableItems.find((item) => item.id === selectedId);
 
 	return (
 		<section className="donation-campaign shell">
@@ -37,7 +38,7 @@ export function DonationCampaign({
 				<div className="donation-meta">
 					<span>
 						<CalendarDays size={18} aria-hidden="true" />
-						{dateRange(record.starts_at, record.ends_at)}
+						{dateRange(record.startsAt, record.endsAt)}
 					</span>
 					<span>
 						<Phone size={18} aria-hidden="true" /> {record.contact}
@@ -55,16 +56,16 @@ export function DonationCampaign({
 				<div className="donation-item-list">
 					{items.map((item) => (
 						<DonationItem
-							key={String(item.id)}
+							key={item.id}
 							item={item}
-							selected={String(item.id) === selectedId}
-							onSelect={() => setSelectedId(String(item.id))}
+							selected={item.id === selectedId}
+							onSelect={() => setSelectedId(item.id)}
 						/>
 					))}
 				</div>
 				{selected ? (
 					<CommitmentPanel
-						key={String(selected.id)}
+						key={selected.id}
 						record={record}
 						item={selected}
 						onSubmit={async (data) => {
@@ -88,12 +89,12 @@ function DonationItem({
 	selected,
 	onSelect,
 }: {
-	item: ResourceRecord;
+	item: DonationAvailability;
 	selected: boolean;
 	onSelect: () => void;
 }) {
-	const remaining = number(item.remaining);
-	const quantity = number(item.quantity);
+	const remaining = roundQuantity(item.remaining);
+	const quantity = roundQuantity(item.quantity);
 	const progress = quantity > 0 ? ((quantity - remaining) / quantity) * 100 : 0;
 	return (
 		<article className={`donation-item ${selected ? "is-selected" : ""}`}>
@@ -126,12 +127,12 @@ function CommitmentPanel({
 	item,
 	onSubmit,
 }: {
-	record: ResourceRecord;
-	item: ResourceRecord;
+	record: Donation;
+	item: DonationAvailability;
 	onSubmit: (data: CommitmentInput) => Promise<{ outcome: string }>;
 }) {
-	const remaining = number(item.remaining);
-	const step = number(item.step);
+	const remaining = roundQuantity(item.remaining);
+	const step = roundQuantity(item.step);
 	return (
 		<aside className="donation-action">
 			<p className="kicker">{m.jublawoma_donation_form_eyebrow()}</p>
@@ -157,7 +158,7 @@ function CommitmentPanel({
 					},
 					{
 						name: "quantity",
-						label: String(item.unit),
+						label: item.unit,
 						type: "number",
 						min: step,
 						max: remaining,
@@ -176,19 +177,18 @@ function CommitmentPanel({
 	);
 }
 
-function number(value: unknown): number {
-	const parsed = Number(value);
-	return Number.isFinite(parsed) ? Number(parsed.toPrecision(10)) : 0;
+function roundQuantity(value: number): number {
+	return Number(value.toPrecision(10));
 }
 
-function dateRange(start: unknown, end: unknown): string {
+function dateRange(start: string, end: string): string {
 	const format = new Intl.DateTimeFormat("de-CH", {
 		day: "2-digit",
 		month: "long",
 		year: "numeric",
 	});
-	const first = new Date(String(start));
-	const last = new Date(String(end));
+	const first = new Date(start);
+	const last = new Date(end);
 	if (Number.isNaN(first.valueOf()) || Number.isNaN(last.valueOf())) return "";
 	return `${format.format(first)} – ${format.format(last)}`;
 }

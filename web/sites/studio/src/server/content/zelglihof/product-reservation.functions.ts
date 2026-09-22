@@ -1,28 +1,29 @@
 import { idSchema, pageSchema } from "@oliumbi/contracts";
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import {
 	productReservationInputSchema,
 	productReservationKeySchema,
-} from "../../../model/content/zelglihof/product-reservation";
+} from "@oliumbi/zelglihof-data/content/product-reservation";
+import { createProductReservationRepository } from "@oliumbi/zelglihof-data/content/product-reservation.repository";
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { requireActor } from "../../auth.server";
-import { productReservationStore } from "./product-reservation.server";
+import { database } from "../../database.server";
 
 export const listProductReservations = createServerFn({ method: "GET" })
 	.validator(pageSchema.extend({ productId: idSchema.optional() }))
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return productReservationStore().list(
-			data,
-			data.productId ? { product_id: data.productId } : {},
-		);
+		const repository = createProductReservationRepository(database.sql);
+		return data.productId
+			? repository.listForProduct(data, data.productId)
+			: repository.list(data);
 	});
 
 export const getProductReservation = createServerFn({ method: "GET" })
 	.validator(productReservationKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return productReservationStore().get(data);
+		return createProductReservationRepository(database.sql).get(data);
 	});
 
 export const updateProductReservation = createServerFn({ method: "POST" })
@@ -34,12 +35,15 @@ export const updateProductReservation = createServerFn({ method: "POST" })
 	)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return productReservationStore().update(data.key, data.values);
+		return createProductReservationRepository(database.sql).update(
+			data.key,
+			data.values,
+		);
 	});
 
 export const deleteProductReservation = createServerFn({ method: "POST" })
 	.validator(productReservationKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		await productReservationStore().delete(data);
+		await createProductReservationRepository(database.sql).delete(data);
 	});

@@ -1,32 +1,36 @@
 import { idSchema, pageSchema } from "@oliumbi/contracts";
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import {
 	donationItemInputSchema,
 	donationItemKeySchema,
-} from "../../../model/content/jublawoma/donation-item";
+} from "@oliumbi/jublawoma-data/content/donation-item";
+import { createDonationItemRepository } from "@oliumbi/jublawoma-data/content/donation-item.repository";
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { requireActor } from "../../auth.server";
-import { donationItemStore } from "./donation-item.server";
+import { database } from "../../database.server";
 
 export const listDonationItems = createServerFn({ method: "GET" })
 	.validator(pageSchema.extend({ donationId: idSchema }))
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return donationItemStore().list(data, { donation_id: data.donationId });
+		return createDonationItemRepository(database.sql).listForDonation(
+			data,
+			data.donationId,
+		);
 	});
 
 export const getDonationItem = createServerFn({ method: "GET" })
 	.validator(donationItemKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return donationItemStore().get(data);
+		return createDonationItemRepository(database.sql).get(data);
 	});
 
 export const createDonationItem = createServerFn({ method: "POST" })
 	.validator(donationItemInputSchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return donationItemStore().create(data);
+		return createDonationItemRepository(database.sql).create(data);
 	});
 
 export const updateDonationItem = createServerFn({ method: "POST" })
@@ -38,12 +42,15 @@ export const updateDonationItem = createServerFn({ method: "POST" })
 	)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return donationItemStore().update(data.key, data.values);
+		return createDonationItemRepository(database.sql).update(
+			data.key,
+			data.values,
+		);
 	});
 
 export const deleteDonationItem = createServerFn({ method: "POST" })
 	.validator(donationItemKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		await donationItemStore().delete(data);
+		await createDonationItemRepository(database.sql).delete(data);
 	});

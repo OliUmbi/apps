@@ -1,5 +1,5 @@
 import { m } from "@oliumbi/i18n/messages";
-import type { Subscriber } from "../../../model/content/zelglihof/subscriber";
+import type { Subscriber } from "@oliumbi/zelglihof-data/content/subscriber";
 import {
 	deleteSubscriber,
 	getSubscriber,

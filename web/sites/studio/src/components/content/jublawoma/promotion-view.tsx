@@ -5,7 +5,7 @@ import {
 	type PromotionInput,
 	promotionInputFromRecord,
 	promotionInputSchema,
-} from "../../../model/content/jublawoma/promotion";
+} from "@oliumbi/jublawoma-data/content/promotion";
 import {
 	createPromotion,
 	deletePromotion,

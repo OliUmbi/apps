@@ -1,26 +1,27 @@
 import { pageSchema } from "@oliumbi/contracts";
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import {
 	showcaseInputSchema,
 	showcaseKeySchema,
-} from "../../../model/content/unclet/showcase";
+} from "@oliumbi/unclet-data/content/showcase";
+import { createShowcaseRepository } from "@oliumbi/unclet-data/content/showcase.repository";
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { assets } from "../../assets.server";
 import { requireActor } from "../../auth.server";
-import { showcaseStore } from "./showcase.server";
+import { database } from "../../database.server";
 
 export const listShowcases = createServerFn({ method: "GET" })
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return showcaseStore().list(data);
+		return createShowcaseRepository(database.sql).list(data);
 	});
 
 export const getShowcase = createServerFn({ method: "GET" })
 	.validator(showcaseKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return showcaseStore().get(data);
+		return createShowcaseRepository(database.sql).get(data);
 	});
 
 export const createShowcase = createServerFn({ method: "POST" })
@@ -28,7 +29,7 @@ export const createShowcase = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
 		if (data.imageId) await assets.images.get("unclet", data.imageId);
-		return showcaseStore().create(data);
+		return createShowcaseRepository(database.sql).create(data);
 	});
 
 export const updateShowcase = createServerFn({ method: "POST" })
@@ -39,12 +40,12 @@ export const updateShowcase = createServerFn({ method: "POST" })
 		await requireActor("unclet");
 		if (data.values.imageId)
 			await assets.images.get("unclet", data.values.imageId);
-		return showcaseStore().update(data.key, data.values);
+		return createShowcaseRepository(database.sql).update(data.key, data.values);
 	});
 
 export const deleteShowcase = createServerFn({ method: "POST" })
 	.validator(showcaseKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		await showcaseStore().delete(data);
+		await createShowcaseRepository(database.sql).delete(data);
 	});

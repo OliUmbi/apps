@@ -1,26 +1,27 @@
 import { pageSchema } from "@oliumbi/contracts";
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import {
 	eventInputSchema,
 	eventKeySchema,
-} from "../../../model/content/jublawoma/event";
+} from "@oliumbi/jublawoma-data/content/event";
+import { createEventRepository } from "@oliumbi/jublawoma-data/content/event.repository";
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { assets } from "../../assets.server";
 import { requireActor } from "../../auth.server";
-import { eventStore } from "./event.server";
+import { database } from "../../database.server";
 
 export const listEvents = createServerFn({ method: "GET" })
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return eventStore().list(data);
+		return createEventRepository(database.sql).list(data);
 	});
 
 export const getEvent = createServerFn({ method: "GET" })
 	.validator(eventKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return eventStore().get(data);
+		return createEventRepository(database.sql).get(data);
 	});
 
 export const createEvent = createServerFn({ method: "POST" })
@@ -28,7 +29,7 @@ export const createEvent = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
 		if (data.imageId) await assets.images.get("jublawoma", data.imageId);
-		return eventStore().create(data);
+		return createEventRepository(database.sql).create(data);
 	});
 
 export const updateEvent = createServerFn({ method: "POST" })
@@ -37,12 +38,12 @@ export const updateEvent = createServerFn({ method: "POST" })
 		await requireActor("jublawoma");
 		if (data.values.imageId)
 			await assets.images.get("jublawoma", data.values.imageId);
-		return eventStore().update(data.key, data.values);
+		return createEventRepository(database.sql).update(data.key, data.values);
 	});
 
 export const deleteEvent = createServerFn({ method: "POST" })
 	.validator(eventKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		await eventStore().delete(data);
+		await createEventRepository(database.sql).delete(data);
 	});

@@ -1,7 +1,7 @@
 import { m } from "@oliumbi/i18n/messages";
-import type { Update } from "@oliumbi/zelglihof-data/public.types";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Sprout } from "lucide-react";
+import type { Update } from "../model/content";
 import { AssetImage } from "./asset-image";
 import { NewsletterSignup } from "./newsletter-signup";
 

@@ -1,54 +1,44 @@
-import {
-	type Page,
-	pageSchema,
-	type ResourceRecord,
-	slugSchema,
-} from "@oliumbi/contracts";
+import { pageSchema, slugSchema } from "@oliumbi/contracts";
 import { createPublicRepository } from "@oliumbi/jublawoma-data";
-import type { StoryRecord } from "@oliumbi/jublawoma-data/public.types";
+import type { Story } from "@oliumbi/jublawoma-data/content/story";
+import type { StoryImage } from "@oliumbi/jublawoma-data/content/story-image";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import type { StoryRecord } from "../model/content";
 import { database } from "../server/database.server";
-import { mediaFromRecord } from "./media";
+import { mediaFromImages } from "./media";
 
 function storyFromRecord(
-	record: ResourceRecord,
-	children: ResourceRecord[] = [],
+	record: Story,
+	images: StoryImage[] = [],
 ): StoryRecord {
 	return {
-		id: String(record.id),
-		slug: String(record.slug),
-		title: String(record.title),
-		summary: String(record.description),
-		bodyMarkdown: String(record.body),
-		author: String(record.author),
-		publishedOn: record.published_on
-			? String(record.published_on).slice(0, 10)
-			: null,
-		media: mediaFromRecord(record, children),
+		id: record.id,
+		slug: record.slug,
+		title: record.title,
+		summary: record.description,
+		bodyMarkdown: record.body,
+		author: record.author,
+		publishedOn: record.publishedOn,
+		media: mediaFromImages(record.imageId, record.title, images),
 	};
 }
-
 export const getStory = createServerFn({ method: "GET" })
 	.validator(z.object({ slug: slugSchema }))
 	.handler(async ({ data }) => {
-		const result = await createPublicRepository(database.sql).detail(
-			"jublawoma.story",
+		const result = await createPublicRepository(database.sql).findStory(
 			data.slug,
-			true,
 		);
-		return result ? storyFromRecord(result.record, result.children) : null;
+		return result ? storyFromRecord(result.story, result.images) : null;
 	});
-
 export const getStoryPage = createServerFn({ method: "GET" })
 	.validator(z.object({ page: pageSchema.shape.page }))
-	.handler(async ({ data }): Promise<Page<StoryRecord>> => {
-		const result = await createPublicRepository(database.sql).list(
-			"jublawoma.story",
+	.handler(async ({ data }) => {
+		const page = await createPublicRepository(database.sql).listStories(
 			data.page,
 		);
 		return {
-			...result,
-			items: result.items.map((record) => storyFromRecord(record)),
+			...page,
+			items: page.items.map((story) => storyFromRecord(story)),
 		};
 	});

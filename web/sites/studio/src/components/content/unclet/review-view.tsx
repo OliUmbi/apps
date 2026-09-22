@@ -5,7 +5,7 @@ import {
 	type ReviewInput,
 	reviewInputFromRecord,
 	reviewInputSchema,
-} from "../../../model/content/unclet/review";
+} from "@oliumbi/unclet-data/content/review";
 import {
 	createReview,
 	deleteReview,

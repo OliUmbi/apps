@@ -1,6 +1,6 @@
 import { publicImageUrl } from "@oliumbi/assets/urls";
-import type { ResourceRecord } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
+import type { Showcase } from "@oliumbi/unclet-data/content/showcase";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
 import { AssetImage } from "./asset-image";
@@ -9,19 +9,19 @@ export function ShowcaseCard({
 	item,
 	index,
 }: {
-	item: ResourceRecord;
+	item: Showcase;
 	index: number;
 }) {
 	return (
 		<Link
 			to="/showcases/$slug"
-			params={{ slug: String(item.slug) }}
+			params={{ slug: item.slug }}
 			className="group grid border-t border-brass/35 pt-6 md:grid-cols-[minmax(0,1.35fr)_minmax(20rem,.65fr)] md:gap-12 md:pt-10"
 		>
 			<div className="image-treatment aspect-[16/10] md:aspect-[16/9]">
 				<AssetImage
-					src={item.image_id ? publicImageUrl(String(item.image_id)) : null}
-					alt={String(item.title)}
+					src={item.imageId ? publicImageUrl(item.imageId) : null}
+					alt={item.title}
 					sizes="(min-width: 768px) 58vw, 100vw"
 					className="h-full w-full object-cover"
 				/>
@@ -36,12 +36,12 @@ export function ShowcaseCard({
 					</h2>
 					{item.body ? (
 						<p className="mt-6 line-clamp-5 text-base leading-relaxed text-bone/55">
-							{String(item.body)}
+							{item.body}
 						</p>
 					) : null}
 				</div>
 				<p className="mt-8 text-sm text-bone/50">
-					{item.location} · {item.guest_count}
+					{item.location} · {item.guestCount}
 					{m.unclet_components_showcase_card_paragraph()}
 				</p>
 				<span className="mt-6 inline-flex items-center gap-2 text-xs font-bold tracking-[0.12em] text-brass-light uppercase">

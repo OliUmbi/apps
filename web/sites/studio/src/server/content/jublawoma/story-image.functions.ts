@@ -1,26 +1,30 @@
 import { idSchema, pageSchema } from "@oliumbi/contracts";
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import {
 	storyImageInputSchema,
 	storyImageKeySchema,
-} from "../../../model/content/jublawoma/story-image";
+} from "@oliumbi/jublawoma-data/content/story-image";
+import { createStoryImageRepository } from "@oliumbi/jublawoma-data/content/story-image.repository";
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { assets } from "../../assets.server";
 import { requireActor } from "../../auth.server";
-import { storyImageStore } from "./story-image.server";
+import { database } from "../../database.server";
 
 export const listStoryImages = createServerFn({ method: "GET" })
 	.validator(pageSchema.extend({ storyId: idSchema }))
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return storyImageStore().list(data, { story_id: data.storyId });
+		return createStoryImageRepository(database.sql).listForStory(
+			data,
+			data.storyId,
+		);
 	});
 
 export const getStoryImage = createServerFn({ method: "GET" })
 	.validator(storyImageKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return storyImageStore().get(data);
+		return createStoryImageRepository(database.sql).get(data);
 	});
 
 export const createStoryImage = createServerFn({ method: "POST" })
@@ -28,7 +32,7 @@ export const createStoryImage = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
 		if (data.imageId) await assets.images.get("jublawoma", data.imageId);
-		return storyImageStore().create(data);
+		return createStoryImageRepository(database.sql).create(data);
 	});
 
 export const updateStoryImage = createServerFn({ method: "POST" })
@@ -39,12 +43,15 @@ export const updateStoryImage = createServerFn({ method: "POST" })
 		await requireActor("jublawoma");
 		if (data.values.imageId)
 			await assets.images.get("jublawoma", data.values.imageId);
-		return storyImageStore().update(data.key, data.values);
+		return createStoryImageRepository(database.sql).update(
+			data.key,
+			data.values,
+		);
 	});
 
 export const deleteStoryImage = createServerFn({ method: "POST" })
 	.validator(storyImageKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		await storyImageStore().delete(data);
+		await createStoryImageRepository(database.sql).delete(data);
 	});

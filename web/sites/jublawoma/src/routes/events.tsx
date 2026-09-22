@@ -1,16 +1,14 @@
-import type { Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import type { EventRecord } from "@oliumbi/jublawoma-data/public.types";
 import { PaginatedList } from "@oliumbi/ui/paginated-list";
 import { createFileRoute } from "@tanstack/react-router";
 import { CalendarDays, Download, MapPin } from "lucide-react";
 import { MediaImage } from "../components/media-image";
 import { dateLabel } from "../data/dates";
 import { getEventPage } from "../data/events";
+import type { EventRecord } from "../model/content";
 
 export const Route = createFileRoute("/events")({
-	loader: () =>
-		getEventPage({ data: { page: 0 } }) as Promise<Page<EventRecord>>,
+	loader: () => getEventPage({ data: { page: 0 } }),
 	component: Events,
 });
 function Events() {
@@ -19,9 +17,7 @@ function Events() {
 		<PaginatedList<EventRecord>
 			queryKey={["events"]}
 			initialPage={initialPage}
-			load={(page) =>
-				getEventPage({ data: { page } }) as Promise<Page<EventRecord>>
-			}
+			load={(page) => getEventPage({ data: { page } })}
 		>
 			{(events) => (
 				<>
@@ -53,8 +49,8 @@ function Events() {
 									{String(index + 1).padStart(2, "0")}
 								</div>
 								<MediaImage
-									src={event.media[0]?.storageKey}
-									alt={event.media[0]?.altText || event.title}
+									src={event.media[0]?.src}
+									alt={event.media[0]?.alt || event.title}
 									seed={event.id}
 								/>
 								<div>

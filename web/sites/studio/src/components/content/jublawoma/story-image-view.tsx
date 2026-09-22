@@ -5,7 +5,7 @@ import {
 	type StoryImageInput,
 	storyImageInputFromRecord,
 	storyImageInputSchema,
-} from "../../../model/content/jublawoma/story-image";
+} from "@oliumbi/jublawoma-data/content/story-image";
 import {
 	createStoryImage,
 	deleteStoryImage,

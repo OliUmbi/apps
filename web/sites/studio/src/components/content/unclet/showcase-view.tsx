@@ -5,7 +5,7 @@ import {
 	type ShowcaseInput,
 	showcaseInputFromRecord,
 	showcaseInputSchema,
-} from "../../../model/content/unclet/showcase";
+} from "@oliumbi/unclet-data/content/showcase";
 import {
 	createShowcase,
 	deleteShowcase,

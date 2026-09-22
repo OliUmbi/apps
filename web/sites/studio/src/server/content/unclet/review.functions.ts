@@ -1,32 +1,33 @@
 import { pageSchema } from "@oliumbi/contracts";
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import {
 	reviewInputSchema,
 	reviewKeySchema,
-} from "../../../model/content/unclet/review";
+} from "@oliumbi/unclet-data/content/review";
+import { createReviewRepository } from "@oliumbi/unclet-data/content/review.repository";
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { requireActor } from "../../auth.server";
-import { reviewStore } from "./review.server";
+import { database } from "../../database.server";
 
 export const listReviews = createServerFn({ method: "GET" })
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return reviewStore().list(data);
+		return createReviewRepository(database.sql).list(data);
 	});
 
 export const getReview = createServerFn({ method: "GET" })
 	.validator(reviewKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return reviewStore().get(data);
+		return createReviewRepository(database.sql).get(data);
 	});
 
 export const createReview = createServerFn({ method: "POST" })
 	.validator(reviewInputSchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return reviewStore().create(data);
+		return createReviewRepository(database.sql).create(data);
 	});
 
 export const updateReview = createServerFn({ method: "POST" })
@@ -35,12 +36,12 @@ export const updateReview = createServerFn({ method: "POST" })
 	)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return reviewStore().update(data.key, data.values);
+		return createReviewRepository(database.sql).update(data.key, data.values);
 	});
 
 export const deleteReview = createServerFn({ method: "POST" })
 	.validator(reviewKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		await reviewStore().delete(data);
+		await createReviewRepository(database.sql).delete(data);
 	});

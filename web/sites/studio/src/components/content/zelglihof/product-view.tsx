@@ -5,7 +5,7 @@ import {
 	type ProductInput,
 	productInputFromRecord,
 	productInputSchema,
-} from "../../../model/content/zelglihof/product";
+} from "@oliumbi/zelglihof-data/content/product";
 import {
 	createProduct,
 	deleteProduct,

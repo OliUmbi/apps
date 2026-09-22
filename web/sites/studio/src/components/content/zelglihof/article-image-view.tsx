@@ -5,7 +5,7 @@ import {
 	articleImageInputFromRecord,
 	articleImageInputSchema,
 	newArticleImageInput,
-} from "../../../model/content/zelglihof/article-image";
+} from "@oliumbi/zelglihof-data/content/article-image";
 import {
 	createArticleImage,
 	deleteArticleImage,

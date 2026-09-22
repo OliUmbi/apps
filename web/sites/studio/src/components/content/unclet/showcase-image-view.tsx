@@ -5,7 +5,7 @@ import {
 	type ShowcaseImageInput,
 	showcaseImageInputFromRecord,
 	showcaseImageInputSchema,
-} from "../../../model/content/unclet/showcase-image";
+} from "@oliumbi/unclet-data/content/showcase-image";
 import {
 	createShowcaseImage,
 	deleteShowcaseImage,

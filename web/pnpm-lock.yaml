@@ -428,6 +428,9 @@ importers:
       '@oliumbi/identity':
         specifier: workspace:*
         version: link:../../packages/identity
+      '@oliumbi/jublawoma-data':
+        specifier: workspace:*
+        version: link:../../packages/jublawoma-data
       '@oliumbi/messaging':
         specifier: workspace:*
         version: link:../../packages/messaging
@@ -437,6 +440,9 @@ importers:
       '@oliumbi/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@oliumbi/unclet-data':
+        specifier: workspace:*
+        version: link:../../packages/unclet-data
       '@oliumbi/zelglihof-data':
         specifier: workspace:*
         version: link:../../packages/zelglihof-data

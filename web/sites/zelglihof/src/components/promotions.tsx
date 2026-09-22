@@ -1,22 +1,20 @@
-import type { ResourceRecord } from "@oliumbi/contracts";
 import { safeLinkHref } from "@oliumbi/contracts";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight } from "lucide-react";
-import { listPublicRecords } from "../data/public-records";
+import { getPromotions } from "../data/promotions";
 
 export function Promotions() {
 	const query = useQuery({
 		queryKey: ["promotions"],
-		queryFn: () =>
-			listPublicRecords({ data: { resource: "zelglihof.promotion", page: 0 } }),
+		queryFn: () => getPromotions(),
 	});
 	if (!query.data?.items.length) return null;
 	return (
 		<div className="shell grid gap-4 py-6">
-			{query.data?.items.map((item: ResourceRecord) => (
+			{query.data?.items.map((item) => (
 				<a
-					key={String(item.id)}
-					href={safeLinkHref(String(item.link))}
+					key={item.id}
+					href={safeLinkHref(item.link)}
 					className="grid gap-4 rounded-3xl bg-sage/40 p-8 sm:grid-cols-[1fr_auto]"
 				>
 					<div>

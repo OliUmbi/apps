@@ -1,26 +1,30 @@
 import { idSchema, pageSchema } from "@oliumbi/contracts";
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import {
 	showcaseImageInputSchema,
 	showcaseImageKeySchema,
-} from "../../../model/content/unclet/showcase-image";
+} from "@oliumbi/unclet-data/content/showcase-image";
+import { createShowcaseImageRepository } from "@oliumbi/unclet-data/content/showcase-image.repository";
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { assets } from "../../assets.server";
 import { requireActor } from "../../auth.server";
-import { showcaseImageStore } from "./showcase-image.server";
+import { database } from "../../database.server";
 
 export const listShowcaseImages = createServerFn({ method: "GET" })
 	.validator(pageSchema.extend({ showcaseId: idSchema }))
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return showcaseImageStore().list(data, { showcase_id: data.showcaseId });
+		return createShowcaseImageRepository(database.sql).listForShowcase(
+			data,
+			data.showcaseId,
+		);
 	});
 
 export const getShowcaseImage = createServerFn({ method: "GET" })
 	.validator(showcaseImageKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return showcaseImageStore().get(data);
+		return createShowcaseImageRepository(database.sql).get(data);
 	});
 
 export const createShowcaseImage = createServerFn({ method: "POST" })
@@ -28,7 +32,7 @@ export const createShowcaseImage = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
 		if (data.imageId) await assets.images.get("unclet", data.imageId);
-		return showcaseImageStore().create(data);
+		return createShowcaseImageRepository(database.sql).create(data);
 	});
 
 export const updateShowcaseImage = createServerFn({ method: "POST" })
@@ -42,12 +46,15 @@ export const updateShowcaseImage = createServerFn({ method: "POST" })
 		await requireActor("unclet");
 		if (data.values.imageId)
 			await assets.images.get("unclet", data.values.imageId);
-		return showcaseImageStore().update(data.key, data.values);
+		return createShowcaseImageRepository(database.sql).update(
+			data.key,
+			data.values,
+		);
 	});
 
 export const deleteShowcaseImage = createServerFn({ method: "POST" })
 	.validator(showcaseImageKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		await showcaseImageStore().delete(data);
+		await createShowcaseImageRepository(database.sql).delete(data);
 	});

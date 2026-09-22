@@ -1,8 +1,8 @@
 import { m } from "@oliumbi/i18n/messages";
 import { SimpleMarkdown } from "@oliumbi/ui/simple-markdown";
-import type { Update } from "@oliumbi/zelglihof-data/public.types";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
+import type { Update } from "../model/content";
 import { AssetImage } from "./asset-image";
 
 export function UpdateArticle({ update }: { update: Update }) {

@@ -1,31 +1,29 @@
 import { publicImageUrl } from "@oliumbi/assets/urls";
-import type { ResourceRecord } from "@oliumbi/contracts";
 import { safeLinkHref } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight } from "lucide-react";
-import { listPublicRecords } from "../../data/public-records";
+import { getPromotions } from "../../data/promotions";
 import { AssetImage } from "../asset-image";
 
 export function Promotions() {
 	const query = useQuery({
 		queryKey: ["promotions"],
-		queryFn: () =>
-			listPublicRecords({ data: { resource: "jublawoma.promotion", page: 0 } }),
+		queryFn: () => getPromotions(),
 	});
 	if (!query.data?.items.length) return null;
 	return (
 		<div className="shell promotion-list">
-			{query.data?.items.map((item: ResourceRecord) => (
+			{query.data?.items.map((item) => (
 				<a
-					key={String(item.id)}
-					href={safeLinkHref(String(item.link))}
+					key={item.id}
+					href={safeLinkHref(item.link)}
 					className="promotion-card group"
 				>
 					<div className="promotion-image">
 						<AssetImage
-							src={item.image_id ? publicImageUrl(String(item.image_id)) : null}
-							alt={String(item.title)}
+							src={item.imageId ? publicImageUrl(item.imageId) : null}
+							alt={item.title}
 							sizes="(min-width: 850px) 38vw, 100vw"
 							className="h-full w-full object-cover"
 						/>

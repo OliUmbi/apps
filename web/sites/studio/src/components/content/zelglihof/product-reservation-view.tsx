@@ -5,7 +5,7 @@ import {
 	type ProductReservationInput,
 	productReservationInputFromRecord,
 	productReservationInputSchema,
-} from "../../../model/content/zelglihof/product-reservation";
+} from "@oliumbi/zelglihof-data/content/product-reservation";
 import {
 	deleteProductReservation,
 	getProductReservation,
