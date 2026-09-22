@@ -47,7 +47,12 @@ export function ResponsiveImage({
 	return (
 		<picture style={{ display: "contents" }}>
 			{sources.map((source) => (
-				<source key={source.type} type={source.type} srcSet={source.srcSet} />
+				<source
+					key={source.type}
+					type={source.type}
+					srcSet={source.srcSet}
+					sizes={sizes}
+				/>
 			))}
 			<img
 				{...props}
@@ -68,19 +73,32 @@ export function ResponsiveImage({
 
 export function responsiveSrcSet(src: string): string | undefined {
 	let url: URL;
-	const relative = src.startsWith("/");
+	const relative = src.startsWith("/") && !src.startsWith("//");
+	const protocolRelative = src.startsWith("//");
+	if (!relative && !protocolRelative && !/^https?:\/\//i.test(src))
+		return undefined;
 	try {
 		url = new URL(src, "http://local");
 	} catch {
 		return undefined;
 	}
-	if (!url.pathname.startsWith("/images/") || !url.searchParams.has("size"))
+	if (
+		(!url.pathname.startsWith("/images/") &&
+			!url.pathname.startsWith("/api/assets/")) ||
+		!url.searchParams.has("size")
+	)
 		return undefined;
 	return renditionWidths
 		.map(([size, width]) => {
 			const rendition = new URL(url);
 			rendition.searchParams.set("size", size);
-			return `${relative ? `${rendition.pathname}${rendition.search}` : rendition.href} ${width}w`;
+			const path = `${rendition.pathname}${rendition.search}`;
+			const href = relative
+				? path
+				: protocolRelative
+					? `//${rendition.host}${path}`
+					: rendition.href;
+			return `${href} ${width}w`;
 		})
 		.join(", ");
 }

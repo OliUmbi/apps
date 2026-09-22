@@ -1,13 +1,12 @@
-import { attemptSchema, messageSchema } from "./schemas";
-
-export type * from "./types";
-
 import {
 	createHttpClient,
 	pagedSchema,
 	type ServiceOptions,
 } from "@oliumbi/http-client";
 import { z } from "zod";
+import { attemptSchema, messageSchema } from "./schemas";
+
+export type * from "./types";
 
 /** Delivery is queue-based. HTTP exposes history only; it cannot send or retry. */
 export function createMessagingClient(options: Omit<ServiceOptions, "name">) {

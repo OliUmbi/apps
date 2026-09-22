@@ -1,9 +1,11 @@
+import { Button } from "@base-ui/react/button";
 import { m } from "@oliumbi/i18n/messages";
+import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { FormFeedback } from "../components/form-feedback";
 import { unsubscribeFromNewsletter } from "../data/newsletter";
+
 export const Route = createFileRoute("/newsletter/unsubscribe/$token")({
 	component: Page,
 });
@@ -48,5 +50,3 @@ function Page() {
 		</section>
 	);
 }
-
-import { Button } from "@base-ui/react/button";

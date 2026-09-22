@@ -2,7 +2,10 @@ package ch.oliumbi.messaging.repositories;
 
 import ch.oliumbi.messaging.data.entities.MessageAttempt;
 import org.springframework.data.repository.CrudRepository;
-import java.util.*;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface MessageAttemptRepository extends CrudRepository<MessageAttempt, UUID> {
 

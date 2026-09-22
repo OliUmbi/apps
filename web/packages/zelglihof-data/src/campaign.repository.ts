@@ -1,5 +1,6 @@
 import type { Transaction } from "@oliumbi/database";
 import type { Campaign, CampaignRecipient } from "./campaign.types";
+
 export function createCampaignRepository(sql: Transaction) {
 	return {
 		async lock(id: string) {

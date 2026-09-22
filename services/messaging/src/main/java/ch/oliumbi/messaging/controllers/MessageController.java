@@ -1,12 +1,20 @@
 package ch.oliumbi.messaging.controllers;
 
-import ch.oliumbi.messaging.data.responses.*;
+import ch.oliumbi.messaging.data.responses.MessageDetailResponse;
+import ch.oliumbi.messaging.data.responses.MessageResponse;
 import ch.oliumbi.messaging.services.MessageService;
 import ch.oliumbi.shared.security.BearerTokenVerifier;
-import org.springframework.data.domain.*;
-import org.springframework.data.web.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedModel;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 

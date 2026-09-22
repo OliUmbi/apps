@@ -1,5 +1,6 @@
 import type { Page } from "@oliumbi/contracts";
 import { z } from "zod";
+
 export function pagedSchema<T>(item: z.ZodType<T>) {
 	return z
 		.object({

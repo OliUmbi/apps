@@ -1,34 +1,24 @@
 import type { ResourceDefinition } from "@oliumbi/contracts";
+
 export const uncletReview = {
 	table: "unclet.review",
-	label: "Bewertungen",
-	fields: [
+	columns: [
 		{
 			name: "stars",
-			label: "stars",
-			kind: "number",
-			integer: true,
-			min: 1,
-			max: 5,
+			dataType: "number",
 		},
 		{
 			name: "name",
-			label: "name",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "description",
-			label: "description",
-			kind: "textarea",
+			dataType: "text",
 		},
 		{
 			name: "visible",
-			label: "visible",
-			kind: "checkbox",
+			dataType: "boolean",
 		},
 	],
 	public: "visible",
-	create: true,
-	edit: true,
-	delete: true,
 } as const satisfies ResourceDefinition;

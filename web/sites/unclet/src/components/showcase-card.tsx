@@ -4,6 +4,7 @@ import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
 import { AssetImage } from "./asset-image";
+
 export function ShowcaseCard({
 	item,
 	index,

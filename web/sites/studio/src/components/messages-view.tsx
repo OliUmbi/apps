@@ -1,22 +1,18 @@
+import { Button } from "@base-ui/react/button";
 import { limits } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import type { Message } from "@oliumbi/messaging";
+import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { getMessage, listMessages } from "../server/messages.functions";
-import { FormFeedback } from "./form-feedback";
 
 function MessageDetail({ id, onClose }: { id: string; onClose: () => void }) {
 	const get = useServerFn(getMessage);
 	const query = useQuery({
 		queryKey: ["message", id],
-		queryFn: () =>
-			get({ data: id }) as Promise<{
-				message: Message;
-				attempts: DeliveryAttempt[];
-			}>,
+		queryFn: () => get({ data: id }),
 	});
 	return (
 		<div className="content-stack workspace-page">
@@ -52,13 +48,6 @@ function MessageDetail({ id, onClose }: { id: string; onClose: () => void }) {
 			</section>
 		</div>
 	);
-}
-
-interface DeliveryAttempt {
-	attemptNumber: number;
-	outcome: string | null;
-	detail: { code: string; message: string } | null;
-	startedAt: string;
 }
 
 export function MessagesView() {
@@ -162,5 +151,3 @@ function formatDate(value: string): string {
 		timeStyle: "short",
 	}).format(new Date(value));
 }
-
-import { Button } from "@base-ui/react/button";

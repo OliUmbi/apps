@@ -1,11 +1,16 @@
 package ch.oliumbi.messaging.services.delivery;
 
 import ch.oliumbi.messaging.data.requests.MessageCreateRequest;
-import ch.oliumbi.messaging.domain.*;
+import ch.oliumbi.messaging.domain.DeliveryClaim;
+import ch.oliumbi.messaging.domain.DeliveryResult;
+import ch.oliumbi.messaging.domain.FailureDetail;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.validation.Validator;
-import org.springframework.mail.*;
+import org.springframework.mail.MailAuthenticationException;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailParseException;
+import org.springframework.mail.MailPreparationException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;

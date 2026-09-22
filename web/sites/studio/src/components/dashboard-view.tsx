@@ -1,4 +1,6 @@
+import { Button } from "@base-ui/react/button";
 import { m } from "@oliumbi/i18n/messages";
+import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -10,21 +12,16 @@ import {
 	ShoppingBasket,
 	Users,
 } from "lucide-react";
-import {
-	getSite,
-	isResourceId,
-	type StudioSite,
-	studioSites,
-} from "../model/sites";
+import { isContentSection } from "../model/content-sections";
+import { getSite, type StudioSite, studioSites } from "../model/sites";
 import { Route } from "../routes/index";
 import { logoutFromStudio } from "../server/session.functions";
 import { AccountsView } from "./accounts-view";
 import { AppShell } from "./app-shell";
 import { AssetsView } from "./assets-view";
-import { FormFeedback } from "./form-feedback";
+import { ContentView } from "./content/content-view";
 import { MessagesView } from "./messages-view";
 import { ProfileView } from "./profile-view";
-import { ResourceView } from "./resource-view";
 
 export function DashboardView({
 	actor,
@@ -163,8 +160,8 @@ function SectionContent({
 	if (profile) return <ProfileView />;
 	if (administration && section === "accounts") return <AccountsView />;
 	if (administration && section === "messages") return <MessagesView />;
-	if (isResourceId(section))
-		return <ResourceView key={section} resourceId={section} />;
+	if (isContentSection(section))
+		return <ContentView key={section} section={section} />;
 	if (section === "images" || section === "documents")
 		return (
 			<AssetsView key={`${site.id}-${section}`} site={site.id} kind={section} />
@@ -242,5 +239,3 @@ function sectionDescription(icon: StudioSite["sections"][number]["icon"]) {
 		home: m.studio_overview_content(),
 	}[icon];
 }
-
-import { Button } from "@base-ui/react/button";

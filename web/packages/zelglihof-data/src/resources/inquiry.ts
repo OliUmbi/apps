@@ -1,40 +1,27 @@
 import type { ResourceDefinition } from "@oliumbi/contracts";
+
 export const zelglihofInquiry = {
 	table: "zelglihof.inquiry",
-	label: "Anfragen",
-	fields: [
+	columns: [
 		{
 			name: "status",
-			label: "status",
-			kind: "status",
+			dataType: "text",
 		},
 		{
 			name: "name",
-			label: "name",
-			kind: "text",
-			readOnly: true,
+			dataType: "text",
 		},
 		{
 			name: "phone",
-			label: "phone",
-			kind: "text",
-			readOnly: true,
+			dataType: "text",
 		},
 		{
 			name: "email",
-			label: "email",
-			kind: "email",
-			nullable: true,
-			readOnly: true,
+			dataType: "text",
 		},
 		{
 			name: "message",
-			label: "message",
-			kind: "textarea",
-			readOnly: true,
+			dataType: "text",
 		},
 	],
-	create: false,
-	edit: true,
-	delete: true,
 } as const satisfies ResourceDefinition;

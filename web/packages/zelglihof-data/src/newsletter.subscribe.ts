@@ -5,6 +5,7 @@ import { confirmationEmail } from "./newsletter.email";
 import { newsletterRepository } from "./newsletter.repository";
 import { hashToken, newToken, resendDelayMs } from "./newsletter.tokens";
 import type { NewsletterOptions } from "./newsletter.types";
+
 export async function requestSubscription(
 	database: DatabasePool,
 	options: NewsletterOptions,

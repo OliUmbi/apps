@@ -1,7 +1,3 @@
-import { documentSchema, imageDetailSchema, imageSchema } from "./schemas";
-
-export type * from "./types";
-
 import type { SiteId } from "@oliumbi/contracts";
 import {
 	createHttpClient,
@@ -9,6 +5,9 @@ import {
 	type ServiceOptions,
 } from "@oliumbi/http-client";
 import type { z } from "zod";
+import { documentSchema, imageDetailSchema, imageSchema } from "./schemas";
+
+export type * from "./types";
 
 export * from "./urls";
 

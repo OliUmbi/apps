@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Check, Mail } from "lucide-react";
 import { signupForNewsletter } from "../data/newsletter";
 import { SubmissionForm } from "./submission-form";
+
 export function NewsletterSignup() {
 	const submit = useServerFn(signupForNewsletter);
 	return (

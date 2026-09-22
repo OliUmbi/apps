@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 export const imageSchema = z.object({
 	id: z.uuid(),
 	site: z.string(),

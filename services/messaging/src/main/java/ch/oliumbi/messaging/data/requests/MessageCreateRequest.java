@@ -1,7 +1,9 @@
 package ch.oliumbi.messaging.data.requests;
 
 import ch.oliumbi.messaging.domain.DeliveryClaim;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 public record MessageCreateRequest(
         @NotBlank String site,

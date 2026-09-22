@@ -3,6 +3,7 @@ import { contactSchema } from "@oliumbi/zelglihof-data/contracts";
 import { useServerFn } from "@tanstack/react-start";
 import { sendContactInquiry } from "../data/contact";
 import { SubmissionForm } from "./submission-form";
+
 export function ContactForm() {
 	const submit = useServerFn(sendContactInquiry);
 	return (

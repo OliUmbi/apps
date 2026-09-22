@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./fonts.css";
+@source "../../../packages/ui/src";
 
 @theme {
 	--font-sans: "sans-geist", sans-serif;

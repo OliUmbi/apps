@@ -3,10 +3,10 @@ import { Field } from "@base-ui/react/field";
 import { Form } from "@base-ui/react/form";
 import { Select } from "@base-ui/react/select";
 import { m } from "@oliumbi/i18n/messages";
+import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import type { z } from "zod";
-import { FormFeedback } from "./form-feedback";
 import { InputField } from "./input-field";
 
 export interface SubmissionField {

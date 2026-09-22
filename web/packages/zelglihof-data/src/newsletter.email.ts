@@ -1,5 +1,6 @@
 import { emailMessage } from "@oliumbi/queue/email";
 import type { NewsletterOptions } from "./newsletter.types";
+
 export function confirmationEmail(
 	options: NewsletterOptions,
 	email: string,

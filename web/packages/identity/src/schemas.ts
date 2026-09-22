@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 export const actorSchema = z.object({ id: z.uuid(), name: z.string() });
 
 export const sessionSchema = z.object({

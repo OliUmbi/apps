@@ -1,44 +1,32 @@
 import type { ResourceDefinition } from "@oliumbi/contracts";
+
 export const jublawomaEvent = {
 	table: "jublawoma.event",
-	label: "Anlässe",
-	fields: [
+	columns: [
 		{
 			name: "name",
-			label: "name",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "description",
-			label: "description",
-			kind: "textarea",
-			nullable: true,
-			rows: 3,
+			dataType: "text",
 		},
 		{
 			name: "location",
-			label: "location",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "image_id",
-			label: "image id",
-			kind: "uuid",
-			nullable: true,
+			dataType: "uuid",
 		},
 		{
 			name: "starts_on",
-			label: "starts on",
-			kind: "date",
+			dataType: "date",
 		},
 		{
 			name: "ends_on",
-			label: "ends on",
-			kind: "date",
+			dataType: "date",
 		},
 	],
 	public: "all",
-	create: true,
-	edit: true,
-	delete: true,
 } as const satisfies ResourceDefinition;

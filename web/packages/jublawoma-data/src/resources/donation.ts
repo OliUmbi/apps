@@ -1,36 +1,28 @@
 import type { ResourceDefinition } from "@oliumbi/contracts";
+
 export const jublawomaDonation = {
 	table: "jublawoma.donation",
-	label: "Spendenaktionen",
-	fields: [
+	columns: [
 		{
 			name: "title",
-			label: "title",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "description",
-			label: "description",
-			kind: "textarea",
+			dataType: "text",
 		},
 		{
 			name: "contact",
-			label: "contact",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "starts_at",
-			label: "starts at",
-			kind: "datetime-local",
+			dataType: "timestamp",
 		},
 		{
 			name: "ends_at",
-			label: "ends at",
-			kind: "datetime-local",
+			dataType: "timestamp",
 		},
 	],
 	public: "active",
-	create: true,
-	edit: true,
-	delete: true,
 } as const satisfies ResourceDefinition;

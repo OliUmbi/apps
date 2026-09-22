@@ -1,8 +1,15 @@
 package ch.oliumbi.messaging.services.processing;
 
-import ch.oliumbi.messaging.data.entities.*;
-import ch.oliumbi.messaging.domain.*;
-import ch.oliumbi.messaging.repositories.*;
+import ch.oliumbi.messaging.data.entities.Message;
+import ch.oliumbi.messaging.data.entities.MessageAttempt;
+import ch.oliumbi.messaging.domain.AttemptOutcome;
+import ch.oliumbi.messaging.domain.DeliveryClaim;
+import ch.oliumbi.messaging.domain.DeliveryResult;
+import ch.oliumbi.messaging.domain.DeliveryState;
+import ch.oliumbi.messaging.domain.DeliveryStateMachine;
+import ch.oliumbi.messaging.domain.FailureDetail;
+import ch.oliumbi.messaging.repositories.MessageAttemptRepository;
+import ch.oliumbi.messaging.repositories.MessageRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

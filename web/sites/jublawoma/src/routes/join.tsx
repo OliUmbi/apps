@@ -1,6 +1,7 @@
 import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute } from "@tanstack/react-router";
 import { Download, Mail } from "lucide-react";
+
 export const Route = createFileRoute("/join")({ component: Join });
 function Join() {
 	return (

@@ -6,7 +6,7 @@ import {
 } from "@oliumbi/contracts";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { assets as client } from "./assets.server";
+import { assets } from "./assets.server";
 import { requireActor } from "./auth.server";
 
 const assetInput = z.object({
@@ -22,23 +22,20 @@ const deleteAssetInput = assetInput.extend({ id: idSchema });
 export const listAssets = createServerFn({ method: "GET" })
 	.validator(listAssetInput)
 	.handler(async ({ data }) => {
-		const input = data as z.infer<typeof listAssetInput>;
-		await requireActor(input.site);
-		return client[input.kind].list(input.site, input.page, input.size);
+		await requireActor(data.site);
+		return assets[data.kind].list(data.site, data.page, data.size);
 	});
 export const setAssetVisibility = createServerFn({ method: "POST" })
 	.validator(visibilityInput)
 	.handler(async ({ data }) => {
-		const input = data as z.infer<typeof visibilityInput>;
-		await requireActor(input.site);
-		await client[input.kind].visibility(input.site, input.id, input.visible);
+		await requireActor(data.site);
+		await assets[data.kind].visibility(data.site, data.id, data.visible);
 	});
 export const deleteAsset = createServerFn({ method: "POST" })
 	.validator(deleteAssetInput)
 	.handler(async ({ data }) => {
-		const input = data as z.infer<typeof deleteAssetInput>;
-		await requireActor(input.site);
-		await client[input.kind].delete(input.site, input.id);
+		await requireActor(data.site);
+		await assets[data.kind].delete(data.site, data.id);
 	});
 export const uploadAsset = createServerFn({ method: "POST" })
 	.validator((input: FormData) => input)
@@ -51,7 +48,7 @@ export const uploadAsset = createServerFn({ method: "POST" })
 			input.kind === "documents"
 				? slugSchema.parse(data.get("slug"))
 				: undefined;
-		return client[input.kind].upload(input.site, file, {
+		return assets[input.kind].upload(input.site, file, {
 			visible: data.get("visible") === "true",
 			slug,
 		});

@@ -1,9 +1,11 @@
+import { Button } from "@base-ui/react/button";
+import { Form } from "@base-ui/react/form";
 import { emailSchema } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
+import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { requestSubscriberConfirmation } from "../server/newsletter.functions";
-import { FormFeedback } from "./form-feedback";
 import { InputField } from "./input-field";
 
 export function SubscriberInvite() {
@@ -14,7 +16,7 @@ export function SubscriberInvite() {
 			request({ data: { email: emailSchema.parse(form.get("email")) } }),
 		onSuccess: () =>
 			cache.invalidateQueries({
-				queryKey: ["records", "zelglihof.subscriber"],
+				queryKey: ["content", "zelglihof.subscriber"],
 			}),
 	});
 	return (
@@ -48,6 +50,3 @@ export function SubscriberInvite() {
 		</Form>
 	);
 }
-
-import { Button } from "@base-ui/react/button";
-import { Form } from "@base-ui/react/form";

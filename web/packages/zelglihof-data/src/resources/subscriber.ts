@@ -1,37 +1,27 @@
 import type { ResourceDefinition } from "@oliumbi/contracts";
+
 export const zelglihofSubscriber = {
 	table: "zelglihof.subscriber",
-	label: "Abonnenten",
-	fields: [
+	columns: [
 		{
 			name: "email",
-			label: "email",
-			kind: "email",
+			dataType: "text",
 		},
 		{
 			name: "status",
-			label: "status",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "requested_at",
-			label: "requested at",
-			kind: "datetime-local",
+			dataType: "timestamp",
 		},
 		{
 			name: "confirmed_at",
-			label: "confirmed at",
-			kind: "datetime-local",
-			nullable: true,
+			dataType: "timestamp",
 		},
 		{
 			name: "unsubscribed_at",
-			label: "unsubscribed at",
-			kind: "datetime-local",
-			nullable: true,
+			dataType: "timestamp",
 		},
 	],
-	create: false,
-	edit: false,
-	delete: true,
 } as const satisfies ResourceDefinition;

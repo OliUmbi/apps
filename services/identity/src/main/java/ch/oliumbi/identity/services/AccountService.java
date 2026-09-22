@@ -1,10 +1,11 @@
 package ch.oliumbi.identity.services;
 
 import ch.oliumbi.identity.data.entities.Account;
-
-import ch.oliumbi.identity.data.requests.*;
-import ch.oliumbi.identity.data.responses.AccountResponse;
+import ch.oliumbi.identity.data.requests.AccountCreateRequest;
+import ch.oliumbi.identity.data.requests.AccountPasswordRequest;
+import ch.oliumbi.identity.data.requests.AccountUpdateRequest;
 import ch.oliumbi.identity.data.responses.AccountDetailResponse;
+import ch.oliumbi.identity.data.responses.AccountResponse;
 import ch.oliumbi.identity.repositories.AccountRepository;
 import ch.oliumbi.identity.repositories.AccountSessionRepository;
 import org.springframework.http.HttpStatus;
@@ -21,15 +22,15 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
     private final AccountSessionRepository accountSessionRepository;
-    private final NormalizeService normalizeService;
+    private final IdentityInputNormalizer inputNormalizer;
     private final PasswordService passwordService;
     private final Clock clock;
 
     public AccountService(AccountRepository accountRepository, AccountSessionRepository accountSessionRepository,
-                          NormalizeService normalizeService, PasswordService passwordService, Clock clock) {
+                          IdentityInputNormalizer inputNormalizer, PasswordService passwordService, Clock clock) {
         this.accountRepository = accountRepository;
         this.accountSessionRepository = accountSessionRepository;
-        this.normalizeService = normalizeService;
+        this.inputNormalizer = inputNormalizer;
         this.passwordService = passwordService;
         this.clock = clock;
     }
@@ -50,8 +51,8 @@ public class AccountService {
 
     @Transactional
     public AccountResponse create(AccountCreateRequest request) {
-        var name = normalizeService.normalizeName(request.name());
-        var email = normalizeService.normalizeEmail(request.email());
+        var name = inputNormalizer.normalizeName(request.name());
+        var email = inputNormalizer.normalizeEmail(request.email());
 
         if (!isAvailable(name, email)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Name or email already in use");
@@ -67,8 +68,8 @@ public class AccountService {
         var account = accountRepository.findLockedById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        var name = normalizeService.normalizeName(request.name());
-        var email = normalizeService.normalizeEmail(request.email());
+        var name = inputNormalizer.normalizeName(request.name());
+        var email = inputNormalizer.normalizeEmail(request.email());
 
         if (!isAvailable(name, email, id)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Name or email already in use");

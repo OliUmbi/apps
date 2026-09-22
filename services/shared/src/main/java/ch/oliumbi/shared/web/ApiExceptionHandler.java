@@ -1,10 +1,15 @@
 package ch.oliumbi.shared.web;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.*;
+import org.springframework.dao.ConcurrencyFailureException;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.TransientDataAccessException;
 import org.springframework.data.core.PropertyReferenceException;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Arrays;

@@ -1,6 +1,7 @@
 import { emailMessage } from "@oliumbi/queue/email";
 import type { ReservationInput } from "./forms";
 import type { ReservableVariant } from "./reservation.types";
+
 export function reservationEmails(
 	sender: string,
 	input: ReservationInput,

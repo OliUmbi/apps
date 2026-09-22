@@ -1,13 +1,11 @@
-import {
-	pageSchema,
-	type ResourceDefinition,
-	type ResourceRecord,
-} from "@oliumbi/contracts";
-import type { Database } from "./index";
-import { createResourceRepository } from "./resource.repository";
+import { pageSchema, type ResourceDefinition } from "@oliumbi/contracts";
+import type { Database } from "./database.types";
+import { resourceQuery } from "./resource.query";
+import { createResourceReader } from "./resource.reader";
+import { type DatabaseRecord, serializeRows } from "./resource.rows";
 
 export interface PublicRelation {
-	table: string;
+	resource: ResourceDefinition;
 	column: string;
 }
 
@@ -17,41 +15,27 @@ export function createPublicRepository(
 ) {
 	return {
 		list: (resource: ResourceDefinition, page = 0) =>
-			createResourceRepository(sql, resource).list(
+			createResourceReader(sql, resource).list(
 				pageSchema.parse({ page }),
 				true,
 			),
 		async detail(resource: ResourceDefinition, value: string, bySlug = false) {
-			if (bySlug && !resource.fields.some((field) => field.name === "slug"))
+			if (bySlug && !resource.columns.some((field) => field.name === "slug"))
 				throw new Error("This resource has no slug");
-			const repository = createResourceRepository(sql, resource);
+			const repository = createResourceReader(sql, resource);
 			const record = bySlug
 				? await repository.findBySlug(value)
 				: await repository.find({ id: value }, true);
 			if (!record) return null;
 			const relation = relations[resource.table];
-			const children = relation
-				? normalizeRecords(
-						await sql<ResourceRecord[]>`
-					SELECT *
-					FROM ${sql(relation.table)}
-					WHERE ${sql(relation.column)} = ${record.id}
-					ORDER BY created_at
-				`,
-					)
-				: [];
-			return { record, children };
+			if (!relation) return { record, children: [] };
+			const query = resourceQuery(sql, relation.resource);
+			const children = await sql<DatabaseRecord[]>`
+    SELECT ${query.columns} FROM ${query.table}
+    WHERE ${sql(relation.column)} = ${record.id} AND ${query.visibility(true)}
+    ORDER BY created_at, ${query.order}
+   `;
+			return { record, children: serializeRows(children, relation.resource) };
 		},
 	};
-}
-
-function normalizeRecords(records: ResourceRecord[]) {
-	return records.map((record) =>
-		Object.fromEntries(
-			Object.entries(record).map(([key, value]) => [
-				key,
-				key.endsWith("_at") ? String(value) : value,
-			]),
-		),
-	);
 }

@@ -1,3 +1,4 @@
+import { safeLinkHref } from "@oliumbi/contracts";
 import { Fragment, type ReactNode } from "react";
 
 export type MarkdownInline =
@@ -210,19 +211,4 @@ function wrappedToken(
 		inline: { type, value: value.slice(contentStart, end) } as MarkdownInline,
 		end: end + marker.length,
 	};
-}
-
-export function safeLinkHref(value: string): string | undefined {
-	if (
-		(value.startsWith("/") && !value.startsWith("//")) ||
-		value.startsWith("#")
-	)
-		return value;
-	try {
-		return ["http:", "https:", "mailto:"].includes(new URL(value).protocol)
-			? value
-			: undefined;
-	} catch {
-		return undefined;
-	}
 }

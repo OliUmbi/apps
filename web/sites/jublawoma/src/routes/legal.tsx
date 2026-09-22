@@ -1,6 +1,7 @@
 import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute } from "@tanstack/react-router";
 import { getLeadership } from "../data/public-records";
+
 export const Route = createFileRoute("/legal")({
 	loader: () => getLeadership(),
 	component: Imprint,

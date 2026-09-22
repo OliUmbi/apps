@@ -3,6 +3,7 @@ import { m } from "@oliumbi/i18n/messages";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Quote, Star } from "lucide-react";
 import { listPublicRecords } from "../data/public-records";
+
 export function PublicReviews() {
 	const query = useInfiniteQuery({
 		queryKey: ["reviews"],

@@ -1,10 +1,10 @@
 import type { Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import type { EventRecord } from "@oliumbi/jublawoma-data/public.types";
+import { PaginatedList } from "@oliumbi/ui/paginated-list";
 import { createFileRoute } from "@tanstack/react-router";
 import { CalendarDays, Download, MapPin } from "lucide-react";
 import { MediaImage } from "../components/media-image";
-import { PaginatedList } from "../components/paginated-list";
 import { dateLabel } from "../data/dates";
 import { getEventPage } from "../data/events";
 

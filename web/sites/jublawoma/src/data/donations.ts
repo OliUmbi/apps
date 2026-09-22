@@ -5,6 +5,7 @@ import { createDonationReader } from "@oliumbi/jublawoma-data/donation.reader";
 import { createDonationService } from "@oliumbi/jublawoma-data/donation.service";
 import { createServerFn } from "@tanstack/react-start";
 import { database } from "../server/database.server";
+
 export const submitCommitment = createServerFn({ method: "POST" })
 	.validator(commitmentSchema)
 	.handler(({ data }) => createDonationService(database).commit(data));

@@ -1,55 +1,40 @@
 import type { ResourceDefinition } from "@oliumbi/contracts";
+
 export const uncletShowcase = {
 	table: "unclet.showcase",
-	label: "Einblicke",
-	fields: [
+	columns: [
 		{
 			name: "slug",
-			label: "slug",
-			kind: "slug",
+			dataType: "text",
 		},
 		{
 			name: "title",
-			label: "title",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "location",
-			label: "location",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "guest_count",
-			label: "guest count",
-			kind: "number",
-			integer: true,
+			dataType: "number",
 		},
 		{
 			name: "image_id",
-			label: "image id",
-			kind: "uuid",
-			nullable: true,
+			dataType: "uuid",
 		},
 		{
 			name: "published",
-			label: "published",
-			kind: "checkbox",
+			dataType: "boolean",
 		},
 		{
 			name: "published_on",
-			label: "published on",
-			kind: "date",
-			nullable: true,
+			dataType: "date",
 		},
 		{
 			name: "body",
-			label: "body",
-			kind: "textarea",
-			nullable: true,
+			dataType: "text",
 		},
 	],
 	public: "published",
-	create: true,
-	edit: true,
-	delete: true,
 } as const satisfies ResourceDefinition;

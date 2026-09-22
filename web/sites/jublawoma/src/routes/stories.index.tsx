@@ -1,11 +1,12 @@
 import type { Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import type { StoryRecord } from "@oliumbi/jublawoma-data/public.types";
+import { PaginatedList } from "@oliumbi/ui/paginated-list";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Camera } from "lucide-react";
 import { MediaImage } from "../components/media-image";
-import { PaginatedList } from "../components/paginated-list";
 import { getStoryPage } from "../data/stories";
+
 export const Route = createFileRoute("/stories/")({
 	loader: () =>
 		getStoryPage({ data: { page: 0 } }) as Promise<Page<StoryRecord>>,

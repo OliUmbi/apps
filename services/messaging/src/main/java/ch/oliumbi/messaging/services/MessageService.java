@@ -1,9 +1,13 @@
 package ch.oliumbi.messaging.services;
 
-import ch.oliumbi.messaging.data.responses.*;
+import ch.oliumbi.messaging.data.responses.MessageAttemptResponse;
+import ch.oliumbi.messaging.data.responses.MessageDetailResponse;
+import ch.oliumbi.messaging.data.responses.MessageResponse;
 import ch.oliumbi.messaging.domain.MessageStatus;
-import ch.oliumbi.messaging.repositories.*;
-import org.springframework.data.domain.*;
+import ch.oliumbi.messaging.repositories.MessageAttemptRepository;
+import ch.oliumbi.messaging.repositories.MessageRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

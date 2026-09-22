@@ -4,11 +4,11 @@ import { getResource, type ResourceId } from "./catalog";
 
 const relations = {
 	"zelglihof.article": {
-		table: "zelglihof.article_image",
+		resource: getResource("zelglihof.article_image"),
 		column: "article_id",
 	},
 	"zelglihof.product": {
-		table: "zelglihof.product_variant",
+		resource: getResource("zelglihof.product_variant"),
 		column: "product_id",
 	},
 };

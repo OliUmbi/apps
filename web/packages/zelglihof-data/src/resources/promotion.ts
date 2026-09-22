@@ -1,42 +1,32 @@
 import type { ResourceDefinition } from "@oliumbi/contracts";
+
 export const zelglihofPromotion = {
 	table: "zelglihof.promotion",
-	label: "Promotionen",
-	fields: [
+	columns: [
 		{
 			name: "title",
-			label: "title",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "description",
-			label: "description",
-			kind: "textarea",
+			dataType: "text",
 		},
 		{
 			name: "link",
-			label: "link",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "image_id",
-			label: "image id",
-			kind: "uuid",
-			nullable: true,
+			dataType: "uuid",
 		},
 		{
 			name: "starts_at",
-			label: "starts at",
-			kind: "datetime-local",
+			dataType: "timestamp",
 		},
 		{
 			name: "ends_at",
-			label: "ends at",
-			kind: "datetime-local",
+			dataType: "timestamp",
 		},
 	],
 	public: "active",
-	create: true,
-	edit: true,
-	delete: true,
 } as const satisfies ResourceDefinition;

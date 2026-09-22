@@ -1,12 +1,16 @@
 package ch.oliumbi.assets.services.processing;
 
-import ch.oliumbi.assets.domain.*;
+import ch.oliumbi.assets.domain.ImageFormat;
+import ch.oliumbi.assets.domain.ImageRendition;
+import ch.oliumbi.assets.domain.ImageSize;
 import net.coobird.thumbnailator.Thumbnails;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 final class ImageRenditions {
     private final int masterMaxSide;

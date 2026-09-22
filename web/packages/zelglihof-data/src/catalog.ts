@@ -1,5 +1,6 @@
 import type { ResourceDefinition } from "@oliumbi/contracts";
 import * as zelglihof from "./resources";
+
 export const resources = {
 	"zelglihof.promotion": zelglihof.zelglihofPromotion,
 	"zelglihof.article": zelglihof.zelglihofArticle,
@@ -12,10 +13,6 @@ export const resources = {
 	"zelglihof.inquiry": zelglihof.zelglihofInquiry,
 } satisfies Record<string, ResourceDefinition>;
 export type ResourceId = keyof typeof resources;
-export const resourceIds = Object.keys(resources) as [
-	ResourceId,
-	...ResourceId[],
-];
 export function getResource(id: ResourceId): ResourceDefinition {
 	return resources[id];
 }

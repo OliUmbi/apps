@@ -1,5 +1,6 @@
 import { emailMessage } from "@oliumbi/queue/email";
 import type { InquiryInput } from "./forms";
+
 export function inquiryEmails(
 	sender: string,
 	input: InquiryInput,

@@ -1,3 +1,4 @@
+import { Button } from "@base-ui/react/button";
 import { m } from "@oliumbi/i18n/messages";
 import { ArrowLeft, Mail, Users } from "lucide-react";
 
@@ -43,5 +44,3 @@ export function AdministrationNavigation({
 		</>
 	);
 }
-
-import { Button } from "@base-ui/react/button";

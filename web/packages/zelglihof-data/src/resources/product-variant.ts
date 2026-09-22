@@ -1,45 +1,32 @@
 import type { ResourceDefinition } from "@oliumbi/contracts";
+
 export const zelglihofProductVariant = {
 	table: "zelglihof.product_variant",
-	label: "Varianten",
-	fields: [
+	columns: [
 		{
 			name: "product_id",
-			label: "product id",
-			kind: "uuid",
+			dataType: "uuid",
 		},
 		{
 			name: "name",
-			label: "name",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "description",
-			label: "description",
-			kind: "textarea",
-			nullable: true,
+			dataType: "text",
 		},
 		{
 			name: "image_id",
-			label: "image id",
-			kind: "uuid",
-			nullable: true,
+			dataType: "uuid",
 		},
 		{
 			name: "price",
-			label: "price",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "quantity",
-			label: "quantity",
-			kind: "number",
-			nullable: true,
-			integer: true,
+			dataType: "number",
 		},
 	],
 	public: "all",
-	create: true,
-	edit: true,
-	delete: true,
 } as const satisfies ResourceDefinition;

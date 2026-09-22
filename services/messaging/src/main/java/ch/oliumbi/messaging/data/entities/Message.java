@@ -1,8 +1,19 @@
 package ch.oliumbi.messaging.data.entities;
 
-import ch.oliumbi.messaging.domain.*;
-import jakarta.persistence.*;
-import lombok.*;
+import ch.oliumbi.messaging.domain.DeliveryClaim;
+import ch.oliumbi.messaging.domain.DeliveryState;
+import ch.oliumbi.messaging.domain.MessageStatus;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 

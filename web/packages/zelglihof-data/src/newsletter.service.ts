@@ -3,6 +3,7 @@ import { confirmSubscription } from "./newsletter.confirm";
 import { requestSubscription } from "./newsletter.subscribe";
 import type { NewsletterOptions } from "./newsletter.types";
 import { unsubscribeByToken } from "./newsletter.unsubscribe";
+
 export function createNewsletterService(
 	database: DatabasePool,
 	options: NewsletterOptions,

@@ -1,62 +1,39 @@
 import type { ResourceDefinition } from "@oliumbi/contracts";
+
 export const uncletInquiry = {
 	table: "unclet.inquiry",
-	label: "Anfragen",
-	fields: [
+	columns: [
 		{
 			name: "status",
-			label: "status",
-			kind: "status",
+			dataType: "text",
 		},
 		{
 			name: "name",
-			label: "name",
-			kind: "text",
-			readOnly: true,
+			dataType: "text",
 		},
 		{
 			name: "email",
-			label: "email",
-			kind: "email",
-			readOnly: true,
+			dataType: "text",
 		},
 		{
 			name: "phone",
-			label: "phone",
-			kind: "text",
-			readOnly: true,
+			dataType: "text",
 		},
 		{
 			name: "event_on",
-			label: "event on",
-			kind: "date",
-			nullable: true,
-			readOnly: true,
+			dataType: "date",
 		},
 		{
 			name: "location",
-			label: "location",
-			kind: "text",
-			nullable: true,
-			readOnly: true,
+			dataType: "text",
 		},
 		{
 			name: "guest_count",
-			label: "guest count",
-			kind: "number",
-			nullable: true,
-			integer: true,
-			readOnly: true,
+			dataType: "number",
 		},
 		{
 			name: "note",
-			label: "note",
-			kind: "textarea",
-			nullable: true,
-			readOnly: true,
+			dataType: "text",
 		},
 	],
-	create: false,
-	edit: true,
-	delete: true,
 } as const satisfies ResourceDefinition;

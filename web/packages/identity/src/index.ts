@@ -1,3 +1,5 @@
+import { createHttpClient, type ServiceOptions } from "@oliumbi/http-client";
+import { z } from "zod";
 import {
 	accountSchema,
 	actorSchema,
@@ -6,9 +8,6 @@ import {
 } from "./schemas";
 
 export type * from "./types";
-
-import { createHttpClient, type ServiceOptions } from "@oliumbi/http-client";
-import { z } from "zod";
 
 export function createIdentityClient(options: Omit<ServiceOptions, "name">) {
 	const http = createHttpClient({ ...options, name: "Identity" });

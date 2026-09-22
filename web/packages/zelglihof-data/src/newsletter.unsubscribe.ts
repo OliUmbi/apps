@@ -1,5 +1,6 @@
 import type { DatabasePool } from "@oliumbi/database";
 import { newsletterRepository } from "./newsletter.repository";
+
 export function unsubscribeByToken(database: DatabasePool, token: string) {
 	return database.transaction(async (sql) => {
 		const repository = newsletterRepository(sql);

@@ -12,12 +12,15 @@
     "build:zelglihof": "pnpm --filter zelglihof build",
     "build:studio": "pnpm --filter studio build",
     "check": "biome check",
-		"fix": "biome check --write",
-		"typecheck": "pnpm -r check",
-		"build": "pnpm --workspace-concurrency=1 --filter \"./sites/*\" -r build"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "catalog:",
-		"typescript": "catalog:"
-	}
+    "fix": "biome check --write",
+    "typecheck": "pnpm -r check && tsc --project tests/tsconfig.json",
+    "build": "pnpm --workspace-concurrency=1 --filter \"./sites/*\" -r build",
+    "test": "tsx --test tests/*.test.ts"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "catalog:",
+    "@types/node": "catalog:",
+    "tsx": "^4.23.13",
+    "typescript": "catalog:"
+  }
 }

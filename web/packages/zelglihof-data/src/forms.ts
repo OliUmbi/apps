@@ -7,6 +7,7 @@ import {
 	textSchema,
 } from "@oliumbi/contracts";
 import { z } from "zod";
+
 export const contactSchema = z.object({
 	name: nameSchema,
 	email: optionalEmailSchema,

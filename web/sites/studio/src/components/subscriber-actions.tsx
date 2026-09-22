@@ -1,34 +1,35 @@
-import type { ResourceRecord } from "@oliumbi/contracts";
+import { Button } from "@base-ui/react/button";
+import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
+import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { MailCheck } from "lucide-react";
+import type { Subscriber } from "../model/content/zelglihof/subscriber";
 import {
 	correctSubscriberEmail,
 	requestSubscriberConfirmation,
 	unsubscribeSubscriber,
 } from "../server/newsletter.functions";
-import { FormFeedback } from "./form-feedback";
 import { InputField } from "./input-field";
 
-export function SubscriberActions({ record }: { record: ResourceRecord }) {
+export function SubscriberActions({ record }: { record: Subscriber }) {
 	const cache = useQueryClient();
 	const correct = useServerFn(correctSubscriberEmail);
 	const unsubscribe = useServerFn(unsubscribeSubscriber);
 	const resend = useServerFn(requestSubscriberConfirmation);
 	const refresh = () =>
-		cache.invalidateQueries({ queryKey: ["records", "zelglihof.subscriber"] });
+		cache.invalidateQueries({ queryKey: ["content", "zelglihof.subscriber"] });
 	const correction = useMutation({
-		mutationFn: (email: string) =>
-			correct({ data: { id: String(record.id), email } }),
+		mutationFn: (email: string) => correct({ data: { id: record.id, email } }),
 		onSuccess: refresh,
 	});
 	const removal = useMutation({
-		mutationFn: () => unsubscribe({ data: { id: String(record.id) } }),
+		mutationFn: () => unsubscribe({ data: { id: record.id } }),
 		onSuccess: refresh,
 	});
 	const confirmation = useMutation({
-		mutationFn: () => resend({ data: { email: String(record.email) } }),
+		mutationFn: () => resend({ data: { email: record.email } }),
 	});
 	return (
 		<section className="settings-panel subscriber-workspace">
@@ -49,10 +50,11 @@ export function SubscriberActions({ record }: { record: ResourceRecord }) {
 				}}
 			>
 				<InputField
+					key={record.email}
 					name="email"
 					label={m.studio_components_subscriber_actions_label()}
 					type="email"
-					defaultValue={String(record.email)}
+					defaultValue={record.email}
 					required
 				/>
 				<Button
@@ -100,6 +102,3 @@ export function SubscriberActions({ record }: { record: ResourceRecord }) {
 		</section>
 	);
 }
-
-import { Button } from "@base-ui/react/button";
-import { Form } from "@base-ui/react/form";

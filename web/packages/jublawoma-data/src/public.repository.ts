@@ -3,9 +3,12 @@ import { createPublicRepository as createDatabasePublicRepository } from "@olium
 import { getResource, type ResourceId } from "./catalog";
 
 const relations = {
-	"jublawoma.story": { table: "jublawoma.story_image", column: "story_id" },
+	"jublawoma.story": {
+		resource: getResource("jublawoma.story_image"),
+		column: "story_id",
+	},
 	"jublawoma.donation": {
-		table: "jublawoma.donation_item",
+		resource: getResource("jublawoma.donation_item"),
 		column: "donation_id",
 	},
 };

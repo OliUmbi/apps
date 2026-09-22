@@ -2,7 +2,10 @@ package ch.oliumbi.assets.services.processing;
 
 import ch.oliumbi.assets.domain.ImageFormat;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.EOFException;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;

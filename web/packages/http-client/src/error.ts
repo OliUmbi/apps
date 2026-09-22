@@ -4,5 +4,6 @@ export class ServiceError extends Error {
 		readonly status: number,
 	) {
 		super(`${service} request failed (${status})`);
+		this.name = "ServiceError";
 	}
 }

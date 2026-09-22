@@ -1,9 +1,10 @@
 import type { Page as PageData } from "@oliumbi/contracts";
+import { PaginatedList } from "@oliumbi/ui/paginated-list";
 import type { Product } from "@oliumbi/zelglihof-data/public.types";
 import { createFileRoute } from "@tanstack/react-router";
-import { PaginatedList } from "../components/paginated-list";
 import { ProductCatalog } from "../components/product-catalog";
 import { getProductPage } from "../data/products";
+
 export const Route = createFileRoute("/products/")({
 	loader: () =>
 		getProductPage({ data: { page: 0 } }) as Promise<PageData<Product>>,

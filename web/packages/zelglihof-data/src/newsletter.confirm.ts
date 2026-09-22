@@ -4,6 +4,7 @@ import { welcomeEmail } from "./newsletter.email";
 import { newsletterRepository } from "./newsletter.repository";
 import { confirmationLifetimeMs, hashToken } from "./newsletter.tokens";
 import type { NewsletterOptions } from "./newsletter.types";
+
 export function confirmSubscription(
 	database: DatabasePool,
 	options: NewsletterOptions,

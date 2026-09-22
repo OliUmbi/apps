@@ -7,6 +7,10 @@
     "strict": true,
     "skipLibCheck": true,
     "allowJs": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true
   }
 }

@@ -1,6 +1,7 @@
 import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute } from "@tanstack/react-router";
 import { LegalPage } from "../components/legal-page";
+
 export const Route = createFileRoute("/privacy")({
 	head: () => ({ meta: [{ title: m.unclet_routes_privacy_title() }] }),
 	component: () => (

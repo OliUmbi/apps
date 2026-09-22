@@ -1,27 +1,21 @@
 import type { ResourceDefinition } from "@oliumbi/contracts";
+
 export const uncletShowcaseImage = {
 	table: "unclet.showcase_image",
-	label: "Einblickbilder",
-	fields: [
+	columns: [
 		{
 			name: "showcase_id",
-			label: "showcase id",
-			kind: "uuid",
+			dataType: "uuid",
 		},
 		{
 			name: "image_id",
-			label: "image id",
-			kind: "uuid",
+			dataType: "uuid",
 		},
 		{
 			name: "description",
-			label: "description",
-			kind: "text",
+			dataType: "text",
 		},
 	],
 	public: "all",
-	create: true,
-	edit: true,
-	delete: true,
 	keys: ["showcase_id", "image_id"],
 } as const satisfies ResourceDefinition;

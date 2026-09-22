@@ -14,7 +14,8 @@
 			"!**/src/routeTree.gen.ts",
 			"!**/.dependencies-before-rework",
 			"!**/src/paraglide",
-			"**/vite.config.js"
+			"**/vite.config.js",
+			"tests/**/*.ts"
 		]
 	},
 	"formatter": {

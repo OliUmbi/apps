@@ -7,6 +7,7 @@ import {
 import type { Database } from "./database.types";
 import { resourceQuery } from "./resource.query";
 import { type DatabaseRecord, serializeRows } from "./resource.rows";
+
 export function createResourceReader(
 	sql: Database,
 	definition: ResourceDefinition,
@@ -19,17 +20,6 @@ export function createResourceReader(
 			const records = await sql<DatabaseRecord[]>`
 				SELECT ${query.columns} FROM ${query.table}
 				WHERE ${query.visibility(publicOnly)} AND ${query.search(input.search)}
-				ORDER BY created_at DESC, ${query.order} DESC
-				LIMIT ${input.size + 1} OFFSET ${input.page * input.size}
-			`;
-			return pageResult(rows(records), input);
-		},
-		async listRelated(input: PageInput, fieldName: string, value: string) {
-			const field = definition.fields.find((field) => field.name === fieldName);
-			if (field?.kind !== "uuid") throw new Error("Invalid resource relation");
-			const records = await sql<DatabaseRecord[]>`
-				SELECT ${query.columns} FROM ${query.table}
-				WHERE ${sql(field.name)} = ${value} AND ${query.search(input.search)}
 				ORDER BY created_at DESC, ${query.order} DESC
 				LIMIT ${input.size + 1} OFFSET ${input.page * input.size}
 			`;

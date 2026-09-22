@@ -1,7 +1,7 @@
 import { publicImageUrl } from "@oliumbi/assets/urls";
 import type { ResourceRecord } from "@oliumbi/contracts";
+import { safeLinkHref } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import { safeLinkHref } from "@oliumbi/ui/simple-markdown";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight } from "lucide-react";
 import { listPublicRecords } from "../../data/public-records";

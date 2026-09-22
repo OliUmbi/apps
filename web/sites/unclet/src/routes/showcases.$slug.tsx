@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { AssetImage } from "../components/asset-image";
 import { ShowcaseFacts } from "../components/showcase-facts";
 import { getPublicRecord } from "../data/public-records";
+
 export const Route = createFileRoute("/showcases/$slug")({
 	loader: async ({ params }) => {
 		const result = (await getPublicRecord({

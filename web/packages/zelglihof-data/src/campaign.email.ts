@@ -4,6 +4,7 @@ import type {
 	CampaignOptions,
 	CampaignRecipient,
 } from "./campaign.types";
+
 export function campaignEmail(
 	campaign: Campaign,
 	recipient: CampaignRecipient,

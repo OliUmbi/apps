@@ -1,36 +1,43 @@
 import { Popover } from "@base-ui/react/popover";
-import type { RecordValue, ResourceField } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { format, isValid, parseISO } from "date-fns";
 import { de } from "date-fns/locale";
 import { CalendarDays } from "lucide-react";
+import { useId } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
+import { Field } from "@base-ui/react/field";
 
 export function DateField({
-	field,
+	name,
+	label,
+	includeTime = false,
+	nullable = false,
 	value,
 	onChange,
 }: {
-	field: ResourceField;
-	value: RecordValue;
-	onChange: (value: RecordValue) => void;
+	name: string;
+	label: string;
+	includeTime?: boolean;
+	nullable?: boolean;
+	value: string | null;
+	onChange: (value: string | null) => void;
 }) {
-	const date = value ? parseISO(String(value)) : undefined;
+	const controlId = useId();
+	const date = value ? parseISO(value) : undefined;
 	const selected = date && isValid(date) ? date : undefined;
-	const hasTime = field.kind === "datetime-local";
-	const label = selected
-		? format(selected, hasTime ? "dd. MMMM yyyy, HH:mm" : "dd. MMMM yyyy", {
+	const displayLabel = selected
+		? format(selected, includeTime ? "dd. MMMM yyyy, HH:mm" : "dd. MMMM yyyy", {
 				locale: de,
 			})
 		: m.studio_date_choose();
 
 	const selectDate = (next: Date | undefined) => {
 		if (!next) {
-			if (field.nullable) onChange(null);
+			if (nullable) onChange(null);
 			return;
 		}
-		if (!hasTime) {
+		if (!includeTime) {
 			onChange(format(next, "yyyy-MM-dd"));
 			return;
 		}
@@ -53,13 +60,15 @@ export function DateField({
 	};
 
 	return (
-		<Field.Root name={field.name} className="grid gap-2 text-sm">
-			<Field.Label className="font-medium">{field.label}</Field.Label>
-			<div className={hasTime ? "date-control has-time" : "date-control"}>
+		<Field.Root name={name} className="grid gap-2 text-sm">
+			<Field.Label htmlFor={controlId} className="font-medium">
+				{label}
+			</Field.Label>
+			<div className={includeTime ? "date-control has-time" : "date-control"}>
 				<Popover.Root>
-					<Popover.Trigger className="date-trigger">
+					<Popover.Trigger id={controlId} className="date-trigger">
 						<CalendarDays size={17} />
-						<span>{label}</span>
+						<span>{displayLabel}</span>
 					</Popover.Trigger>
 					<Popover.Portal>
 						<Popover.Positioner sideOffset={8} className="z-80">
@@ -67,6 +76,7 @@ export function DateField({
 								<DayPicker
 									mode="single"
 									selected={selected}
+									defaultMonth={selected}
 									onSelect={selectDate}
 									locale={de}
 									showOutsideDays
@@ -75,7 +85,7 @@ export function DateField({
 						</Popover.Positioner>
 					</Popover.Portal>
 				</Popover.Root>
-				{hasTime && (
+				{includeTime && (
 					<label className="time-control">
 						<span>{m.studio_time()}</span>
 						<input
@@ -89,5 +99,3 @@ export function DateField({
 		</Field.Root>
 	);
 }
-
-import { Field } from "@base-ui/react/field";

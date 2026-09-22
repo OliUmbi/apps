@@ -1,76 +1,55 @@
 import type { ResourceDefinition } from "@oliumbi/contracts";
+
 export const jublawomaDonationCommitment = {
 	table: "jublawoma.donation_commitment",
-	label: "Zusagen",
-	fields: [
+	columns: [
 		{
 			name: "donation_id",
-			label: "donation id",
-			kind: "uuid",
-			nullable: true,
+			dataType: "uuid",
 		},
 		{
 			name: "donation_item_id",
-			label: "donation item id",
-			kind: "uuid",
-			nullable: true,
+			dataType: "uuid",
 		},
 		{
 			name: "donation_title",
-			label: "donation title",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "item_name",
-			label: "item name",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "item_detail",
-			label: "item detail",
-			kind: "text",
-			nullable: true,
+			dataType: "text",
 		},
 		{
 			name: "item_quantity",
-			label: "item quantity",
-			kind: "number",
+			dataType: "number",
 		},
 		{
 			name: "step",
-			label: "step",
-			kind: "number",
-			min: 0.000001,
+			dataType: "number",
 		},
 		{
 			name: "unit",
-			label: "unit",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "name",
-			label: "name",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "phone",
-			label: "phone",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "quantity",
-			label: "quantity",
-			kind: "number",
+			dataType: "number",
 		},
 		{
 			name: "note",
-			label: "note",
-			kind: "textarea",
-			nullable: true,
+			dataType: "text",
 		},
 	],
-	create: false,
-	edit: false,
-	delete: true,
-	tableFields: ["name", "phone", "item_name", "quantity", "unit", "note"],
 } as const satisfies ResourceDefinition;

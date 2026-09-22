@@ -98,7 +98,7 @@ services:
       context: ./web
       dockerfile: sites/zelglihof/Dockerfile
     environment:
-      ASSETS_PUBLIC_URL: ${ASSETS_PUBLIC_URL:-http://localhost:8083}
+      ASSETS_SERVICE_URL: http://assets:8083
       DATABASE_URL: postgres://${ZELGLIHOF_DATABASE_USER:-zelglihof}:${ZELGLIHOF_DATABASE_PASSWORD:-zelglihof_password}@postgres:5432/${POSTGRES_DB:-apps}
       DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-10}
       MESSAGING_SERVICE_URL: http://messaging:8082
@@ -117,7 +117,7 @@ services:
       context: ./web
       dockerfile: sites/unclet/Dockerfile
     environment:
-      ASSETS_PUBLIC_URL: ${ASSETS_PUBLIC_URL:-http://localhost:8083}
+      ASSETS_SERVICE_URL: http://assets:8083
       DATABASE_URL: postgres://${UNCLET_DATABASE_USER:-unclet}:${UNCLET_DATABASE_PASSWORD:-unclet_password}@postgres:5432/${POSTGRES_DB:-apps}
       DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-10}
       MESSAGING_SERVICE_URL: http://messaging:8082
@@ -137,7 +137,7 @@ services:
     ports:
       - "8001:8001"
     environment:
-      ASSETS_PUBLIC_URL: ${ASSETS_PUBLIC_URL:-http://localhost:8083}
+      ASSETS_SERVICE_URL: http://assets:8083
       DATABASE_URL: postgres://${JUBLAWOMA_DATABASE_USER:-jublawoma}:${JUBLAWOMA_DATABASE_PASSWORD:-jublawoma_password}@postgres:5432/${POSTGRES_DB:-apps}
       DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-10}
     depends_on:

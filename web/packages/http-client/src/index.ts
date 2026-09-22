@@ -21,7 +21,10 @@ export function createHttpClient(options: ServiceOptions) {
 			{
 				...init,
 				headers,
-				signal: AbortSignal.timeout(options.timeoutMs ?? DEFAULT_TIMEOUT_MS),
+				signal: AbortSignal.any([
+					AbortSignal.timeout(options.timeoutMs ?? DEFAULT_TIMEOUT_MS),
+					...(init.signal ? [init.signal] : []),
+				]),
 			},
 		);
 		if (!response.ok) throw new ServiceError(options.name, response.status);

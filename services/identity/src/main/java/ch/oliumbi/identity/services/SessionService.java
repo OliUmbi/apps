@@ -2,7 +2,9 @@ package ch.oliumbi.identity.services;
 
 import ch.oliumbi.identity.configurations.IdentityProperties;
 import ch.oliumbi.identity.data.entities.AccountSession;
-import ch.oliumbi.identity.data.requests.*;
+import ch.oliumbi.identity.data.requests.SessionCreateRequest;
+import ch.oliumbi.identity.data.requests.SessionRevokeRequest;
+import ch.oliumbi.identity.data.requests.SessionValidateRequest;
 import ch.oliumbi.identity.data.responses.SessionActorResponse;
 import ch.oliumbi.identity.data.responses.SessionCreateResponse;
 import ch.oliumbi.identity.repositories.AccountRepository;
@@ -21,18 +23,18 @@ public class SessionService {
 
     private final AccountRepository accountRepository;
     private final AccountSessionRepository accountSessionRepository;
-    private final NormalizeService normalizeService;
+    private final IdentityInputNormalizer inputNormalizer;
     private final TokenService tokenService;
     private final Clock clock;
     private final PasswordService passwordService;
     private final int sessionExpirationDays;
 
     public SessionService(AccountRepository accountRepository, AccountSessionRepository accountSessionRepository,
-                          NormalizeService normalizeService, TokenService tokenService, Clock clock,
+                          IdentityInputNormalizer inputNormalizer, TokenService tokenService, Clock clock,
                           PasswordService passwordService, IdentityProperties properties) {
         this.accountRepository = accountRepository;
         this.accountSessionRepository = accountSessionRepository;
-        this.normalizeService = normalizeService;
+        this.inputNormalizer = inputNormalizer;
         this.tokenService = tokenService;
         this.clock = clock;
         this.passwordService = passwordService;
@@ -42,7 +44,7 @@ public class SessionService {
     @Transactional
     public SessionCreateResponse create(SessionCreateRequest sessionCreateRequest) {
 
-        var normalizedName = normalizeService.normalizeName(sessionCreateRequest.name());
+        var normalizedName = inputNormalizer.normalizeName(sessionCreateRequest.name());
 
         var account = accountRepository.findByNameAndEnabledTrue(normalizedName)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));

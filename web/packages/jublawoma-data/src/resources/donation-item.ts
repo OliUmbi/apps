@@ -1,55 +1,32 @@
 import type { ResourceDefinition } from "@oliumbi/contracts";
+
 export const jublawomaDonationItem = {
 	table: "jublawoma.donation_item",
-	label: "Spendenbedarf",
-	fields: [
+	columns: [
 		{
 			name: "donation_id",
-			label: "donation id",
-			kind: "uuid",
+			dataType: "uuid",
 		},
 		{
 			name: "name",
-			label: "name",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "detail",
-			label: "detail",
-			kind: "text",
-			nullable: true,
-			rows: 2,
+			dataType: "text",
 		},
 		{
 			name: "quantity",
-			label: "quantity",
-			kind: "number",
-			defaultValue: 1,
+			dataType: "number",
 		},
 		{
 			name: "step",
-			label: "step",
-			kind: "number",
-			min: 0.000001,
-			defaultValue: 0.5,
+			dataType: "number",
 		},
 		{
 			name: "unit",
-			label: "unit",
-			kind: "text",
-			suggestions: [
-				"Kilogram",
-				"Liter",
-				"Stück",
-				"Packungen",
-				"Tuben",
-				"Gläser",
-				"Franken",
-			],
+			dataType: "text",
 		},
 	],
 	public: "all",
-	create: true,
-	edit: true,
-	delete: true,
 } as const satisfies ResourceDefinition;

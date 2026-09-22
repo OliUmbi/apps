@@ -3,6 +3,7 @@ import { inquirySchema } from "@oliumbi/unclet-data/contracts";
 import { useServerFn } from "@tanstack/react-start";
 import { sendInquiry } from "../data/inquiries";
 import { SubmissionForm } from "./submission-form";
+
 export function InquiryForm() {
 	const submit = useServerFn(sendInquiry);
 	return (

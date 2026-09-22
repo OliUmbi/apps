@@ -2,6 +2,9 @@ packages:
   - "sites/*"
   - "packages/*"
 
+allowBuilds:
+  esbuild: true
+
 catalog:
   "@biomejs/biome": ^2.5.7
   "typescript": ^7.0.2

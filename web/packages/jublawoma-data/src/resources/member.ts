@@ -1,33 +1,24 @@
 import type { ResourceDefinition } from "@oliumbi/contracts";
+
 export const jublawomaMember = {
 	table: "jublawoma.member",
-	label: "Leitungsteam",
-	fields: [
+	columns: [
 		{
 			name: "name",
-			label: "name",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "image_id",
-			label: "image id",
-			kind: "uuid",
-			nullable: true,
+			dataType: "uuid",
 		},
 		{
 			name: "group_name",
-			label: "group name",
-			kind: "text",
+			dataType: "text",
 		},
 		{
 			name: "leadership",
-			label: "leadership",
-			kind: "checkbox",
-			defaultValue: false,
+			dataType: "boolean",
 		},
 	],
 	public: "all",
-	create: true,
-	edit: true,
-	delete: true,
 } as const satisfies ResourceDefinition;

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { safeLinkHref } from "./links";
 
 export const limits = {
 	name: 120,
@@ -12,7 +13,19 @@ export const limits = {
 } as const;
 export const idSchema = z.uuid();
 export const nameSchema = z.string().trim().min(2).max(limits.name);
-export const emailSchema = z.email().trim().toLowerCase().max(limits.email);
+export const emailSchema = z
+	.string()
+	.trim()
+	.toLowerCase()
+	.pipe(z.email().max(limits.email));
+export const linkSchema = z
+	.string()
+	.trim()
+	.max(2_048)
+	.refine(
+		(value) => safeLinkHref(value) !== undefined,
+		"Use a relative path, HTTP(S) URL, or email link",
+	);
 export const phoneSchema = z.string().trim().min(3).max(limits.phone);
 export const optionalEmailSchema = z.union([z.literal(""), emailSchema]);
 export const textSchema = z.string().trim().max(limits.text);

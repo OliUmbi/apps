@@ -4,13 +4,19 @@
   "type": "module",
   "exports": {
     "./responsive-image": "./src/responsive-image.tsx",
-    "./simple-markdown": "./src/simple-markdown.tsx"
+    "./simple-markdown": "./src/simple-markdown.tsx",
+    "./form-feedback": "./src/form-feedback.tsx",
+    "./paginated-list": "./src/paginated-list.tsx"
   },
   "scripts": {
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "react": "catalog:"
+    "react": "catalog:",
+    "@base-ui/react": "catalog:",
+    "@oliumbi/contracts": "workspace:*",
+    "@oliumbi/i18n": "workspace:*",
+    "@tanstack/react-query": "^5.90.0"
   },
   "devDependencies": {
     "@types/react": "catalog:",

@@ -1,9 +1,9 @@
 import type { Page, ResourceRecord } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
+import { PaginatedList } from "@oliumbi/ui/paginated-list";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { PageHero } from "../components/page-hero";
-import { PaginatedList } from "../components/paginated-list";
 import { ShowcaseCard } from "../components/showcase-card";
 import { listPublicRecords } from "../data/public-records";
 

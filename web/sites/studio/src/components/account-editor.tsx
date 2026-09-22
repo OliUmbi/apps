@@ -1,5 +1,10 @@
+import { Button } from "@base-ui/react/button";
+import { Checkbox } from "@base-ui/react/checkbox";
+import { Field } from "@base-ui/react/field";
+import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
 import type { Account } from "@oliumbi/identity";
+import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
@@ -20,7 +25,6 @@ import {
 	setPermission,
 	updateAccount,
 } from "../server/accounts.functions";
-import { FormFeedback } from "./form-feedback";
 import { InputField } from "./input-field";
 
 export function AccountEditor({
@@ -39,11 +43,7 @@ export function AccountEditor({
 	const permission = useServerFn(setPermission);
 	const details = useQuery({
 		queryKey: ["account", account.id],
-		queryFn: () =>
-			get({ data: account.id }) as Promise<{
-				account: Account;
-				permissions: { permission: string }[];
-			}>,
+		queryFn: () => get({ data: account.id }),
 	});
 	const save = useMutation({
 		mutationFn: async (form: FormData) =>
@@ -231,8 +231,3 @@ function permissionLabel(value: string) {
 	const site = value.split(".")[0] ?? value;
 	return `${site.charAt(0).toUpperCase()}${site.slice(1)}`;
 }
-
-import { Button } from "@base-ui/react/button";
-import { Checkbox } from "@base-ui/react/checkbox";
-import { Field } from "@base-ui/react/field";
-import { Form } from "@base-ui/react/form";

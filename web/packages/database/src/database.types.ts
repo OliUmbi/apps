@@ -1,4 +1,5 @@
 import type postgres from "postgres";
+
 export type Database = ReturnType<typeof postgres>;
 export type Transaction = postgres.TransactionSql;
 export interface DatabasePoolOptions {

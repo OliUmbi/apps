@@ -1,3 +1,5 @@
+import { Button } from "@base-ui/react/button";
+import { Dialog } from "@base-ui/react/dialog";
 import { m } from "@oliumbi/i18n/messages";
 import { ArrowLeft, MenuIcon, Settings2, UserRound, X } from "lucide-react";
 import { type ReactNode, useState } from "react";
@@ -5,6 +7,7 @@ import type { SiteId, StudioSite } from "../model/sites";
 import { AdministrationNavigation } from "./administration-navigation";
 import { SiteNavigation } from "./site-navigation";
 import { SiteSwitcher } from "./site-switcher";
+
 export function AppShell({
 	site,
 	allowedSites,
@@ -171,6 +174,3 @@ export function AppShell({
 		</div>
 	);
 }
-
-import { Button } from "@base-ui/react/button";
-import { Dialog } from "@base-ui/react/dialog";

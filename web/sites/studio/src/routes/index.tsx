@@ -3,7 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { DashboardView } from "../components/dashboard-view";
 import { LoginView } from "../components/login-view";
-import { getSession } from "../server/resources.functions";
+import { getSession } from "../server/session.functions";
+
 export const Route = createFileRoute("/")({
 	validateSearch: z.object({
 		site: z.enum(siteIds).catch("zelglihof"),

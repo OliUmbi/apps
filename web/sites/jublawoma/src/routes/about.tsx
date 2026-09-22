@@ -2,6 +2,7 @@ import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute } from "@tanstack/react-router";
 import { PartnerOrganizations } from "../components/partner-organizations";
 import { PublicMembers } from "../components/public-members";
+
 export const Route = createFileRoute("/about")({ component: About });
 function About() {
 	return (

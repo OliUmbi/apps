@@ -3,19 +3,22 @@ import type {
 	ResourceDefinition,
 	ResourceRecord,
 } from "@oliumbi/contracts";
+
 export type DatabaseRecord = Record<string, RecordValue | Date>;
 export function serializeRows(
 	rows: DatabaseRecord[],
 	definition: ResourceDefinition,
 ): ResourceRecord[] {
-	const fields = new Map(definition.fields.map((field) => [field.name, field]));
+	const columns = new Map(
+		definition.columns.map((column) => [column.name, column]),
+	);
 	return rows.map((row) =>
 		Object.fromEntries(
 			Object.entries(row).map(([name, value]) => {
-				const field = fields.get(name);
+				const column = columns.get(name);
 				if (value === null) return [name, null];
-				if (field?.kind === "number") return [name, Number(value)];
-				if (field?.kind === "date")
+				if (column?.dataType === "number") return [name, Number(value)];
+				if (column?.dataType === "date")
 					return [
 						name,
 						(value instanceof Date ? value.toISOString() : String(value)).slice(

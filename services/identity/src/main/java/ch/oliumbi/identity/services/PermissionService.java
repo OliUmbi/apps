@@ -18,13 +18,13 @@ public class PermissionService {
 
     private final AccountRepository accountRepository;
     private final AccountPermissionRepository accountPermissionRepository;
-    private final NormalizeService normalizeService;
+    private final IdentityInputNormalizer inputNormalizer;
 
     public PermissionService(AccountRepository accountRepository, AccountPermissionRepository accountPermissionRepository,
-                             NormalizeService normalizeService) {
+                             IdentityInputNormalizer inputNormalizer) {
         this.accountRepository = accountRepository;
         this.accountPermissionRepository = accountPermissionRepository;
-        this.normalizeService = normalizeService;
+        this.inputNormalizer = inputNormalizer;
     }
 
     @Transactional
@@ -32,7 +32,7 @@ public class PermissionService {
         var account = accountRepository.findLockedById(accountId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        var permission = normalizeService.normalizePermission(request.permission());
+        var permission = inputNormalizer.normalizePermission(request.permission());
         if (!accountPermissionRepository.existsById(new AccountPermissionId(accountId, permission))) {
             accountPermissionRepository.save(new AccountPermission(account, permission));
         }
@@ -43,7 +43,7 @@ public class PermissionService {
         accountRepository.findLockedById(accountId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        var permission = normalizeService.normalizePermission(request.permission());
+        var permission = inputNormalizer.normalizePermission(request.permission());
         accountPermissionRepository.deleteById(new AccountPermissionId(accountId, permission));
     }
 }

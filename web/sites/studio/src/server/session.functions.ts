@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { login, logout } from "./auth.server";
+import { currentActor, login, logout } from "./auth.server";
 
 export const loginToStudio = createServerFn({ method: "POST" })
 	.validator(
@@ -13,4 +13,8 @@ export const loginToStudio = createServerFn({ method: "POST" })
 
 export const logoutFromStudio = createServerFn({ method: "POST" }).handler(
 	logout,
+);
+
+export const getSession = createServerFn({ method: "GET" }).handler(
+	currentActor,
 );

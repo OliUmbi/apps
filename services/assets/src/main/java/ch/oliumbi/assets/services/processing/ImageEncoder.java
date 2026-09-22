@@ -1,13 +1,17 @@
 package ch.oliumbi.assets.services.processing;
 
-import ch.oliumbi.assets.domain.*;
+import ch.oliumbi.assets.domain.ImageFormat;
+import ch.oliumbi.assets.domain.ImageRendition;
+import ch.oliumbi.assets.domain.ImageSize;
 import ch.oliumbi.assets.services.storage.FileInspection;
 
-import javax.imageio.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
 
 final class ImageEncoder {
     private static final float[] MASTER_QUALITIES = {0.90f};

@@ -1,4 +1,7 @@
+import { Button } from "@base-ui/react/button";
+import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
+import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { KeyRound, UserRound } from "lucide-react";
@@ -8,7 +11,6 @@ import {
 	getProfile,
 	updateProfile,
 } from "../server/profile.functions";
-import { FormFeedback } from "./form-feedback";
 import { InputField } from "./input-field";
 
 export function ProfileView() {
@@ -136,6 +138,3 @@ export function ProfileView() {
 		</div>
 	);
 }
-
-import { Button } from "@base-ui/react/button";
-import { Form } from "@base-ui/react/form";
