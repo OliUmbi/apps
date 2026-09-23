@@ -1,55 +1,59 @@
 import type { Transaction } from "@oliumbi/database";
-import type { Subscriber } from "./newsletter.types";
+import { eq, sql } from "drizzle-orm";
+import { subscriber } from "./schema";
 
-export function newsletterRepository(sql: Transaction) {
+export function createNewsletterRepository(transaction: Transaction) {
 	return {
 		async byId(id: string) {
-			const [subscriber] = await sql<Subscriber[]>`
-				SELECT * FROM zelglihof.subscriber
-				WHERE id = ${id}
-				FOR UPDATE
-			`;
-			return subscriber;
-		},
-		async correctEmail(id: string, email: string, hash: string, now: Date) {
-			await sql`
-				UPDATE zelglihof.subscriber
-				SET email = ${email},
-					status = 'pending',
-					confirmation_token_hash = ${hash},
-					requested_at = ${now},
-					confirmed_at = NULL,
-					unsubscribed_at = NULL,
-					updated_at = ${now}
-				WHERE id = ${id}
-			`;
-		},
-		async lockEmail(email: string) {
-			await sql`SELECT pg_advisory_xact_lock(hashtextextended(${email}, 0))`;
+			const [record] = await transaction
+				.select()
+				.from(subscriber)
+				.where(eq(subscriber.id, id))
+				.for("update");
+			return record;
 		},
 		async byEmail(email: string) {
-			const [subscriber] = await sql<Subscriber[]>`
-				SELECT * FROM zelglihof.subscriber
-				WHERE email = ${email}
-				FOR UPDATE
-			`;
-			return subscriber;
+			const [record] = await transaction
+				.select()
+				.from(subscriber)
+				.where(eq(subscriber.email, email))
+				.for("update");
+			return record;
 		},
 		async byConfirmation(hash: string) {
-			const [subscriber] = await sql<Subscriber[]>`
-				SELECT * FROM zelglihof.subscriber
-				WHERE confirmation_token_hash = ${hash}
-				FOR UPDATE
-			`;
-			return subscriber;
+			const [record] = await transaction
+				.select()
+				.from(subscriber)
+				.where(eq(subscriber.confirmationTokenHash, hash))
+				.for("update");
+			return record;
 		},
 		async byUnsubscribe(token: string) {
-			const [subscriber] = await sql<Subscriber[]>`
-				SELECT * FROM zelglihof.subscriber
-				WHERE unsubscribe_token = ${token}
-				FOR UPDATE
-			`;
-			return subscriber;
+			const [record] = await transaction
+				.select()
+				.from(subscriber)
+				.where(eq(subscriber.unsubscribeToken, token))
+				.for("update");
+			return record;
+		},
+		async lockEmail(email: string) {
+			await transaction.execute(
+				sql`SELECT pg_advisory_xact_lock(hashtextextended(${email}, 0))`,
+			);
+		},
+		async correctEmail(id: string, email: string, hash: string, now: Date) {
+			await transaction
+				.update(subscriber)
+				.set({
+					email,
+					status: "pending",
+					confirmationTokenHash: hash,
+					requestedAt: now.toISOString(),
+					confirmedAt: null,
+					unsubscribedAt: null,
+					updatedAt: now.toISOString(),
+				})
+				.where(eq(subscriber.id, id));
 		},
 		async request(
 			email: string,
@@ -57,39 +61,51 @@ export function newsletterRepository(sql: Transaction) {
 			unsubscribeToken: string,
 			now: Date,
 		) {
-			const [subscriber] = await sql<Subscriber[]>`
-				INSERT INTO zelglihof.subscriber (
-					email, status, requested_at, confirmation_token_hash,
-					unsubscribe_token, created_at, updated_at
-				)
-				VALUES (
-					${email}, 'pending', ${now}, ${hash}, ${unsubscribeToken}, ${now}, ${now}
-				)
-				ON CONFLICT (email) DO UPDATE
-				SET status = 'pending',
-					requested_at = ${now},
-					confirmed_at = NULL,
-					unsubscribed_at = NULL,
-					confirmation_token_hash = ${hash},
-					updated_at = ${now}
-				RETURNING *
-			`;
-			return subscriber;
+			const [record] = await transaction
+				.insert(subscriber)
+				.values({
+					email,
+					status: "pending",
+					requestedAt: now.toISOString(),
+					confirmationTokenHash: hash,
+					unsubscribeToken,
+					createdAt: now.toISOString(),
+					updatedAt: now.toISOString(),
+				})
+				.onConflictDoUpdate({
+					target: subscriber.email,
+					set: {
+						status: "pending",
+						requestedAt: now.toISOString(),
+						confirmedAt: null,
+						unsubscribedAt: null,
+						confirmationTokenHash: hash,
+						updatedAt: now.toISOString(),
+					},
+				})
+				.returning();
+			return record;
 		},
 		async confirm(id: string, now: Date) {
-			await sql`
-				UPDATE zelglihof.subscriber
-				SET status = 'active', confirmed_at = ${now},
-					unsubscribed_at = NULL, updated_at = ${now}
-				WHERE id = ${id}
-			`;
+			await transaction
+				.update(subscriber)
+				.set({
+					status: "active",
+					confirmedAt: now.toISOString(),
+					unsubscribedAt: null,
+					updatedAt: now.toISOString(),
+				})
+				.where(eq(subscriber.id, id));
 		},
 		async unsubscribe(id: string, now: Date) {
-			await sql`
-				UPDATE zelglihof.subscriber
-				SET status = 'unsubscribed', unsubscribed_at = ${now}, updated_at = ${now}
-				WHERE id = ${id}
-			`;
+			await transaction
+				.update(subscriber)
+				.set({
+					status: "unsubscribed",
+					unsubscribedAt: now.toISOString(),
+					updatedAt: now.toISOString(),
+				})
+				.where(eq(subscriber.id, id));
 		},
 	};
 }

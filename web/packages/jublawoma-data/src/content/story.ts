@@ -1,32 +1,19 @@
 import { idSchema, slugSchema } from "@oliumbi/contracts";
 import {
-	auditColumns,
 	bodySchema,
-	databaseDateSchema,
 	dateSchema,
 	publicationIsValid,
 	titleSchema,
 } from "@oliumbi/contracts/content-validation";
 import { z } from "zod";
+import type { story } from "../schema";
 
 export const storyKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type StoryKey = z.infer<typeof storyKeySchema>;
 
-export const storySchema = z.object({
-	id: idSchema,
-	slug: slugSchema,
-	title: z.string(),
-	description: z.string(),
-	author: z.string(),
-	imageId: idSchema.nullable(),
-	body: z.string(),
-	published: z.boolean(),
-	publishedOn: databaseDateSchema.nullable(),
-	...auditColumns,
-});
-export type Story = z.infer<typeof storySchema>;
+export type Story = typeof story.$inferSelect;
 
 export const storyInputSchema = z
 	.strictObject({

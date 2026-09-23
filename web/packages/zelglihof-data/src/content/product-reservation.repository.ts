@@ -1,32 +1,69 @@
 import type { PageInput } from "@oliumbi/contracts";
-import type { SqlExecutor } from "@oliumbi/database";
-import { createContentRepository } from "@oliumbi/database/content-repository";
-import {
-	type ProductReservationInput,
-	type ProductReservationKey,
-	productReservationSchema,
+import type { DatabaseExecutor } from "@oliumbi/database";
+import { paginate, searchPattern } from "@oliumbi/database/pagination";
+import { and, desc, eq, ilike } from "drizzle-orm";
+import { productReservation } from "../schema";
+import type {
+	ProductReservationInput,
+	ProductReservationKey,
 } from "./product-reservation";
 
-export function createProductReservationRepository(sql: SqlExecutor) {
-	const repository = createContentRepository(sql, {
-		table: "zelglihof.product_reservation",
-		selection: sql`id, product_id AS "productId", product_variant_id AS "productVariantId", product_name AS "productName", variant_name AS "variantName", variant_description AS "variantDescription", variant_quantity AS "variantQuantity", variant_price AS "variantPrice", name, phone, email, quantity, note, status, created_at AS "createdAt", updated_at AS "updatedAt"`,
-		schema: productReservationSchema,
-		keyColumns: (key: ProductReservationKey) => ({ id: key.id }),
-		orderColumns: ["id"],
-		searchColumn: "name",
-		writeColumns: (input: ProductReservationInput) => ({
-			status: input.status,
-		}),
-	});
+export function createProductReservationRepository(db: DatabaseExecutor) {
 	return {
-		read: repository.read,
-		list: repository.list,
-		get: repository.get,
-		update: repository.update,
-		delete: repository.delete,
+		list(input: PageInput) {
+			return paginate(
+				db
+					.select()
+					.from(productReservation)
+					.where(
+						input.search
+							? ilike(productReservation.name, searchPattern(input.search))
+							: undefined,
+					)
+					.orderBy(desc(productReservation.createdAt), productReservation.id)
+					.$dynamic(),
+				input,
+			);
+		},
+		async get(key: ProductReservationKey) {
+			const [record] = await db
+				.select()
+				.from(productReservation)
+				.where(eq(productReservation.id, key.id))
+				.limit(1);
+			return record ?? null;
+		},
+		async update(key: ProductReservationKey, input: ProductReservationInput) {
+			const [record] = await db
+				.update(productReservation)
+				.set({ status: input.status, updatedAt: new Date().toISOString() })
+				.where(eq(productReservation.id, key.id))
+				.returning();
+			if (!record) throw new Error("Record not found or no longer editable");
+			return record;
+		},
+		async delete(key: ProductReservationKey): Promise<void> {
+			await db
+				.delete(productReservation)
+				.where(eq(productReservation.id, key.id));
+		},
 		listForProduct(input: PageInput, productId: string) {
-			return repository.list(input, { product_id: productId });
+			return paginate(
+				db
+					.select()
+					.from(productReservation)
+					.where(
+						and(
+							eq(productReservation.productId, productId),
+							input.search
+								? ilike(productReservation.name, searchPattern(input.search))
+								: undefined,
+						),
+					)
+					.orderBy(desc(productReservation.createdAt), productReservation.id)
+					.$dynamic(),
+				input,
+			);
 		},
 	};
 }

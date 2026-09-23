@@ -1,25 +1,14 @@
 import { idSchema } from "@oliumbi/contracts";
-import {
-	auditColumns,
-	bodySchema,
-	titleSchema,
-} from "@oliumbi/contracts/content-validation";
+import { bodySchema, titleSchema } from "@oliumbi/contracts/content-validation";
 import { z } from "zod";
+import type { review } from "../schema";
 
 export const reviewKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type ReviewKey = z.infer<typeof reviewKeySchema>;
 
-export const reviewSchema = z.object({
-	id: idSchema,
-	stars: z.number().int().min(1).max(5),
-	name: z.string(),
-	description: z.string(),
-	visible: z.boolean(),
-	...auditColumns,
-});
-export type Review = z.infer<typeof reviewSchema>;
+export type Review = typeof review.$inferSelect;
 
 export const reviewInputSchema = z.strictObject({
 	stars: z.number().int().min(1).max(5),

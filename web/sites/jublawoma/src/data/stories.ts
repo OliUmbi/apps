@@ -26,7 +26,7 @@ function storyFromRecord(
 export const getStory = createServerFn({ method: "GET" })
 	.validator(z.object({ slug: slugSchema }))
 	.handler(async ({ data }) => {
-		const result = await createPublicRepository(database.sql).findStory(
+		const result = await createPublicRepository(database.db).findStory(
 			data.slug,
 		);
 		return result ? storyFromRecord(result.story, result.images) : null;
@@ -34,7 +34,7 @@ export const getStory = createServerFn({ method: "GET" })
 export const getStoryPage = createServerFn({ method: "GET" })
 	.validator(z.object({ page: pageSchema.shape.page }))
 	.handler(async ({ data }) => {
-		const page = await createPublicRepository(database.sql).listStories(
+		const page = await createPublicRepository(database.db).listStories(
 			data.page,
 		);
 		return {

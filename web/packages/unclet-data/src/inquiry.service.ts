@@ -12,9 +12,13 @@ export function createInquiryService(database: DatabasePool, sender: string) {
 			const values = inquirySchema.parse(input);
 			const id = randomUUID();
 			const reference = referenceFor(id);
-			await database.transaction(async (sql) => {
-				await createInquiryRepository(sql).insert(id, values, new Date());
-				const queue = createQueueClient(sql);
+			await database.transaction(async (transaction) => {
+				await createInquiryRepository(transaction).insert(
+					id,
+					values,
+					new Date(),
+				);
+				const queue = createQueueClient(transaction);
 				for (const message of inquiryEmails(sender, values, reference))
 					await queue.enqueue(message);
 			});

@@ -1,30 +1,19 @@
 import { idSchema, linkSchema } from "@oliumbi/contracts";
 import {
-	auditColumns,
 	bodySchema,
-	databaseTimestampSchema,
 	timestampRangeIsValid,
 	timestampSchema,
 	titleSchema,
 } from "@oliumbi/contracts/content-validation";
 import { z } from "zod";
+import type { promotion } from "../schema";
 
 export const promotionKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type PromotionKey = z.infer<typeof promotionKeySchema>;
 
-export const promotionSchema = z.object({
-	id: idSchema,
-	title: z.string(),
-	description: z.string(),
-	link: linkSchema,
-	imageId: idSchema.nullable(),
-	startsAt: databaseTimestampSchema,
-	endsAt: databaseTimestampSchema,
-	...auditColumns,
-});
-export type Promotion = z.infer<typeof promotionSchema>;
+export type Promotion = typeof promotion.$inferSelect;
 
 export const promotionInputSchema = z
 	.strictObject({

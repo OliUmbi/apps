@@ -1,27 +1,17 @@
 import { idSchema } from "@oliumbi/contracts";
 import {
-	auditColumns,
 	optionalTextSchema,
 	titleSchema,
 } from "@oliumbi/contracts/content-validation";
 import { z } from "zod";
+import type { donationItem } from "../schema";
 
 export const donationItemKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type DonationItemKey = z.infer<typeof donationItemKeySchema>;
 
-export const donationItemSchema = z.object({
-	id: idSchema,
-	donationId: idSchema,
-	name: z.string(),
-	detail: z.string().nullable(),
-	quantity: z.coerce.number().nonnegative(),
-	step: z.coerce.number().positive(),
-	unit: z.string(),
-	...auditColumns,
-});
-export type DonationItem = z.infer<typeof donationItemSchema>;
+export type DonationItem = typeof donationItem.$inferSelect;
 
 export const donationItemInputSchema = z.strictObject({
 	donationId: idSchema,

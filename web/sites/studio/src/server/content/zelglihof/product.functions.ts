@@ -14,14 +14,14 @@ export const listProducts = createServerFn({ method: "GET" })
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return createProductRepository(database.sql).list(data);
+		return createProductRepository(database.db).list(data);
 	});
 
 export const getProduct = createServerFn({ method: "GET" })
 	.validator(productKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return createProductRepository(database.sql).get(data);
+		return createProductRepository(database.db).get(data);
 	});
 
 export const createProduct = createServerFn({ method: "POST" })
@@ -29,7 +29,7 @@ export const createProduct = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
 		if (data.imageId) await assets.images.get("zelglihof", data.imageId);
-		return createProductRepository(database.sql).create(data);
+		return createProductRepository(database.db).create(data);
 	});
 
 export const updateProduct = createServerFn({ method: "POST" })
@@ -40,12 +40,12 @@ export const updateProduct = createServerFn({ method: "POST" })
 		await requireActor("zelglihof");
 		if (data.values.imageId)
 			await assets.images.get("zelglihof", data.values.imageId);
-		return createProductRepository(database.sql).update(data.key, data.values);
+		return createProductRepository(database.db).update(data.key, data.values);
 	});
 
 export const deleteProduct = createServerFn({ method: "POST" })
 	.validator(productKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		await createProductRepository(database.sql).delete(data);
+		await createProductRepository(database.db).delete(data);
 	});

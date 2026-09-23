@@ -7,10 +7,10 @@ import { database } from "../server/database.server";
 export const getShowcasePage = createServerFn({ method: "GET" })
 	.validator(z.object({ page: pageSchema.shape.page }))
 	.handler(({ data }) =>
-		createPublicRepository(database.sql).listShowcases(data.page),
+		createPublicRepository(database.db).listShowcases(data.page),
 	);
 export const getShowcase = createServerFn({ method: "GET" })
 	.validator(z.object({ slug: slugSchema }))
 	.handler(({ data }) =>
-		createPublicRepository(database.sql).findShowcase(data.slug),
+		createPublicRepository(database.db).findShowcase(data.slug),
 	);

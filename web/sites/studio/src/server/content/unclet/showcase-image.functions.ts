@@ -14,7 +14,7 @@ export const listShowcaseImages = createServerFn({ method: "GET" })
 	.validator(pageSchema.extend({ showcaseId: idSchema }))
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return createShowcaseImageRepository(database.sql).listForShowcase(
+		return createShowcaseImageRepository(database.db).listForShowcase(
 			data,
 			data.showcaseId,
 		);
@@ -24,7 +24,7 @@ export const getShowcaseImage = createServerFn({ method: "GET" })
 	.validator(showcaseImageKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return createShowcaseImageRepository(database.sql).get(data);
+		return createShowcaseImageRepository(database.db).get(data);
 	});
 
 export const createShowcaseImage = createServerFn({ method: "POST" })
@@ -32,7 +32,7 @@ export const createShowcaseImage = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
 		if (data.imageId) await assets.images.get("unclet", data.imageId);
-		return createShowcaseImageRepository(database.sql).create(data);
+		return createShowcaseImageRepository(database.db).create(data);
 	});
 
 export const updateShowcaseImage = createServerFn({ method: "POST" })
@@ -46,7 +46,7 @@ export const updateShowcaseImage = createServerFn({ method: "POST" })
 		await requireActor("unclet");
 		if (data.values.imageId)
 			await assets.images.get("unclet", data.values.imageId);
-		return createShowcaseImageRepository(database.sql).update(
+		return createShowcaseImageRepository(database.db).update(
 			data.key,
 			data.values,
 		);
@@ -56,5 +56,5 @@ export const deleteShowcaseImage = createServerFn({ method: "POST" })
 	.validator(showcaseImageKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		await createShowcaseImageRepository(database.sql).delete(data);
+		await createShowcaseImageRepository(database.db).delete(data);
 	});

@@ -588,7 +588,8 @@ img {
 	}
 	.page-hero h1,
 	.stories-page h1 {
-		font-size: 4rem;
+		font-size: clamp(2.5rem, 10.5vw, 4rem);
+		overflow-wrap: anywhere;
 	}
 	.brand small {
 		display: none;

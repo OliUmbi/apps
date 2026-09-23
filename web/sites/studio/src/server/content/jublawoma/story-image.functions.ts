@@ -14,7 +14,7 @@ export const listStoryImages = createServerFn({ method: "GET" })
 	.validator(pageSchema.extend({ storyId: idSchema }))
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return createStoryImageRepository(database.sql).listForStory(
+		return createStoryImageRepository(database.db).listForStory(
 			data,
 			data.storyId,
 		);
@@ -24,7 +24,7 @@ export const getStoryImage = createServerFn({ method: "GET" })
 	.validator(storyImageKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return createStoryImageRepository(database.sql).get(data);
+		return createStoryImageRepository(database.db).get(data);
 	});
 
 export const createStoryImage = createServerFn({ method: "POST" })
@@ -32,7 +32,7 @@ export const createStoryImage = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
 		if (data.imageId) await assets.images.get("jublawoma", data.imageId);
-		return createStoryImageRepository(database.sql).create(data);
+		return createStoryImageRepository(database.db).create(data);
 	});
 
 export const updateStoryImage = createServerFn({ method: "POST" })
@@ -43,7 +43,7 @@ export const updateStoryImage = createServerFn({ method: "POST" })
 		await requireActor("jublawoma");
 		if (data.values.imageId)
 			await assets.images.get("jublawoma", data.values.imageId);
-		return createStoryImageRepository(database.sql).update(
+		return createStoryImageRepository(database.db).update(
 			data.key,
 			data.values,
 		);
@@ -53,5 +53,5 @@ export const deleteStoryImage = createServerFn({ method: "POST" })
 	.validator(storyImageKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		await createStoryImageRepository(database.sql).delete(data);
+		await createStoryImageRepository(database.db).delete(data);
 	});

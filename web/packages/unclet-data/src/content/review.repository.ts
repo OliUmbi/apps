@@ -1,20 +1,62 @@
-import type { SqlExecutor } from "@oliumbi/database";
-import { createContentRepository } from "@oliumbi/database/content-repository";
-import { type ReviewInput, type ReviewKey, reviewSchema } from "./review";
+import type { PageInput } from "@oliumbi/contracts";
+import type { DatabaseExecutor } from "@oliumbi/database";
+import { paginate, searchPattern } from "@oliumbi/database/pagination";
+import { desc, eq, ilike } from "drizzle-orm";
+import { review } from "../schema";
+import type { ReviewInput, ReviewKey } from "./review";
 
-export function createReviewRepository(sql: SqlExecutor) {
-	return createContentRepository(sql, {
-		table: "unclet.review",
-		selection: sql`id, stars, name, description, visible, created_at AS "createdAt", updated_at AS "updatedAt"`,
-		schema: reviewSchema,
-		keyColumns: (key: ReviewKey) => ({ id: key.id }),
-		orderColumns: ["id"],
-		searchColumn: "name",
-		writeColumns: (input: ReviewInput) => ({
-			stars: input.stars,
-			name: input.name,
-			description: input.description,
-			visible: input.visible,
-		}),
-	});
+export function createReviewRepository(db: DatabaseExecutor) {
+	return {
+		list(input: PageInput) {
+			return paginate(
+				db
+					.select()
+					.from(review)
+					.where(
+						input.search
+							? ilike(review.name, searchPattern(input.search))
+							: undefined,
+					)
+					.orderBy(desc(review.createdAt), review.id)
+					.$dynamic(),
+				input,
+			);
+		},
+		async get(key: ReviewKey) {
+			const [record] = await db
+				.select()
+				.from(review)
+				.where(eq(review.id, key.id))
+				.limit(1);
+			return record ?? null;
+		},
+		async create(input: ReviewInput) {
+			const now = new Date().toISOString();
+			const [record] = await db
+				.insert(review)
+				.values({
+					...input,
+					createdAt: now,
+					updatedAt: now,
+				})
+				.returning();
+			if (!record) throw new Error("Record was not created");
+			return record;
+		},
+		async update(key: ReviewKey, input: ReviewInput) {
+			const [record] = await db
+				.update(review)
+				.set({
+					...input,
+					updatedAt: new Date().toISOString(),
+				})
+				.where(eq(review.id, key.id))
+				.returning();
+			if (!record) throw new Error("Record not found or no longer editable");
+			return record;
+		},
+		async delete(key: ReviewKey): Promise<void> {
+			await db.delete(review).where(eq(review.id, key.id));
+		},
+	};
 }

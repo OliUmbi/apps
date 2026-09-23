@@ -2,6 +2,7 @@
 @source "../../../packages/ui/src";
 
 :root {
+	color-scheme: dark;
 	color: #e7e7e9;
 	background: #0d0d0f;
 	font-family: Inter, "Segoe UI", system-ui, sans-serif;
@@ -15,8 +16,8 @@
 	--border-soft: #222226;
 	--primary: #ececef;
 	--secondary: #b2b2b9;
-	--muted: #7c7c85;
-	--faint: #55555d;
+	--muted: #93939d;
+	--faint: #85858f;
 	--accent: #7c71df;
 	--danger: #e36e72;
 	--content-inset: 16px;

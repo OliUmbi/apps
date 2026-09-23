@@ -7,12 +7,12 @@ import type { Campaign, CampaignOptions } from "./campaign.types";
 const RECIPIENT_BATCH_SIZE = 100;
 
 async function queueRecipients(
-	sql: Transaction,
+	transaction: Transaction,
 	campaign: Campaign,
 	options: CampaignOptions,
 ) {
-	const repository = createCampaignRepository(sql);
-	const queue = createQueueClient(sql);
+	const repository = createCampaignRepository(transaction);
+	const queue = createQueueClient(transaction);
 	let afterId: string | null = null;
 	let count = 0;
 	for (;;) {
@@ -34,13 +34,13 @@ export function createCampaignService(
 ) {
 	return {
 		send(id: string) {
-			return database.transaction(async (sql) => {
-				const repository = createCampaignRepository(sql);
+			return database.transaction(async (transaction) => {
+				const repository = createCampaignRepository(transaction);
 				const campaign = await repository.lock(id);
 				if (!campaign) throw new Error("Campaign not found");
 				if (campaign.status !== "draft")
 					throw new Error("Only draft campaigns can be sent");
-				const count = await queueRecipients(sql, campaign, options);
+				const count = await queueRecipients(transaction, campaign, options);
 				await repository.markQueued(id, new Date());
 				return { count };
 			});

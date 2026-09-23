@@ -1,31 +1,47 @@
 import type { Transaction } from "@oliumbi/database";
+import { and, eq, isNotNull, sql } from "drizzle-orm";
 import type { ReservationInput } from "./forms";
 import type { ReservableVariant } from "./reservation.types";
+import { product, productReservation, productVariant } from "./schema";
 
-export function createReservationRepository(sql: Transaction) {
+export function createReservationRepository(transaction: Transaction) {
 	return {
 		async lockVariant(
 			input: Pick<ReservationInput, "productId" | "variantId">,
 		) {
-			const [variant] = await sql<ReservableVariant[]>`
-				SELECT p.name AS "productName", v.name AS "variantName",
-						v.description, v.price, v.quantity,
-						(p.visible AND p.reservable
-						AND (p.starts_at IS NULL OR p.starts_at <= now())
-						AND (p.ends_at IS NULL OR p.ends_at >= now())) AS available
-				FROM zelglihof.product p
-				JOIN zelglihof.product_variant v ON v.product_id = p.id
-				WHERE p.id = ${input.productId} AND v.id = ${input.variantId}
-				FOR UPDATE OF p, v
-			`;
+			const [variant] = await transaction
+				.select({
+					productName: product.name,
+					variantName: productVariant.name,
+					description: productVariant.description,
+					price: productVariant.price,
+					quantity: productVariant.quantity,
+					available: sql<boolean>`${product.visible} AND ${product.reservable} AND (${product.startsAt} IS NULL OR ${product.startsAt} <= now()) AND (${product.endsAt} IS NULL OR ${product.endsAt} >= now())`,
+				})
+				.from(product)
+				.innerJoin(productVariant, eq(productVariant.productId, product.id))
+				.where(
+					and(
+						eq(product.id, input.productId),
+						eq(productVariant.id, input.variantId),
+					),
+				)
+				.for("update");
 			return variant;
 		},
 		async decrementStock(variantId: string, quantity: number, now: Date) {
-			await sql`
-				UPDATE zelglihof.product_variant
-				SET quantity = quantity - ${quantity}, updated_at = ${now}
-				WHERE id = ${variantId} AND quantity IS NOT NULL
-			`;
+			await transaction
+				.update(productVariant)
+				.set({
+					quantity: sql`${productVariant.quantity} - ${quantity}`,
+					updatedAt: now.toISOString(),
+				})
+				.where(
+					and(
+						eq(productVariant.id, variantId),
+						isNotNull(productVariant.quantity),
+					),
+				);
 		},
 		async insert(
 			id: string,
@@ -33,18 +49,24 @@ export function createReservationRepository(sql: Transaction) {
 			variant: ReservableVariant,
 			now: Date,
 		) {
-			await sql`
-				INSERT INTO zelglihof.product_reservation (
-					id, product_id, product_variant_id, product_name, variant_name,
-					variant_description, variant_quantity, variant_price, name, phone,
-					email, quantity, note, status, created_at, updated_at
-				) VALUES (
-					${id}, ${input.productId}, ${input.variantId}, ${variant.productName},
-					${variant.variantName}, ${variant.description}, ${variant.quantity},
-					${variant.price}, ${input.name}, ${input.phone}, ${input.email || null},
-					${input.quantity}, ${input.note || null}, 'new', ${now}, ${now}
-				)
-			`;
+			await transaction.insert(productReservation).values({
+				id,
+				productId: input.productId,
+				productVariantId: input.variantId,
+				productName: variant.productName,
+				variantName: variant.variantName,
+				variantDescription: variant.description,
+				variantQuantity: variant.quantity,
+				variantPrice: variant.price,
+				name: input.name,
+				phone: input.phone,
+				email: input.email || null,
+				quantity: input.quantity,
+				note: input.note || null,
+				status: "new",
+				createdAt: now.toISOString(),
+				updatedAt: now.toISOString(),
+			});
 		},
 	};
 }

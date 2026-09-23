@@ -1,24 +1,14 @@
 import { idSchema } from "@oliumbi/contracts";
-import {
-	auditColumns,
-	titleSchema,
-} from "@oliumbi/contracts/content-validation";
+import { titleSchema } from "@oliumbi/contracts/content-validation";
 import { z } from "zod";
+import type { member } from "../schema";
 
 export const memberKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type MemberKey = z.infer<typeof memberKeySchema>;
 
-export const memberSchema = z.object({
-	id: idSchema,
-	name: z.string(),
-	imageId: idSchema.nullable(),
-	groupName: z.string(),
-	leadership: z.boolean(),
-	...auditColumns,
-});
-export type Member = z.infer<typeof memberSchema>;
+export type Member = typeof member.$inferSelect;
 
 export const memberInputSchema = z.strictObject({
 	name: titleSchema,

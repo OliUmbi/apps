@@ -14,14 +14,14 @@ export const listShowcases = createServerFn({ method: "GET" })
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return createShowcaseRepository(database.sql).list(data);
+		return createShowcaseRepository(database.db).list(data);
 	});
 
 export const getShowcase = createServerFn({ method: "GET" })
 	.validator(showcaseKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return createShowcaseRepository(database.sql).get(data);
+		return createShowcaseRepository(database.db).get(data);
 	});
 
 export const createShowcase = createServerFn({ method: "POST" })
@@ -29,7 +29,7 @@ export const createShowcase = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
 		if (data.imageId) await assets.images.get("unclet", data.imageId);
-		return createShowcaseRepository(database.sql).create(data);
+		return createShowcaseRepository(database.db).create(data);
 	});
 
 export const updateShowcase = createServerFn({ method: "POST" })
@@ -40,12 +40,12 @@ export const updateShowcase = createServerFn({ method: "POST" })
 		await requireActor("unclet");
 		if (data.values.imageId)
 			await assets.images.get("unclet", data.values.imageId);
-		return createShowcaseRepository(database.sql).update(data.key, data.values);
+		return createShowcaseRepository(database.db).update(data.key, data.values);
 	});
 
 export const deleteShowcase = createServerFn({ method: "POST" })
 	.validator(showcaseKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		await createShowcaseRepository(database.sql).delete(data);
+		await createShowcaseRepository(database.db).delete(data);
 	});

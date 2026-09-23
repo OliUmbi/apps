@@ -20,14 +20,14 @@ function eventFromRecord(record: Event): EventRecord {
 }
 export const getNextEvent = createServerFn({ method: "GET" }).handler(
 	async () => {
-		const event = await createPublicRepository(database.sql).nextEvent();
+		const event = await createPublicRepository(database.db).nextEvent();
 		return event ? eventFromRecord(event) : null;
 	},
 );
 export const getEventPage = createServerFn({ method: "GET" })
 	.validator(z.object({ page: pageSchema.shape.page }))
 	.handler(async ({ data }) => {
-		const page = await createPublicRepository(database.sql).listEvents(
+		const page = await createPublicRepository(database.db).listEvents(
 			data.page,
 		);
 		return { ...page, items: page.items.map(eventFromRecord) };

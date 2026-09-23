@@ -3,7 +3,6 @@ import test from "node:test";
 import {
 	newStoryInput,
 	storyInputSchema,
-	storySchema,
 } from "../packages/jublawoma-data/src/content/story";
 import { storyImageKeySchema } from "../packages/jublawoma-data/src/content/story-image";
 import { campaignInputSchema } from "../packages/zelglihof-data/src/content/campaign";
@@ -17,7 +16,6 @@ import {
 	newPromotionInput,
 	promotionInputSchema,
 } from "../packages/zelglihof-data/src/content/promotion";
-import { subscriberSchema } from "../packages/zelglihof-data/src/content/subscriber";
 import { slugify } from "../sites/studio/src/model/content/slug";
 
 const id = "6c7e6880-5e35-48d7-9a5a-82dfd56e439b";
@@ -138,41 +136,6 @@ test("gallery identity requires both parent and image, never an invented row id"
 	});
 	assert.equal(storyImageKeySchema.safeParse({ id }).success, false);
 	assert.equal(storyImageKeySchema.safeParse({ storyId: id }).success, false);
-});
-
-test("database dates and timestamps become stable serialized values", () => {
-	const row = storySchema.parse({
-		id,
-		...newStoryInput(),
-		slug: "camp",
-		title: "Camp",
-		description: "Summer",
-		author: "Leitung",
-		body: "Camp",
-		publishedOn: new Date("2026-09-17T00:00:00Z"),
-		createdAt: now,
-		updatedAt: now,
-	});
-	assert.equal(row.publishedOn, "2026-09-17");
-	assert.equal(row.createdAt, now.toISOString());
-});
-
-test("subscriber models expose no confirmation or unsubscribe secrets", () => {
-	const subscriber = subscriberSchema.parse({
-		id,
-		email: "reader@example.com",
-		status: "pending",
-		requestedAt: now,
-		confirmedAt: null,
-		unsubscribedAt: null,
-		createdAt: now,
-		updatedAt: now,
-		confirmationTokenHash: "secret",
-		unsubscribeToken: "secret",
-	});
-	assert.equal(Object.hasOwn(subscriber, "confirmationTokenHash"), false);
-	assert.equal(Object.hasOwn(subscriber, "unsubscribeToken"), false);
-	assert.equal(subscriber.confirmedAt, null);
 });
 
 test("promotion destinations reject executable and protocol-relative links", () => {

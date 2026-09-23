@@ -8,5 +8,5 @@ export const submitCommitment = createServerFn({ method: "POST" })
 	.validator(commitmentSchema)
 	.handler(({ data }) => createDonationService(database).commit(data));
 export const getCurrentDonation = createServerFn({ method: "GET" }).handler(
-	() => createPublicRepository(database.sql).currentDonation(),
+	() => createPublicRepository(database.db).currentDonation(),
 );

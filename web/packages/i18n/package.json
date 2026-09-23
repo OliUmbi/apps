@@ -12,10 +12,10 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@inlang/paraglide-js": "^2.0.0"
+    "@inlang/paraglide-js": "catalog:"
   },
   "devDependencies": {
-    "typescript": "catalog:",
-    "@types/node": "catalog:"
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
   }
 }

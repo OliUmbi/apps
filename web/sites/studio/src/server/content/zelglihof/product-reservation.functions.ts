@@ -13,7 +13,7 @@ export const listProductReservations = createServerFn({ method: "GET" })
 	.validator(pageSchema.extend({ productId: idSchema.optional() }))
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		const repository = createProductReservationRepository(database.sql);
+		const repository = createProductReservationRepository(database.db);
 		return data.productId
 			? repository.listForProduct(data, data.productId)
 			: repository.list(data);
@@ -23,7 +23,7 @@ export const getProductReservation = createServerFn({ method: "GET" })
 	.validator(productReservationKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return createProductReservationRepository(database.sql).get(data);
+		return createProductReservationRepository(database.db).get(data);
 	});
 
 export const updateProductReservation = createServerFn({ method: "POST" })
@@ -35,7 +35,7 @@ export const updateProductReservation = createServerFn({ method: "POST" })
 	)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return createProductReservationRepository(database.sql).update(
+		return createProductReservationRepository(database.db).update(
 			data.key,
 			data.values,
 		);
@@ -45,5 +45,5 @@ export const deleteProductReservation = createServerFn({ method: "POST" })
 	.validator(productReservationKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		await createProductReservationRepository(database.sql).delete(data);
+		await createProductReservationRepository(database.db).delete(data);
 	});

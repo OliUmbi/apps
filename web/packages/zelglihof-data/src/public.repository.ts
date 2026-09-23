@@ -1,48 +1,89 @@
 import { pageSchema } from "@oliumbi/contracts";
-import type { SqlExecutor } from "@oliumbi/database";
-import { createArticleRepository } from "./content/article.repository";
-import { createArticleImageRepository } from "./content/article-image.repository";
-import { createProductRepository } from "./content/product.repository";
-import { createProductVariantRepository } from "./content/product-variant.repository";
-import { createPromotionRepository } from "./content/promotion.repository";
+import type { DatabaseExecutor } from "@oliumbi/database";
+import { paginate } from "@oliumbi/database/pagination";
+import { and, desc, eq, gte, lte, sql } from "drizzle-orm";
+import {
+	article,
+	articleImage,
+	product,
+	productVariant,
+	promotion,
+} from "./schema";
 
-export function createPublicRepository(sql: SqlExecutor) {
-	const promotions = createPromotionRepository(sql).read;
-	const articles = createArticleRepository(sql).read;
-	const images = createArticleImageRepository(sql).read;
-	const products = createProductRepository(sql).read;
-	const variants = createProductVariantRepository(sql).read;
-	const published = sql`published = true AND published_on <= current_date`;
+export function createPublicRepository(db: DatabaseExecutor) {
+	const published = and(
+		eq(article.published, true),
+		lte(article.publishedOn, sql`current_date`),
+	);
 	return {
-		listPromotions: (page: number) =>
-			promotions.page(
+		listArticles(page: number) {
+			return paginate(
+				db
+					.select()
+					.from(article)
+					.where(published)
+					.orderBy(desc(article.createdAt), article.id)
+					.$dynamic(),
 				pageSchema.parse({ page }),
-				sql`starts_at <= now() AND ends_at >= now()`,
-			),
-		listArticles: (page: number) =>
-			articles.page(pageSchema.parse({ page }), published),
+			);
+		},
 		async findArticle(slug: string) {
-			const article = await articles.find(sql`slug = ${slug} AND ${published}`);
-			if (!article) return null;
+			const [record] = await db
+				.select()
+				.from(article)
+				.where(and(eq(article.slug, slug), published))
+				.limit(1);
+			if (!record) return null;
 			return {
-				article,
-				images: await images.all(
-					sql`article_id = ${article.id}`,
-					sql`created_at, image_id`,
-				),
+				article: record,
+				images: await db
+					.select()
+					.from(articleImage)
+					.where(eq(articleImage.articleId, record.id))
+					.orderBy(articleImage.createdAt, articleImage.imageId),
 			};
 		},
-		listProducts: (page: number) =>
-			products.page(pageSchema.parse({ page }), sql`visible = true`),
+		listPromotions(page: number) {
+			return paginate(
+				db
+					.select()
+					.from(promotion)
+					.where(
+						and(
+							lte(promotion.startsAt, sql`now()`),
+							gte(promotion.endsAt, sql`now()`),
+						),
+					)
+					.orderBy(desc(promotion.createdAt), promotion.id)
+					.$dynamic(),
+				pageSchema.parse({ page }),
+			);
+		},
+		listProducts(page: number) {
+			return paginate(
+				db
+					.select()
+					.from(product)
+					.where(eq(product.visible, true))
+					.orderBy(desc(product.createdAt), product.id)
+					.$dynamic(),
+				pageSchema.parse({ page }),
+			);
+		},
 		async findProduct(id: string) {
-			const product = await products.find(sql`id = ${id} AND visible = true`);
-			if (!product) return null;
+			const [record] = await db
+				.select()
+				.from(product)
+				.where(and(eq(product.id, id), eq(product.visible, true)))
+				.limit(1);
+			if (!record) return null;
 			return {
-				product,
-				variants: await variants.all(
-					sql`product_id = ${product.id}`,
-					sql`created_at, id`,
-				),
+				product: record,
+				variants: await db
+					.select()
+					.from(productVariant)
+					.where(eq(productVariant.productId, record.id))
+					.orderBy(productVariant.createdAt, productVariant.id),
 			};
 		},
 	};

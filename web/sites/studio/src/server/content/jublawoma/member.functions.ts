@@ -14,14 +14,14 @@ export const listMembers = createServerFn({ method: "GET" })
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return createMemberRepository(database.sql).list(data);
+		return createMemberRepository(database.db).list(data);
 	});
 
 export const getMember = createServerFn({ method: "GET" })
 	.validator(memberKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return createMemberRepository(database.sql).get(data);
+		return createMemberRepository(database.db).get(data);
 	});
 
 export const createMember = createServerFn({ method: "POST" })
@@ -29,7 +29,7 @@ export const createMember = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
 		if (data.imageId) await assets.images.get("jublawoma", data.imageId);
-		return createMemberRepository(database.sql).create(data);
+		return createMemberRepository(database.db).create(data);
 	});
 
 export const updateMember = createServerFn({ method: "POST" })
@@ -40,12 +40,12 @@ export const updateMember = createServerFn({ method: "POST" })
 		await requireActor("jublawoma");
 		if (data.values.imageId)
 			await assets.images.get("jublawoma", data.values.imageId);
-		return createMemberRepository(database.sql).update(data.key, data.values);
+		return createMemberRepository(database.db).update(data.key, data.values);
 	});
 
 export const deleteMember = createServerFn({ method: "POST" })
 	.validator(memberKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		await createMemberRepository(database.sql).delete(data);
+		await createMemberRepository(database.db).delete(data);
 	});

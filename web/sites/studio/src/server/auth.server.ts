@@ -81,6 +81,12 @@ export async function requireAuthenticatedActor() {
 
 export async function logout() {
 	const token = requestToken();
-	if (token) await identity.revokeSession(token);
-	clearSessionCookie();
+	try {
+		if (token) await identity.revokeSession(token);
+	} catch (error) {
+		if (!(error instanceof ServiceError && [401, 404].includes(error.status)))
+			throw error;
+	} finally {
+		clearSessionCookie();
+	}
 }

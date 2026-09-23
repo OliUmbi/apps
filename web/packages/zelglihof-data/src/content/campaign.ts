@@ -1,24 +1,14 @@
 import { idSchema } from "@oliumbi/contracts";
-import {
-	auditColumns,
-	bodySchema,
-	titleSchema,
-} from "@oliumbi/contracts/content-validation";
+import { bodySchema, titleSchema } from "@oliumbi/contracts/content-validation";
 import { z } from "zod";
+import type { campaign } from "../schema";
 
 export const campaignKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type CampaignKey = z.infer<typeof campaignKeySchema>;
 
-export const campaignSchema = z.object({
-	id: idSchema,
-	subject: z.string(),
-	body: z.string(),
-	status: z.enum(["draft", "queued"]),
-	...auditColumns,
-});
-export type Campaign = z.infer<typeof campaignSchema>;
+export type Campaign = typeof campaign.$inferSelect;
 
 export const campaignInputSchema = z.strictObject({
 	subject: titleSchema,

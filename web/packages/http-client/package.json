@@ -9,11 +9,11 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "zod": "catalog:",
-    "@oliumbi/contracts": "workspace:*"
+    "@oliumbi/contracts": "workspace:*",
+    "zod": "catalog:"
   },
   "devDependencies": {
-    "typescript": "catalog:",
-    "@types/node": "catalog:"
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
   }
 }

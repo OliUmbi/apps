@@ -14,14 +14,14 @@ export const listArticles = createServerFn({ method: "GET" })
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return createArticleRepository(database.sql).list(data);
+		return createArticleRepository(database.db).list(data);
 	});
 
 export const getArticle = createServerFn({ method: "GET" })
 	.validator(articleKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return createArticleRepository(database.sql).get(data);
+		return createArticleRepository(database.db).get(data);
 	});
 
 export const createArticle = createServerFn({ method: "POST" })
@@ -29,7 +29,7 @@ export const createArticle = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
 		if (data.imageId) await assets.images.get("zelglihof", data.imageId);
-		return createArticleRepository(database.sql).create(data);
+		return createArticleRepository(database.db).create(data);
 	});
 
 export const updateArticle = createServerFn({ method: "POST" })
@@ -40,12 +40,12 @@ export const updateArticle = createServerFn({ method: "POST" })
 		await requireActor("zelglihof");
 		if (data.values.imageId)
 			await assets.images.get("zelglihof", data.values.imageId);
-		return createArticleRepository(database.sql).update(data.key, data.values);
+		return createArticleRepository(database.db).update(data.key, data.values);
 	});
 
 export const deleteArticle = createServerFn({ method: "POST" })
 	.validator(articleKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		await createArticleRepository(database.sql).delete(data);
+		await createArticleRepository(database.db).delete(data);
 	});

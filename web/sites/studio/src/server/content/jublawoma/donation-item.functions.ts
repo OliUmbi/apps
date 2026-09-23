@@ -13,7 +13,7 @@ export const listDonationItems = createServerFn({ method: "GET" })
 	.validator(pageSchema.extend({ donationId: idSchema }))
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return createDonationItemRepository(database.sql).listForDonation(
+		return createDonationItemRepository(database.db).listForDonation(
 			data,
 			data.donationId,
 		);
@@ -23,14 +23,14 @@ export const getDonationItem = createServerFn({ method: "GET" })
 	.validator(donationItemKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return createDonationItemRepository(database.sql).get(data);
+		return createDonationItemRepository(database.db).get(data);
 	});
 
 export const createDonationItem = createServerFn({ method: "POST" })
 	.validator(donationItemInputSchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return createDonationItemRepository(database.sql).create(data);
+		return createDonationItemRepository(database.db).create(data);
 	});
 
 export const updateDonationItem = createServerFn({ method: "POST" })
@@ -42,7 +42,7 @@ export const updateDonationItem = createServerFn({ method: "POST" })
 	)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return createDonationItemRepository(database.sql).update(
+		return createDonationItemRepository(database.db).update(
 			data.key,
 			data.values,
 		);
@@ -52,5 +52,5 @@ export const deleteDonationItem = createServerFn({ method: "POST" })
 	.validator(donationItemKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		await createDonationItemRepository(database.sql).delete(data);
+		await createDonationItemRepository(database.db).delete(data);
 	});

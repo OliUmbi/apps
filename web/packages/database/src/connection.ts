@@ -1,4 +1,5 @@
-import postgres from "postgres";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 import type {
 	Database,
 	DatabasePool,
@@ -32,46 +33,55 @@ export function connectionOptions(options: DatabasePoolOptions) {
 	const connectionString = options.connectionString();
 	if (!connectionString) throw new Error("DATABASE_URL is not configured");
 	const url = new URL(connectionString);
-	const configuredRole = decodeURIComponent(url.username);
-	if (configuredRole && configuredRole !== options.role) {
+	const configuredRoles = [
+		decodeURIComponent(url.username),
+		...url.searchParams.getAll("user"),
+	];
+	if (configuredRoles.some((role) => role && role !== options.role)) {
 		throw new Error(`Database connection must authenticate as ${options.role}`);
 	}
+	const password =
+		options.password?.() ??
+		(url.password
+			? decodeURIComponent(url.password)
+			: url.searchParams.get("password"));
+	url.username = options.role;
+	if (password !== null && password !== undefined) url.password = password;
+	url.searchParams.delete("user");
+	url.searchParams.delete("password");
+	url.searchParams.set("application_name", options.applicationName);
 	return {
-		url: connectionString,
-		username: options.role,
-		password:
-			options.password?.() ??
-			(url.password ? decodeURIComponent(url.password) : undefined),
+		connectionString: url.toString(),
+		max: options.maxConnections ?? poolDefaults.connections,
+		idleTimeoutMillis: poolDefaults.idleTimeoutSeconds * 1000,
+		connectionTimeoutMillis: poolDefaults.connectTimeoutSeconds * 1000,
 	};
 }
 
 export function createDatabasePool(options: DatabasePoolOptions): DatabasePool {
 	let client: Database | undefined;
+	let pool: Pool | undefined;
 	function connection(): Database {
 		if (client) return client;
-		const { url, username, password } = connectionOptions(options);
-		client = postgres(url, {
-			username,
-			password,
-			max: options.maxConnections ?? poolDefaults.connections,
-			idle_timeout: poolDefaults.idleTimeoutSeconds,
-			connect_timeout: poolDefaults.connectTimeoutSeconds,
-			prepare: true,
-			connection: { application_name: options.applicationName },
+		pool = new Pool(connectionOptions(options));
+		pool.on("error", (error) => {
+			console.error("Unexpected error on an idle database connection", error);
 		});
+		client = drizzle(pool);
 		return client;
 	}
 	return {
 		role: options.role,
-		get sql() {
+		get db() {
 			return connection();
 		},
-		transaction<T>(work: (sql: Transaction) => Promise<T>) {
-			return connection().begin(work) as Promise<T>;
+		transaction<T>(work: (transaction: Transaction) => Promise<T>) {
+			return connection().transaction(work);
 		},
 		async close() {
-			if (!client) return;
-			await client.end();
+			if (!pool) return;
+			await pool.end();
+			pool = undefined;
 			client = undefined;
 		},
 	};

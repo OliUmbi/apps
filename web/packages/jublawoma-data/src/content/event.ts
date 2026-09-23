@@ -1,30 +1,19 @@
 import { idSchema } from "@oliumbi/contracts";
 import {
-	auditColumns,
-	databaseDateSchema,
 	dateRangeIsValid,
 	dateSchema,
 	optionalBodySchema,
 	titleSchema,
 } from "@oliumbi/contracts/content-validation";
 import { z } from "zod";
+import type { event } from "../schema";
 
 export const eventKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type EventKey = z.infer<typeof eventKeySchema>;
 
-export const eventSchema = z.object({
-	id: idSchema,
-	name: z.string(),
-	description: z.string().nullable(),
-	location: z.string(),
-	imageId: idSchema.nullable(),
-	startsOn: databaseDateSchema,
-	endsOn: databaseDateSchema,
-	...auditColumns,
-});
-export type Event = z.infer<typeof eventSchema>;
+export type Event = typeof event.$inferSelect;
 
 export const eventInputSchema = z
 	.strictObject({

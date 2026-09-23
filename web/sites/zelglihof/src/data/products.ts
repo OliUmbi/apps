@@ -40,7 +40,7 @@ function productFromRecord(
 export const getProductPage = createServerFn({ method: "GET" })
 	.validator(z.object({ page: pageSchema.shape.page }))
 	.handler(async ({ data }) => {
-		const page = await createPublicRepository(database.sql).listProducts(
+		const page = await createPublicRepository(database.db).listProducts(
 			data.page,
 		);
 		return {
@@ -51,7 +51,7 @@ export const getProductPage = createServerFn({ method: "GET" })
 export const getProduct = createServerFn({ method: "GET" })
 	.validator(z.object({ id: idSchema }))
 	.handler(async ({ data }) => {
-		const result = await createPublicRepository(database.sql).findProduct(
+		const result = await createPublicRepository(database.db).findProduct(
 			data.id,
 		);
 		return result ? productFromRecord(result.product, result.variants) : null;

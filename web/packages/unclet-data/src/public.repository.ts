@@ -1,31 +1,52 @@
 import { pageSchema } from "@oliumbi/contracts";
-import type { SqlExecutor } from "@oliumbi/database";
-import { createReviewRepository } from "./content/review.repository";
-import { createShowcaseRepository } from "./content/showcase.repository";
-import { createShowcaseImageRepository } from "./content/showcase-image.repository";
+import type { DatabaseExecutor } from "@oliumbi/database";
+import { paginate } from "@oliumbi/database/pagination";
+import { and, desc, eq, lte, sql } from "drizzle-orm";
+import { review, showcase, showcaseImage } from "./schema";
 
-export function createPublicRepository(sql: SqlExecutor) {
-	const showcases = createShowcaseRepository(sql).read;
-	const images = createShowcaseImageRepository(sql).read;
-	const reviews = createReviewRepository(sql).read;
-	const published = sql`published = true AND published_on <= current_date`;
+export function createPublicRepository(db: DatabaseExecutor) {
+	const published = and(
+		eq(showcase.published, true),
+		lte(showcase.publishedOn, sql`current_date`),
+	);
 	return {
-		listShowcases: (page: number) =>
-			showcases.page(pageSchema.parse({ page }), published),
-		async findShowcase(slug: string) {
-			const showcase = await showcases.find(
-				sql`slug = ${slug} AND ${published}`,
+		listShowcases(page: number) {
+			return paginate(
+				db
+					.select()
+					.from(showcase)
+					.where(published)
+					.orderBy(desc(showcase.createdAt), showcase.id)
+					.$dynamic(),
+				pageSchema.parse({ page }),
 			);
-			if (!showcase) return null;
+		},
+		async findShowcase(slug: string) {
+			const [record] = await db
+				.select()
+				.from(showcase)
+				.where(and(eq(showcase.slug, slug), published))
+				.limit(1);
+			if (!record) return null;
 			return {
-				showcase,
-				images: await images.all(
-					sql`showcase_id = ${showcase.id}`,
-					sql`created_at, image_id`,
-				),
+				showcase: record,
+				images: await db
+					.select()
+					.from(showcaseImage)
+					.where(eq(showcaseImage.showcaseId, record.id))
+					.orderBy(showcaseImage.createdAt, showcaseImage.imageId),
 			};
 		},
-		listReviews: (page: number) =>
-			reviews.page(pageSchema.parse({ page }), sql`visible = true`),
+		listReviews(page: number) {
+			return paginate(
+				db
+					.select()
+					.from(review)
+					.where(eq(review.visible, true))
+					.orderBy(desc(review.createdAt), review.id)
+					.$dynamic(),
+				pageSchema.parse({ page }),
+			);
+		},
 	};
 }

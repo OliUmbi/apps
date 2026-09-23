@@ -10,11 +10,13 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "postgres": "catalog:",
-    "@oliumbi/contracts": "workspace:*"
+    "@oliumbi/contracts": "workspace:*",
+    "drizzle-orm": "catalog:",
+    "pg": "catalog:"
   },
   "devDependencies": {
-    "typescript": "catalog:",
-    "@types/node": "catalog:"
+    "@types/node": "catalog:",
+    "@types/pg": "catalog:",
+    "typescript": "catalog:"
   }
 }

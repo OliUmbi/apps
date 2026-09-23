@@ -1,9 +1,7 @@
 import { idSchema } from "@oliumbi/contracts";
-import {
-	auditColumns,
-	titleSchema,
-} from "@oliumbi/contracts/content-validation";
+import { titleSchema } from "@oliumbi/contracts/content-validation";
 import { z } from "zod";
+import type { storyImage } from "../schema";
 
 export const storyImageKeySchema = z.strictObject({
 	storyId: idSchema,
@@ -11,13 +9,7 @@ export const storyImageKeySchema = z.strictObject({
 });
 export type StoryImageKey = z.infer<typeof storyImageKeySchema>;
 
-export const storyImageSchema = z.object({
-	storyId: idSchema,
-	imageId: idSchema,
-	description: z.string(),
-	...auditColumns,
-});
-export type StoryImage = z.infer<typeof storyImageSchema>;
+export type StoryImage = typeof storyImage.$inferSelect;
 
 export const storyImageInputSchema = z.strictObject({
 	storyId: idSchema,

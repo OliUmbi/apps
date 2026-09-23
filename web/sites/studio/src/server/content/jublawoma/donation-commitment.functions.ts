@@ -9,7 +9,7 @@ export const listDonationCommitments = createServerFn({ method: "GET" })
 	.validator(pageSchema.extend({ donationId: idSchema }))
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return createDonationCommitmentRepository(database.sql).listForDonation(
+		return createDonationCommitmentRepository(database.db).listForDonation(
 			data,
 			data.donationId,
 		);
@@ -19,12 +19,12 @@ export const getDonationCommitment = createServerFn({ method: "GET" })
 	.validator(donationCommitmentKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return createDonationCommitmentRepository(database.sql).get(data);
+		return createDonationCommitmentRepository(database.db).get(data);
 	});
 
 export const deleteDonationCommitment = createServerFn({ method: "POST" })
 	.validator(donationCommitmentKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		await createDonationCommitmentRepository(database.sql).delete(data);
+		await createDonationCommitmentRepository(database.db).delete(data);
 	});

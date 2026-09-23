@@ -14,14 +14,14 @@ export const listEvents = createServerFn({ method: "GET" })
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return createEventRepository(database.sql).list(data);
+		return createEventRepository(database.db).list(data);
 	});
 
 export const getEvent = createServerFn({ method: "GET" })
 	.validator(eventKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return createEventRepository(database.sql).get(data);
+		return createEventRepository(database.db).get(data);
 	});
 
 export const createEvent = createServerFn({ method: "POST" })
@@ -29,7 +29,7 @@ export const createEvent = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
 		if (data.imageId) await assets.images.get("jublawoma", data.imageId);
-		return createEventRepository(database.sql).create(data);
+		return createEventRepository(database.db).create(data);
 	});
 
 export const updateEvent = createServerFn({ method: "POST" })
@@ -38,12 +38,12 @@ export const updateEvent = createServerFn({ method: "POST" })
 		await requireActor("jublawoma");
 		if (data.values.imageId)
 			await assets.images.get("jublawoma", data.values.imageId);
-		return createEventRepository(database.sql).update(data.key, data.values);
+		return createEventRepository(database.db).update(data.key, data.values);
 	});
 
 export const deleteEvent = createServerFn({ method: "POST" })
 	.validator(eventKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		await createEventRepository(database.sql).delete(data);
+		await createEventRepository(database.db).delete(data);
 	});

@@ -17,6 +17,7 @@
 }
 
 :root {
+	color-scheme: dark;
 	color: #f2eee5;
 	background: #11110f;
 	font-family: var(--font-sans);

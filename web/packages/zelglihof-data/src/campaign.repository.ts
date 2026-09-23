@@ -1,26 +1,45 @@
 import type { Transaction } from "@oliumbi/database";
-import type { Campaign, CampaignRecipient } from "./campaign.types";
+import { and, eq, gt } from "drizzle-orm";
+import { campaign, subscriber } from "./schema";
 
-export function createCampaignRepository(sql: Transaction) {
+export function createCampaignRepository(transaction: Transaction) {
 	return {
 		async lock(id: string) {
-			const [campaign] = await sql<Campaign[]>`
-				SELECT id, subject, body, status
-				FROM zelglihof.campaign WHERE id = ${id} FOR UPDATE
-			`;
-			return campaign;
+			const [record] = await transaction
+				.select({
+					id: campaign.id,
+					subject: campaign.subject,
+					body: campaign.body,
+					status: campaign.status,
+				})
+				.from(campaign)
+				.where(eq(campaign.id, id))
+				.for("update");
+			return record;
 		},
-		async recipients(afterId: string | null, limit: number) {
-			return sql<CampaignRecipient[]>`
-				SELECT id, email, unsubscribe_token AS "unsubscribeToken"
-				FROM zelglihof.subscriber
-				WHERE status = 'active' AND (${afterId}::uuid IS NULL OR id > ${afterId})
-				ORDER BY id LIMIT ${limit}
-				FOR SHARE
-			`;
+		recipients(afterId: string | null, limit: number) {
+			return transaction
+				.select({
+					id: subscriber.id,
+					email: subscriber.email,
+					unsubscribeToken: subscriber.unsubscribeToken,
+				})
+				.from(subscriber)
+				.where(
+					and(
+						eq(subscriber.status, "active"),
+						afterId ? gt(subscriber.id, afterId) : undefined,
+					),
+				)
+				.orderBy(subscriber.id)
+				.limit(limit)
+				.for("share");
 		},
 		async markQueued(id: string, now: Date) {
-			await sql`UPDATE zelglihof.campaign SET status = 'queued', updated_at = ${now} WHERE id = ${id}`;
+			await transaction
+				.update(campaign)
+				.set({ status: "queued", updatedAt: now.toISOString() })
+				.where(eq(campaign.id, id));
 		},
 	};
 }

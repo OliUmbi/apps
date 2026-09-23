@@ -1,18 +1,31 @@
-import type { SqlExecutor } from "@oliumbi/database";
-import { donationAvailabilitySchema } from "./donation-availability";
+import type { DatabaseExecutor } from "@oliumbi/database";
+import { eq, sql } from "drizzle-orm";
+import { donationCommitment, donationItem } from "./schema";
 
-export function createDonationReader(sql: SqlExecutor) {
+export function createDonationReader(db: DatabaseExecutor) {
 	return {
-		async items(donationId: string) {
-			const rows = await sql`
-    SELECT item.id, item.name, item.detail, item.quantity, item.step, item.unit,
-     greatest(0, item.quantity - coalesce(sum(commitment.quantity), 0)) AS remaining
-    FROM jublawoma.donation_item item
-    LEFT JOIN jublawoma.donation_commitment commitment ON commitment.donation_item_id = item.id
-    WHERE item.donation_id = ${donationId}
-    GROUP BY item.id ORDER BY item.created_at, item.id
-   `;
-			return rows.map((row) => donationAvailabilitySchema.parse(row));
+		items(donationId: string) {
+			return db
+				.select({
+					id: donationItem.id,
+					name: donationItem.name,
+					detail: donationItem.detail,
+					quantity: donationItem.quantity,
+					step: donationItem.step,
+					unit: donationItem.unit,
+					remaining:
+						sql`greatest(0, ${donationItem.quantity} - coalesce(sum(${donationCommitment.quantity}), 0))`.mapWith(
+							Number,
+						),
+				})
+				.from(donationItem)
+				.leftJoin(
+					donationCommitment,
+					eq(donationCommitment.donationItemId, donationItem.id),
+				)
+				.where(eq(donationItem.donationId, donationId))
+				.groupBy(donationItem.id)
+				.orderBy(donationItem.createdAt, donationItem.id);
 		},
 	};
 }

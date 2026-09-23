@@ -1,30 +1,13 @@
 import { idSchema, statusSchema } from "@oliumbi/contracts";
-import { auditColumns } from "@oliumbi/contracts/content-validation";
 import { z } from "zod";
+import type { productReservation } from "../schema";
 
 export const productReservationKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type ProductReservationKey = z.infer<typeof productReservationKeySchema>;
 
-export const productReservationSchema = z.object({
-	id: idSchema,
-	productId: idSchema.nullable(),
-	productVariantId: idSchema.nullable(),
-	productName: z.string(),
-	variantName: z.string(),
-	variantDescription: z.string().nullable(),
-	variantQuantity: z.number().int().nonnegative().nullable(),
-	variantPrice: z.string(),
-	name: z.string(),
-	phone: z.string(),
-	email: z.string().nullable(),
-	quantity: z.number().int().nonnegative(),
-	note: z.string().nullable(),
-	status: statusSchema,
-	...auditColumns,
-});
-export type ProductReservation = z.infer<typeof productReservationSchema>;
+export type ProductReservation = typeof productReservation.$inferSelect;
 
 export const productReservationInputSchema = z.strictObject({
 	status: statusSchema,

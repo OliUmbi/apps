@@ -11,12 +11,12 @@ export { type ReviewInput, reviewSchema } from "@oliumbi/unclet-data/contracts";
 export const sendReview = createServerFn({ method: "POST" })
 	.validator(reviewSchema)
 	.handler(async ({ data }) => {
-		await createReviewRepository(database.sql).submit(data);
+		await createReviewRepository(database.db).submit(data);
 		return { outcome: "accepted" as const };
 	});
 
 export const getReviewPage = createServerFn({ method: "GET" })
 	.validator(z.object({ page: pageSchema.shape.page }))
 	.handler(({ data }) =>
-		createPublicRepository(database.sql).listReviews(data.page),
+		createPublicRepository(database.db).listReviews(data.page),
 	);

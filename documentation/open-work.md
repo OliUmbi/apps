@@ -1,61 +1,49 @@
 # Open work
 
-Only unresolved questions and unfinished work. Remove items when resolved.
+Only unresolved work. Remove items when resolved.
 
-## Technical
+## Before launch
 
-- [ ] Wire account_notification to the settings UI and recipient selection; require
-  account access to the event's site. Notification opt-in must not grant permission.
-- [ ] Agree username/email case handling, shared normalization and account email
-  verification. Keep identity inaccessible to Studio's database role.
-- [ ] Copy reservation/commitment snapshots from database rows in the write
-  transaction. Define cancellation stock restoration when the variant was deleted;
-  never silently restore stock to another variant.
-- [ ] Implement atomic online allocation and duplicate-submit protection for
-  reservations. Donation commitments remain simple manual administration.
-- [ ] Campaign: recipient-level progress, duplicate-send protection, failed-recipient
-  review and cancellation of queued mail after unsubscribe. Never retry a whole
-  campaign just because some recipients failed.
-- [ ] Confirmation: fixed expiry from requested_at, issuance rate limit, token
-  rotation on new requests, and suppression of obsolete queued links. Transport
-  retries must reuse the same token. One stable opaque unsubscribe token per subscriber.
-- [ ] Message sender allowlist per site, Reply-To and unsubscribe headers; producers
-  compose text/HTML. Decide payload/key retention and deletion of recipient data.
-- [ ] Shared queue/media access is deliberately broad: site isolation within them
-  and all public visibility filtering must be handled by application code.
-- [ ] Define how referenced images are retained when content snapshots outlive the
-  source record or asset visibility changes.
-- [ ] Add focused integration checks for forms, identity, notifications, asset
-  lifecycle, and messaging delivery. The Java reactor currently has no tests.
-- [ ] Validate internationalization throughout the applications. Studio and the
-  future Oliumbi site should support English and German; the three customer sites
-  are German-only.
-- [ ] Document intentional route changes from the legacy applications and provide
-  redirects for URLs that must remain stable.
-- [ ] Establish structured logging conventions and Java API integration tests.
-- [ ] Add a Java static-analysis baseline for class size, complexity, and style.
+- [ ] Replace development secrets. Enable secure Studio cookies. Keep database and service ports private.
+- [ ] Verify domains, TLS, public URLs, sender DNS and SMTP delivery.
+- [ ] Set up database and media backups. Verify a restore.
+- [ ] Check constraints, indexes and legacy imports before live data. Update roles and credentials on existing volumes.
+- [ ] Add rate limits for login, inquiries, reviews and newsletter requests.
+- [ ] Check site permissions and unpublished content with real roles. Verify application checks on shared media and queues.
+- [ ] Add health checks, alerts and useful logs. Run lint, type checks and builds in CI.
+- [ ] Approve final content, photos and legal pages. Add old URL redirects, page metadata and content sitemaps.
+- [ ] Check publishing, forms, reservations, login and email in staging. Hide unfinished features; Oliumbi is still missing.
 
-## Owner requirements
+## Features
 
-- [ ] Uncle-T: verify required/optional email, phone, date, location and guest count;
-  choose email acknowledgement behavior for phone-only inquiries and final statuses.
-- [ ] Zelglihof: verify required/optional contact fields on inquiries/reservations,
-  actual products/variants, quantity limits and pickup/cancellation statuses.
-- [ ] Zelglihof: confirm display-only CHF price wording (per kg/package/estimate)
-  and reservation windows. Price text will not be used for totals or payment.
-- [ ] Jubla: confirm annual dates, same-day ends_on, calendar import/printable PDF,
-  group names and donation item units/steps with the second developer.
-- [ ] Campaigns: decide whether definite temporary delivery failures retry
-  automatically or every failure needs admin review; uncertain sends need review.
-- [ ] Notifications: choose event names and who should initially opt in.
-- [ ] Obtain final copy/photos/contact details and showcase/review content from
-  owners. External Google reviews are an embed decision, not database imports.
+- [ ] Prevent duplicate reservations and donation commitments after retries.
+- [ ] Define reservation cancellation and stock restoration, including deleted variants.
+- [ ] Connect notifications to users with site access. Choose event names and initial subscribers.
+- [ ] Show campaign delivery results per recipient. Agree retry rules for failed and uncertain sends.
+- [ ] Add allowed senders per site, Reply-To and unsubscribe headers. Set retention rules for messages, tokens and personal data.
+- [ ] Clarify image publication and retention when linked content outlives an image.
+- [ ] Improve image selection and previews in Studio.
 
-## Before first live data
+## Design
 
-- [ ] Rotate development credentials and explicitly rebuild existing local roles/
-  volumes when switching to short role names. Docker bootstrap runs only once.
-- [ ] Freeze schema only when needed; review essential constraints/indexes then.
-- [ ] Verify sender DNS/SMTP, unsubscribe flow, domain routing/TLS and recovery.
-- [ ] Confirm database/media backups, retention and legacy data/URL migration.
-- [ ] Finish the site editors and Oliumbi; hide incomplete features before launch.
+- [ ] Jubla: refine headings, illustration sizes and spacing. Check long titles on small phones.
+- [ ] Uncle-T: bring the inquiry form higher on mobile. Use consistent wording and mark optional fields.
+- [ ] Zelglihof: use real farm photos. Explain an empty shop before showing newsletter sections.
+- [ ] Public lists: keep empty states, errors and load-more buttons beside their lists.
+- [ ] Studio: simplify mobile lists and shorten overview cards. Show save feedback and protect unsaved edits.
+- [ ] Check keyboard use, focus, contrast and mobile menus. Verify German customer sites and both Studio languages.
+
+## Owner decisions
+
+- [ ] Uncle-T: confirm inquiry fields, phone-only replies, statuses and reviews. Decide on a Google reviews embed.
+- [ ] Zelglihof: confirm contact fields, products, quantity limits, pickup statuses and reservation windows. Agree display-only CHF price wording.
+- [ ] Jubla: confirm annual dates, same-day event endings, calendar/PDF exports, group names and donation units with the second developer.
+
+## Later improvements
+
+- [ ] Replace numbered translation keys with descriptive names, such as `root_content_description`.
+- [ ] Check Paraglide URL translation, such as `/kontakt` and `/contact`. Use German customer URLs and English source filenames.
+- [ ] Separate Studio navigation from reusable collection components.
+- [ ] Revisit queued newsletter cancellation and stale confirmation links as volume grows. Current priority is low.
+- [ ] Add email verification and password recovery only if public accounts are introduced; Studio is excluded.
+- [ ] Add critical integration tests and Java style checks later. Java currently has no tests.

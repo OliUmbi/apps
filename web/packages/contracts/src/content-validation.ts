@@ -11,18 +11,6 @@ export const optionalTextSchema = z
 export const optionalBodySchema = z.string().trim().max(limits.body).nullable();
 export const dateSchema = z.iso.date();
 export const timestampSchema = z.iso.datetime({ offset: true });
-export const databaseDateSchema = z.preprocess(
-	(value) => (value instanceof Date ? value.toISOString().slice(0, 10) : value),
-	dateSchema,
-);
-export const databaseTimestampSchema = z.preprocess(
-	(value) => (value instanceof Date ? value.toISOString() : value),
-	timestampSchema,
-);
-export const auditColumns = {
-	createdAt: databaseTimestampSchema,
-	updatedAt: databaseTimestampSchema,
-};
 
 export function publicationIsValid(value: {
 	published: boolean;

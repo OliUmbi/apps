@@ -1,13 +1,19 @@
-import type { Database, Transaction } from "@oliumbi/database";
+import type { DatabaseExecutor } from "@oliumbi/database";
+import { sql } from "drizzle-orm";
 import type { ReviewInput } from "./forms";
+import { review } from "./schema";
 
-export function createReviewRepository(sql: Database | Transaction) {
+export function createReviewRepository(db: DatabaseExecutor) {
 	return {
 		async submit(input: ReviewInput): Promise<void> {
-			await sql`
-				INSERT INTO unclet.review (stars, name, description, visible, created_at, updated_at)
-				VALUES (${input.stars}, ${input.name}, ${input.description}, false, now(), now())
-			`;
+			await db.insert(review).values({
+				stars: input.stars,
+				name: input.name,
+				description: input.description,
+				visible: false,
+				createdAt: sql`now()`,
+				updatedAt: sql`now()`,
+			});
 		},
 	};
 }

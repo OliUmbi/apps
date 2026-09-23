@@ -1,32 +1,19 @@
 import { idSchema, slugSchema } from "@oliumbi/contracts";
 import {
-	auditColumns,
-	databaseDateSchema,
 	dateSchema,
 	optionalBodySchema,
 	publicationIsValid,
 	titleSchema,
 } from "@oliumbi/contracts/content-validation";
 import { z } from "zod";
+import type { showcase } from "../schema";
 
 export const showcaseKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type ShowcaseKey = z.infer<typeof showcaseKeySchema>;
 
-export const showcaseSchema = z.object({
-	id: idSchema,
-	slug: slugSchema,
-	title: z.string(),
-	location: z.string(),
-	guestCount: z.number().int().nonnegative(),
-	imageId: idSchema.nullable(),
-	published: z.boolean(),
-	publishedOn: databaseDateSchema.nullable(),
-	body: z.string().nullable(),
-	...auditColumns,
-});
-export type Showcase = z.infer<typeof showcaseSchema>;
+export type Showcase = typeof showcase.$inferSelect;
 
 export const showcaseInputSchema = z
 	.strictObject({

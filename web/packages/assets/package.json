@@ -4,19 +4,19 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./urls": "./src/urls.ts",
-    "./public-image.server": "./src/public-image.server.ts"
+    "./public-image.server": "./src/public-image.server.ts",
+    "./urls": "./src/urls.ts"
   },
   "scripts": {
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@oliumbi/http-client": "workspace:*",
     "@oliumbi/contracts": "workspace:*",
+    "@oliumbi/http-client": "workspace:*",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "typescript": "catalog:",
-    "@types/node": "catalog:"
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
   }
 }

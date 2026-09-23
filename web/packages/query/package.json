@@ -10,12 +10,12 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.90.0",
+    "@tanstack/react-query": "catalog:",
     "react": "catalog:"
   },
   "devDependencies": {
-    "typescript": "catalog:",
     "@types/node": "catalog:",
-    "@types/react": "catalog:"
+    "@types/react": "catalog:",
+    "typescript": "catalog:"
   }
 }

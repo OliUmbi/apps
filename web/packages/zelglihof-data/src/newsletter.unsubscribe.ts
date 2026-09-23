@@ -1,9 +1,9 @@
 import type { DatabasePool } from "@oliumbi/database";
-import { newsletterRepository } from "./newsletter.repository";
+import { createNewsletterRepository } from "./newsletter.repository";
 
 export function unsubscribeByToken(database: DatabasePool, token: string) {
-	return database.transaction(async (sql) => {
-		const repository = newsletterRepository(sql);
+	return database.transaction(async (transaction) => {
+		const repository = createNewsletterRepository(transaction);
 		const subscriber = await repository.byUnsubscribe(token);
 		if (!subscriber) return { outcome: "invalid" as const };
 		if (subscriber.status === "unsubscribed")

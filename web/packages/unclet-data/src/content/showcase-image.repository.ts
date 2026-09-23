@@ -1,33 +1,86 @@
 import type { PageInput } from "@oliumbi/contracts";
-import type { SqlExecutor } from "@oliumbi/database";
-import { createContentRepository } from "@oliumbi/database/content-repository";
-import {
-	type ShowcaseImageInput,
-	type ShowcaseImageKey,
-	showcaseImageSchema,
-} from "./showcase-image";
+import type { DatabaseExecutor } from "@oliumbi/database";
+import { paginate, searchPattern } from "@oliumbi/database/pagination";
+import { and, desc, eq, ilike } from "drizzle-orm";
+import { showcaseImage } from "../schema";
+import type { ShowcaseImageInput, ShowcaseImageKey } from "./showcase-image";
 
-export function createShowcaseImageRepository(sql: SqlExecutor) {
-	const repository = createContentRepository(sql, {
-		table: "unclet.showcase_image",
-		selection: sql`showcase_id AS "showcaseId", image_id AS "imageId", description, created_at AS "createdAt", updated_at AS "updatedAt"`,
-		schema: showcaseImageSchema,
-		keyColumns: (key: ShowcaseImageKey) => ({
-			showcase_id: key.showcaseId,
-			image_id: key.imageId,
-		}),
-		orderColumns: ["showcase_id", "image_id"],
-		searchColumn: "description",
-		writeColumns: (input: ShowcaseImageInput) => ({
-			showcase_id: input.showcaseId,
-			image_id: input.imageId,
-			description: input.description,
-		}),
-	});
+export function createShowcaseImageRepository(db: DatabaseExecutor) {
 	return {
-		...repository,
+		async get(key: ShowcaseImageKey) {
+			const [record] = await db
+				.select()
+				.from(showcaseImage)
+				.where(
+					and(
+						eq(showcaseImage.showcaseId, key.showcaseId),
+						eq(showcaseImage.imageId, key.imageId),
+					),
+				)
+				.limit(1);
+			return record ?? null;
+		},
+		async create(input: ShowcaseImageInput) {
+			const now = new Date().toISOString();
+			const [record] = await db
+				.insert(showcaseImage)
+				.values({
+					...input,
+					createdAt: now,
+					updatedAt: now,
+				})
+				.returning();
+			if (!record) throw new Error("Record was not created");
+			return record;
+		},
+		async update(key: ShowcaseImageKey, input: ShowcaseImageInput) {
+			const [record] = await db
+				.update(showcaseImage)
+				.set({
+					...input,
+					updatedAt: new Date().toISOString(),
+				})
+				.where(
+					and(
+						eq(showcaseImage.showcaseId, key.showcaseId),
+						eq(showcaseImage.imageId, key.imageId),
+					),
+				)
+				.returning();
+			if (!record) throw new Error("Record not found or no longer editable");
+			return record;
+		},
+		async delete(key: ShowcaseImageKey): Promise<void> {
+			await db
+				.delete(showcaseImage)
+				.where(
+					and(
+						eq(showcaseImage.showcaseId, key.showcaseId),
+						eq(showcaseImage.imageId, key.imageId),
+					),
+				);
+		},
 		listForShowcase(input: PageInput, showcaseId: string) {
-			return repository.list(input, { showcase_id: showcaseId });
+			return paginate(
+				db
+					.select()
+					.from(showcaseImage)
+					.where(
+						and(
+							eq(showcaseImage.showcaseId, showcaseId),
+							input.search
+								? ilike(showcaseImage.description, searchPattern(input.search))
+								: undefined,
+						),
+					)
+					.orderBy(
+						desc(showcaseImage.createdAt),
+						showcaseImage.showcaseId,
+						showcaseImage.imageId,
+					)
+					.$dynamic(),
+				input,
+			);
 		},
 	};
 }

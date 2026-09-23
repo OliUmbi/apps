@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import test from "node:test";
+import { eq, sql } from "drizzle-orm";
 import { createDatabasePool } from "../packages/database/src";
 import { createDonationRepository as jublawomaDonationStore } from "../packages/jublawoma-data/src/content/donation.repository";
 import { createDonationCommitmentRepository as jublawomaDonationCommitmentStore } from "../packages/jublawoma-data/src/content/donation-commitment.repository";
@@ -10,11 +11,13 @@ import { createMemberRepository as jublawomaMemberStore } from "../packages/jubl
 import { createPromotionRepository as jublawomaPromotionStore } from "../packages/jublawoma-data/src/content/promotion.repository";
 import { createStoryRepository as jublawomaStoryStore } from "../packages/jublawoma-data/src/content/story.repository";
 import { createStoryImageRepository as jublawomaStoryImageStore } from "../packages/jublawoma-data/src/content/story-image.repository";
+import * as jublawoma from "../packages/jublawoma-data/src/schema";
 import { createInquiryRepository as uncletInquiryStore } from "../packages/unclet-data/src/content/inquiry.repository";
 import { createReviewRepository as uncletReviewStore } from "../packages/unclet-data/src/content/review.repository";
 import { createShowcaseRepository as uncletShowcaseStore } from "../packages/unclet-data/src/content/showcase.repository";
 import { createShowcaseImageRepository as uncletShowcaseImageStore } from "../packages/unclet-data/src/content/showcase-image.repository";
 import { createReviewRepository } from "../packages/unclet-data/src/review.repository";
+import * as unclet from "../packages/unclet-data/src/schema";
 import { createArticleRepository as zelglihofArticleStore } from "../packages/zelglihof-data/src/content/article.repository";
 import { createArticleImageRepository as zelglihofArticleImageStore } from "../packages/zelglihof-data/src/content/article-image.repository";
 import { createCampaignRepository as zelglihofCampaignStore } from "../packages/zelglihof-data/src/content/campaign.repository";
@@ -24,6 +27,7 @@ import { createProductReservationRepository as zelglihofProductReservationStore 
 import { createProductVariantRepository as zelglihofProductVariantStore } from "../packages/zelglihof-data/src/content/product-variant.repository";
 import { createPromotionRepository as zelglihofPromotionStore } from "../packages/zelglihof-data/src/content/promotion.repository";
 import { createSubscriberRepository as zelglihofSubscriberStore } from "../packages/zelglihof-data/src/content/subscriber.repository";
+import * as zelglihof from "../packages/zelglihof-data/src/schema";
 
 const enabled = Boolean(process.env.STUDIO_TEST_ADMIN_URL);
 test("explicit Studio repositories against PostgreSQL migrations", {
@@ -48,18 +52,20 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 	const page = { page: 0, size: 30, search: "" };
 	const rollback = new Error("Rollback review fixtures");
 	try {
-		await admin.transaction(async (sql) => {
+		await admin.transaction(async (transaction) => {
 			for (const [site, id] of [
 				...Object.entries(imageIds),
 				...Object.entries(replacementImageIds),
 			]) {
-				await sql`INSERT INTO assets.image (id, site, public, created_at, updated_at) VALUES (${id}, ${site}, false, now(), now())`;
+				await transaction.execute(
+					sql`INSERT INTO assets.image (id, site, public, created_at, updated_at) VALUES (${id}, ${site}, false, now(), now())`,
+				);
 			}
-			await sql`SET LOCAL ROLE studio`;
+			await transaction.execute(sql`SET LOCAL ROLE studio`);
 			await context.test(
 				"jublawoma.Promotion: typed reads, writes, and identities",
 				async () => {
-					const store = jublawomaPromotionStore(sql);
+					const store = jublawomaPromotionStore(transaction);
 					const input = {
 						title: "Review title",
 						description: "Review description",
@@ -85,7 +91,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"jublawoma.Story: typed reads, writes, and identities",
 				async () => {
-					const store = jublawomaStoryStore(sql);
+					const store = jublawomaStoryStore(transaction);
 					const input = {
 						slug: `review-${randomUUID()}`,
 						title: "Review title",
@@ -102,6 +108,11 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					assert.match(record.createdAt, /^\d{4}-\d{2}-\d{2}T/);
 					const listed = await store.list(page);
 					assert.ok(listed.items.some((row) => row.id === record.id));
+					assert.equal(record.publishedOn, "2026-09-17");
+					assert.equal(
+						record.createdAt,
+						new Date(record.createdAt).toISOString(),
+					);
 					ids.set("jublawoma.Story", record.id);
 					const updated = await store.update(key, {
 						...input,
@@ -113,7 +124,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"jublawoma.StoryImage: typed reads, writes, and identities",
 				async () => {
-					const store = jublawomaStoryImageStore(sql);
+					const store = jublawomaStoryImageStore(transaction);
 					const input = {
 						storyId: ids.get("jublawoma.Story") ?? "",
 						imageId: imageIds.jublawoma,
@@ -123,7 +134,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					const key = { storyId: record.storyId, imageId: record.imageId };
 					assert.deepEqual(await store.get(key), record);
 					assert.match(record.createdAt, /^\d{4}-\d{2}-\d{2}T/);
-					const listed = await store.list(page, { story_id: record.storyId });
+					const listed = await store.listForStory(page, record.storyId ?? "");
 					assert.ok(
 						listed.items.some(
 							(row) =>
@@ -153,7 +164,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"jublawoma.Event: typed reads, writes, and identities",
 				async () => {
-					const store = jublawomaEventStore(sql);
+					const store = jublawomaEventStore(transaction);
 					const input = {
 						name: "Review name",
 						description: null,
@@ -179,7 +190,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"jublawoma.Member: typed reads, writes, and identities",
 				async () => {
-					const store = jublawomaMemberStore(sql);
+					const store = jublawomaMemberStore(transaction);
 					const input = {
 						name: "Review name",
 						imageId: imageIds.jublawoma,
@@ -203,7 +214,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"jublawoma.Donation: typed reads, writes, and identities",
 				async () => {
-					const store = jublawomaDonationStore(sql);
+					const store = jublawomaDonationStore(transaction);
 					const input = {
 						title: "Review title",
 						description: "Review description",
@@ -228,7 +239,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"jublawoma.DonationItem: typed reads, writes, and identities",
 				async () => {
-					const store = jublawomaDonationItemStore(sql);
+					const store = jublawomaDonationItemStore(transaction);
 					const input = {
 						donationId: ids.get("jublawoma.Donation") ?? "",
 						name: "Review name",
@@ -241,9 +252,10 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					const key = { id: record.id };
 					assert.deepEqual(await store.get(key), record);
 					assert.match(record.createdAt, /^\d{4}-\d{2}-\d{2}T/);
-					const listed = await store.list(page, {
-						donation_id: record.donationId,
-					});
+					const listed = await store.listForDonation(
+						page,
+						record.donationId ?? "",
+					);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("jublawoma.DonationItem", record.id);
 					const updated = await store.update(key, {
@@ -256,36 +268,37 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"jublawoma.DonationCommitment: typed reads, writes, and identities",
 				async () => {
-					const store = jublawomaDonationCommitmentStore(sql);
-					const [seed] = await sql`
-    INSERT INTO ${sql("jublawoma.donation_commitment")} ${sql({
-			id: randomUUID(),
-			donation_id: ids.get("jublawoma.Donation") ?? "",
-			donation_item_id: ids.get("jublawoma.DonationItem") ?? "",
-			donation_title: "Review donationTitle",
-			item_name: "Review itemName",
-			item_detail: null,
-			item_quantity: 2.5,
-			step: 0.5,
-			unit: "Review unit",
-			name: "Review name",
-			phone: "+41 79 000 00 00",
-			quantity: 2.5,
-			note: null,
+					const store = jublawomaDonationCommitmentStore(transaction);
+					const [seed] = await transaction
+						.insert(jublawoma.donationCommitment)
+						.values({
+							id: randomUUID(),
+							donationId: ids.get("jublawoma.Donation") ?? "",
+							donationItemId: ids.get("jublawoma.DonationItem") ?? "",
+							donationTitle: "Review donationTitle",
+							itemName: "Review itemName",
+							itemDetail: null,
+							itemQuantity: 2.5,
+							step: 0.5,
+							unit: "Review unit",
+							name: "Review name",
+							phone: "+41 79 000 00 00",
+							quantity: 2.5,
+							note: null,
 
-			created_at: new Date(),
-			updated_at: new Date(),
-		})}
-    RETURNING id
-   `;
+							createdAt: new Date().toISOString(),
+							updatedAt: new Date().toISOString(),
+						})
+						.returning({ id: jublawoma.donationCommitment.id });
 					const record = await store.get({ id: String(seed.id) });
 					assert.ok(record);
 					const key = { id: record.id };
 					assert.deepEqual(await store.get(key), record);
 					assert.match(record.createdAt, /^\d{4}-\d{2}-\d{2}T/);
-					const listed = await store.list(page, {
-						donation_id: record.donationId,
-					});
+					const listed = await store.listForDonation(
+						page,
+						record.donationId ?? "",
+					);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("jublawoma.DonationCommitment", record.id);
 				},
@@ -293,7 +306,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"unclet.Showcase: typed reads, writes, and identities",
 				async () => {
-					const store = uncletShowcaseStore(sql);
+					const store = uncletShowcaseStore(transaction);
 					const input = {
 						slug: `review-${randomUUID()}`,
 						title: "Review title",
@@ -321,7 +334,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"unclet.ShowcaseImage: typed reads, writes, and identities",
 				async () => {
-					const store = uncletShowcaseImageStore(sql);
+					const store = uncletShowcaseImageStore(transaction);
 					const input = {
 						showcaseId: ids.get("unclet.Showcase") ?? "",
 						imageId: imageIds.unclet,
@@ -334,9 +347,10 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					};
 					assert.deepEqual(await store.get(key), record);
 					assert.match(record.createdAt, /^\d{4}-\d{2}-\d{2}T/);
-					const listed = await store.list(page, {
-						showcase_id: record.showcaseId,
-					});
+					const listed = await store.listForShowcase(
+						page,
+						record.showcaseId ?? "",
+					);
 					assert.ok(
 						listed.items.some(
 							(row) =>
@@ -366,7 +380,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"unclet.Review: typed reads, writes, and identities",
 				async () => {
-					const store = uncletReviewStore(sql);
+					const store = uncletReviewStore(transaction);
 					const input = {
 						stars: 5,
 						name: "Review name",
@@ -390,24 +404,24 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"unclet.Inquiry: typed reads, writes, and identities",
 				async () => {
-					const store = uncletInquiryStore(sql);
-					const [seed] = await sql`
-    INSERT INTO ${sql("unclet.inquiry")} ${sql({
-			id: randomUUID(),
-			status: "new",
-			name: "Review name",
-			email: `review-${randomUUID()}@example.com`,
-			phone: "+41 79 000 00 00",
-			event_on: "2026-09-17",
-			location: null,
-			guest_count: null,
-			note: null,
+					const store = uncletInquiryStore(transaction);
+					const [seed] = await transaction
+						.insert(unclet.inquiry)
+						.values({
+							id: randomUUID(),
+							status: "new",
+							name: "Review name",
+							email: `review-${randomUUID()}@example.com`,
+							phone: "+41 79 000 00 00",
+							eventOn: "2026-09-17",
+							location: null,
+							guestCount: null,
+							note: null,
 
-			created_at: new Date(),
-			updated_at: new Date(),
-		})}
-    RETURNING id
-   `;
+							createdAt: new Date().toISOString(),
+							updatedAt: new Date().toISOString(),
+						})
+						.returning({ id: unclet.inquiry.id });
 					const record = await store.get({ id: String(seed.id) });
 					assert.ok(record);
 					const key = { id: record.id };
@@ -424,7 +438,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"zelglihof.Promotion: typed reads, writes, and identities",
 				async () => {
-					const store = zelglihofPromotionStore(sql);
+					const store = zelglihofPromotionStore(transaction);
 					const input = {
 						title: "Review title",
 						description: "Review description",
@@ -450,7 +464,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"zelglihof.Article: typed reads, writes, and identities",
 				async () => {
-					const store = zelglihofArticleStore(sql);
+					const store = zelglihofArticleStore(transaction);
 					const input = {
 						slug: `review-${randomUUID()}`,
 						title: "Review title",
@@ -477,7 +491,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"zelglihof.ArticleImage: typed reads, writes, and identities",
 				async () => {
-					const store = zelglihofArticleImageStore(sql);
+					const store = zelglihofArticleImageStore(transaction);
 					const input = {
 						articleId: ids.get("zelglihof.Article") ?? "",
 						imageId: imageIds.zelglihof,
@@ -487,9 +501,10 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					const key = { articleId: record.articleId, imageId: record.imageId };
 					assert.deepEqual(await store.get(key), record);
 					assert.match(record.createdAt, /^\d{4}-\d{2}-\d{2}T/);
-					const listed = await store.list(page, {
-						article_id: record.articleId,
-					});
+					const listed = await store.listForArticle(
+						page,
+						record.articleId ?? "",
+					);
 					assert.ok(
 						listed.items.some(
 							(row) =>
@@ -519,7 +534,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"zelglihof.Product: typed reads, writes, and identities",
 				async () => {
-					const store = zelglihofProductStore(sql);
+					const store = zelglihofProductStore(transaction);
 					const input = {
 						name: "Review name",
 						description: "Review description",
@@ -557,7 +572,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"zelglihof.ProductVariant: typed reads, writes, and identities",
 				async () => {
-					const store = zelglihofProductVariantStore(sql);
+					const store = zelglihofProductVariantStore(transaction);
 					const input = {
 						productId: ids.get("zelglihof.Product") ?? "",
 						name: "Review name",
@@ -570,9 +585,10 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					const key = { id: record.id };
 					assert.deepEqual(await store.get(key), record);
 					assert.match(record.createdAt, /^\d{4}-\d{2}-\d{2}T/);
-					const listed = await store.list(page, {
-						product_id: record.productId,
-					});
+					const listed = await store.listForProduct(
+						page,
+						record.productId ?? "",
+					);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("zelglihof.ProductVariant", record.id);
 					const updated = await store.update(key, {
@@ -585,37 +601,38 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"zelglihof.ProductReservation: typed reads, writes, and identities",
 				async () => {
-					const store = zelglihofProductReservationStore(sql);
-					const [seed] = await sql`
-    INSERT INTO ${sql("zelglihof.product_reservation")} ${sql({
-			id: randomUUID(),
-			product_id: ids.get("zelglihof.Product") ?? "",
-			product_variant_id: ids.get("zelglihof.ProductVariant") ?? "",
-			product_name: "Review productName",
-			variant_name: "Review variantName",
-			variant_description: null,
-			variant_quantity: null,
-			variant_price: "Review variantPrice",
-			name: "Review name",
-			phone: "+41 79 000 00 00",
-			email: null,
-			quantity: 3,
-			note: null,
-			status: "new",
+					const store = zelglihofProductReservationStore(transaction);
+					const [seed] = await transaction
+						.insert(zelglihof.productReservation)
+						.values({
+							id: randomUUID(),
+							productId: ids.get("zelglihof.Product") ?? "",
+							productVariantId: ids.get("zelglihof.ProductVariant") ?? "",
+							productName: "Review productName",
+							variantName: "Review variantName",
+							variantDescription: null,
+							variantQuantity: null,
+							variantPrice: "Review variantPrice",
+							name: "Review name",
+							phone: "+41 79 000 00 00",
+							email: null,
+							quantity: 3,
+							note: null,
+							status: "new",
 
-			created_at: new Date(),
-			updated_at: new Date(),
-		})}
-    RETURNING id
-   `;
+							createdAt: new Date().toISOString(),
+							updatedAt: new Date().toISOString(),
+						})
+						.returning({ id: zelglihof.productReservation.id });
 					const record = await store.get({ id: String(seed.id) });
 					assert.ok(record);
 					const key = { id: record.id };
 					assert.deepEqual(await store.get(key), record);
 					assert.match(record.createdAt, /^\d{4}-\d{2}-\d{2}T/);
-					const listed = await store.list(page, {
-						product_id: record.productId,
-					});
+					const listed = await store.listForProduct(
+						page,
+						record.productId ?? "",
+					);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("zelglihof.ProductReservation", record.id);
 					const updated = await store.update(key, { status: "completed" });
@@ -626,22 +643,22 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"zelglihof.Subscriber: typed reads, writes, and identities",
 				async () => {
-					const store = zelglihofSubscriberStore(sql);
-					const [seed] = await sql`
-    INSERT INTO ${sql("zelglihof.subscriber")} ${sql({
-			id: randomUUID(),
-			email: `review-${randomUUID()}@example.com`,
-			status: "pending",
-			requested_at: "2026-01-01T00:00:00Z",
-			confirmed_at: "2026-01-01T00:00:00Z",
-			unsubscribed_at: "2026-01-01T00:00:00Z",
-			confirmation_token_hash: randomUUID(),
-			unsubscribe_token: randomUUID(),
-			created_at: new Date(),
-			updated_at: new Date(),
-		})}
-    RETURNING id
-   `;
+					const store = zelglihofSubscriberStore(transaction);
+					const [seed] = await transaction
+						.insert(zelglihof.subscriber)
+						.values({
+							id: randomUUID(),
+							email: `review-${randomUUID()}@example.com`,
+							status: "pending",
+							requestedAt: "2026-01-01T00:00:00Z",
+							confirmedAt: "2026-01-01T00:00:00Z",
+							unsubscribedAt: "2026-01-01T00:00:00Z",
+							confirmationTokenHash: randomUUID(),
+							unsubscribeToken: randomUUID(),
+							createdAt: new Date().toISOString(),
+							updatedAt: new Date().toISOString(),
+						})
+						.returning({ id: zelglihof.subscriber.id });
 					const record = await store.get({ id: String(seed.id) });
 					assert.ok(record);
 					const key = { id: record.id };
@@ -649,13 +666,23 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					assert.match(record.createdAt, /^\d{4}-\d{2}-\d{2}T/);
 					const listed = await store.list(page);
 					assert.ok(listed.items.some((row) => row.id === record.id));
+					assert.equal(Object.hasOwn(record, "confirmationTokenHash"), false);
+					assert.equal(Object.hasOwn(record, "unsubscribeToken"), false);
+					assert.equal(
+						listed.items.some(
+							(item) =>
+								Object.hasOwn(item, "unsubscribeToken") ||
+								Object.hasOwn(item, "confirmationTokenHash"),
+						),
+						false,
+					);
 					ids.set("zelglihof.Subscriber", record.id);
 				},
 			);
 			await context.test(
 				"zelglihof.Campaign: typed reads, writes, and identities",
 				async () => {
-					const store = zelglihofCampaignStore(sql);
+					const store = zelglihofCampaignStore(transaction);
 					const input = {
 						subject: "Review subject",
 						body: "Review body",
@@ -672,7 +699,10 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 						subject: "Updated",
 					});
 					assert.equal(updated.subject, "Updated");
-					await sql`UPDATE zelglihof.campaign SET status = 'queued' WHERE id = ${record.id}`;
+					await transaction
+						.update(zelglihof.campaign)
+						.set({ status: "queued" })
+						.where(eq(zelglihof.campaign.id, record.id));
 					await assert.rejects(store.update(key, input), /no longer editable/);
 					assert.equal((await store.get(key))?.status, "queued");
 				},
@@ -680,21 +710,21 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 			await context.test(
 				"zelglihof.Inquiry: typed reads, writes, and identities",
 				async () => {
-					const store = zelglihofInquiryStore(sql);
-					const [seed] = await sql`
-    INSERT INTO ${sql("zelglihof.inquiry")} ${sql({
-			id: randomUUID(),
-			status: "new",
-			name: "Review name",
-			phone: "+41 79 000 00 00",
-			email: null,
-			message: "Review message",
+					const store = zelglihofInquiryStore(transaction);
+					const [seed] = await transaction
+						.insert(zelglihof.inquiry)
+						.values({
+							id: randomUUID(),
+							status: "new",
+							name: "Review name",
+							phone: "+41 79 000 00 00",
+							email: null,
+							message: "Review message",
 
-			created_at: new Date(),
-			updated_at: new Date(),
-		})}
-    RETURNING id
-   `;
+							createdAt: new Date().toISOString(),
+							updatedAt: new Date().toISOString(),
+						})
+						.returning({ id: zelglihof.inquiry.id });
 					const record = await store.get({ id: String(seed.id) });
 					assert.ok(record);
 					const key = { id: record.id };
@@ -712,19 +742,24 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 				"public reviews remain hidden until moderated",
 				async () => {
 					const name = `Review ${randomUUID()}`;
-					await sql`SET LOCAL ROLE unclet`;
-					await createReviewRepository(sql).submit({
+					await transaction.execute(sql`SET LOCAL ROLE unclet`);
+					await createReviewRepository(transaction).submit({
 						stars: 5,
 						name,
 						description: "A public submission",
 					});
-					await sql`SET LOCAL ROLE studio`;
-					const [review] =
-						await sql`SELECT stars, visible, created_at, updated_at FROM unclet.review WHERE name = ${name}`;
+					await transaction.execute(sql`SET LOCAL ROLE studio`);
+					const [review] = await transaction
+						.select()
+						.from(unclet.review)
+						.where(eq(unclet.review.name, name));
 					assert.equal(review.stars, 5);
 					assert.equal(review.visible, false);
-					assert.ok(review.created_at instanceof Date);
-					assert.deepEqual(review.updated_at, review.created_at);
+					assert.equal(
+						review.createdAt,
+						new Date(review.createdAt).toISOString(),
+					);
+					assert.deepEqual(review.updatedAt, review.createdAt);
 				},
 			);
 			throw rollback;

@@ -14,8 +14,8 @@ export function createDonationService(database: DatabasePool) {
 	return {
 		commit(input: CommitmentInput) {
 			const values = commitmentSchema.parse(input);
-			return database.transaction(async (sql) => {
-				const repository = createDonationRepository(sql);
+			return database.transaction(async (transaction) => {
+				const repository = createDonationRepository(transaction);
 				const item = await repository.lockItem(values);
 				if (!item?.active || !validIncrement(values.quantity, item.step)) {
 					return { outcome: "unavailable" as const };

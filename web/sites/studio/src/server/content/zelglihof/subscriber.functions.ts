@@ -9,19 +9,19 @@ export const listSubscribers = createServerFn({ method: "GET" })
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return createSubscriberRepository(database.sql).list(data);
+		return createSubscriberRepository(database.db).list(data);
 	});
 
 export const getSubscriber = createServerFn({ method: "GET" })
 	.validator(subscriberKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return createSubscriberRepository(database.sql).get(data);
+		return createSubscriberRepository(database.db).get(data);
 	});
 
 export const deleteSubscriber = createServerFn({ method: "POST" })
 	.validator(subscriberKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		await createSubscriberRepository(database.sql).delete(data);
+		await createSubscriberRepository(database.db).delete(data);
 	});

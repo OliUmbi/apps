@@ -3,38 +3,38 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite dev --host",
     "build": "vite build",
-    "start": "node .output/server/index.mjs",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "dev": "vite dev --host",
+    "start": "node .output/server/index.mjs"
   },
   "dependencies": {
-    "@oliumbi/database": "workspace:*",
     "@base-ui/react": "catalog:",
+    "@oliumbi/assets": "workspace:*",
+    "@oliumbi/contracts": "workspace:*",
+    "@oliumbi/database": "workspace:*",
+    "@oliumbi/i18n": "workspace:*",
+    "@oliumbi/query": "workspace:*",
+    "@oliumbi/ui": "workspace:*",
+    "@oliumbi/zelglihof-data": "workspace:*",
     "@tailwindcss/vite": "catalog:",
+    "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-start": "catalog:",
     "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "tailwindcss": "catalog:",
-    "zod": "catalog:",
-    "@oliumbi/contracts": "workspace:*",
-    "@oliumbi/assets": "workspace:*",
-    "@oliumbi/i18n": "workspace:*",
-    "@tanstack/react-query": "^5.90.0",
-    "@oliumbi/zelglihof-data": "workspace:*",
-    "@oliumbi/query": "workspace:*",
-    "@oliumbi/ui": "workspace:*"
+    "zod": "catalog:"
   },
   "devDependencies": {
+    "@oliumbi/environment": "workspace:*",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "nitro": "catalog:",
     "typescript": "catalog:",
-    "vite": "catalog:",
-    "@oliumbi/environment": "workspace:*"
+    "vite": "catalog:"
   }
 }

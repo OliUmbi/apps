@@ -13,21 +13,21 @@ export const listCampaigns = createServerFn({ method: "GET" })
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return createCampaignRepository(database.sql).list(data);
+		return createCampaignRepository(database.db).list(data);
 	});
 
 export const getCampaign = createServerFn({ method: "GET" })
 	.validator(campaignKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return createCampaignRepository(database.sql).get(data);
+		return createCampaignRepository(database.db).get(data);
 	});
 
 export const createCampaign = createServerFn({ method: "POST" })
 	.validator(campaignInputSchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return createCampaignRepository(database.sql).create(data);
+		return createCampaignRepository(database.db).create(data);
 	});
 
 export const updateCampaign = createServerFn({ method: "POST" })
@@ -36,12 +36,12 @@ export const updateCampaign = createServerFn({ method: "POST" })
 	)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return createCampaignRepository(database.sql).update(data.key, data.values);
+		return createCampaignRepository(database.db).update(data.key, data.values);
 	});
 
 export const deleteCampaign = createServerFn({ method: "POST" })
 	.validator(campaignKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		await createCampaignRepository(database.sql).delete(data);
+		await createCampaignRepository(database.db).delete(data);
 	});

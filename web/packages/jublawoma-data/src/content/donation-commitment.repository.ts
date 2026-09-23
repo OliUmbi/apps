@@ -1,28 +1,42 @@
 import type { PageInput } from "@oliumbi/contracts";
-import type { SqlExecutor } from "@oliumbi/database";
-import { createContentRepository } from "@oliumbi/database/content-repository";
-import {
-	type DonationCommitmentKey,
-	donationCommitmentSchema,
-} from "./donation-commitment";
+import type { DatabaseExecutor } from "@oliumbi/database";
+import { paginate, searchPattern } from "@oliumbi/database/pagination";
+import { and, desc, eq, ilike } from "drizzle-orm";
+import { donationCommitment } from "../schema";
+import type { DonationCommitmentKey } from "./donation-commitment";
 
-export function createDonationCommitmentRepository(sql: SqlExecutor) {
-	const repository = createContentRepository(sql, {
-		table: "jublawoma.donation_commitment",
-		selection: sql`id, donation_id AS "donationId", donation_item_id AS "donationItemId", donation_title AS "donationTitle", item_name AS "itemName", item_detail AS "itemDetail", item_quantity AS "itemQuantity", step, unit, name, phone, quantity, note, created_at AS "createdAt", updated_at AS "updatedAt"`,
-		schema: donationCommitmentSchema,
-		keyColumns: (key: DonationCommitmentKey) => ({ id: key.id }),
-		orderColumns: ["id"],
-		searchColumn: "name",
-		writeColumns: (_input: never) => ({}),
-	});
+export function createDonationCommitmentRepository(db: DatabaseExecutor) {
 	return {
-		read: repository.read,
-		list: repository.list,
-		get: repository.get,
-		delete: repository.delete,
+		async get(key: DonationCommitmentKey) {
+			const [record] = await db
+				.select()
+				.from(donationCommitment)
+				.where(eq(donationCommitment.id, key.id))
+				.limit(1);
+			return record ?? null;
+		},
+		async delete(key: DonationCommitmentKey): Promise<void> {
+			await db
+				.delete(donationCommitment)
+				.where(eq(donationCommitment.id, key.id));
+		},
 		listForDonation(input: PageInput, donationId: string) {
-			return repository.list(input, { donation_id: donationId });
+			return paginate(
+				db
+					.select()
+					.from(donationCommitment)
+					.where(
+						and(
+							eq(donationCommitment.donationId, donationId),
+							input.search
+								? ilike(donationCommitment.name, searchPattern(input.search))
+								: undefined,
+						),
+					)
+					.orderBy(desc(donationCommitment.createdAt), donationCommitment.id)
+					.$dynamic(),
+				input,
+			);
 		},
 	};
 }

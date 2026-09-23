@@ -2,12 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { proxyPublicImage } from "../packages/assets/src/public-image.server";
 import { emailSchema, safeLinkHref } from "../packages/contracts/src";
-import {
-	databaseDateSchema,
-	databaseTimestampSchema,
-} from "../packages/contracts/src/content-validation";
 import { createHttpClient, ServiceError } from "../packages/http-client/src";
-import { donationItemSchema } from "../packages/jublawoma-data/src/content/donation-item";
 import { responsiveSrcSet } from "../packages/ui/src/responsive-image";
 
 test("email validation normalizes whitespace before validating", () => {
@@ -42,26 +37,6 @@ test("proxied images produce responsive rendition URLs", () => {
 		),
 	);
 	assert.equal(responsiveSrcSet("images/abc?size=xl"), undefined);
-});
-
-test("database serialization preserves nulls and normalizes dates and numeric columns", () => {
-	const row = donationItemSchema
-		.pick({ quantity: true })
-		.extend({
-			startsAt: databaseTimestampSchema.nullable(),
-			publishedOn: databaseDateSchema,
-			createdAt: databaseTimestampSchema,
-		})
-		.parse({
-			quantity: "1.5",
-			startsAt: null,
-			publishedOn: new Date("2026-09-17T00:00:00Z"),
-			createdAt: new Date("2026-09-17T12:00:00Z"),
-		});
-	assert.equal(row.quantity, 1.5);
-	assert.equal(row.startsAt, null);
-	assert.equal(row.publishedOn, "2026-09-17");
-	assert.equal(row.createdAt, "2026-09-17T12:00:00.000Z");
 });
 
 test("HTTP requests preserve caller cancellation alongside the timeout", async () => {

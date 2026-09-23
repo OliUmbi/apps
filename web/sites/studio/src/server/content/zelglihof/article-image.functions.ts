@@ -14,7 +14,7 @@ export const listArticleImages = createServerFn({ method: "GET" })
 	.validator(pageSchema.extend({ articleId: idSchema }))
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return createArticleImageRepository(database.sql).listForArticle(
+		return createArticleImageRepository(database.db).listForArticle(
 			data,
 			data.articleId,
 		);
@@ -24,7 +24,7 @@ export const getArticleImage = createServerFn({ method: "GET" })
 	.validator(articleImageKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return createArticleImageRepository(database.sql).get(data);
+		return createArticleImageRepository(database.db).get(data);
 	});
 
 export const createArticleImage = createServerFn({ method: "POST" })
@@ -32,7 +32,7 @@ export const createArticleImage = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
 		if (data.imageId) await assets.images.get("zelglihof", data.imageId);
-		return createArticleImageRepository(database.sql).create(data);
+		return createArticleImageRepository(database.db).create(data);
 	});
 
 export const updateArticleImage = createServerFn({ method: "POST" })
@@ -46,7 +46,7 @@ export const updateArticleImage = createServerFn({ method: "POST" })
 		await requireActor("zelglihof");
 		if (data.values.imageId)
 			await assets.images.get("zelglihof", data.values.imageId);
-		return createArticleImageRepository(database.sql).update(
+		return createArticleImageRepository(database.db).update(
 			data.key,
 			data.values,
 		);
@@ -56,5 +56,5 @@ export const deleteArticleImage = createServerFn({ method: "POST" })
 	.validator(articleImageKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		await createArticleImageRepository(database.sql).delete(data);
+		await createArticleImageRepository(database.db).delete(data);
 	});

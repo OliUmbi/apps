@@ -1,21 +1,48 @@
-import type { SqlExecutor } from "@oliumbi/database";
-import { createContentRepository } from "@oliumbi/database/content-repository";
-import { type SubscriberKey, subscriberSchema } from "./subscriber";
+import type { PageInput } from "@oliumbi/contracts";
+import type { DatabaseExecutor } from "@oliumbi/database";
+import { paginate, searchPattern } from "@oliumbi/database/pagination";
+import { desc, eq, ilike } from "drizzle-orm";
+import { subscriber } from "../schema";
+import type { SubscriberKey } from "./subscriber";
 
-export function createSubscriberRepository(sql: SqlExecutor) {
-	const repository = createContentRepository(sql, {
-		table: "zelglihof.subscriber",
-		selection: sql`id, email, status, requested_at AS "requestedAt", confirmed_at AS "confirmedAt", unsubscribed_at AS "unsubscribedAt", created_at AS "createdAt", updated_at AS "updatedAt"`,
-		schema: subscriberSchema,
-		keyColumns: (key: SubscriberKey) => ({ id: key.id }),
-		orderColumns: ["id"],
-		searchColumn: "email",
-		writeColumns: (_input: never) => ({}),
-	});
+const subscriberSelection = {
+	id: subscriber.id,
+	email: subscriber.email,
+	status: subscriber.status,
+	requestedAt: subscriber.requestedAt,
+	confirmedAt: subscriber.confirmedAt,
+	unsubscribedAt: subscriber.unsubscribedAt,
+	createdAt: subscriber.createdAt,
+	updatedAt: subscriber.updatedAt,
+};
+
+export function createSubscriberRepository(db: DatabaseExecutor) {
 	return {
-		read: repository.read,
-		list: repository.list,
-		get: repository.get,
-		delete: repository.delete,
+		list(input: PageInput) {
+			return paginate(
+				db
+					.select(subscriberSelection)
+					.from(subscriber)
+					.where(
+						input.search
+							? ilike(subscriber.email, searchPattern(input.search))
+							: undefined,
+					)
+					.orderBy(desc(subscriber.createdAt), subscriber.id)
+					.$dynamic(),
+				input,
+			);
+		},
+		async get(key: SubscriberKey) {
+			const [record] = await db
+				.select(subscriberSelection)
+				.from(subscriber)
+				.where(eq(subscriber.id, key.id))
+				.limit(1);
+			return record ?? null;
+		},
+		async delete(key: SubscriberKey): Promise<void> {
+			await db.delete(subscriber).where(eq(subscriber.id, key.id));
+		},
 	};
 }

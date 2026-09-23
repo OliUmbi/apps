@@ -16,8 +16,8 @@ export function createReservationService(
 			const values = reservationSchema.parse(input);
 			const id = randomUUID();
 			const reference = referenceFor(id);
-			return database.transaction(async (sql) => {
-				const repository = createReservationRepository(sql);
+			return database.transaction(async (transaction) => {
+				const repository = createReservationRepository(transaction);
 				const variant = await repository.lockVariant(values);
 				if (
 					!variant?.available ||
@@ -28,7 +28,7 @@ export function createReservationService(
 				const now = new Date();
 				await repository.decrementStock(values.variantId, values.quantity, now);
 				await repository.insert(id, values, variant, now);
-				const queue = createQueueClient(sql);
+				const queue = createQueueClient(transaction);
 				for (const message of reservationEmails(
 					sender,
 					values,

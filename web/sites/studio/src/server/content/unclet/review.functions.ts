@@ -13,21 +13,21 @@ export const listReviews = createServerFn({ method: "GET" })
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return createReviewRepository(database.sql).list(data);
+		return createReviewRepository(database.db).list(data);
 	});
 
 export const getReview = createServerFn({ method: "GET" })
 	.validator(reviewKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return createReviewRepository(database.sql).get(data);
+		return createReviewRepository(database.db).get(data);
 	});
 
 export const createReview = createServerFn({ method: "POST" })
 	.validator(reviewInputSchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return createReviewRepository(database.sql).create(data);
+		return createReviewRepository(database.db).create(data);
 	});
 
 export const updateReview = createServerFn({ method: "POST" })
@@ -36,12 +36,12 @@ export const updateReview = createServerFn({ method: "POST" })
 	)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return createReviewRepository(database.sql).update(data.key, data.values);
+		return createReviewRepository(database.db).update(data.key, data.values);
 	});
 
 export const deleteReview = createServerFn({ method: "POST" })
 	.validator(reviewKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		await createReviewRepository(database.sql).delete(data);
+		await createReviewRepository(database.db).delete(data);
 	});

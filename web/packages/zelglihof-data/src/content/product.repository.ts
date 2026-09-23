@@ -1,24 +1,62 @@
-import type { SqlExecutor } from "@oliumbi/database";
-import { createContentRepository } from "@oliumbi/database/content-repository";
-import { type ProductInput, type ProductKey, productSchema } from "./product";
+import type { PageInput } from "@oliumbi/contracts";
+import type { DatabaseExecutor } from "@oliumbi/database";
+import { paginate, searchPattern } from "@oliumbi/database/pagination";
+import { desc, eq, ilike } from "drizzle-orm";
+import { product } from "../schema";
+import type { ProductInput, ProductKey } from "./product";
 
-export function createProductRepository(sql: SqlExecutor) {
-	return createContentRepository(sql, {
-		table: "zelglihof.product",
-		selection: sql`id, name, description, body, image_id AS "imageId", visible, reservable, starts_at AS "startsAt", ends_at AS "endsAt", created_at AS "createdAt", updated_at AS "updatedAt"`,
-		schema: productSchema,
-		keyColumns: (key: ProductKey) => ({ id: key.id }),
-		orderColumns: ["id"],
-		searchColumn: "name",
-		writeColumns: (input: ProductInput) => ({
-			name: input.name,
-			description: input.description,
-			body: input.body,
-			image_id: input.imageId,
-			visible: input.visible,
-			reservable: input.reservable,
-			starts_at: input.startsAt,
-			ends_at: input.endsAt,
-		}),
-	});
+export function createProductRepository(db: DatabaseExecutor) {
+	return {
+		list(input: PageInput) {
+			return paginate(
+				db
+					.select()
+					.from(product)
+					.where(
+						input.search
+							? ilike(product.name, searchPattern(input.search))
+							: undefined,
+					)
+					.orderBy(desc(product.createdAt), product.id)
+					.$dynamic(),
+				input,
+			);
+		},
+		async get(key: ProductKey) {
+			const [record] = await db
+				.select()
+				.from(product)
+				.where(eq(product.id, key.id))
+				.limit(1);
+			return record ?? null;
+		},
+		async create(input: ProductInput) {
+			const now = new Date().toISOString();
+			const [record] = await db
+				.insert(product)
+				.values({
+					...input,
+					createdAt: now,
+					updatedAt: now,
+				})
+				.returning();
+			if (!record) throw new Error("Record was not created");
+			return record;
+		},
+		async update(key: ProductKey, input: ProductInput) {
+			const [record] = await db
+				.update(product)
+				.set({
+					...input,
+					updatedAt: new Date().toISOString(),
+				})
+				.where(eq(product.id, key.id))
+				.returning();
+			if (!record) throw new Error("Record not found or no longer editable");
+			return record;
+		},
+		async delete(key: ProductKey): Promise<void> {
+			await db.delete(product).where(eq(product.id, key.id));
+		},
+	};
 }

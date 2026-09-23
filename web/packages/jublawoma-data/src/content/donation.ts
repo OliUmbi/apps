@@ -1,29 +1,19 @@
 import { idSchema } from "@oliumbi/contracts";
 import {
-	auditColumns,
 	bodySchema,
-	databaseTimestampSchema,
 	timestampRangeIsValid,
 	timestampSchema,
 	titleSchema,
 } from "@oliumbi/contracts/content-validation";
 import { z } from "zod";
+import type { donation } from "../schema";
 
 export const donationKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type DonationKey = z.infer<typeof donationKeySchema>;
 
-export const donationSchema = z.object({
-	id: idSchema,
-	title: z.string(),
-	description: z.string(),
-	contact: z.string(),
-	startsAt: databaseTimestampSchema,
-	endsAt: databaseTimestampSchema,
-	...auditColumns,
-});
-export type Donation = z.infer<typeof donationSchema>;
+export type Donation = typeof donation.$inferSelect;
 
 export const donationInputSchema = z
 	.strictObject({

@@ -13,14 +13,14 @@ export const listInquiries = createServerFn({ method: "GET" })
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return createInquiryRepository(database.sql).list(data);
+		return createInquiryRepository(database.db).list(data);
 	});
 
 export const getInquiry = createServerFn({ method: "GET" })
 	.validator(inquiryKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return createInquiryRepository(database.sql).get(data);
+		return createInquiryRepository(database.db).get(data);
 	});
 
 export const updateInquiry = createServerFn({ method: "POST" })
@@ -29,12 +29,12 @@ export const updateInquiry = createServerFn({ method: "POST" })
 	)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return createInquiryRepository(database.sql).update(data.key, data.values);
+		return createInquiryRepository(database.db).update(data.key, data.values);
 	});
 
 export const deleteInquiry = createServerFn({ method: "POST" })
 	.validator(inquiryKeySchema)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		await createInquiryRepository(database.sql).delete(data);
+		await createInquiryRepository(database.db).delete(data);
 	});

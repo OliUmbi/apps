@@ -3,20 +3,20 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./responsive-image": "./src/responsive-image.tsx",
-    "./simple-markdown": "./src/simple-markdown.tsx",
     "./form-feedback": "./src/form-feedback.tsx",
-    "./paginated-list": "./src/paginated-list.tsx"
+    "./paginated-list": "./src/paginated-list.tsx",
+    "./responsive-image": "./src/responsive-image.tsx",
+    "./simple-markdown": "./src/simple-markdown.tsx"
   },
   "scripts": {
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "react": "catalog:",
     "@base-ui/react": "catalog:",
     "@oliumbi/contracts": "workspace:*",
     "@oliumbi/i18n": "workspace:*",
-    "@tanstack/react-query": "^5.90.0"
+    "@tanstack/react-query": "catalog:",
+    "react": "catalog:"
   },
   "devDependencies": {
     "@types/react": "catalog:",

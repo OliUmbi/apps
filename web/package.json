@@ -3,24 +3,25 @@
   "private": true,
   "packageManager": "pnpm@11.20.0",
   "scripts": {
-    "dev:jublawoma": "pnpm --filter jublawoma dev",
-    "dev:unclet": "pnpm --filter unclet dev",
-    "dev:zelglihof": "pnpm --filter zelglihof dev",
-    "dev:studio": "pnpm --filter studio dev",
+    "build": "pnpm --workspace-concurrency=1 --filter \"./sites/*\" -r build",
     "build:jublawoma": "pnpm --filter jublawoma build",
+    "build:studio": "pnpm --filter studio build",
     "build:unclet": "pnpm --filter unclet build",
     "build:zelglihof": "pnpm --filter zelglihof build",
-    "build:studio": "pnpm --filter studio build",
     "check": "biome check",
+    "dev:jublawoma": "pnpm --filter jublawoma dev",
+    "dev:studio": "pnpm --filter studio dev",
+    "dev:unclet": "pnpm --filter unclet dev",
+    "dev:zelglihof": "pnpm --filter zelglihof dev",
     "fix": "biome check --write",
-    "typecheck": "pnpm -r check && tsc --project tests/tsconfig.json",
-    "build": "pnpm --workspace-concurrency=1 --filter \"./sites/*\" -r build",
-    "test": "tsx --test tests/*.test.ts"
+    "test": "tsx --test tests/*.test.ts",
+    "typecheck": "pnpm -r check && tsc --project tests/tsconfig.json"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
     "@types/node": "catalog:",
-    "tsx": "^4.23.13",
+    "drizzle-orm": "catalog:",
+    "tsx": "catalog:",
     "typescript": "catalog:"
   }
 }

@@ -31,7 +31,7 @@ function updateFromRecord(
 export const getUpdatePage = createServerFn({ method: "GET" })
 	.validator(z.object({ page: pageSchema.shape.page }))
 	.handler(async ({ data }) => {
-		const page = await createPublicRepository(database.sql).listArticles(
+		const page = await createPublicRepository(database.db).listArticles(
 			data.page,
 		);
 		return {
@@ -42,7 +42,7 @@ export const getUpdatePage = createServerFn({ method: "GET" })
 export const getUpdate = createServerFn({ method: "GET" })
 	.validator(z.object({ slug: slugSchema }))
 	.handler(async ({ data }) => {
-		const result = await createPublicRepository(database.sql).findArticle(
+		const result = await createPublicRepository(database.db).findArticle(
 			data.slug,
 		);
 		return result ? updateFromRecord(result.article, result.images) : null;

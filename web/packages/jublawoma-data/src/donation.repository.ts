@@ -1,40 +1,62 @@
 import type { Transaction } from "@oliumbi/database";
+import { and, eq, sql } from "drizzle-orm";
 import type { DonationItem } from "./donation.types";
 import type { CommitmentInput } from "./forms";
+import { donation, donationCommitment, donationItem } from "./schema";
 
-export function createDonationRepository(sql: Transaction) {
+export function createDonationRepository(transaction: Transaction) {
 	return {
 		async lockItem(input: CommitmentInput) {
-			const [item] = await sql<DonationItem[]>`
-				SELECT d.title, i.name, i.detail, i.quantity::float8, i.step::float8,
-						i.unit, (d.starts_at <= now() AND d.ends_at >= now()) AS active
-				FROM jublawoma.donation d
-				JOIN jublawoma.donation_item i ON i.donation_id = d.id
-				WHERE d.id = ${input.donationId} AND i.id = ${input.itemId}
-				FOR UPDATE OF d, i
-			`;
+			const [item] = await transaction
+				.select({
+					title: donation.title,
+					name: donationItem.name,
+					detail: donationItem.detail,
+					quantity: donationItem.quantity,
+					step: donationItem.step,
+					unit: donationItem.unit,
+					active: sql<boolean>`${donation.startsAt} <= now() AND ${donation.endsAt} >= now()`,
+				})
+				.from(donation)
+				.innerJoin(donationItem, eq(donationItem.donationId, donation.id))
+				.where(
+					and(
+						eq(donation.id, input.donationId),
+						eq(donationItem.id, input.itemId),
+					),
+				)
+				.for("update");
 			return item;
 		},
 		async committedQuantity(itemId: string) {
-			const [row] = await sql<{ quantity: number }[]>`
-				SELECT coalesce(sum(quantity), 0)::float8 AS quantity
-				FROM jublawoma.donation_commitment
-				WHERE donation_item_id = ${itemId}
-			`;
+			const [row] = await transaction
+				.select({
+					quantity:
+						sql`coalesce(sum(${donationCommitment.quantity}), 0)`.mapWith(
+							Number,
+						),
+				})
+				.from(donationCommitment)
+				.where(eq(donationCommitment.donationItemId, itemId));
 			return row.quantity;
 		},
 		async insert(input: CommitmentInput, item: DonationItem, now: Date) {
-			await sql`
-				INSERT INTO jublawoma.donation_commitment (
-					donation_id, donation_item_id, donation_title, item_name, item_detail,
-					item_quantity, step, unit, name, phone, quantity, note, created_at, updated_at
-				) VALUES (
-					${input.donationId}, ${input.itemId}, ${item.title}, ${item.name},
-					${item.detail}, ${item.quantity}, ${item.step}, ${item.unit},
-					${input.name}, ${input.phone}, ${input.quantity}, ${input.note || null},
-					${now}, ${now}
-				)
-			`;
+			await transaction.insert(donationCommitment).values({
+				donationId: input.donationId,
+				donationItemId: input.itemId,
+				donationTitle: item.title,
+				itemName: item.name,
+				itemDetail: item.detail,
+				itemQuantity: item.quantity,
+				step: item.step,
+				unit: item.unit,
+				name: input.name,
+				phone: input.phone,
+				quantity: input.quantity,
+				note: input.note || null,
+				createdAt: now.toISOString(),
+				updatedAt: now.toISOString(),
+			});
 		},
 	};
 }
