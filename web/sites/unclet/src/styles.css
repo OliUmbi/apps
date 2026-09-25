@@ -32,7 +32,6 @@ html {
 }
 body {
 	margin: 0;
-	min-width: 320px;
 	background: #11110f;
 }
 body::before {

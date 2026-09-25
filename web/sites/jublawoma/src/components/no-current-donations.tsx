@@ -4,13 +4,13 @@ export function NoCurrentDonations() {
 	return (
 		<header className="shell page-hero">
 			<div>
-				<p className="kicker">{m.jublawoma_routes_donations_paragraph()}</p>
+				<p className="kicker">{m.jublawoma_donations_eyebrow()}</p>
 				<h1>
-					{m.jublawoma_routes_donations_heading()}
+					{m.jublawoma_donations_title()}
 					<br />
-					<span>{m.jublawoma_routes_donations_text()}</span>
+					<span>{m.jublawoma_donations_title_accent()}</span>
 				</h1>
-				<p>{m.jublawoma_routes_donations_paragraph_2()}</p>
+				<p>{m.jublawoma_donations_description()}</p>
 			</div>
 			<img src="/assets/images/doodles/loving.svg" alt="" />
 		</header>

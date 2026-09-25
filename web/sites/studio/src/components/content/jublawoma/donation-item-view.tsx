@@ -14,17 +14,16 @@ import {
 	updateDonationItem,
 } from "../../../server/content/jublawoma/donation-item.functions";
 import { InputField } from "../../input-field";
-import { CollectionView } from "../collection-view";
 import type { EditorFieldsProps } from "../content-form";
 import { NumberField } from "../editor-controls";
+import { InlineCollectionView } from "../inline-collection-view";
 
 export function DonationItemsView({ donationId }: { donationId: string }) {
 	return (
-		<CollectionView<DonationItem, DonationItemInput>
+		<InlineCollectionView<DonationItem, DonationItemInput>
 			collection="jublawoma.donation_item"
 			title="Spendenbedarf"
 			scope={donationId}
-			inline
 			rowKey={(record) => record.id}
 			loadPage={(input) =>
 				listDonationItems({ data: { ...input, donationId } })
@@ -44,7 +43,7 @@ export function DonationItemsView({ donationId }: { donationId: string }) {
 			columns={[
 				{
 					id: "name",
-					heading: m.studio_field_name(),
+					heading: m.name(),
 					render: (record) => record.name,
 				},
 				{
@@ -54,7 +53,7 @@ export function DonationItemsView({ donationId }: { donationId: string }) {
 				},
 				{
 					id: "quantity",
-					heading: m.studio_field_quantity(),
+					heading: m.quantity(),
 					render: (record) => record.quantity,
 				},
 				{
@@ -64,7 +63,7 @@ export function DonationItemsView({ donationId }: { donationId: string }) {
 				},
 				{
 					id: "unit",
-					heading: m.studio_field_unit(),
+					heading: m.unit(),
 					render: (record) => record.unit,
 				},
 			]}
@@ -80,7 +79,7 @@ function DonationItemFields({
 		<>
 			<InputField
 				name="name"
-				label={m.studio_field_name()}
+				label={m.name()}
 				value={values.name}
 				required
 				onChange={(event) => onChange("name", event.target.value)}
@@ -93,7 +92,7 @@ function DonationItemFields({
 			/>
 			<NumberField
 				name="quantity"
-				label={m.studio_field_quantity()}
+				label={m.quantity()}
 				value={values.quantity}
 				min={0}
 				step={"any"}
@@ -111,7 +110,7 @@ function DonationItemFields({
 			/>
 			<InputField
 				name="unit"
-				label={m.studio_field_unit()}
+				label={m.unit()}
 				value={values.unit}
 				required
 				onChange={(event) => onChange("unit", event.target.value)}

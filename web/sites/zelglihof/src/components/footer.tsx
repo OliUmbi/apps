@@ -12,35 +12,35 @@ export default function Footer() {
 							<Sprout size={21} />
 						</span>
 						<span className="font-serif text-3xl font-bold">
-							{m.zelglihof_components_footer_footer_text()}
+							{m.zelglihof_brand()}
 						</span>
 					</div>
 					<p className="mt-6 text-lg leading-relaxed text-cream/72">
-						{m.zelglihof_components_footer_footer_paragraph()}
+						{m.zelglihof_footer_description()}
 					</p>
 				</div>
 				<div>
 					<p className="eyebrow text-sun">
-						{m.zelglihof_components_footer_footer_paragraph_2()}
+						{m.zelglihof_footer_explore_title()}
 					</p>
 					<nav className="mt-6 grid gap-3 text-sm font-semibold">
 						<Link to="/latest" className="hover:text-sun">
-							{m.zelglihof_components_footer_footer_text_2()}
+							{m.zelglihof_updates()}
 						</Link>
 						<Link to="/products" className="hover:text-sun">
-							{m.zelglihof_components_footer_footer_text_3()}
+							{m.zelglihof_shop()}
 						</Link>
 						<Link to="/about" className="hover:text-sun">
-							{m.zelglihof_components_footer_footer_text_4()}
+							{m.zelglihof_farm()}
 						</Link>
 						<Link to="/contact" className="hover:text-sun">
-							{m.zelglihof_components_footer_footer_text_5()}
+							{m.contact()}
 						</Link>
 					</nav>
 				</div>
 				<div>
 					<p className="eyebrow text-sun">
-						{m.zelglihof_components_footer_footer_paragraph_3()}
+						{m.zelglihof_footer_address_title()}
 					</p>
 					<a
 						href="https://www.openstreetmap.org/search?query=Zelgliweg%202%2C%205506%20M%C3%A4genwil"
@@ -50,9 +50,9 @@ export default function Footer() {
 					>
 						<MapPin className="mt-0.5 shrink-0" size={17} />
 						<span>
-							{m.zelglihof_components_footer_footer_text_6()}
+							{m.zelglihof_street()}
 							<br />
-							{m.zelglihof_components_footer_footer_text_7()}
+							{m.zelglihof_postal_address()}
 						</span>
 						<ArrowUpRight className="mt-0.5 shrink-0" size={15} />
 					</a>
@@ -62,17 +62,17 @@ export default function Footer() {
 				<div className="shell flex flex-col gap-4 py-6 text-xs text-cream/50 md:flex-row md:items-center md:justify-between">
 					<p>
 						© {new Date().getFullYear()}
-						{m.zelglihof_components_footer_footer_paragraph_4()}
+						{m.zelglihof_footer_ownership()}
 					</p>
 					<div className="flex flex-wrap gap-x-5 gap-y-2">
 						<Link to="/legal" className="hover:text-cream">
-							{m.zelglihof_components_footer_footer_text_8()}
+							{m.imprint()}
 						</Link>
 						<Link to="/privacy" className="hover:text-cream">
-							{m.zelglihof_components_footer_footer_text_9()}
+							{m.privacy()}
 						</Link>
 						<Link to="/terms" className="hover:text-cream">
-							{m.zelglihof_components_footer_footer_text_10()}
+							{m.terms()}
 						</Link>
 					</div>
 				</div>

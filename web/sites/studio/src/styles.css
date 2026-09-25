@@ -52,7 +52,6 @@
 
 html,
 body {
-	min-width: 320px;
 	min-height: 100%;
 	margin: 0;
 }
@@ -856,12 +855,12 @@ a {
 	font-size: 0.8rem;
 	font-weight: 700;
 }
-.account-copy h2 {
+.account-body h2 {
 	margin: 0;
 	font-size: 0.9rem;
 }
-/* biome-ignore lint/style/noDescendingSpecificity: Account copy is unrelated to the earlier settings header. */
-.account-copy p {
+/* biome-ignore lint/style/noDescendingSpecificity: Account body is unrelated to the earlier settings header. */
+.account-body p {
 	margin: 4px 0 0;
 	color: var(--muted);
 	font-size: 0.78rem;
@@ -976,7 +975,7 @@ a {
 	border-top: 1px solid rgb(227 110 114 / 35%);
 	padding: 22px var(--content-inset) 0;
 }
-/* biome-ignore lint/style/noDescendingSpecificity: Danger copy is independent from settings help. */
+/* biome-ignore lint/style/noDescendingSpecificity: Danger body is independent from settings help. */
 .record-danger-zone p {
 	margin: 5px 0 0;
 	color: var(--muted);
@@ -1030,13 +1029,13 @@ a {
 	font-size: 0.75rem;
 }
 
-.message-metrics {
+.message-filters {
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 220px));
 	gap: 12px;
 }
 
-.metric-card {
+.message-filter {
 	display: grid;
 	gap: 5px;
 	border: 1px solid var(--border);
@@ -1050,19 +1049,12 @@ a {
 	text-transform: uppercase;
 }
 
-.metric-card span {
-	color: var(--primary);
-	font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
-	font-size: 1.8rem;
-	letter-spacing: -0.05em;
-}
-
-.metric-card.is-active {
+.message-filter.is-active {
 	border-color: #565079;
 	box-shadow: inset 0 0 0 1px rgb(124 113 223 / 18%);
 }
 
-.metric-card.failure span {
+.message-filter.failure {
 	color: var(--danger);
 }
 
@@ -1091,13 +1083,13 @@ a {
 	background: var(--surface-raised);
 }
 
-.message-copy,
+.message-body,
 .message-meta {
 	display: grid;
 	gap: 4px;
 }
 
-.message-copy small,
+.message-body small,
 .message-meta small {
 	color: var(--muted);
 	font-size: 0.75rem;
@@ -1154,7 +1146,7 @@ a {
 	font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
 }
 
-/* biome-ignore lint/style/noDescendingSpecificity: Attempt copy is unrelated to the earlier settings header. */
+/* biome-ignore lint/style/noDescendingSpecificity: Attempt body is unrelated to the earlier settings header. */
 .attempt-list p {
 	margin: 5px 0 0;
 	color: var(--muted);
@@ -1188,7 +1180,7 @@ a {
 	letter-spacing: 0.08em;
 }
 
-.not-found-panel .login-copy {
+.not-found-panel .login-body {
 	padding-bottom: 30px;
 }
 
@@ -1278,18 +1270,18 @@ tbody tr:hover {
 }
 
 /* biome-ignore lint/style/noDescendingSpecificity: The earlier not-found rule intentionally specializes this base style. */
-.login-copy {
+.login-body {
 	padding: 28px 28px 0;
 }
 
-.login-copy h1 {
+.login-body h1 {
 	margin: 7px 0 0;
 	font-size: 1.625rem;
 	font-weight: 600;
 	letter-spacing: -0.035em;
 }
 
-.login-copy > p:last-child {
+.login-body > p:last-child {
 	margin: 10px 0 0;
 	color: var(--muted);
 	font-size: 0.875rem;
@@ -1325,7 +1317,7 @@ tbody tr:hover {
 		display: none;
 	}
 
-	.message-metrics {
+	.message-filters {
 		grid-template-columns: repeat(2, 1fr);
 	}
 

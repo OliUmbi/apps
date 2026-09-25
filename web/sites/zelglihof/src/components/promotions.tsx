@@ -8,18 +8,18 @@ export function Promotions() {
 		queryKey: ["promotions"],
 		queryFn: () => getPromotions(),
 	});
-	if (!query.data?.items.length) return null;
+	if (!query.data?.length) return null;
 	return (
 		<div className="shell grid gap-4 py-6">
-			{query.data?.items.map((item) => (
+			{query.data.map((promotion) => (
 				<a
-					key={item.id}
-					href={safeLinkHref(item.link)}
+					key={promotion.id}
+					href={safeLinkHref(promotion.link)}
 					className="grid gap-4 rounded-3xl bg-sage/40 p-8 sm:grid-cols-[1fr_auto]"
 				>
 					<div>
-						<h2 className="font-serif text-3xl">{item.title}</h2>
-						<p className="mt-3 text-ink/65">{item.description}</p>
+						<h2 className="font-serif text-3xl">{promotion.title}</h2>
+						<p className="mt-3 text-ink/65">{promotion.description}</p>
 					</div>
 					<ArrowUpRight className="self-center" size={30} aria-hidden="true" />
 				</a>

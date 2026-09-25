@@ -12,22 +12,25 @@ import {
 	listProductReservations,
 	updateProductReservation,
 } from "../../../server/content/zelglihof/product-reservation.functions";
-import { CollectionView } from "../collection-view";
 import type { EditorFieldsProps } from "../content-form";
 import { DetailItem, displayStatus } from "../display";
 import { StatusField } from "../editor-controls";
+import { InlineCollectionView } from "../inline-collection-view";
+import { RoutedCollectionView } from "../routed-collection-view";
 
 export function ProductReservationsView({
 	productId,
 }: {
 	productId?: string;
 } = {}) {
+	const ReservationCollection = productId
+		? InlineCollectionView
+		: RoutedCollectionView;
 	return (
-		<CollectionView<ProductReservation, ProductReservationInput>
+		<ReservationCollection<ProductReservation, ProductReservationInput>
 			collection="zelglihof.product_reservation"
 			title="Reservationen"
 			scope={productId}
-			inline={Boolean(productId)}
 			rowKey={(record) => record.id}
 			loadPage={(input) =>
 				listProductReservations({ data: { ...input, productId } })
@@ -46,7 +49,7 @@ export function ProductReservationsView({
 			columns={[
 				{
 					id: "name",
-					heading: m.studio_field_name(),
+					heading: m.name(),
 					render: (record) => record.name,
 				},
 				{
@@ -61,21 +64,19 @@ export function ProductReservationsView({
 				},
 				{
 					id: "quantity",
-					heading: m.studio_field_quantity(),
+					heading: m.quantity(),
 					render: (record) => record.quantity,
 				},
 				{
 					id: "status",
-					heading: m.studio_field_status(),
+					heading: m.status(),
 					render: (record) => displayStatus(record.status),
 				},
 			]}
 			renderActions={(record) => (
 				<dl className="record-fields">
-					<DetailItem label={m.studio_field_product_id()}>
-						{record.productId}
-					</DetailItem>
-					<DetailItem label={m.studio_field_product_variant_id()}>
+					<DetailItem label={m.product()}>{record.productId}</DetailItem>
+					<DetailItem label={m.product_variant()}>
 						{record.productVariantId}
 					</DetailItem>
 					<DetailItem label={m.studio_field_product_name()}>
@@ -93,12 +94,10 @@ export function ProductReservationsView({
 					<DetailItem label={m.studio_field_variant_price()}>
 						{record.variantPrice}
 					</DetailItem>
-					<DetailItem label={m.studio_field_name()}>{record.name}</DetailItem>
-					<DetailItem label={m.studio_field_phone()}>{record.phone}</DetailItem>
-					<DetailItem label={m.studio_field_email()}>{record.email}</DetailItem>
-					<DetailItem label={m.studio_field_quantity()}>
-						{record.quantity}
-					</DetailItem>
+					<DetailItem label={m.name()}>{record.name}</DetailItem>
+					<DetailItem label={m.phone()}>{record.phone}</DetailItem>
+					<DetailItem label={m.email()}>{record.email}</DetailItem>
+					<DetailItem label={m.quantity()}>{record.quantity}</DetailItem>
 					<DetailItem label={m.studio_field_note()}>{record.note}</DetailItem>
 				</dl>
 			)}

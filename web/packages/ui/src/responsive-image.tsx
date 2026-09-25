@@ -36,7 +36,8 @@ export function ResponsiveImage({
 		return (
 			<div
 				role="img"
-				aria-label={alt}
+				aria-label={alt || undefined}
+				aria-hidden={!alt}
 				className={className}
 				style={{ display: "grid", placeItems: "center" }}
 			>

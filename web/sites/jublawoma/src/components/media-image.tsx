@@ -1,4 +1,5 @@
 import { m } from "@oliumbi/i18n/messages";
+import { responsiveSrcSet } from "@oliumbi/ui/responsive-image";
 import { ImageOff } from "lucide-react";
 import { useState } from "react";
 
@@ -16,20 +17,27 @@ export function MediaImage({
 	alt,
 	seed,
 	className = "",
+	sizes = "100vw",
+	loading = "lazy",
 }: Readonly<{
 	src?: string | null;
 	alt?: string;
 	seed: string;
 	className?: string;
+	sizes?: string;
+	loading?: "eager" | "lazy";
 }>) {
-	const [failed, setFailed] = useState(false);
-	if (src && !failed)
+	const [failedSrc, setFailedSrc] = useState<string | null>(null);
+	if (src && failedSrc !== src)
 		return (
 			<img
 				className={className}
 				src={src}
 				alt={alt || ""}
-				onError={() => setFailed(true)}
+				srcSet={responsiveSrcSet(src)}
+				sizes={sizes}
+				loading={loading}
+				onError={() => setFailedSrc(src)}
 			/>
 		);
 	const index =
@@ -39,12 +47,12 @@ export function MediaImage({
 		<div
 			className={`content-image-fallback ${className}`}
 			role="img"
-			aria-label={alt || m.jublawoma_components_content_image_feedback()}
+			aria-label={alt || m.jublawoma_image_missing_alt()}
 		>
 			<img src={`/assets/images/doodles/${doodles[index]}`} alt="" />
 			<span>
 				<ImageOff size={14} />
-				{m.jublawoma_components_content_image_text()}
+				{m.jublawoma_image_placeholder()}
 			</span>
 		</div>
 	);

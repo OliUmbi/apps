@@ -1,6 +1,5 @@
 import { m } from "@oliumbi/i18n/messages";
 import { getLocale } from "@oliumbi/i18n/runtime";
-import { QueryProvider } from "@oliumbi/query";
 import {
 	createRootRoute,
 	HeadContent,
@@ -15,33 +14,24 @@ export const Route = createRootRoute({
 	head: () => ({
 		meta: [
 			{ charSet: "utf-8" },
-			{ name: "viewport", content: m.studio_routes_root_content() },
-			{ title: m.studio_routes_root_title() },
+			{ name: "viewport", content: "width=device-width, initial-scale=1" },
+			{ title: m.studio_site_title() },
 			{ name: "robots", content: "noindex, nofollow" },
 		],
 	}),
-	component: Root,
+	component: Outlet,
+	shellComponent: RootDocument,
 	notFoundComponent: NotFound,
 });
 
-function Root() {
-	return (
-		<Document>
-			<QueryProvider>
-				<Outlet />
-			</QueryProvider>
-		</Document>
-	);
-}
-
-function Document({ children }: { children: ReactNode }) {
+function RootDocument({ children }: { children: ReactNode }) {
 	return (
 		<html lang={getLocale()} className="min-h-full">
 			<head>
 				<HeadContent />
 			</head>
 			<body className="min-h-full">
-				<main>{children}</main>
+				{children}
 				<Scripts />
 			</body>
 		</html>

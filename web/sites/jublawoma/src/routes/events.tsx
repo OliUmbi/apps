@@ -1,73 +1,26 @@
-import { m } from "@oliumbi/i18n/messages";
 import { PaginatedList } from "@oliumbi/ui/paginated-list";
 import { createFileRoute } from "@tanstack/react-router";
-import { CalendarDays, Download, MapPin } from "lucide-react";
-import { MediaImage } from "../components/media-image";
-import { dateLabel } from "../data/dates";
+import { EventsIntroduction } from "../components/events-introduction";
+import { EventsList } from "../components/events-list";
+
 import { getEventPage } from "../data/events";
-import type { EventRecord } from "../model/content";
 
 export const Route = createFileRoute("/events")({
 	loader: () => getEventPage({ data: { page: 0 } }),
-	component: Events,
+	component: EventsPage,
 });
-function Events() {
+function EventsPage() {
 	const initialPage = Route.useLoaderData();
 	return (
-		<PaginatedList<EventRecord>
-			queryKey={["events"]}
-			initialPage={initialPage}
-			load={(page) => getEventPage({ data: { page } })}
-		>
-			{(events) => (
-				<>
-					<section className="page-hero shell">
-						<div>
-							<p className="kicker">{m.jublawoma_routes_events_paragraph()}</p>
-							<h1>
-								{m.jublawoma_routes_events_heading()}
-								<br />
-								<span>{m.jublawoma_routes_events_text()}</span>
-							</h1>
-							<p>{m.jublawoma_routes_events_paragraph_2()}</p>
-							<a
-								className="button dark"
-								href="/assets/documents/Jahreskalender-Jubla-Woma.pdf"
-								target="_blank"
-								rel="noopener"
-							>
-								<Download size={17} />
-								{m.jublawoma_routes_events_text_2()}
-							</a>
-						</div>
-						<img src="/assets/images/doodles/rolling.svg" alt="" />
-					</section>
-					<section className="shell event-list">
-						{events.map((event, index) => (
-							<article key={event.id}>
-								<div className="event-number">
-									{String(index + 1).padStart(2, "0")}
-								</div>
-								<MediaImage
-									src={event.media[0]?.src}
-									alt={event.media[0]?.alt || event.title}
-									seed={event.id}
-								/>
-								<div>
-									<p className="kicker">
-										{dateLabel(event.startsOn, event.endsOn)}
-									</p>
-									<h2>{event.title}</h2>
-									<p>
-										<MapPin size={16} /> {event.location}
-									</p>
-								</div>
-								<CalendarDays className="event-icon" />
-							</article>
-						))}
-					</section>
-				</>
-			)}
-		</PaginatedList>
+		<>
+			<EventsIntroduction />
+			<PaginatedList
+				queryKey={["events"]}
+				initialPage={initialPage}
+				load={(page) => getEventPage({ data: { page } })}
+			>
+				{(events) => <EventsList events={events} />}
+			</PaginatedList>
+		</>
 	);
 }

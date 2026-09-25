@@ -10,29 +10,27 @@ function Imprint() {
 	const leadership = Route.useLoaderData();
 	return (
 		<section className="shell legal">
-			<p className="kicker">{m.jublawoma_routes_legal_paragraph()}</p>
-			<h1>{m.jublawoma_routes_legal_heading()}</h1>
-			<h2>{m.jublawoma_routes_legal_heading_2()}</h2>
+			<p className="kicker">{m.legal()}</p>
+			<h1>{m.imprint()}</h1>
+			<h2>{m.contact()}</h2>
 			<p>
-				{m.jublawoma_routes_legal_paragraph_2()}
+				{m.jublawoma_organization()}
 				<br />
-				{m.jublawoma_routes_legal_paragraph_3()}
+				{m.jublawoma_legal_street()}
 				<br />
-				{m.jublawoma_routes_legal_paragraph_4()}
+				{m.jublawoma_legal_postal_address()}
 			</p>
 			<p>
-				<a href="mailto:scharleitung@jublawoma.ch">
-					{m.jublawoma_routes_legal_text()}
-				</a>
+				<a href="mailto:scharleitung@jublawoma.ch">{m.jublawoma_email()}</a>
 			</p>
-			<h2>{m.jublawoma_routes_legal_heading_3()}</h2>
+			<h2>{m.jublawoma_legal_leadership_title()}</h2>
 			<p>
 				{leadership.length
 					? leadership.map((member) => member.name).join(" · ")
-					: m.jublawoma_routes_legal_paragraph_5()}
+					: m.jublawoma_legal_leadership_names()}
 			</p>
-			<h2>{m.jublawoma_routes_legal_heading_4()}</h2>
-			<p>{m.jublawoma_routes_legal_paragraph_6()}</p>
+			<h2>{m.jublawoma_legal_liability_copyright_title()}</h2>
+			<p>{m.jublawoma_legal_liability_copyright_body()}</p>
 		</section>
 	);
 }

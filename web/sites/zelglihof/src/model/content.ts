@@ -1,13 +1,22 @@
-export interface Product {
+export interface PublicPromotion {
+	id: string;
+	title: string;
+	description: string;
+	link: string;
+}
+
+export interface ProductSummary {
 	id: string;
 	name: string;
-	shortName: string;
 	eyebrow: string;
 	description: string;
-	longDescription: string;
 	image: string;
 	availability: string;
-	kind: "reservable" | "shop" | "seasonal";
+	reservationOpen: boolean;
+}
+
+export interface Product extends ProductSummary {
+	body: string;
 	variants: {
 		id: string;
 		name: string;
@@ -17,14 +26,17 @@ export interface Product {
 		quantity: number | null;
 	}[];
 }
-export interface Update {
+export interface UpdateSummary {
 	id: string;
 	slug: string;
 	title: string;
 	description: string;
-	body: string;
 	image: string;
 	date: string;
 	category: string;
+}
+
+export interface Update extends UpdateSummary {
+	body: string;
 	images: { id: string; src: string; description: string }[];
 }

@@ -17,36 +17,35 @@ export const Route = createRootRoute({
 	head: () => ({
 		meta: [
 			{ charSet: "utf-8" },
-			{ name: "viewport", content: m.unclet_routes_root_content() },
-			{ title: m.unclet_routes_root_title() },
+			{ name: "viewport", content: "width=device-width, initial-scale=1" },
+			{ title: m.unclet_site_title() },
 			{
 				name: "description",
-				content: m.unclet_routes_root_content_2(),
+				content: m.unclet_site_description(),
 			},
 			{
 				property: "og:title",
-				content: m.unclet_routes_root_content_3(),
+				content: m.unclet_site_social_title(),
 			},
 			{
 				property: "og:description",
-				content: m.unclet_routes_root_content_4(),
+				content: m.unclet_site_social_description(),
 			},
-			{ property: "og:type", content: m.unclet_routes_root_content_5() },
-			{ name: "theme-color", content: m.unclet_routes_root_content_6() },
+			{ property: "og:type", content: "website" },
+			{ name: "theme-color", content: "#11110f" },
 		],
 		links: [{ rel: "icon", href: "/favicon.ico" }],
 	}),
 	component: RootComponent,
+	shellComponent: RootDocument,
 	notFoundComponent: NotFound,
 });
 
 function RootComponent() {
 	return (
-		<RootDocument>
-			<QueryProvider>
-				<Outlet />
-			</QueryProvider>
-		</RootDocument>
+		<QueryProvider>
+			<Outlet />
+		</QueryProvider>
 	);
 }
 

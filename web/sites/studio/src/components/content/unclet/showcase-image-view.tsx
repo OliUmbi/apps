@@ -13,18 +13,17 @@ import {
 	updateShowcaseImage,
 } from "../../../server/content/unclet/showcase-image.functions";
 import { InputField } from "../../input-field";
-import { CollectionView } from "../collection-view";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { ImageField } from "../image-field";
+import { InlineCollectionView } from "../inline-collection-view";
 
 export function ShowcaseImagesView({ showcaseId }: { showcaseId: string }) {
 	return (
-		<CollectionView<ShowcaseImage, ShowcaseImageInput>
+		<InlineCollectionView<ShowcaseImage, ShowcaseImageInput>
 			collection="unclet.showcase_image"
 			title="Einblickbilder"
 			scope={showcaseId}
-			inline
 			rowKey={(record) => [record.showcaseId, record.imageId].join(":")}
 			loadPage={(input) =>
 				listShowcaseImages({ data: { ...input, showcaseId } })
@@ -52,14 +51,14 @@ export function ShowcaseImagesView({ showcaseId }: { showcaseId: string }) {
 			columns={[
 				{
 					id: "imageId",
-					heading: m.studio_field_image_id(),
+					heading: m.image(),
 					render: (record) => (
 						<ImageThumbnail site="unclet" id={record.imageId} />
 					),
 				},
 				{
 					id: "description",
-					heading: m.studio_field_description(),
+					heading: m.description(),
 					render: (record) => record.description,
 				},
 			]}
@@ -80,7 +79,7 @@ function ShowcaseImageFields({
 			/>
 			<InputField
 				name="description"
-				label={m.studio_field_description()}
+				label={m.description()}
 				value={values.description}
 				required
 				onChange={(event) => onChange("description", event.target.value)}

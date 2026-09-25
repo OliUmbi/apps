@@ -6,6 +6,7 @@ import {
 	promotionInputFromRecord,
 	promotionInputSchema,
 } from "@oliumbi/zelglihof-data/content/promotion";
+import { formatTimestamp } from "../../../model/dates";
 import {
 	createPromotion,
 	deletePromotion,
@@ -15,14 +16,14 @@ import {
 } from "../../../server/content/zelglihof/promotion.functions";
 import { DateField } from "../../date-field";
 import { InputField } from "../../input-field";
-import { CollectionView } from "../collection-view";
 import type { EditorFieldsProps } from "../content-form";
-import { displayTimestamp, ImageThumbnail } from "../display";
+import { ImageThumbnail } from "../display";
 import { ImageField } from "../image-field";
+import { RoutedCollectionView } from "../routed-collection-view";
 
 export function PromotionsView() {
 	return (
-		<CollectionView<Promotion, PromotionInput>
+		<RoutedCollectionView<Promotion, PromotionInput>
 			collection="zelglihof.promotion"
 			title="Promotionen"
 			rowKey={(record) => record.id}
@@ -42,17 +43,17 @@ export function PromotionsView() {
 			columns={[
 				{
 					id: "title",
-					heading: m.studio_field_title(),
+					heading: m.title(),
 					render: (record) => record.title,
 				},
 				{
 					id: "link",
-					heading: m.studio_field_link(),
+					heading: m.link(),
 					render: (record) => record.link,
 				},
 				{
 					id: "imageId",
-					heading: m.studio_field_image_id(),
+					heading: m.image(),
 					render: (record) => (
 						<ImageThumbnail site="zelglihof" id={record.imageId} />
 					),
@@ -60,12 +61,12 @@ export function PromotionsView() {
 				{
 					id: "startsAt",
 					heading: m.studio_field_starts_at(),
-					render: (record) => displayTimestamp(record.startsAt),
+					render: (record) => formatTimestamp(record.startsAt),
 				},
 				{
 					id: "endsAt",
 					heading: m.studio_field_ends_at(),
-					render: (record) => displayTimestamp(record.endsAt),
+					render: (record) => formatTimestamp(record.endsAt),
 				},
 			]}
 		/>
@@ -80,14 +81,14 @@ function PromotionFields({
 		<>
 			<InputField
 				name="title"
-				label={m.studio_field_title()}
+				label={m.title()}
 				value={values.title}
 				required
 				onChange={(event) => onChange("title", event.target.value)}
 			/>
 			<InputField
 				name="description"
-				label={m.studio_field_description()}
+				label={m.description()}
 				value={values.description}
 				required
 				render={<textarea rows={4} />}
@@ -95,7 +96,7 @@ function PromotionFields({
 			/>
 			<InputField
 				name="link"
-				label={m.studio_field_link()}
+				label={m.link()}
 				value={values.link}
 				required
 				onChange={(event) => onChange("link", event.target.value)}

@@ -4,31 +4,31 @@ const values = [
 	{
 		number: "01",
 		title: m.jublawoma_value_together_title,
-		copy: m.jublawoma_value_together_copy,
+		body: m.jublawoma_value_together_body,
 		art: "dog.svg",
 	},
 	{
 		number: "02",
 		title: m.jublawoma_value_participate_title,
-		copy: m.jublawoma_value_participate_copy,
+		body: m.jublawoma_value_participate_body,
 		art: "float.svg",
 	},
 	{
 		number: "03",
 		title: m.jublawoma_value_faith_title,
-		copy: m.jublawoma_value_faith_copy,
+		body: m.jublawoma_value_faith_body,
 		art: "meditating.svg",
 	},
 	{
 		number: "04",
 		title: m.jublawoma_value_creative_title,
-		copy: m.jublawoma_value_creative_copy,
+		body: m.jublawoma_value_creative_body,
 		art: "messy.svg",
 	},
 	{
 		number: "05",
 		title: m.jublawoma_value_nature_title,
-		copy: m.jublawoma_value_nature_copy,
+		body: m.jublawoma_value_nature_body,
 		art: "plant.svg",
 	},
 ] as const;
@@ -59,7 +59,7 @@ export function ValuesSection() {
 							alt=""
 						/>
 						<h3 className="mt-5 mb-2 text-2xl font-bold">{value.title()}</h3>
-						<p className="leading-relaxed text-bark/65">{value.copy()}</p>
+						<p className="leading-relaxed text-bark/65">{value.body()}</p>
 					</article>
 				))}
 			</div>

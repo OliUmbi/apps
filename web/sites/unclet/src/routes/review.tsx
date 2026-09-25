@@ -16,8 +16,8 @@ function ReviewPage() {
 		<>
 			<PageHero
 				eyebrow={m.unclet_review_eyebrow()}
-				title={m.unclet_review_heading()}
-				intro={m.unclet_review_intro()}
+				title={m.unclet_review_title()}
+				description={m.unclet_review_description()}
 			/>
 			<section className="shell pb-24 md:pb-32">
 				<div className="review-form-card mx-auto max-w-3xl">
@@ -43,7 +43,7 @@ function ReviewPage() {
 							},
 							{
 								name: "description",
-								label: m.unclet_review_description(),
+								label: m.unclet_review_feedback_label(),
 								type: "textarea",
 								placeholder: m.unclet_review_placeholder(),
 								required: true,

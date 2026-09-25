@@ -6,6 +6,7 @@ import {
 	donationInputSchema,
 	newDonationInput,
 } from "@oliumbi/jublawoma-data/content/donation";
+import { formatTimestamp } from "../../../model/dates";
 import {
 	createDonation,
 	deleteDonation,
@@ -15,15 +16,15 @@ import {
 } from "../../../server/content/jublawoma/donation.functions";
 import { DateField } from "../../date-field";
 import { InputField } from "../../input-field";
-import { CollectionView } from "../collection-view";
 import type { EditorFieldsProps } from "../content-form";
-import { displayTimestamp } from "../display";
+
+import { RoutedCollectionView } from "../routed-collection-view";
 import { DonationCommitmentsView } from "./donation-commitment-view";
 import { DonationItemsView } from "./donation-item-view";
 
 export function DonationsView() {
 	return (
-		<CollectionView<Donation, DonationInput>
+		<RoutedCollectionView<Donation, DonationInput>
 			collection="jublawoma.donation"
 			title="Spendenaktionen"
 			rowKey={(record) => record.id}
@@ -43,23 +44,23 @@ export function DonationsView() {
 			columns={[
 				{
 					id: "title",
-					heading: m.studio_field_title(),
+					heading: m.title(),
 					render: (record) => record.title,
 				},
 				{
 					id: "contact",
-					heading: m.studio_field_contact(),
+					heading: m.contact(),
 					render: (record) => record.contact,
 				},
 				{
 					id: "startsAt",
 					heading: m.studio_field_starts_at(),
-					render: (record) => displayTimestamp(record.startsAt),
+					render: (record) => formatTimestamp(record.startsAt),
 				},
 				{
 					id: "endsAt",
 					heading: m.studio_field_ends_at(),
-					render: (record) => displayTimestamp(record.endsAt),
+					render: (record) => formatTimestamp(record.endsAt),
 				},
 			]}
 			renderRelated={(record) => (
@@ -86,14 +87,14 @@ function DonationFields({
 		<>
 			<InputField
 				name="title"
-				label={m.studio_field_title()}
+				label={m.title()}
 				value={values.title}
 				required
 				onChange={(event) => onChange("title", event.target.value)}
 			/>
 			<InputField
 				name="description"
-				label={m.studio_field_description()}
+				label={m.description()}
 				value={values.description}
 				required
 				render={<textarea rows={4} />}
@@ -101,7 +102,7 @@ function DonationFields({
 			/>
 			<InputField
 				name="contact"
-				label={m.studio_field_contact()}
+				label={m.contact()}
 				value={values.contact}
 				required
 				onChange={(event) => onChange("contact", event.target.value)}

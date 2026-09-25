@@ -10,7 +10,7 @@ export function NewsletterSignup() {
 	return (
 		<section id="newsletter" className="newsletter-section py-20 md:py-28">
 			<div className="shell newsletter-panel">
-				<div className="newsletter-copy">
+				<div className="newsletter-body">
 					<span className="newsletter-icon" aria-hidden="true">
 						<Mail size={24} />
 					</span>
@@ -19,15 +19,15 @@ export function NewsletterSignup() {
 						{m.zelglihof_newsletter_title()}
 					</h2>
 					<p className="mt-6 max-w-xl text-lg leading-relaxed text-cream/70">
-						{m.zelglihof_newsletter_intro()}
+						{m.zelglihof_newsletter_description()}
 					</p>
 				</div>
 				<div className="newsletter-action">
 					<ul className="newsletter-benefits">
 						{[
-							m.zelglihof_newsletter_benefit_1(),
-							m.zelglihof_newsletter_benefit_2(),
-							m.zelglihof_newsletter_benefit_3(),
+							m.zelglihof_newsletter_benefit_season_dates(),
+							m.zelglihof_newsletter_benefit_products_pickup(),
+							m.zelglihof_newsletter_benefit_occasional_updates(),
 						].map((benefit) => (
 							<li key={benefit}>
 								<Check size={17} aria-hidden="true" /> {benefit}
@@ -38,12 +38,12 @@ export function NewsletterSignup() {
 						className="newsletter-form"
 						schema={newsletterSignupSchema}
 						submit={(data) => submit({ data })}
-						success={m.zelglihof_components_newsletter_signup_success()}
+						success={m.zelglihof_newsletter_signup_success()}
 						submitLabel={m.zelglihof_newsletter_submit()}
 						fields={[
 							{
 								name: "email",
-								label: m.zelglihof_components_newsletter_signup_label(),
+								label: m.email(),
 								type: "email",
 								placeholder: "dein.name@beispiel.ch",
 								autoComplete: "email",

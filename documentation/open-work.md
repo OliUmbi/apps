@@ -12,7 +12,7 @@ Only unresolved work. Remove items when resolved.
 - [ ] Check site permissions and unpublished content with real roles. Verify application checks on shared media and queues.
 - [ ] Add health checks, alerts and useful logs. Run lint, type checks and builds in CI.
 - [ ] Approve final content, photos and legal pages. Add old URL redirects, page metadata and content sitemaps.
-- [ ] Check publishing, forms, reservations, login and email in staging. Hide unfinished features; Oliumbi is still missing.
+- [ ] Check publishing, forms, reservations, login and email in staging. Test service outages. Hide unfinished features; Oliumbi is still missing.
 
 ## Features
 
@@ -26,12 +26,11 @@ Only unresolved work. Remove items when resolved.
 
 ## Design
 
-- [ ] Jubla: refine headings, illustration sizes and spacing. Check long titles on small phones.
-- [ ] Uncle-T: bring the inquiry form higher on mobile. Use consistent wording and mark optional fields.
-- [ ] Zelglihof: use real farm photos. Explain an empty shop before showing newsletter sections.
-- [ ] Public lists: keep empty states, errors and load-more buttons beside their lists.
-- [ ] Studio: simplify mobile lists and shorten overview cards. Show save feedback and protect unsaved edits.
-- [ ] Check keyboard use, focus, contrast and mobile menus. Verify German customer sites and both Studio languages.
+- [ ] Jubla: check final illustrations and long titles on small phones.
+- [ ] Uncle-T: use one form of address throughout the site.
+- [ ] Zelglihof: use real farm photos.
+- [ ] Studio: simplify mobile lists and shorten overview cards. Protect unsaved edits.
+- [ ] Check keyboard use, focus, contrast and mobile menus. Verify German customer sites and Studio translations.
 
 ## Owner decisions
 
@@ -41,9 +40,8 @@ Only unresolved work. Remove items when resolved.
 
 ## Later improvements
 
-- [ ] Replace numbered translation keys with descriptive names, such as `root_content_description`.
+- [ ] Translate the remaining hard-coded labels and content in Studio and the public sites.
 - [ ] Check Paraglide URL translation, such as `/kontakt` and `/contact`. Use German customer URLs and English source filenames.
-- [ ] Separate Studio navigation from reusable collection components.
 - [ ] Revisit queued newsletter cancellation and stale confirmation links as volume grows. Current priority is low.
 - [ ] Add email verification and password recovery only if public accounts are introduced; Studio is excluded.
 - [ ] Add critical integration tests and Java style checks later. Java currently has no tests.

@@ -21,36 +21,35 @@ export const Route = createRootRoute({
 			},
 			{
 				name: "viewport",
-				content: m.zelglihof_routes_root_content(),
+				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: m.zelglihof_routes_root_title(),
+				title: m.zelglihof_site_title(),
 			},
 			{
 				name: "description",
-				content: m.zelglihof_routes_root_content_2(),
+				content: m.zelglihof_site_description(),
 			},
-			{ property: "og:title", content: m.zelglihof_routes_root_content_3() },
+			{ property: "og:title", content: m.zelglihof_site_social_title() },
 			{
 				property: "og:description",
-				content: m.zelglihof_routes_root_content_4(),
+				content: m.zelglihof_site_social_description(),
 			},
-			{ property: "og:type", content: m.zelglihof_routes_root_content_5() },
-			{ name: "theme-color", content: m.zelglihof_routes_root_content_6() },
+			{ property: "og:type", content: "website" },
+			{ name: "theme-color", content: "#24452f" },
 		],
 		links: [{ rel: "icon", href: "/favicon.svg", type: "image/svg+xml" }],
 	}),
 	component: RootComponent,
+	shellComponent: RootDocument,
 	notFoundComponent: NotFound,
 });
 
 function RootComponent() {
 	return (
-		<RootDocument>
-			<QueryProvider>
-				<Outlet />
-			</QueryProvider>
-		</RootDocument>
+		<QueryProvider>
+			<Outlet />
+		</QueryProvider>
 	);
 }
 

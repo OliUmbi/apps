@@ -5,22 +5,25 @@ import type { Article } from "@oliumbi/zelglihof-data/content/article";
 import type { ArticleImage } from "@oliumbi/zelglihof-data/content/article-image";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import type { Update } from "../model/content";
+import type { Update, UpdateSummary } from "../model/content";
 import { database } from "../server/database.server";
 
-function updateFromRecord(
-	record: Article,
-	images: ArticleImage[] = [],
-): Update {
+function updateSummaryFromRecord(record: Article): UpdateSummary {
 	return {
 		id: record.id,
 		slug: record.slug,
 		title: record.title,
 		description: record.description,
-		body: record.body,
 		image: record.imageId ? publicImageUrl(record.imageId) : "",
 		date: record.publishedOn ?? "",
 		category: "Vom Hof",
+	};
+}
+
+function updateFromRecord(record: Article, images: ArticleImage[]): Update {
+	return {
+		...updateSummaryFromRecord(record),
+		body: record.body,
 		images: images.map((image) => ({
 			id: image.imageId,
 			src: publicImageUrl(image.imageId),
@@ -36,7 +39,7 @@ export const getUpdatePage = createServerFn({ method: "GET" })
 		);
 		return {
 			...page,
-			items: page.items.map((article) => updateFromRecord(article)),
+			items: page.items.map(updateSummaryFromRecord),
 		};
 	});
 export const getUpdate = createServerFn({ method: "GET" })

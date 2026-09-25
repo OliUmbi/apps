@@ -18,7 +18,7 @@ export function ImageField({
 	value,
 	onChange,
 	nullable = false,
-	label = "Bild",
+	label = m.image(),
 }: {
 	site: SiteId;
 	value: string | null;

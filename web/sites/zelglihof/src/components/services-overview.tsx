@@ -5,17 +5,17 @@ import { ArrowRight } from "lucide-react";
 const services = [
 	{
 		name: "Saat",
-		text: m.zelglihof_pages_services_page_text(),
+		text: m.zelglihof_services_sowing_body(),
 		image: "/images/demo/demo-saat.jpg",
 	},
 	{
 		name: "Pflanzenschutz",
-		text: m.zelglihof_pages_services_page_text_2(),
+		text: m.zelglihof_services_fieldwork_body(),
 		image: "/images/demo/demo-pflanzenschutz.jpg",
 	},
 	{
 		name: "Winterdienst",
-		text: m.zelglihof_pages_services_page_text_3(),
+		text: m.zelglihof_services_snow_clearing_body(),
 		image: "/images/demo/demo-winterdienst.jpg",
 	},
 ];
@@ -24,15 +24,13 @@ export function ServicesOverview() {
 	return (
 		<>
 			<section className="shell py-14 md:py-24">
-				<p className="eyebrow text-clay">
-					{m.zelglihof_pages_services_page_paragraph()}
-				</p>
+				<p className="eyebrow text-clay">{m.zelglihof_services_eyebrow()}</p>
 				<div className="mt-5 grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-end">
 					<h1 className="display-title text-6xl md:text-8xl">
-						{m.zelglihof_pages_services_page_heading()}
+						{m.zelglihof_services_title()}
 					</h1>
 					<p className="max-w-xl text-xl leading-relaxed text-ink/60">
-						{m.zelglihof_pages_services_page_paragraph_2()}
+						{m.zelglihof_services_description()}
 					</p>
 				</div>
 			</section>
@@ -63,7 +61,7 @@ export function ServicesOverview() {
 								to="/contact"
 								className="mt-10 inline-flex items-center gap-2 font-bold"
 							>
-								{m.zelglihof_pages_services_page_text_4()}
+								{m.zelglihof_services_availability_action()}
 								<ArrowRight size={18} />
 							</Link>
 						</div>

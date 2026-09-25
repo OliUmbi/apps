@@ -15,13 +15,13 @@ import {
 } from "../../../server/content/zelglihof/campaign.functions";
 import { CampaignSend } from "../../campaign-send";
 import { InputField } from "../../input-field";
-import { CollectionView } from "../collection-view";
 import type { EditorFieldsProps } from "../content-form";
 import { DetailItem, displayStatus } from "../display";
+import { RoutedCollectionView } from "../routed-collection-view";
 
 export function CampaignsView() {
 	return (
-		<CollectionView<Campaign, CampaignInput>
+		<RoutedCollectionView<Campaign, CampaignInput>
 			collection="zelglihof.campaign"
 			title="Kampagnen"
 			rowKey={(record) => record.id}
@@ -42,22 +42,20 @@ export function CampaignsView() {
 			columns={[
 				{
 					id: "subject",
-					heading: m.studio_field_subject(),
+					heading: m.subject(),
 					render: (record) => record.subject,
 				},
 				{
 					id: "status",
-					heading: m.studio_field_status(),
+					heading: m.status(),
 					render: (record) => displayStatus(record.status),
 				},
 			]}
 			renderDetails={(record) => (
 				<dl className="record-fields">
-					<DetailItem label={m.studio_field_subject()}>
-						{record.subject}
-					</DetailItem>
-					<DetailItem label={m.studio_field_body()}>{record.body}</DetailItem>
-					<DetailItem label={m.studio_field_status()}>
+					<DetailItem label={m.subject()}>{record.subject}</DetailItem>
+					<DetailItem label={m.body()}>{record.body}</DetailItem>
+					<DetailItem label={m.status()}>
 						{displayStatus(record.status)}
 					</DetailItem>
 				</dl>
@@ -77,14 +75,14 @@ function CampaignFields({
 		<>
 			<InputField
 				name="subject"
-				label={m.studio_field_subject()}
+				label={m.subject()}
 				value={values.subject}
 				required
 				onChange={(event) => onChange("subject", event.target.value)}
 			/>
 			<InputField
 				name="body"
-				label={m.studio_field_body()}
+				label={m.body()}
 				value={values.body}
 				required
 				render={<textarea rows={18} />}

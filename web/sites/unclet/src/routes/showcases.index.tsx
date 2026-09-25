@@ -7,29 +7,29 @@ import { ShowcaseCard } from "../components/showcase-card";
 import { getShowcasePage } from "../data/showcases";
 
 export const Route = createFileRoute("/showcases/")({
-	head: () => ({ meta: [{ title: m.unclet_routes_showcases_title() }] }),
+	head: () => ({ meta: [{ title: m.unclet_showcases_page_title() }] }),
 	loader: () =>
 		getShowcasePage({
 			data: { page: 0 },
 		}),
-	component: InsightsPage,
+	component: ShowcasesPage,
 });
 
-function InsightsPage() {
+function ShowcasesPage() {
 	return (
 		<>
 			<PageHero
-				eyebrow={m.unclet_routes_showcases_eyebrow()}
+				eyebrow={m.unclet_showcases_eyebrow()}
 				title={
 					<>
-						{m.unclet_routes_showcases_text()}
+						{m.unclet_showcases_title()}
 						<br />
 						<span className="text-brass-light italic">
-							{m.unclet_routes_showcases_text_2()}
+							{m.unclet_showcases_title_accent()}
 						</span>
 					</>
 				}
-				intro={m.unclet_routes_showcases_intro()}
+				description={m.unclet_showcases_description()}
 			/>
 			<section className="shell py-20 md:py-28">
 				<div className="grid gap-16 md:gap-24">
@@ -45,7 +45,7 @@ function InsightsPage() {
 						{(items) => (
 							<>
 								{items.map((item, index) => (
-									<ShowcaseCard key={item.id} item={item} index={index} />
+									<ShowcaseCard key={item.id} showcase={item} index={index} />
 								))}
 							</>
 						)}
@@ -54,14 +54,14 @@ function InsightsPage() {
 				<div className="mt-20 border border-brass/35 p-8 md:flex md:items-center md:justify-between md:p-12">
 					<div>
 						<p className="eyebrow text-brass">
-							{m.unclet_routes_showcases_paragraph()}
+							{m.unclet_showcases_inquiry_eyebrow()}
 						</p>
 						<h2 className="display-title mt-4 text-4xl md:text-5xl">
-							{m.unclet_routes_showcases_heading()}
+							{m.unclet_showcases_inquiry_title()}
 						</h2>
 					</div>
 					<Link to="/inquiry" className="button-primary mt-8 md:mt-0">
-						{m.unclet_routes_showcases_text_3()}
+						{m.unclet_showcases_inquire()}
 						<ArrowRight size={17} />
 					</Link>
 				</div>

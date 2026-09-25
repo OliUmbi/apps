@@ -1,5 +1,6 @@
 import { m } from "@oliumbi/i18n/messages";
 import type { Subscriber } from "@oliumbi/zelglihof-data/content/subscriber";
+import { formatTimestamp } from "../../../model/dates";
 import {
 	deleteSubscriber,
 	getSubscriber,
@@ -7,12 +8,12 @@ import {
 } from "../../../server/content/zelglihof/subscriber.functions";
 import { SubscriberActions } from "../../subscriber-actions";
 import { SubscriberInvite } from "../../subscriber-invite";
-import { CollectionView } from "../collection-view";
-import { DetailItem, displayStatus, displayTimestamp } from "../display";
+import { DetailItem, displayStatus } from "../display";
+import { RoutedCollectionView } from "../routed-collection-view";
 
 export function SubscribersView() {
 	return (
-		<CollectionView<Subscriber>
+		<RoutedCollectionView<Subscriber>
 			collection="zelglihof.subscriber"
 			title="Abonnenten"
 			rowKey={(record) => record.id}
@@ -22,39 +23,41 @@ export function SubscribersView() {
 			columns={[
 				{
 					id: "email",
-					heading: m.studio_field_email(),
+					heading: m.email(),
 					render: (record) => record.email,
 				},
 				{
 					id: "status",
-					heading: m.studio_field_status(),
+					heading: m.status(),
 					render: (record) => displayStatus(record.status),
 				},
 				{
 					id: "confirmedAt",
 					heading: m.studio_field_confirmed_at(),
-					render: (record) => displayTimestamp(record.confirmedAt),
+					render: (record) => formatTimestamp(record.confirmedAt),
 				},
 			]}
 			renderDetails={(record) => (
 				<dl className="record-fields">
-					<DetailItem label={m.studio_field_email()}>{record.email}</DetailItem>
-					<DetailItem label={m.studio_field_status()}>
+					<DetailItem label={m.email()}>{record.email}</DetailItem>
+					<DetailItem label={m.status()}>
 						{displayStatus(record.status)}
 					</DetailItem>
 					<DetailItem label={m.studio_field_requested_at()}>
-						{displayTimestamp(record.requestedAt)}
+						{formatTimestamp(record.requestedAt)}
 					</DetailItem>
 					<DetailItem label={m.studio_field_confirmed_at()}>
-						{displayTimestamp(record.confirmedAt)}
+						{formatTimestamp(record.confirmedAt)}
 					</DetailItem>
 					<DetailItem label={m.studio_field_unsubscribed_at()}>
-						{displayTimestamp(record.unsubscribedAt)}
+						{formatTimestamp(record.unsubscribedAt)}
 					</DetailItem>
 				</dl>
 			)}
 			introduction={<SubscriberInvite />}
-			renderActions={(record) => <SubscriberActions record={record} />}
+			renderActions={(record) => (
+				<SubscriberActions key={record.id} subscriber={record} />
+			)}
 		/>
 	);
 }

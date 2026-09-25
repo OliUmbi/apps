@@ -3,6 +3,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { TermsPage } from "../components/legal-content";
 
 export const Route = createFileRoute("/terms")({
-	head: () => ({ meta: [{ title: m.zelglihof_routes_terms_title() }] }),
+	head: () => ({ meta: [{ title: m.zelglihof_terms_page_title() }] }),
 	component: TermsPage,
 });

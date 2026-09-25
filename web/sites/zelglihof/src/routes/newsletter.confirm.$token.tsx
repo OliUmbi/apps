@@ -7,34 +7,29 @@ import { useServerFn } from "@tanstack/react-start";
 import { confirmNewsletterSignup } from "../data/newsletter";
 
 export const Route = createFileRoute("/newsletter/confirm/$token")({
-	component: Page,
+	component: NewsletterConfirmationPage,
 });
-function Page() {
+function NewsletterConfirmationPage() {
 	const { token } = Route.useParams();
 	const submit = useServerFn(confirmNewsletterSignup);
 	const mutation = useMutation({
-		mutationFn: () =>
-			submit({ data: { token } }) as Promise<{ outcome: string }>,
+		mutationFn: () => submit({ data: { token } }),
 	});
-	const done = ["confirmed", "already-confirmed"].includes(
-		mutation.data?.outcome ?? "",
-	);
+	const done =
+		mutation.data?.outcome === "confirmed" ||
+		mutation.data?.outcome === "already-confirmed";
+	let error: string | null = null;
+	if (mutation.isError) error = m.zelglihof_newsletter_confirm_retry();
+	else if (mutation.isSuccess && !done)
+		error = m.zelglihof_newsletter_confirm_invalid_link();
 	return (
 		<section className="mx-auto max-w-xl px-4 py-24 text-center">
 			<h1 className="mb-8 font-serif text-4xl font-bold">
-				{m.zelglihof_routes_newsletter_confirm_token_heading()}
+				{m.zelglihof_newsletter_confirm_title()}
 			</h1>
 			<FormFeedback
-				success={
-					done ? m.zelglihof_routes_newsletter_confirm_token_feedback() : null
-				}
-				error={
-					mutation.isError
-						? m.zelglihof_routes_newsletter_confirm_token_feedback_2()
-						: mutation.isSuccess && !done
-							? m.zelglihof_routes_newsletter_confirm_token_feedback_3()
-							: null
-				}
+				success={done ? m.zelglihof_newsletter_confirm_success() : null}
+				error={error}
 			/>
 			{!done && (
 				<Button
@@ -42,7 +37,7 @@ function Page() {
 					disabled={mutation.isPending}
 					onClick={() => mutation.mutate()}
 				>
-					{m.zelglihof_routes_newsletter_confirm_token_text()}
+					{m.zelglihof_newsletter_confirm_submit()}
 				</Button>
 			)}
 		</section>

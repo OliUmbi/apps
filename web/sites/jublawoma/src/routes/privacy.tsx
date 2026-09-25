@@ -6,11 +6,11 @@ export const Route = createFileRoute("/privacy")({ component: Privacy });
 function Privacy() {
 	return (
 		<section className="shell legal">
-			<p className="kicker">{m.jublawoma_routes_privacy_paragraph()}</p>
-			<h1>{m.jublawoma_routes_privacy_heading()}</h1>
-			<p>{m.jublawoma_routes_privacy_paragraph_2()}</p>
-			<p>{m.jublawoma_routes_privacy_paragraph_3()}</p>
-			<p>{m.jublawoma_routes_privacy_paragraph_4()}</p>
+			<p className="kicker">{m.jublawoma_privacy_eyebrow()}</p>
+			<h1>{m.privacy()}</h1>
+			<p>{m.jublawoma_privacy_personal_data_body()}</p>
+			<p>{m.jublawoma_privacy_legal_basis_body()}</p>
+			<p>{m.jublawoma_privacy_data_processing_body()}</p>
 			<a
 				className="button dark"
 				href="/assets/documents/Datenschutzerklärung-Jubla-Woma.pdf"
@@ -18,7 +18,7 @@ function Privacy() {
 				rel="noopener"
 			>
 				<Download size={17} />
-				{m.jublawoma_routes_privacy_text()}
+				{m.jublawoma_privacy_open_policy()}
 			</a>
 		</section>
 	);

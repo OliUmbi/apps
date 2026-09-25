@@ -3,19 +3,19 @@ import { createPublicRepository } from "@oliumbi/jublawoma-data";
 import type { Event } from "@oliumbi/jublawoma-data/content/event";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import type { EventRecord } from "../model/content";
+import type { PublicEvent } from "../model/content";
 import { database } from "../server/database.server";
-import { mediaFromImages } from "./media";
+import { imageFromId } from "./images";
 
-function eventFromRecord(record: Event): EventRecord {
+function eventFromRecord(record: Event): PublicEvent {
 	return {
 		id: record.id,
 		title: record.name,
-		summary: record.description ?? "",
+		description: record.description ?? "",
 		startsOn: record.startsOn,
 		endsOn: record.endsOn,
 		location: record.location,
-		media: mediaFromImages(record.imageId, record.name),
+		image: record.imageId ? imageFromId(record.imageId, record.name) : null,
 	};
 }
 export const getNextEvent = createServerFn({ method: "GET" }).handler(

@@ -13,18 +13,17 @@ import {
 	updateArticleImage,
 } from "../../../server/content/zelglihof/article-image.functions";
 import { InputField } from "../../input-field";
-import { CollectionView } from "../collection-view";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { ImageField } from "../image-field";
+import { InlineCollectionView } from "../inline-collection-view";
 
 export function ArticleImagesView({ articleId }: { articleId: string }) {
 	return (
-		<CollectionView<ArticleImage, ArticleImageInput>
+		<InlineCollectionView<ArticleImage, ArticleImageInput>
 			collection="zelglihof.article_image"
 			title="Artikelbilder"
 			scope={articleId}
-			inline
 			rowKey={(record) => [record.articleId, record.imageId].join(":")}
 			loadPage={(input) => listArticleImages({ data: { ...input, articleId } })}
 			remove={(record) =>
@@ -50,14 +49,14 @@ export function ArticleImagesView({ articleId }: { articleId: string }) {
 			columns={[
 				{
 					id: "imageId",
-					heading: m.studio_field_image_id(),
+					heading: m.image(),
 					render: (record) => (
 						<ImageThumbnail site="zelglihof" id={record.imageId} />
 					),
 				},
 				{
 					id: "description",
-					heading: m.studio_field_description(),
+					heading: m.description(),
 					render: (record) => record.description,
 				},
 			]}
@@ -78,7 +77,7 @@ function ArticleImageFields({
 			/>
 			<InputField
 				name="description"
-				label={m.studio_field_description()}
+				label={m.description()}
 				value={values.description}
 				required
 				onChange={(event) => onChange("description", event.target.value)}

@@ -1,10 +1,10 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, CalendarDays, MapPin } from "lucide-react";
-import { dateLabel } from "../../data/dates";
-import type { EventRecord } from "../../model/content";
+import type { PublicEvent } from "../../model/content";
+import { formatEventDates } from "../../model/dates";
 
-export function NextEvent({ event }: { event: EventRecord }) {
+export function NextEvent({ event }: { event: PublicEvent }) {
 	return (
 		<section className="border-b border-bark/15 bg-sage/40">
 			<div className="shell grid min-h-28 items-center gap-5 py-6 md:grid-cols-[10rem_1fr_auto]">
@@ -13,7 +13,7 @@ export function NextEvent({ event }: { event: EventRecord }) {
 					<strong className="text-2xl">{event.title}</strong>
 					<span className="inline-flex items-center gap-2 text-sm text-bark/65">
 						<CalendarDays size={15} />
-						{dateLabel(event.startsOn, event.endsOn)}
+						{formatEventDates(event.startsOn, event.endsOn)}
 					</span>
 					<span className="inline-flex items-center gap-2 text-sm text-bark/65">
 						<MapPin size={15} />

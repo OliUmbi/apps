@@ -33,7 +33,7 @@ export function PartnerOrganizations() {
 	return (
 		<section className="network">
 			<div className="shell">
-				<p className="kicker light">{m.jublawoma_routes_about_paragraph_5()}</p>
+				<p className="kicker light">{m.jublawoma_about_partners_title()}</p>
 				<div className="mt-8 grid gap-px overflow-hidden rounded-3xl bg-white/20 sm:grid-cols-2 lg:grid-cols-3">
 					{partners.map((partner) => (
 						<a

@@ -21,25 +21,28 @@ export function CampaignSend({ id }: { id: string }) {
 		},
 	});
 	return (
-		<AlertDialog.Root open={open} onOpenChange={setOpen}>
+		<AlertDialog.Root
+			open={open}
+			onOpenChange={(nextOpen) => {
+				if (mutation.isPending) return;
+				if (nextOpen) mutation.reset();
+				setOpen(nextOpen);
+			}}
+		>
 			<AlertDialog.Trigger className="button primary">
-				{m.studio_components_campaign_send_text()}
+				{m.studio_campaign_send()}
 			</AlertDialog.Trigger>
 			<AlertDialog.Portal>
 				<AlertDialog.Backdrop className="fixed inset-0 z-50 bg-black/60" />
 				<AlertDialog.Popup className="fixed left-1/2 top-1/2 z-60 w-[min(90vw,28rem)] -translate-x-1/2 -translate-y-1/2 rounded-xl border border-white/15 bg-zinc-900 p-6 text-white">
 					<AlertDialog.Title className="text-xl">
-						{m.studio_components_campaign_send_text_2()}
+						{m.studio_campaign_send_confirmation_title()}
 					</AlertDialog.Title>
 					<AlertDialog.Description className="my-4 text-zinc-400">
-						{m.studio_components_campaign_send_text_3()}
+						{m.studio_campaign_send_confirmation_description()}
 					</AlertDialog.Description>
 					<FormFeedback
-						error={
-							mutation.isError
-								? m.studio_components_campaign_send_feedback()
-								: null
-						}
+						error={mutation.isError ? m.studio_campaign_send_error() : null}
 					/>
 					<div className="flex justify-end gap-3">
 						<Button
@@ -47,14 +50,14 @@ export function CampaignSend({ id }: { id: string }) {
 							onClick={() => setOpen(false)}
 							disabled={mutation.isPending}
 						>
-							{m.studio_components_campaign_send_text_4()}
+							{m.cancel()}
 						</Button>
 						<Button
 							className="button primary"
 							onClick={() => mutation.mutate()}
 							disabled={mutation.isPending}
 						>
-							{m.studio_components_campaign_send_text_5()}
+							{m.studio_campaign_send_now()}
 						</Button>
 					</div>
 				</AlertDialog.Popup>

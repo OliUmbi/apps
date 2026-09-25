@@ -17,7 +17,7 @@ export function Hero() {
 						</em>
 					</h1>
 					<p className="max-w-2xl text-lg leading-relaxed text-bark/70">
-						{m.jublawoma_home_hero_intro()}
+						{m.jublawoma_home_hero_description()}
 					</p>
 					<div className="mt-8 flex flex-wrap items-center gap-6">
 						<Link to="/join" className="button dark">

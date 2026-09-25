@@ -17,7 +17,7 @@ export function JoinSection() {
 						{m.jublawoma_home_join_title()}
 					</h2>
 					<p className="max-w-2xl text-lg leading-relaxed text-bark/70">
-						{m.jublawoma_home_join_copy()}
+						{m.jublawoma_home_join_body()}
 					</p>
 					<Link to="/join" className="button dark mt-6">
 						{m.jublawoma_home_join_action()}

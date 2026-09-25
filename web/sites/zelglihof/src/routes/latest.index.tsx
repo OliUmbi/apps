@@ -1,21 +1,33 @@
 import { PaginatedList } from "@oliumbi/ui/paginated-list";
 import { createFileRoute } from "@tanstack/react-router";
+import { NewsletterSignup } from "../components/newsletter-signup";
+import { UpdatesEmptyState } from "../components/updates-empty-state";
+import { UpdatesIntroduction } from "../components/updates-introduction";
 import { UpdatesList } from "../components/updates-list";
 import { getUpdatePage } from "../data/updates";
-import type { Update } from "../model/content";
 
 export const Route = createFileRoute("/latest/")({
 	loader: () => getUpdatePage({ data: { page: 0 } }),
-	component: Page,
+	component: UpdatesPage,
 });
-function Page() {
+function UpdatesPage() {
+	const initialPage = Route.useLoaderData();
 	return (
-		<PaginatedList<Update>
-			queryKey={["updates"]}
-			initialPage={Route.useLoaderData()}
-			load={(page) => getUpdatePage({ data: { page } })}
-		>
-			{(items) => <UpdatesList updates={items} />}
-		</PaginatedList>
+		<>
+			<UpdatesIntroduction />
+			<PaginatedList
+				queryKey={["updates"]}
+				initialPage={initialPage}
+				load={(page) => getUpdatePage({ data: { page } })}
+				emptyState={
+					<section className="shell pb-24">
+						<UpdatesEmptyState />
+					</section>
+				}
+			>
+				{(updates) => <UpdatesList updates={updates} />}
+			</PaginatedList>
+			<NewsletterSignup />
+		</>
 	);
 }

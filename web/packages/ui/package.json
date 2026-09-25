@@ -6,7 +6,8 @@
     "./form-feedback": "./src/form-feedback.tsx",
     "./paginated-list": "./src/paginated-list.tsx",
     "./responsive-image": "./src/responsive-image.tsx",
-    "./simple-markdown": "./src/simple-markdown.tsx"
+    "./simple-markdown": "./src/simple-markdown.tsx",
+    "./use-submission-form": "./src/use-submission-form.ts"
   },
   "scripts": {
     "check": "tsc --noEmit"
@@ -16,7 +17,8 @@
     "@oliumbi/contracts": "workspace:*",
     "@oliumbi/i18n": "workspace:*",
     "@tanstack/react-query": "catalog:",
-    "react": "catalog:"
+    "react": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@types/react": "catalog:",

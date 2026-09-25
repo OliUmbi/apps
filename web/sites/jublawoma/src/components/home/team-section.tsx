@@ -16,7 +16,7 @@ export function TeamSection() {
 					{m.jublawoma_home_team_title()}
 				</h2>
 				<p className="leading-relaxed text-bark/65">
-					{m.jublawoma_home_team_copy()}
+					{m.jublawoma_home_team_body()}
 				</p>
 				<Link to="/about" className="text-link mt-5">
 					{m.jublawoma_home_team_action()}

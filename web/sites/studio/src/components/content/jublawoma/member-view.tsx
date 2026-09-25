@@ -14,15 +14,15 @@ import {
 	updateMember,
 } from "../../../server/content/jublawoma/member.functions";
 import { InputField } from "../../input-field";
-import { CollectionView } from "../collection-view";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { CheckboxField } from "../editor-controls";
 import { ImageField } from "../image-field";
+import { RoutedCollectionView } from "../routed-collection-view";
 
 export function MembersView() {
 	return (
-		<CollectionView<Member, MemberInput>
+		<RoutedCollectionView<Member, MemberInput>
 			collection="jublawoma.member"
 			title="Leitungsteam"
 			rowKey={(record) => record.id}
@@ -42,12 +42,12 @@ export function MembersView() {
 			columns={[
 				{
 					id: "name",
-					heading: m.studio_field_name(),
+					heading: m.name(),
 					render: (record) => record.name,
 				},
 				{
 					id: "imageId",
-					heading: m.studio_field_image_id(),
+					heading: m.image(),
 					render: (record) => (
 						<ImageThumbnail site="jublawoma" id={record.imageId} />
 					),
@@ -72,7 +72,7 @@ function MemberFields({ values, onChange }: EditorFieldsProps<MemberInput>) {
 		<>
 			<InputField
 				name="name"
-				label={m.studio_field_name()}
+				label={m.name()}
 				value={values.name}
 				required
 				onChange={(event) => onChange("name", event.target.value)}

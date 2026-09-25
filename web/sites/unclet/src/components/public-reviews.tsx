@@ -1,8 +1,8 @@
 import { Button } from "@base-ui/react/button";
 import { m } from "@oliumbi/i18n/messages";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Quote, Star } from "lucide-react";
 import { getReviewPage } from "../data/reviews";
+import { ReviewCard } from "./review-card";
 
 export function PublicReviews() {
 	const query = useInfiniteQuery({
@@ -14,54 +14,27 @@ export function PublicReviews() {
 			}),
 		getNextPageParam: (page) => page.nextPage,
 	});
-	if (!query.isError && !query.data?.pages.some((page) => page.items.length))
-		return null;
+	const reviews = query.data?.pages.flatMap((page) => page.items) ?? [];
+	if (!query.isError && !reviews.length) return null;
 	return (
 		<section className="reviews-section border-y border-bone/10 bg-coal py-24 md:py-32">
 			<div className="shell">
 				<div className="grid gap-6 md:grid-cols-[.75fr_1.25fr] md:items-end">
 					<div>
-						<p className="eyebrow text-brass">
-							{m.unclet_components_public_reviews_paragraph()}
-						</p>
+						<p className="eyebrow text-brass">{m.unclet_reviews_eyebrow()}</p>
 						<h2 className="display-title mt-6 text-5xl md:text-7xl">
-							{m.unclet_components_public_reviews_heading()}
+							{m.unclet_reviews_title()}
 						</h2>
 					</div>
 					<p className="max-w-lg text-lg leading-relaxed text-bone/50 md:justify-self-end">
-						{m.unclet_reviews_intro()}
+						{m.unclet_reviews_description()}
 					</p>
 				</div>
 				{query.isError && <p role="alert">{m.error_generic()}</p>}
 				<div className="review-grid mt-14">
-					{query.data?.pages
-						.flatMap((page) => page.items)
-						.map((review) => (
-							<blockquote key={review.id} className="review-card">
-								<div className="flex items-center justify-between gap-5">
-									<p
-										role="img"
-										className="flex gap-1 text-brass"
-										aria-label={`${review.stars} von 5 Sternen`}
-									>
-										{Array.from({ length: review.stars }, (_, index) => (
-											<Star key={index} size={16} fill="currentColor" />
-										))}
-									</p>
-									<Quote
-										size={28}
-										className="text-brass/35"
-										aria-hidden="true"
-									/>
-								</div>
-								<p className="review-quote my-7 leading-relaxed text-bone/75">
-									{review.description}
-								</p>
-								<footer className="border-t border-bone/10 pt-5 font-serif text-xl">
-									{review.name}
-								</footer>
-							</blockquote>
-						))}
+					{reviews.map((review) => (
+						<ReviewCard key={review.id} review={review} />
+					))}
 				</div>
 				{query.hasNextPage && (
 					<Button

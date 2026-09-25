@@ -4,25 +4,35 @@ import type { Story } from "@oliumbi/jublawoma-data/content/story";
 import type { StoryImage } from "@oliumbi/jublawoma-data/content/story-image";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import type { StoryRecord } from "../model/content";
+import type { PublicStory, StorySummary } from "../model/content";
 import { database } from "../server/database.server";
-import { mediaFromImages } from "./media";
+import { imageFromId } from "./images";
 
-function storyFromRecord(
-	record: Story,
-	images: StoryImage[] = [],
-): StoryRecord {
+function storySummaryFromRecord(record: Story): StorySummary {
 	return {
 		id: record.id,
 		slug: record.slug,
 		title: record.title,
-		summary: record.description,
-		bodyMarkdown: record.body,
-		author: record.author,
+		description: record.description,
 		publishedOn: record.publishedOn,
-		media: mediaFromImages(record.imageId, record.title, images),
+		image: record.imageId ? imageFromId(record.imageId, record.title) : null,
 	};
 }
+function storyFromRecord(record: Story, images: StoryImage[]): PublicStory {
+	const summary = storySummaryFromRecord(record);
+	const gallery = images.map((image) =>
+		imageFromId(image.imageId, image.description),
+	);
+	const cover = summary.image ?? gallery[0] ?? null;
+	return {
+		...summary,
+		body: record.body,
+		author: record.author,
+		image: cover,
+		gallery: gallery.filter((image) => image.id !== cover?.id),
+	};
+}
+
 export const getStory = createServerFn({ method: "GET" })
 	.validator(z.object({ slug: slugSchema }))
 	.handler(async ({ data }) => {
@@ -39,6 +49,6 @@ export const getStoryPage = createServerFn({ method: "GET" })
 		);
 		return {
 			...page,
-			items: page.items.map((story) => storyFromRecord(story)),
+			items: page.items.map(storySummaryFromRecord),
 		};
 	});

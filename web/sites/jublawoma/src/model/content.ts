@@ -1,26 +1,46 @@
-export interface MediaAsset {
+export interface ContentImage {
 	id: string;
 	src: string;
 	alt: string;
-	role: "cover" | "gallery";
-	position: number;
 }
-export interface EventRecord {
+
+export interface PublicPromotion {
 	id: string;
 	title: string;
-	summary: string;
+	description: string;
+	link: string;
+	image: ContentImage | null;
+}
+
+export interface PublicMember {
+	id: string;
+	name: string;
+	groupName: string;
+	leadership: boolean;
+	image: ContentImage | null;
+}
+
+export interface PublicEvent {
+	id: string;
+	title: string;
+	description: string;
 	startsOn: string;
 	endsOn: string;
 	location: string;
-	media: MediaAsset[];
+	image: ContentImage | null;
 }
-export interface StoryRecord {
+
+export interface StorySummary {
 	id: string;
 	slug: string;
 	title: string;
-	summary: string;
-	bodyMarkdown: string;
-	author: string;
+	description: string;
 	publishedOn: string | null;
-	media: MediaAsset[];
+	image: ContentImage | null;
+}
+
+export interface PublicStory extends StorySummary {
+	body: string;
+	author: string;
+	gallery: ContentImage[];
 }

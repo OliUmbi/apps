@@ -6,6 +6,7 @@ import {
 	productInputFromRecord,
 	productInputSchema,
 } from "@oliumbi/zelglihof-data/content/product";
+import { formatTimestamp } from "../../../model/dates";
 import {
 	createProduct,
 	deleteProduct,
@@ -15,17 +16,17 @@ import {
 } from "../../../server/content/zelglihof/product.functions";
 import { DateField } from "../../date-field";
 import { InputField } from "../../input-field";
-import { CollectionView } from "../collection-view";
 import type { EditorFieldsProps } from "../content-form";
-import { displayTimestamp, ImageThumbnail } from "../display";
+import { ImageThumbnail } from "../display";
 import { CheckboxField } from "../editor-controls";
 import { ImageField } from "../image-field";
+import { RoutedCollectionView } from "../routed-collection-view";
 import { ProductReservationsView } from "./product-reservation-view";
 import { ProductVariantsView } from "./product-variant-view";
 
 export function ProductsView() {
 	return (
-		<CollectionView<Product, ProductInput>
+		<RoutedCollectionView<Product, ProductInput>
 			collection="zelglihof.product"
 			title="Produkte"
 			rowKey={(record) => record.id}
@@ -45,12 +46,12 @@ export function ProductsView() {
 			columns={[
 				{
 					id: "name",
-					heading: m.studio_field_name(),
+					heading: m.name(),
 					render: (record) => record.name,
 				},
 				{
 					id: "imageId",
-					heading: m.studio_field_image_id(),
+					heading: m.image(),
 					render: (record) => (
 						<ImageThumbnail site="zelglihof" id={record.imageId} />
 					),
@@ -68,7 +69,7 @@ export function ProductsView() {
 				{
 					id: "startsAt",
 					heading: m.studio_field_starts_at(),
-					render: (record) => displayTimestamp(record.startsAt),
+					render: (record) => formatTimestamp(record.startsAt),
 				},
 			]}
 			renderRelated={(record) => (
@@ -92,14 +93,14 @@ function ProductFields({ values, onChange }: EditorFieldsProps<ProductInput>) {
 		<>
 			<InputField
 				name="name"
-				label={m.studio_field_name()}
+				label={m.name()}
 				value={values.name}
 				required
 				onChange={(event) => onChange("name", event.target.value)}
 			/>
 			<InputField
 				name="description"
-				label={m.studio_field_description()}
+				label={m.description()}
 				value={values.description}
 				required
 				render={<textarea rows={4} />}
@@ -107,7 +108,7 @@ function ProductFields({ values, onChange }: EditorFieldsProps<ProductInput>) {
 			/>
 			<InputField
 				name="body"
-				label={m.studio_field_body()}
+				label={m.body()}
 				value={values.body}
 				required
 				render={<textarea rows={18} />}

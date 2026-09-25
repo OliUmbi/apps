@@ -14,19 +14,18 @@ import {
 	updateProductVariant,
 } from "../../../server/content/zelglihof/product-variant.functions";
 import { InputField } from "../../input-field";
-import { CollectionView } from "../collection-view";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { NumberField } from "../editor-controls";
 import { ImageField } from "../image-field";
+import { InlineCollectionView } from "../inline-collection-view";
 
 export function ProductVariantsView({ productId }: { productId: string }) {
 	return (
-		<CollectionView<ProductVariant, ProductVariantInput>
+		<InlineCollectionView<ProductVariant, ProductVariantInput>
 			collection="zelglihof.product_variant"
 			title="Varianten"
 			scope={productId}
-			inline
 			rowKey={(record) => record.id}
 			loadPage={(input) =>
 				listProductVariants({ data: { ...input, productId } })
@@ -46,24 +45,24 @@ export function ProductVariantsView({ productId }: { productId: string }) {
 			columns={[
 				{
 					id: "name",
-					heading: m.studio_field_name(),
+					heading: m.name(),
 					render: (record) => record.name,
 				},
 				{
 					id: "imageId",
-					heading: m.studio_field_image_id(),
+					heading: m.image(),
 					render: (record) => (
 						<ImageThumbnail site="zelglihof" id={record.imageId} />
 					),
 				},
 				{
 					id: "price",
-					heading: m.studio_field_price(),
+					heading: m.price(),
 					render: (record) => record.price,
 				},
 				{
 					id: "quantity",
-					heading: m.studio_field_quantity(),
+					heading: m.quantity(),
 					render: (record) => record.quantity,
 				},
 			]}
@@ -79,14 +78,14 @@ function ProductVariantFields({
 		<>
 			<InputField
 				name="name"
-				label={m.studio_field_name()}
+				label={m.name()}
 				value={values.name}
 				required
 				onChange={(event) => onChange("name", event.target.value)}
 			/>
 			<InputField
 				name="description"
-				label={m.studio_field_description()}
+				label={m.description()}
 				value={values.description ?? ""}
 				render={<textarea rows={4} />}
 				onChange={(event) =>
@@ -101,14 +100,14 @@ function ProductVariantFields({
 			/>
 			<InputField
 				name="price"
-				label={m.studio_field_price()}
+				label={m.price()}
 				value={values.price}
 				required
 				onChange={(event) => onChange("price", event.target.value)}
 			/>
 			<NumberField
 				name="quantity"
-				label={m.studio_field_quantity()}
+				label={m.quantity()}
 				value={values.quantity}
 				min={0}
 				step={1}

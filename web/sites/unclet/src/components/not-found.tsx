@@ -9,16 +9,16 @@ export function NotFound() {
 				404
 			</span>
 			<div className="relative z-10 max-w-3xl">
-				<p className="eyebrow text-brass">{m.unclet_routes_root_paragraph()}</p>
+				<p className="eyebrow text-brass">{m.unclet_not_found_eyebrow()}</p>
 				<h1 className="display-title mt-6 text-6xl md:text-8xl">
-					{m.unclet_routes_root_heading()}
+					{m.unclet_not_found_title()}
 				</h1>
 				<p className="mx-auto mt-7 max-w-xl text-lg leading-relaxed text-bone/55">
 					{m.unclet_not_found_description()}
 				</p>
 				<Link to="/" className="button-primary mt-10">
 					<ArrowLeft size={17} aria-hidden="true" />
-					{m.unclet_routes_root_text()}
+					{m.back_to_home()}
 				</Link>
 			</div>
 		</section>

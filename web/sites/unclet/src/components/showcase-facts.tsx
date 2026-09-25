@@ -1,16 +1,16 @@
-import type { Showcase } from "@oliumbi/unclet-data/content/showcase";
 import { CalendarDays, MapPin, UsersRound } from "lucide-react";
+import type { PublicShowcase } from "../model/content";
 
-export function ShowcaseFacts({ record }: { record: Showcase }) {
-	const publishedOn = record.publishedOn
+export function ShowcaseFacts({ showcase }: { showcase: PublicShowcase }) {
+	const publishedOn = showcase.publishedOn
 		? new Intl.DateTimeFormat("de-CH", {
 				month: "long",
 				year: "numeric",
-			}).format(new Date(`${record.publishedOn}T12:00:00`))
+			}).format(new Date(`${showcase.publishedOn}T12:00:00`))
 		: null;
 	const facts = [
-		{ icon: UsersRound, label: "Gäste", value: record.guestCount },
-		{ icon: MapPin, label: "Ort", value: record.location },
+		{ icon: UsersRound, label: "Gäste", value: showcase.guestCount },
+		{ icon: MapPin, label: "Ort", value: showcase.location },
 		{ icon: CalendarDays, label: "Einblick", value: publishedOn },
 	].filter((fact) => fact.value);
 

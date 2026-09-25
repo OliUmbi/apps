@@ -9,29 +9,29 @@ function About() {
 		<>
 			<section className="page-hero shell about-hero">
 				<div>
-					<p className="kicker">{m.jublawoma_routes_about_paragraph()}</p>
+					<p className="kicker">{m.jublawoma_about_eyebrow()}</p>
 					<h1>
-						{m.jublawoma_routes_about_heading()}
+						{m.jublawoma_about_title()}
 						<br />
-						<span>{m.jublawoma_routes_about_text()}</span>
+						<span>{m.jublawoma_about_title_accent()}</span>
 					</h1>
-					<p>{m.jublawoma_routes_about_paragraph_2()}</p>
+					<p>{m.jublawoma_about_description()}</p>
 				</div>
 				<img
 					className="photo"
 					src="/assets/images/people/scharleitung.jpg"
-					alt={m.jublawoma_routes_about_alt()}
+					alt={m.jublawoma_about_leadership_alt()}
 				/>
 			</section>
-			<section className="shell split-copy">
+			<section className="shell split-body">
 				<h2>
-					{m.jublawoma_routes_about_heading_2()}
+					{m.jublawoma_about_training_title()}
 					<br />
-					{m.jublawoma_routes_about_heading_3()}
+					{m.jublawoma_about_training_title_accent()}
 				</h2>
 				<div>
-					<p>{m.jublawoma_routes_about_paragraph_3()}</p>
-					<p>{m.jublawoma_routes_about_paragraph_4()}</p>
+					<p>{m.jublawoma_about_training_body()}</p>
+					<p>{m.jublawoma_about_inclusion_body()}</p>
 				</div>
 			</section>
 			<PublicMembers />

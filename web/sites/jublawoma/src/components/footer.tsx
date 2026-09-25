@@ -8,31 +8,29 @@ export function Footer() {
 			<div className="shell footer-grid">
 				<div>
 					<p className="footer-title">
-						{m.jublawoma_components_footer_paragraph()}
+						{m.jublawoma_footer_title()}
 						<br />
-						{m.jublawoma_components_footer_paragraph_2()}
+						{m.jublawoma_footer_description()}
 					</p>
-					<p>{m.jublawoma_components_footer_paragraph_3()}</p>
+					<p>{m.jublawoma_organization()}</p>
 				</div>
 				<div>
-					<strong>{m.jublawoma_components_footer_text()}</strong>
-					<a href="mailto:scharleitung@jublawoma.ch">
-						{m.jublawoma_components_footer_text_2()}
-					</a>
-					<span>{m.jublawoma_components_footer_text_3()}</span>
+					<strong>{m.contact()}</strong>
+					<a href="mailto:scharleitung@jublawoma.ch">{m.jublawoma_email()}</a>
+					<span>{m.jublawoma_footer_address()}</span>
 				</div>
 				<div>
-					<strong>{m.jublawoma_components_footer_text_4()}</strong>
+					<strong>{m.jublawoma_footer_more()}</strong>
 					<a
 						href="https://www.instagram.com/jubla_woma/"
 						target="_blank"
 						rel="noreferrer"
 					>
 						<Camera size={16} />
-						{m.jublawoma_components_footer_text_5()}
+						{m.jublawoma_footer_instagram()}
 					</a>
-					<Link to="/legal">{m.jublawoma_components_footer_text_6()}</Link>
-					<Link to="/privacy">{m.jublawoma_components_footer_text_7()}</Link>
+					<Link to="/legal">{m.imprint()}</Link>
+					<Link to="/privacy">{m.privacy()}</Link>
 				</div>
 			</div>
 		</footer>

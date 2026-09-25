@@ -7,7 +7,7 @@ catalogMode: strict
 catalog:
   "@base-ui/react": ^1.6.0
   "@biomejs/biome": ^2.5.7
-  "@inlang/paraglide-js": ^2.0.0
+  "@inlang/paraglide-js": ^2.25.4
   "@tailwindcss/vite": ^4.3.2
   "@tanstack/react-query": ^5.90.0
   "@tanstack/react-router": ^1.170.25

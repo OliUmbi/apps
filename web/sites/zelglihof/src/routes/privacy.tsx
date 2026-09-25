@@ -3,6 +3,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PrivacyPage } from "../components/legal-content";
 
 export const Route = createFileRoute("/privacy")({
-	head: () => ({ meta: [{ title: m.zelglihof_routes_privacy_title() }] }),
+	head: () => ({ meta: [{ title: m.zelglihof_privacy_page_title() }] }),
 	component: PrivacyPage,
 });

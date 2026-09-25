@@ -15,17 +15,17 @@ import {
 } from "../../../server/content/unclet/showcase.functions";
 import { DateField } from "../../date-field";
 import { InputField } from "../../input-field";
-import { CollectionView } from "../collection-view";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { CheckboxField, NumberField } from "../editor-controls";
 import { ImageField } from "../image-field";
+import { RoutedCollectionView } from "../routed-collection-view";
 import { SlugField } from "../slug-field";
 import { ShowcaseImagesView } from "./showcase-image-view";
 
 export function ShowcasesView() {
 	return (
-		<CollectionView<Showcase, ShowcaseInput>
+		<RoutedCollectionView<Showcase, ShowcaseInput>
 			collection="unclet.showcase"
 			title="Einblicke"
 			rowKey={(record) => record.id}
@@ -45,12 +45,12 @@ export function ShowcasesView() {
 			columns={[
 				{
 					id: "title",
-					heading: m.studio_field_title(),
+					heading: m.title(),
 					render: (record) => record.title,
 				},
 				{
 					id: "location",
-					heading: m.studio_field_location(),
+					heading: m.location(),
 					render: (record) => record.location,
 				},
 				{
@@ -60,7 +60,7 @@ export function ShowcasesView() {
 				},
 				{
 					id: "imageId",
-					heading: m.studio_field_image_id(),
+					heading: m.image(),
 					render: (record) => (
 						<ImageThumbnail site="unclet" id={record.imageId} />
 					),
@@ -97,7 +97,7 @@ function ShowcaseFields({
 			/>
 			<InputField
 				name="location"
-				label={m.studio_field_location()}
+				label={m.location()}
 				value={values.location}
 				required
 				onChange={(event) => onChange("location", event.target.value)}
@@ -132,7 +132,7 @@ function ShowcaseFields({
 			/>
 			<InputField
 				name="body"
-				label={m.studio_field_body()}
+				label={m.body()}
 				value={values.body ?? ""}
 				render={<textarea rows={18} />}
 				onChange={(event) => onChange("body", event.target.value || null)}

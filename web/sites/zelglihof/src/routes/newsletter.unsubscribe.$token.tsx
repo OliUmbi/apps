@@ -7,36 +7,29 @@ import { useServerFn } from "@tanstack/react-start";
 import { unsubscribeFromNewsletter } from "../data/newsletter";
 
 export const Route = createFileRoute("/newsletter/unsubscribe/$token")({
-	component: Page,
+	component: NewsletterUnsubscribePage,
 });
-function Page() {
+function NewsletterUnsubscribePage() {
 	const { token } = Route.useParams();
 	const submit = useServerFn(unsubscribeFromNewsletter);
 	const mutation = useMutation({
-		mutationFn: () =>
-			submit({ data: { token } }) as Promise<{ outcome: string }>,
+		mutationFn: () => submit({ data: { token } }),
 	});
-	const done = ["unsubscribed", "already-unsubscribed"].includes(
-		mutation.data?.outcome ?? "",
-	);
+	const done =
+		mutation.data?.outcome === "unsubscribed" ||
+		mutation.data?.outcome === "already-unsubscribed";
+	let error: string | null = null;
+	if (mutation.isError) error = m.zelglihof_newsletter_unsubscribe_retry();
+	else if (mutation.isSuccess && !done)
+		error = m.zelglihof_newsletter_unsubscribe_invalid_link();
 	return (
 		<section className="mx-auto max-w-xl px-4 py-24 text-center">
 			<h1 className="mb-8 font-serif text-4xl font-bold">
-				{m.zelglihof_routes_newsletter_unsubscribe_token_heading()}
+				{m.zelglihof_newsletter_unsubscribe_title()}
 			</h1>
 			<FormFeedback
-				success={
-					done
-						? m.zelglihof_routes_newsletter_unsubscribe_token_feedback()
-						: null
-				}
-				error={
-					mutation.isError
-						? m.zelglihof_routes_newsletter_unsubscribe_token_feedback_2()
-						: mutation.isSuccess && !done
-							? m.zelglihof_routes_newsletter_unsubscribe_token_feedback_3()
-							: null
-				}
+				success={done ? m.zelglihof_newsletter_unsubscribe_success() : null}
+				error={error}
 			/>
 			{!done && (
 				<Button
@@ -44,7 +37,7 @@ function Page() {
 					disabled={mutation.isPending}
 					onClick={() => mutation.mutate()}
 				>
-					{m.zelglihof_routes_newsletter_unsubscribe_token_text()}
+					{m.zelglihof_newsletter_unsubscribe_submit()}
 				</Button>
 			)}
 		</section>

@@ -17,36 +17,39 @@ export const Route = createRootRoute({
 	head: () => ({
 		meta: [
 			{ charSet: "utf-8" },
-			{ name: "viewport", content: m.jublawoma_routes_root_content() },
-			{ title: m.jublawoma_routes_root_title() },
+			{ name: "viewport", content: "width=device-width, initial-scale=1" },
+			{ title: m.jublawoma_site_title() },
 			{
 				name: "description",
-				content: m.jublawoma_routes_root_content_2(),
+				content: m.jublawoma_site_description(),
 			},
 			{
 				property: "og:title",
-				content: m.jublawoma_routes_root_title(),
+				content: m.jublawoma_site_title(),
 			},
 			{
 				property: "og:description",
-				content: m.jublawoma_routes_root_content_2(),
+				content: m.jublawoma_site_description(),
 			},
 			{ property: "og:type", content: "website" },
-			{ name: "theme-color", content: m.jublawoma_routes_root_content_3() },
+			{ name: "theme-color", content: "#a63848" },
 		],
 		links: [{ rel: "icon", href: "/assets/images/logos/favicon.ico" }],
 	}),
-	component: () => (
-		<Document>
-			<QueryProvider>
-				<Outlet />
-			</QueryProvider>
-		</Document>
-	),
+	component: RootComponent,
+	shellComponent: RootDocument,
 	notFoundComponent: NotFound,
 });
 
-function Document({ children }: Readonly<{ children: ReactNode }>) {
+function RootComponent() {
+	return (
+		<QueryProvider>
+			<Outlet />
+		</QueryProvider>
+	);
+}
+
+function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 	return (
 		<html lang={getLocale()}>
 			<head>

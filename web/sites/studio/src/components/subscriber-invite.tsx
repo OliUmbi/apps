@@ -22,15 +22,20 @@ export function SubscriberInvite() {
 	return (
 		<Form
 			className="panel grid gap-4 p-6"
+			onChange={() => {
+				if (mutation.isSuccess || mutation.isError) mutation.reset();
+			}}
 			onSubmit={(event) => {
 				event.preventDefault();
+				if (mutation.isPending) return;
 				mutation.mutate(new FormData(event.currentTarget));
 			}}
 		>
 			<InputField
+				disabled={mutation.isPending}
 				name="email"
 				type="email"
-				label={m.studio_account_email()}
+				label={m.email()}
 				required
 			/>
 			<p className="text-sm text-zinc-400">

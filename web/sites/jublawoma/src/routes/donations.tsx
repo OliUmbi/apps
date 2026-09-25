@@ -10,7 +10,7 @@ export const Route = createFileRoute("/donations")({
 function Donations() {
 	const campaign = Route.useLoaderData();
 	return campaign ? (
-		<DonationCampaign record={campaign.donation} items={campaign.items} />
+		<DonationCampaign key={campaign.id} campaign={campaign} />
 	) : (
 		<NoCurrentDonations />
 	);

@@ -6,6 +6,7 @@ import {
 	eventInputSchema,
 	newEventInput,
 } from "@oliumbi/jublawoma-data/content/event";
+import { formatDate } from "../../../model/dates";
 import {
 	createEvent,
 	deleteEvent,
@@ -15,14 +16,14 @@ import {
 } from "../../../server/content/jublawoma/event.functions";
 import { DateField } from "../../date-field";
 import { InputField } from "../../input-field";
-import { CollectionView } from "../collection-view";
 import type { EditorFieldsProps } from "../content-form";
-import { displayDate, ImageThumbnail } from "../display";
+import { ImageThumbnail } from "../display";
 import { ImageField } from "../image-field";
+import { RoutedCollectionView } from "../routed-collection-view";
 
 export function EventsView() {
 	return (
-		<CollectionView<Event, EventInput>
+		<RoutedCollectionView<Event, EventInput>
 			collection="jublawoma.event"
 			title="Anlässe"
 			rowKey={(record) => record.id}
@@ -42,17 +43,17 @@ export function EventsView() {
 			columns={[
 				{
 					id: "name",
-					heading: m.studio_field_name(),
+					heading: m.name(),
 					render: (record) => record.name,
 				},
 				{
 					id: "location",
-					heading: m.studio_field_location(),
+					heading: m.location(),
 					render: (record) => record.location,
 				},
 				{
 					id: "imageId",
-					heading: m.studio_field_image_id(),
+					heading: m.image(),
 					render: (record) => (
 						<ImageThumbnail site="jublawoma" id={record.imageId} />
 					),
@@ -60,12 +61,12 @@ export function EventsView() {
 				{
 					id: "startsOn",
 					heading: m.studio_field_starts_on(),
-					render: (record) => displayDate(record.startsOn),
+					render: (record) => formatDate(record.startsOn),
 				},
 				{
 					id: "endsOn",
 					heading: m.studio_field_ends_on(),
-					render: (record) => displayDate(record.endsOn),
+					render: (record) => formatDate(record.endsOn),
 				},
 			]}
 		/>
@@ -77,14 +78,14 @@ function EventFields({ values, onChange }: EditorFieldsProps<EventInput>) {
 		<>
 			<InputField
 				name="name"
-				label={m.studio_field_name()}
+				label={m.name()}
 				value={values.name}
 				required
 				onChange={(event) => onChange("name", event.target.value)}
 			/>
 			<InputField
 				name="description"
-				label={m.studio_field_description()}
+				label={m.description()}
 				value={values.description ?? ""}
 				render={<textarea rows={4} />}
 				onChange={(event) =>
@@ -93,7 +94,7 @@ function EventFields({ values, onChange }: EditorFieldsProps<EventInput>) {
 			/>
 			<InputField
 				name="location"
-				label={m.studio_field_location()}
+				label={m.location()}
 				value={values.location}
 				required
 				onChange={(event) => onChange("location", event.target.value)}

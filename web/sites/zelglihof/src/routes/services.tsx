@@ -4,7 +4,7 @@ import { ServicesOverview } from "../components/services-overview";
 
 export const Route = createFileRoute("/services")({
 	head: () => ({
-		meta: [{ title: m.zelglihof_routes_services_title() }],
+		meta: [{ title: m.zelglihof_services_page_title() }],
 	}),
 	component: ServicesOverview,
 });

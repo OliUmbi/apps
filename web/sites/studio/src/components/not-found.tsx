@@ -4,19 +4,19 @@ import { ArrowLeft, ScanLine } from "lucide-react";
 
 export function NotFound() {
 	return (
-		<section className="login-page">
+		<main className="login-page">
 			<div className="login-panel not-found-panel">
 				<div className="login-brand">
 					<span className="brand-mark large">O</span>
-					Oliumbi Studio
+					{m.studio_brand()}
 				</div>
 				<div className="not-found-code">
 					<ScanLine size={24} aria-hidden="true" />
 					<span>ERR / 404</span>
 				</div>
-				<div className="login-copy">
+				<div className="login-body">
 					<p className="page-kicker">{m.studio_system()}</p>
-					<h1>{m.studio_not_found_heading()}</h1>
+					<h1>{m.studio_not_found_title()}</h1>
 					<p>{m.studio_not_found_description()}</p>
 					<Link
 						to="/"
@@ -33,6 +33,6 @@ export function NotFound() {
 					</Link>
 				</div>
 			</div>
-		</section>
+		</main>
 	);
 }

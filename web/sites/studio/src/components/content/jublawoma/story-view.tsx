@@ -6,6 +6,7 @@ import {
 	storyInputFromRecord,
 	storyInputSchema,
 } from "@oliumbi/jublawoma-data/content/story";
+import { formatDate } from "../../../model/dates";
 import {
 	createStory,
 	deleteStory,
@@ -15,17 +16,17 @@ import {
 } from "../../../server/content/jublawoma/story.functions";
 import { DateField } from "../../date-field";
 import { InputField } from "../../input-field";
-import { CollectionView } from "../collection-view";
 import type { EditorFieldsProps } from "../content-form";
-import { displayDate, ImageThumbnail } from "../display";
+import { ImageThumbnail } from "../display";
 import { CheckboxField } from "../editor-controls";
 import { ImageField } from "../image-field";
+import { RoutedCollectionView } from "../routed-collection-view";
 import { SlugField } from "../slug-field";
 import { StoryImagesView } from "./story-image-view";
 
 export function StoriesView() {
 	return (
-		<CollectionView<Story, StoryInput>
+		<RoutedCollectionView<Story, StoryInput>
 			collection="jublawoma.story"
 			title="Geschichten"
 			rowKey={(record) => record.id}
@@ -45,17 +46,17 @@ export function StoriesView() {
 			columns={[
 				{
 					id: "title",
-					heading: m.studio_field_title(),
+					heading: m.title(),
 					render: (record) => record.title,
 				},
 				{
 					id: "author",
-					heading: m.studio_field_author(),
+					heading: m.author(),
 					render: (record) => record.author,
 				},
 				{
 					id: "imageId",
-					heading: m.studio_field_image_id(),
+					heading: m.image(),
 					render: (record) => (
 						<ImageThumbnail site="jublawoma" id={record.imageId} />
 					),
@@ -68,7 +69,7 @@ export function StoriesView() {
 				{
 					id: "publishedOn",
 					heading: m.studio_field_published_on(),
-					render: (record) => displayDate(record.publishedOn),
+					render: (record) => formatDate(record.publishedOn),
 				},
 			]}
 			renderRelated={(record) => (
@@ -94,7 +95,7 @@ function StoryFields({ values, onChange }: EditorFieldsProps<StoryInput>) {
 			/>
 			<InputField
 				name="description"
-				label={m.studio_field_description()}
+				label={m.description()}
 				value={values.description}
 				required
 				render={<textarea rows={4} />}
@@ -102,7 +103,7 @@ function StoryFields({ values, onChange }: EditorFieldsProps<StoryInput>) {
 			/>
 			<InputField
 				name="author"
-				label={m.studio_field_author()}
+				label={m.author()}
 				value={values.author}
 				required
 				onChange={(event) => onChange("author", event.target.value)}
@@ -115,7 +116,7 @@ function StoryFields({ values, onChange }: EditorFieldsProps<StoryInput>) {
 			/>
 			<InputField
 				name="body"
-				label={m.studio_field_body()}
+				label={m.body()}
 				value={values.body}
 				required
 				render={<textarea rows={18} />}

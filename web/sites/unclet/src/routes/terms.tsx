@@ -33,10 +33,10 @@ const terms = [
 	],
 ] as const;
 export const Route = createFileRoute("/terms")({
-	head: () => ({ meta: [{ title: m.unclet_routes_terms_title() }] }),
+	head: () => ({ meta: [{ title: m.unclet_terms_page_title() }] }),
 	component: () => (
-		<LegalPage title={m.unclet_routes_terms_title_2()}>
-			<p>{m.unclet_routes_terms_paragraph()}</p>
+		<LegalPage title={m.unclet_terms_title()}>
+			<p>{m.unclet_terms_body()}</p>
 			{terms.map(([title, text], index) => (
 				<section key={title}>
 					<h2>

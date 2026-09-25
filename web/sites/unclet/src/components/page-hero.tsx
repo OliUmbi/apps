@@ -3,12 +3,12 @@ import type { ReactNode } from "react";
 export function PageHero({
 	eyebrow,
 	title,
-	intro,
+	description,
 	image,
 }: Readonly<{
 	eyebrow: string;
 	title: ReactNode;
-	intro: string;
+	description: string;
 	image?: string;
 }>) {
 	return (
@@ -30,7 +30,7 @@ export function PageHero({
 						{title}
 					</h1>
 					<p className="mt-8 max-w-2xl text-lg leading-relaxed text-bone/60 md:text-xl">
-						{intro}
+						{description}
 					</p>
 				</div>
 			</div>

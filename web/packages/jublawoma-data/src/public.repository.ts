@@ -103,19 +103,6 @@ export function createPublicRepository(db: DatabaseExecutor) {
 				.limit(1);
 			return record ?? null;
 		},
-		async findDonation(id: string) {
-			const [record] = await db
-				.select()
-				.from(donation)
-				.where(and(eq(donation.id, id), activeDonation))
-				.limit(1);
-			return record
-				? {
-						donation: record,
-						items: await createDonationReader(db).items(record.id),
-					}
-				: null;
-		},
 		async currentDonation() {
 			const [record] = await db
 				.select()

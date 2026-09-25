@@ -9,11 +9,13 @@ export function PaginatedList<T>({
 	initialPage,
 	load,
 	children,
+	emptyState = <p className="shell py-8">{m.empty()}</p>,
 }: {
 	queryKey: readonly string[];
 	initialPage: Page<T>;
 	load: (page: number) => Promise<Page<T>>;
 	children: (items: T[]) => ReactNode;
+	emptyState?: ReactNode;
 }) {
 	const query = useInfiniteQuery({
 		queryKey,
@@ -25,9 +27,9 @@ export function PaginatedList<T>({
 	return (
 		<>
 			{children(query.data.pages.flatMap((page) => page.items))}
-			{query.data.pages[0].items.length === 0 && !query.isError && (
-				<p className="shell py-8">{m.empty()}</p>
-			)}
+			{query.data.pages.every((page) => page.items.length === 0) &&
+				!query.isError &&
+				emptyState}
 			{query.isError && (
 				<p className="shell py-4" role="alert">
 					{m.error_generic()}

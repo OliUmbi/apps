@@ -6,6 +6,7 @@ import {
 	articleInputSchema,
 	newArticleInput,
 } from "@oliumbi/zelglihof-data/content/article";
+import { formatDate } from "../../../model/dates";
 import {
 	createArticle,
 	deleteArticle,
@@ -15,17 +16,17 @@ import {
 } from "../../../server/content/zelglihof/article.functions";
 import { DateField } from "../../date-field";
 import { InputField } from "../../input-field";
-import { CollectionView } from "../collection-view";
 import type { EditorFieldsProps } from "../content-form";
-import { displayDate, ImageThumbnail } from "../display";
+import { ImageThumbnail } from "../display";
 import { CheckboxField } from "../editor-controls";
 import { ImageField } from "../image-field";
+import { RoutedCollectionView } from "../routed-collection-view";
 import { SlugField } from "../slug-field";
 import { ArticleImagesView } from "./article-image-view";
 
 export function ArticlesView() {
 	return (
-		<CollectionView<Article, ArticleInput>
+		<RoutedCollectionView<Article, ArticleInput>
 			collection="zelglihof.article"
 			title="Aktuelles"
 			rowKey={(record) => record.id}
@@ -45,12 +46,12 @@ export function ArticlesView() {
 			columns={[
 				{
 					id: "title",
-					heading: m.studio_field_title(),
+					heading: m.title(),
 					render: (record) => record.title,
 				},
 				{
 					id: "imageId",
-					heading: m.studio_field_image_id(),
+					heading: m.image(),
 					render: (record) => (
 						<ImageThumbnail site="zelglihof" id={record.imageId} />
 					),
@@ -63,7 +64,7 @@ export function ArticlesView() {
 				{
 					id: "publishedOn",
 					heading: m.studio_field_published_on(),
-					render: (record) => displayDate(record.publishedOn),
+					render: (record) => formatDate(record.publishedOn),
 				},
 			]}
 			renderRelated={(record) => (
@@ -89,7 +90,7 @@ function ArticleFields({ values, onChange }: EditorFieldsProps<ArticleInput>) {
 			/>
 			<InputField
 				name="description"
-				label={m.studio_field_description()}
+				label={m.description()}
 				value={values.description}
 				required
 				render={<textarea rows={4} />}
@@ -103,7 +104,7 @@ function ArticleFields({ values, onChange }: EditorFieldsProps<ArticleInput>) {
 			/>
 			<InputField
 				name="body"
-				label={m.studio_field_body()}
+				label={m.body()}
 				value={values.body}
 				required
 				render={<textarea rows={18} />}

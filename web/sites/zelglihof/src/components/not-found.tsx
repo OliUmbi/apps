@@ -10,17 +10,17 @@ export function NotFound() {
 					<Sprout size={28} aria-hidden="true" />
 				</span>
 				<p className="eyebrow mt-8 text-clay">
-					{m.zelglihof_routes_root_paragraph()}
+					{m.zelglihof_not_found_eyebrow()}
 				</p>
 				<h1 className="display-title mx-auto mt-6 max-w-2xl text-6xl md:text-8xl">
-					{m.zelglihof_routes_root_heading()}
+					{m.zelglihof_not_found_title()}
 				</h1>
 				<p className="mx-auto mt-6 max-w-lg text-lg text-ink/60">
-					{m.zelglihof_routes_root_paragraph_2()}
+					{m.zelglihof_not_found_description()}
 				</p>
 				<Link to="/" className="button-primary mt-8">
 					<ArrowLeft size={17} aria-hidden="true" />
-					{m.zelglihof_routes_root_text()}
+					{m.zelglihof_back_to_home()}
 				</Link>
 			</div>
 		</section>

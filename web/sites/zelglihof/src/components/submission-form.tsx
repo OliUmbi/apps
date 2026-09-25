@@ -1,146 +1,64 @@
 import { Button } from "@base-ui/react/button";
-import { Field } from "@base-ui/react/field";
 import { Form } from "@base-ui/react/form";
-import { Select } from "@base-ui/react/select";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
-import { useMutation } from "@tanstack/react-query";
-import { ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useSubmissionForm } from "@oliumbi/ui/use-submission-form";
 import type { z } from "zod";
-import { InputField } from "./input-field";
+import { SubmissionControl, type SubmissionField } from "./submission-control";
 
-export interface SubmissionField {
-	name: string;
-	label: string;
-	type?: "text" | "email" | "tel" | "date" | "number" | "textarea";
-	required?: boolean;
-	min?: number;
-	step?: number;
-	max?: number;
-	placeholder?: string;
-	autoComplete?: string;
-	wide?: boolean;
-	options?: { value: string; label: string }[];
-}
+export type { SubmissionField } from "./submission-control";
 
-export function SubmissionForm<T, R extends { outcome: string }>({
+export function SubmissionForm<Input, Result>({
 	schema,
 	fields,
 	submit,
+	getResultError,
 	defaults = {},
 	success = m.sent(),
 	className = "",
 	submitLabel = m.submit(),
 }: {
-	schema: z.ZodType<T>;
+	schema: z.ZodType<Input>;
 	fields: SubmissionField[];
-	submit: (data: T) => Promise<R>;
+	submit: (data: Input) => Promise<Result>;
+	getResultError?: (result: Result) => string | null;
 	defaults?: Record<string, unknown>;
 	success?: string;
 	className?: string;
 	submitLabel?: string;
 }) {
-	const [validation, setValidation] = useState("");
-	const mutation = useMutation({ mutationFn: submit });
-	if (mutation.isSuccess && mutation.data.outcome !== "unavailable")
-		return <FormFeedback success={success} />;
+	const form = useSubmissionForm({
+		schema,
+		submit,
+		getResultError,
+		defaults,
+		numberFields: fields
+			.filter((field) => field.type === "number")
+			.map((field) => field.name),
+	});
+	if (form.succeeded) return <FormFeedback success={success} />;
 	return (
 		<Form
 			className={`submission-form grid gap-5 ${className}`}
-			onSubmit={(event) => {
-				event.preventDefault();
-				const values: Record<string, unknown> = {
-					...defaults,
-					...Object.fromEntries(new FormData(event.currentTarget)),
-				};
-				for (const field of fields)
-					if (field.type === "number")
-						values[field.name] = Number(values[field.name]);
-				const result = schema.safeParse(values);
-				if (!result.success) {
-					setValidation(m.required());
-					return;
-				}
-				setValidation("");
-				mutation.mutate(result.data);
-			}}
+			onSubmit={form.onSubmit}
+			onChange={form.onChange}
 		>
 			{fields.map((field) => (
 				<div
 					key={field.name}
 					className={`form-control-wrap ${field.wide ? "is-wide" : ""}`}
 				>
-					<SubmissionControl field={field} />
+					<SubmissionControl field={field} disabled={form.pending} />
 				</div>
 			))}
-			<FormFeedback
-				error={
-					validation ||
-					(mutation.isError
-						? m.error_generic()
-						: mutation.data?.outcome === "unavailable"
-							? m.unavailable()
-							: null)
-				}
-			/>
+			<FormFeedback error={form.error} />
 			<Button
 				type="submit"
 				className="button-primary disabled:opacity-50"
-				disabled={mutation.isPending}
+				disabled={form.pending}
 			>
-				{mutation.isPending ? m.saving() : submitLabel}
+				{form.pending ? m.saving() : submitLabel}
 			</Button>
 		</Form>
-	);
-}
-
-function SubmissionControl({ field }: { field: SubmissionField }) {
-	if (field.options)
-		return (
-			<Field.Root name={field.name} className="grid gap-2">
-				<Field.Label>{field.label}</Field.Label>
-				<Select.Root
-					name={field.name}
-					items={field.options}
-					defaultValue={field.options[0]?.value}
-					required={field.required}
-				>
-					<Select.Trigger className="flex min-h-12 items-center justify-between rounded-xl border border-forest/20 bg-cream px-4 text-left">
-						<Select.Value />
-						<ChevronDown size={17} aria-hidden="true" />
-					</Select.Trigger>
-					<Select.Portal>
-						<Select.Positioner className="z-70">
-							<Select.Popup className="rounded-xl border border-current/20 bg-stone-100 p-2 text-stone-900 shadow-xl">
-								{field.options.map((option) => (
-									<Select.Item
-										key={option.value}
-										value={option.value}
-										className="rounded p-3 data-highlighted:bg-stone-200"
-									>
-										<Select.ItemText>{option.label}</Select.ItemText>
-									</Select.Item>
-								))}
-							</Select.Popup>
-						</Select.Positioner>
-					</Select.Portal>
-				</Select.Root>
-			</Field.Root>
-		);
-	return (
-		<InputField
-			name={field.name}
-			label={field.label}
-			type={field.type === "textarea" ? undefined : (field.type ?? "text")}
-			render={field.type === "textarea" ? <textarea rows={5} /> : undefined}
-			required={field.required}
-			min={field.min}
-			max={field.max}
-			step={field.step}
-			placeholder={field.placeholder}
-			autoComplete={field.autoComplete}
-			defaultValue={field.type === "number" ? (field.min ?? 1) : undefined}
-		/>
 	);
 }

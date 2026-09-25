@@ -22,6 +22,7 @@ export function ContentForm<Row, Input>({
 	record,
 	pending,
 	error,
+	saved,
 	onSave,
 	onClose,
 }: {
@@ -29,6 +30,7 @@ export function ContentForm<Row, Input>({
 	record: Row | null;
 	pending: boolean;
 	error: boolean;
+	saved: boolean;
 	onSave: (values: Input) => void;
 	onClose: () => void;
 }) {
@@ -36,8 +38,12 @@ export function ContentForm<Row, Input>({
 		record ? editor.valuesFromRecord(record) : editor.initialValues(),
 	);
 	const [validation, setValidation] = useState("");
-	const onChange: EditorFieldsProps<Input>["onChange"] = (name, value) =>
+	const [edited, setEdited] = useState(false);
+	const onChange: EditorFieldsProps<Input>["onChange"] = (name, value) => {
 		setValues((previous) => ({ ...previous, [name]: value }));
+		setEdited(true);
+		setValidation("");
+	};
 
 	return (
 		<Form
@@ -59,7 +65,10 @@ export function ContentForm<Row, Input>({
 			<fieldset disabled={pending} className="editor-fields">
 				{editor.renderFields({ values, onChange })}
 			</fieldset>
-			<FormFeedback error={validation || (error ? m.error_generic() : null)} />
+			<FormFeedback
+				error={validation || (error ? m.error_generic() : null)}
+				success={saved && !edited ? m.studio_content_saved() : null}
+			/>
 			<footer className="editor-actions">
 				<Button
 					type="button"

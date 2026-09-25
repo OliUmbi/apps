@@ -1,24 +1,6 @@
 import { m } from "@oliumbi/i18n/messages";
 import type { ReactNode } from "react";
 
-const dateFormatter = new Intl.DateTimeFormat("de-CH", {
-	dateStyle: "medium",
-	timeZone: "Europe/Zurich",
-});
-const timestampFormatter = new Intl.DateTimeFormat("de-CH", {
-	dateStyle: "medium",
-	timeStyle: "short",
-	timeZone: "Europe/Zurich",
-});
-
-export function displayDate(value: string | null) {
-	return value ? dateFormatter.format(new Date(`${value}T12:00:00Z`)) : "—";
-}
-
-export function displayTimestamp(value: string | null) {
-	return value ? timestampFormatter.format(new Date(value)) : "—";
-}
-
 export function displayStatus(value: string) {
 	const labels: Record<string, () => string> = {
 		new: m.studio_status_new,

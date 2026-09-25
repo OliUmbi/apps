@@ -23,33 +23,30 @@ function LegalPage({
 
 export function ImprintPage() {
 	return (
-		<LegalPage
-			eyebrow={m.zelglihof_pages_legal_pages_eyebrow()}
-			title={m.zelglihof_pages_legal_pages_title()}
-		>
+		<LegalPage eyebrow={m.legal()} title={m.imprint()}>
 			<section>
-				<h2>{m.zelglihof_pages_legal_pages_heading()}</h2>
+				<h2>{m.responsible_party()}</h2>
 				<p>
-					{m.zelglihof_pages_legal_pages_paragraph()}
+					{m.zelglihof_company_name()}
 					<br />
-					{m.zelglihof_pages_legal_pages_paragraph_2()}
+					{m.zelglihof_street()}
 					<br />
-					{m.zelglihof_pages_legal_pages_paragraph_3()}
+					{m.zelglihof_postal_address()}
 					<br />
-					{m.zelglihof_pages_legal_pages_paragraph_4()}
+					{m.switzerland()}
 				</p>
 			</section>
 			<section>
-				<h2>{m.zelglihof_pages_legal_pages_heading_2()}</h2>
-				<p>{m.zelglihof_pages_legal_pages_paragraph_5()}</p>
+				<h2>{m.contact()}</h2>
+				<p>{m.zelglihof_legal_contact_body()}</p>
 			</section>
 			<section>
-				<h2>{m.zelglihof_pages_legal_pages_heading_3()}</h2>
-				<p>{m.zelglihof_pages_legal_pages_paragraph_6()}</p>
+				<h2>{m.zelglihof_legal_liability_title()}</h2>
+				<p>{m.zelglihof_legal_liability_body()}</p>
 			</section>
 			<section>
-				<h2>{m.zelglihof_pages_legal_pages_heading_4()}</h2>
-				<p>{m.zelglihof_pages_legal_pages_paragraph_7()}</p>
+				<h2>{m.copyright_title()}</h2>
+				<p>{m.zelglihof_legal_copyright_body()}</p>
 			</section>
 		</LegalPage>
 	);
@@ -57,29 +54,26 @@ export function ImprintPage() {
 
 export function PrivacyPage() {
 	return (
-		<LegalPage
-			eyebrow={m.zelglihof_pages_legal_pages_eyebrow_2()}
-			title={m.zelglihof_pages_legal_pages_title_2()}
-		>
+		<LegalPage eyebrow={m.legal()} title={m.privacy()}>
 			<section>
-				<h2>{m.zelglihof_pages_legal_pages_heading_5()}</h2>
-				<p>{m.zelglihof_pages_legal_pages_paragraph_8()}</p>
+				<h2>{m.zelglihof_privacy_scope_title()}</h2>
+				<p>{m.zelglihof_privacy_scope_body()}</p>
 			</section>
 			<section>
-				<h2>{m.zelglihof_pages_legal_pages_heading_6()}</h2>
-				<p>{m.zelglihof_pages_legal_pages_paragraph_9()}</p>
+				<h2>{m.zelglihof_privacy_newsletter_title()}</h2>
+				<p>{m.zelglihof_privacy_newsletter_body()}</p>
 			</section>
 			<section>
-				<h2>{m.zelglihof_pages_legal_pages_heading_7()}</h2>
-				<p>{m.zelglihof_pages_legal_pages_paragraph_10()}</p>
+				<h2>{m.zelglihof_privacy_inquiries_title()}</h2>
+				<p>{m.zelglihof_privacy_inquiries_body()}</p>
 			</section>
 			<section>
-				<h2>{m.zelglihof_pages_legal_pages_heading_8()}</h2>
-				<p>{m.zelglihof_pages_legal_pages_paragraph_11()}</p>
+				<h2>{m.zelglihof_privacy_technical_data_title()}</h2>
+				<p>{m.zelglihof_privacy_technical_data_body()}</p>
 			</section>
 			<section>
-				<h2>{m.zelglihof_pages_legal_pages_heading_9()}</h2>
-				<p>{m.zelglihof_pages_legal_pages_paragraph_12()}</p>
+				<h2>{m.zelglihof_privacy_rights_title()}</h2>
+				<p>{m.zelglihof_privacy_rights_body()}</p>
 			</section>
 		</LegalPage>
 	);
@@ -87,25 +81,22 @@ export function PrivacyPage() {
 
 export function TermsPage() {
 	return (
-		<LegalPage
-			eyebrow={m.zelglihof_pages_legal_pages_eyebrow_3()}
-			title={m.zelglihof_pages_legal_pages_title_3()}
-		>
+		<LegalPage eyebrow={m.legal()} title={m.zelglihof_terms_title()}>
 			<section>
-				<h2>{m.zelglihof_pages_legal_pages_heading_10()}</h2>
-				<p>{m.zelglihof_pages_legal_pages_paragraph_13()}</p>
+				<h2>{m.zelglihof_terms_reservation_title()}</h2>
+				<p>{m.zelglihof_terms_reservation_body()}</p>
 			</section>
 			<section>
-				<h2>{m.zelglihof_pages_legal_pages_heading_11()}</h2>
-				<p>{m.zelglihof_pages_legal_pages_paragraph_14()}</p>
+				<h2>{m.zelglihof_terms_availability_title()}</h2>
+				<p>{m.zelglihof_terms_availability_body()}</p>
 			</section>
 			<section>
-				<h2>{m.zelglihof_pages_legal_pages_heading_12()}</h2>
-				<p>{m.zelglihof_pages_legal_pages_paragraph_15()}</p>
+				<h2>{m.zelglihof_terms_pickup_title()}</h2>
+				<p>{m.zelglihof_terms_pickup_body()}</p>
 			</section>
 			<section>
-				<h2>{m.zelglihof_pages_legal_pages_heading_13()}</h2>
-				<p>{m.zelglihof_pages_legal_pages_paragraph_16()}</p>
+				<h2>{m.zelglihof_terms_cancellation_title()}</h2>
+				<p>{m.zelglihof_terms_cancellation_body()}</p>
 			</section>
 		</LegalPage>
 	);

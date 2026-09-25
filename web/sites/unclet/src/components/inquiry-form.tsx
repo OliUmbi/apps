@@ -14,7 +14,7 @@ export function InquiryForm() {
 					{m.unclet_inquiry_form_title()}
 				</h2>
 				<p className="mt-4 max-w-xl leading-relaxed text-bone/55">
-					{m.unclet_inquiry_form_intro()}
+					{m.unclet_inquiry_form_description()}
 				</p>
 			</header>
 			<SubmissionForm
@@ -25,14 +25,14 @@ export function InquiryForm() {
 				fields={[
 					{
 						name: "name",
-						label: m.unclet_components_inquiry_form_label(),
+						label: m.name(),
 						placeholder: m.unclet_inquiry_name_placeholder(),
 						autoComplete: "name",
 						required: true,
 					},
 					{
 						name: "email",
-						label: m.unclet_components_inquiry_form_label_2(),
+						label: m.email(),
 						type: "email",
 						placeholder: "name@beispiel.ch",
 						autoComplete: "email",
@@ -40,7 +40,7 @@ export function InquiryForm() {
 					},
 					{
 						name: "phone",
-						label: m.unclet_components_inquiry_form_label_3(),
+						label: m.phone(),
 						type: "tel",
 						placeholder: "+41 79 123 45 67",
 						autoComplete: "tel",
@@ -48,24 +48,24 @@ export function InquiryForm() {
 					},
 					{
 						name: "date",
-						label: m.unclet_components_inquiry_form_label_4(),
+						label: m.date(),
 						type: "date",
 					},
 					{
 						name: "location",
-						label: m.unclet_components_inquiry_form_label_5(),
+						label: m.location(),
 						placeholder: m.unclet_inquiry_location_placeholder(),
 					},
 					{
 						name: "guests",
-						label: m.unclet_components_inquiry_form_label_6(),
+						label: m.guests(),
 						type: "number",
 						min: 1,
 						required: true,
 					},
 					{
 						name: "note",
-						label: m.unclet_components_inquiry_form_label_7(),
+						label: m.unclet_inquiry_idea(),
 						type: "textarea",
 						placeholder: m.unclet_inquiry_note_placeholder(),
 						wide: true,

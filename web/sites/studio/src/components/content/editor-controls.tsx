@@ -1,4 +1,5 @@
 import { statusValues } from "@oliumbi/contracts";
+import { m } from "@oliumbi/i18n/messages";
 import type { ComponentProps } from "react";
 import { InputField } from "../input-field";
 import { displayStatus } from "./display";
@@ -59,7 +60,7 @@ export function StatusField({
 }) {
 	return (
 		<label className="grid gap-2">
-			<span>Status</span>
+			<span>{m.status()}</span>
 			<select
 				name="status"
 				className="rounded-lg border border-white/20 bg-zinc-950 p-3"

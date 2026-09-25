@@ -1,6 +1,7 @@
-import { idSchema, pageSchema } from "@oliumbi/contracts";
+import { idSchema } from "@oliumbi/contracts";
 import { createMessagingClient } from "@oliumbi/messaging";
 import { createServerFn } from "@tanstack/react-start";
+import { messageListSchema } from "../model/messages";
 import { requireActor } from "./auth.server";
 
 const messaging = createMessagingClient({
@@ -8,10 +9,14 @@ const messaging = createMessagingClient({
 	token: () => process.env.MESSAGING_INTERNAL_AUTHORIZATION_TOKEN,
 });
 export const listMessages = createServerFn({ method: "GET" })
-	.validator(pageSchema)
+	.validator(messageListSchema)
 	.handler(async ({ data }) => {
 		await requireActor();
-		return messaging.list(data.page, data.size);
+		return messaging.list(
+			data.page,
+			data.size,
+			data.filter === "failed" ? "FAILED" : undefined,
+		);
 	});
 export const getMessage = createServerFn({ method: "GET" })
 	.validator(idSchema)

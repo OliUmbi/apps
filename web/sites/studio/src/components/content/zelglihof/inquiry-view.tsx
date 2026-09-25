@@ -12,14 +12,14 @@ import {
 	listInquiries,
 	updateInquiry,
 } from "../../../server/content/zelglihof/inquiry.functions";
-import { CollectionView } from "../collection-view";
 import type { EditorFieldsProps } from "../content-form";
 import { DetailItem, displayStatus } from "../display";
 import { StatusField } from "../editor-controls";
+import { RoutedCollectionView } from "../routed-collection-view";
 
 export function InquiriesView() {
 	return (
-		<CollectionView<Inquiry, InquiryInput>
+		<RoutedCollectionView<Inquiry, InquiryInput>
 			collection="zelglihof.inquiry"
 			title="Anfragen"
 			rowKey={(record) => record.id}
@@ -38,33 +38,31 @@ export function InquiriesView() {
 			columns={[
 				{
 					id: "status",
-					heading: m.studio_field_status(),
+					heading: m.status(),
 					render: (record) => displayStatus(record.status),
 				},
 				{
 					id: "name",
-					heading: m.studio_field_name(),
+					heading: m.name(),
 					render: (record) => record.name,
 				},
 				{
 					id: "phone",
-					heading: m.studio_field_phone(),
+					heading: m.phone(),
 					render: (record) => record.phone,
 				},
 				{
 					id: "email",
-					heading: m.studio_field_email(),
+					heading: m.email(),
 					render: (record) => record.email,
 				},
 			]}
 			renderActions={(record) => (
 				<dl className="record-fields">
-					<DetailItem label={m.studio_field_name()}>{record.name}</DetailItem>
-					<DetailItem label={m.studio_field_phone()}>{record.phone}</DetailItem>
-					<DetailItem label={m.studio_field_email()}>{record.email}</DetailItem>
-					<DetailItem label={m.studio_field_message()}>
-						{record.message}
-					</DetailItem>
+					<DetailItem label={m.name()}>{record.name}</DetailItem>
+					<DetailItem label={m.phone()}>{record.phone}</DetailItem>
+					<DetailItem label={m.email()}>{record.email}</DetailItem>
+					<DetailItem label={m.message()}>{record.message}</DetailItem>
 				</dl>
 			)}
 		/>

@@ -1,12 +1,18 @@
 import { Popover } from "@base-ui/react/popover";
 import { m } from "@oliumbi/i18n/messages";
-import { format, isValid, parseISO } from "date-fns";
+import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { CalendarDays } from "lucide-react";
 import { useId } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { Field } from "@base-ui/react/field";
+import {
+	changeDateInputDay,
+	changeDateInputTime,
+	parseDateInput,
+} from "../model/date-input";
+import { studioTimeZone } from "../model/dates";
 
 export function DateField({
 	name,
@@ -24,8 +30,7 @@ export function DateField({
 	onChange: (value: string | null) => void;
 }) {
 	const controlId = useId();
-	const date = value ? parseISO(value) : undefined;
-	const selected = date && isValid(date) ? date : undefined;
+	const selected = parseDateInput(value, includeTime);
 	const displayLabel = selected
 		? format(selected, includeTime ? "dd. MMMM yyyy, HH:mm" : "dd. MMMM yyyy", {
 				locale: de,
@@ -37,26 +42,12 @@ export function DateField({
 			if (nullable) onChange(null);
 			return;
 		}
-		if (!includeTime) {
-			onChange(format(next, "yyyy-MM-dd"));
-			return;
-		}
-		const combined = new Date(next);
-		combined.setHours(
-			selected?.getHours() ?? 9,
-			selected?.getMinutes() ?? 0,
-			0,
-			0,
-		);
-		onChange(combined.toISOString());
+		onChange(changeDateInputDay(next, includeTime, selected));
 	};
 
 	const selectTime = (time: string) => {
 		if (!time) return;
-		const [hours, minutes] = time.split(":").map(Number);
-		const combined = selected ? new Date(selected) : new Date();
-		combined.setHours(hours, minutes, 0, 0);
-		onChange(combined.toISOString());
+		onChange(changeDateInputTime(time, selected));
 	};
 
 	return (
@@ -75,6 +66,7 @@ export function DateField({
 							<Popover.Popup className="calendar-popup">
 								<DayPicker
 									mode="single"
+									timeZone={studioTimeZone}
 									selected={selected}
 									defaultMonth={selected}
 									onSelect={selectDate}

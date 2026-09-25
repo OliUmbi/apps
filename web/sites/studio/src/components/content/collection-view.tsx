@@ -1,33 +1,22 @@
 import { Button } from "@base-ui/react/button";
-import { limits, type Page, type PageInput } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
-import {
-	useInfiniteQuery,
-	useMutation,
-	useQuery,
-	useQueryClient,
-} from "@tanstack/react-query";
-import { type ReactNode, useState } from "react";
-import { Route } from "../../routes/index";
+import type { ReactNode } from "react";
+import { useCollection } from "../../hooks/use-collection";
+import type {
+	CollectionNavigation,
+	CollectionSource,
+} from "../../model/collection";
 import { DeleteConfirmation } from "../delete-confirmation";
-import { InputField } from "../input-field";
-import { CollectionTable, type ContentColumn } from "./collection-table";
+import { CollectionList } from "./collection-list";
+import type { ContentColumn } from "./collection-table";
 import { type ContentEditor, ContentForm } from "./content-form";
 
-interface CollectionViewProps<Row, Input> {
-	collection: string;
+export interface CollectionViewProps<Row, Input>
+	extends CollectionSource<Row, Input> {
 	title: string;
-	scope?: string;
-	inline?: boolean;
-	rowKey: (record: Row) => string;
-	loadPage: (input: PageInput) => Promise<Page<Row>>;
-	loadRecord?: (id: string) => Promise<Row | null>;
 	columns: readonly ContentColumn<Row>[];
 	editor?: ContentEditor<Row, Input>;
-	create?: (values: Input) => Promise<Row>;
-	update?: (record: Row, values: Input) => Promise<Row>;
-	remove: (record: Row) => Promise<void>;
 	canEdit?: (record: Row) => boolean;
 	renderDetails?: (record: Row) => ReactNode;
 	renderRelated?: (record: Row) => ReactNode;
@@ -40,6 +29,9 @@ export function CollectionView<Row, Input = never>({
 	title,
 	scope,
 	inline = false,
+	navigation,
+	search,
+	onSearchChange,
 	rowKey,
 	loadPage,
 	loadRecord,
@@ -53,92 +45,36 @@ export function CollectionView<Row, Input = never>({
 	renderRelated,
 	renderActions,
 	introduction,
-}: CollectionViewProps<Row, Input>) {
-	const searchState = Route.useSearch();
-	const navigate = Route.useNavigate();
-	const cache = useQueryClient();
-	const [search, setSearch] = useState("");
-	const [selection, setSelection] = useState<Row | null>(null);
-	const [inlineCreating, setInlineCreating] = useState(false);
-	const [deleting, setDeleting] = useState<Row | null>(null);
-	const [editorVersion, setEditorVersion] = useState(0);
-	const creating =
-		Boolean(create) &&
-		(inline ? inlineCreating : searchState.mode === "create");
-	const recordId =
-		!inline && searchState.mode === "detail" ? searchState.record : undefined;
-	const collectionKey = ["content", collection];
-	const query = useInfiniteQuery({
-		queryKey: [...collectionKey, "list", scope, search],
-		initialPageParam: 0,
-		queryFn: ({ pageParam }) =>
-			loadPage({ page: pageParam, size: limits.page, search }),
-		getNextPageParam: (page) => page.nextPage,
-	});
-	const detail = useQuery({
-		queryKey: [...collectionKey, "detail", recordId],
-		queryFn: () => {
-			if (!loadRecord || !recordId) throw new Error("A record is required");
-			return loadRecord(recordId);
-		},
-		enabled: Boolean(recordId && loadRecord),
-	});
-	const record = inline ? selection : (detail.data ?? null);
-
-	function close() {
-		setSelection(null);
-		setInlineCreating(false);
-		if (!inline)
-			void navigate({
-				search: { ...searchState, mode: "list", record: undefined },
-			});
-	}
-
-	function open(record: Row) {
-		save.reset();
-		if (inline) {
-			setSelection(record);
-			setInlineCreating(false);
-		} else {
-			void navigate({
-				search: { ...searchState, mode: "detail", record: rowKey(record) },
-			});
-		}
-	}
-
-	const save = useMutation({
-		mutationFn: ({ record, values }: { record: Row | null; values: Input }) => {
-			if (record && update) return update(record, values);
-			if (!record && create) return create(values);
-			throw new Error("This record cannot be saved");
-		},
-		onSuccess: async (saved) => {
-			cache.setQueryData([...collectionKey, "detail", rowKey(saved)], saved);
-			await cache.invalidateQueries({ queryKey: collectionKey });
-			setEditorVersion((version) => version + 1);
-			if (inline) {
-				setSelection(saved);
-				setInlineCreating(false);
-			} else {
-				void navigate({
-					search: { ...searchState, mode: "detail", record: rowKey(saved) },
-				});
-			}
-		},
-	});
-	const deletion = useMutation({
-		mutationFn: remove,
-		onSuccess: async (_, removed) => {
-			cache.removeQueries({
-				queryKey: [...collectionKey, "detail", rowKey(removed)],
-			});
-			close();
-			setDeleting(null);
-			await cache.invalidateQueries({ queryKey: collectionKey });
-		},
-	});
-	const rows = query.data?.pages.flatMap((page) => page.items) ?? [];
-	const inWorkspace = creating || record !== null || Boolean(recordId);
+}: CollectionViewProps<Row, Input> & {
+	inline?: boolean;
+	navigation: CollectionNavigation<Row>;
+	search: string;
+	onSearchChange: (search: string) => void;
+}) {
+	const {
+		list: query,
+		record,
+		creating,
+		save,
+		saveRecord,
+		deletion,
+		deleting,
+		confirmDelete,
+		editorVersion,
+		inWorkspace,
+		loadingRecord,
+		recordError,
+		recordMissing,
+		close,
+		open,
+		startCreate,
+		requestDelete,
+		cancelDelete,
+	} = useCollection(
+		{ collection, scope, rowKey, loadPage, loadRecord, create, update, remove },
+		navigation,
+		search,
+	);
 	const editable =
 		editor &&
 		(creating ? Boolean(create) : record && update && canEdit(record));
@@ -155,21 +91,7 @@ export function CollectionView<Row, Input = never>({
 					</Button>
 				) : (
 					create && (
-						<Button
-							className="button primary"
-							onClick={() => {
-								save.reset();
-								if (inline) setInlineCreating(true);
-								else
-									void navigate({
-										search: {
-											...searchState,
-											mode: "create",
-											record: undefined,
-										},
-									});
-							}}
-						>
+						<Button className="button primary" onClick={startCreate}>
 							{m.create()}
 						</Button>
 					)
@@ -177,11 +99,9 @@ export function CollectionView<Row, Input = never>({
 			</header>
 			{inWorkspace ? (
 				<>
-					{recordId && detail.isPending && <p role="status">{m.loading()}</p>}
-					<FormFeedback
-						error={recordId && detail.isError ? m.error_generic() : null}
-					/>
-					{recordId && detail.isSuccess && !record && <p>{m.empty()}</p>}
+					{loadingRecord && <p role="status">{m.loading()}</p>}
+					<FormFeedback error={recordError ? m.error_generic() : null} />
+					{recordMissing && <p>{m.empty()}</p>}
 					{editable && editor ? (
 						<ContentForm
 							key={`${record ? rowKey(record) : "new"}:${editorVersion}`}
@@ -189,7 +109,12 @@ export function CollectionView<Row, Input = never>({
 							record={record}
 							pending={save.isPending}
 							error={save.isError}
-							onSave={(values) => save.mutate({ record, values })}
+							saved={
+								save.isSuccess &&
+								record !== null &&
+								rowKey(save.data) === rowKey(record)
+							}
+							onSave={saveRecord}
 							onClose={close}
 						/>
 					) : record ? (
@@ -204,10 +129,7 @@ export function CollectionView<Row, Input = never>({
 								<Button
 									className="button danger"
 									disabled={save.isPending}
-									onClick={() => {
-										deletion.reset();
-										setDeleting(record);
-									}}
+									onClick={() => requestDelete(record)}
 								>
 									{m.delete_record()}
 								</Button>
@@ -216,47 +138,23 @@ export function CollectionView<Row, Input = never>({
 					)}
 				</>
 			) : (
-				<>
+				<CollectionList
+					query={query}
+					search={search}
+					onSearchChange={onSearchChange}
+					columns={columns}
+					rowKey={rowKey}
+					onOpen={open}
+				>
 					{introduction}
-					<div className="max-w-sm">
-						<InputField
-							name="search"
-							label={m.search()}
-							value={search}
-							maxLength={limits.title}
-							onChange={(event) => setSearch(event.target.value)}
-						/>
-					</div>
-					<FormFeedback error={query.isError ? m.error_generic() : null} />
-					{query.isPending ? (
-						<p role="status">{m.loading()}</p>
-					) : rows.length ? (
-						<CollectionTable
-							rows={rows}
-							columns={columns}
-							rowKey={rowKey}
-							onOpen={open}
-						/>
-					) : !query.isError ? (
-						<p>{m.empty()}</p>
-					) : null}
-					{query.hasNextPage && (
-						<Button
-							className="button"
-							disabled={query.isFetchingNextPage}
-							onClick={() => void query.fetchNextPage()}
-						>
-							{query.isFetchingNextPage ? m.loading() : m.load_more()}
-						</Button>
-					)}
-				</>
+				</CollectionList>
 			)}
 			{deleting && (
 				<DeleteConfirmation
 					pending={deletion.isPending}
 					error={deletion.isError}
-					onConfirm={() => deletion.mutate(deleting)}
-					onClose={() => setDeleting(null)}
+					onConfirm={confirmDelete}
+					onClose={cancelDelete}
 				/>
 			)}
 		</section>

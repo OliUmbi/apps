@@ -13,18 +13,17 @@ import {
 	updateStoryImage,
 } from "../../../server/content/jublawoma/story-image.functions";
 import { InputField } from "../../input-field";
-import { CollectionView } from "../collection-view";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { ImageField } from "../image-field";
+import { InlineCollectionView } from "../inline-collection-view";
 
 export function StoryImagesView({ storyId }: { storyId: string }) {
 	return (
-		<CollectionView<StoryImage, StoryImageInput>
+		<InlineCollectionView<StoryImage, StoryImageInput>
 			collection="jublawoma.story_image"
 			title="Geschichtenbilder"
 			scope={storyId}
-			inline
 			rowKey={(record) => [record.storyId, record.imageId].join(":")}
 			loadPage={(input) => listStoryImages({ data: { ...input, storyId } })}
 			remove={(record) =>
@@ -50,14 +49,14 @@ export function StoryImagesView({ storyId }: { storyId: string }) {
 			columns={[
 				{
 					id: "imageId",
-					heading: m.studio_field_image_id(),
+					heading: m.image(),
 					render: (record) => (
 						<ImageThumbnail site="jublawoma" id={record.imageId} />
 					),
 				},
 				{
 					id: "description",
-					heading: m.studio_field_description(),
+					heading: m.description(),
 					render: (record) => record.description,
 				},
 			]}
@@ -78,7 +77,7 @@ function StoryImageFields({
 			/>
 			<InputField
 				name="description"
-				label={m.studio_field_description()}
+				label={m.description()}
 				value={values.description}
 				required
 				onChange={(event) => onChange("description", event.target.value)}

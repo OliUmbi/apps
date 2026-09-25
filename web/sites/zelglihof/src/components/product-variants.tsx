@@ -2,6 +2,7 @@ import type { Product } from "../model/content";
 import { AssetImage } from "./asset-image";
 
 export function ProductVariants({ product }: { product: Product }) {
+	if (product.variants.length === 0) return null;
 	return (
 		<section className="shell grid gap-6 py-8 md:grid-cols-2">
 			{product.variants.map((variant) => (

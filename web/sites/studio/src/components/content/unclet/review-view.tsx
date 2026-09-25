@@ -14,13 +14,13 @@ import {
 	updateReview,
 } from "../../../server/content/unclet/review.functions";
 import { InputField } from "../../input-field";
-import { CollectionView } from "../collection-view";
 import type { EditorFieldsProps } from "../content-form";
 import { CheckboxField, NumberField } from "../editor-controls";
+import { RoutedCollectionView } from "../routed-collection-view";
 
 export function ReviewsView() {
 	return (
-		<CollectionView<Review, ReviewInput>
+		<RoutedCollectionView<Review, ReviewInput>
 			collection="unclet.review"
 			title="Bewertungen"
 			rowKey={(record) => record.id}
@@ -40,12 +40,12 @@ export function ReviewsView() {
 			columns={[
 				{
 					id: "stars",
-					heading: m.studio_field_stars(),
+					heading: m.stars(),
 					render: (record) => record.stars,
 				},
 				{
 					id: "name",
-					heading: m.studio_field_name(),
+					heading: m.name(),
 					render: (record) => record.name,
 				},
 				{
@@ -63,7 +63,7 @@ function ReviewFields({ values, onChange }: EditorFieldsProps<ReviewInput>) {
 		<>
 			<NumberField
 				name="stars"
-				label={m.studio_field_stars()}
+				label={m.stars()}
 				value={values.stars}
 				min={1}
 				max={5}
@@ -73,14 +73,14 @@ function ReviewFields({ values, onChange }: EditorFieldsProps<ReviewInput>) {
 			/>
 			<InputField
 				name="name"
-				label={m.studio_field_name()}
+				label={m.name()}
 				value={values.name}
 				required
 				onChange={(event) => onChange("name", event.target.value)}
 			/>
 			<InputField
 				name="description"
-				label={m.studio_field_description()}
+				label={m.description()}
 				value={values.description}
 				required
 				render={<textarea rows={4} />}

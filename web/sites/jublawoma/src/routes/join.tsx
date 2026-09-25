@@ -8,46 +8,44 @@ function Join() {
 		<>
 			<section className="page-hero shell join-hero">
 				<div>
-					<p className="kicker">{m.jublawoma_routes_join_paragraph()}</p>
+					<p className="kicker">{m.jublawoma_join_eyebrow()}</p>
 					<h1>
-						{m.jublawoma_routes_join_heading()}
+						{m.jublawoma_join_title_discover()}
 						<br />
-						<span>{m.jublawoma_routes_join_text()}</span>
+						<span>{m.jublawoma_join_title_participate()}</span>
 						<br />
-						{m.jublawoma_routes_join_heading_2()}
+						{m.jublawoma_join_title_belong()}
 					</h1>
-					<p>{m.jublawoma_routes_join_paragraph_2()}</p>
+					<p>{m.jublawoma_join_description()}</p>
 				</div>
 				<img src="/assets/images/doodles/dog.svg" alt="" />
 			</section>
 			<section className="shell steps">
 				<article>
 					<span>1</span>
-					<h2>{m.jublawoma_routes_join_heading_3()}</h2>
-					<p>{m.jublawoma_routes_join_paragraph_3()}</p>
+					<h2>{m.jublawoma_join_contact_title()}</h2>
+					<p>{m.jublawoma_join_contact_body()}</p>
 				</article>
 				<article>
 					<span>2</span>
-					<h2>{m.jublawoma_routes_join_heading_4()}</h2>
-					<p>{m.jublawoma_routes_join_paragraph_4()}</p>
+					<h2>{m.jublawoma_join_trial_title()}</h2>
+					<p>{m.jublawoma_join_trial_body()}</p>
 				</article>
 				<article>
 					<span>3</span>
-					<h2>{m.jublawoma_routes_join_heading_5()}</h2>
-					<p>{m.jublawoma_routes_join_paragraph_5()}</p>
+					<h2>{m.jublawoma_join_register_title()}</h2>
+					<p>{m.jublawoma_join_register_body()}</p>
 				</article>
 			</section>
 			<section className="contact-card shell">
 				<img src="/assets/images/doodles/groovy-sitting.svg" alt="" />
 				<div>
-					<p className="kicker light">
-						{m.jublawoma_routes_join_paragraph_6()}
-					</p>
-					<h2>{m.jublawoma_routes_join_heading_6()}</h2>
+					<p className="kicker light">{m.jublawoma_join_questions_eyebrow()}</p>
+					<h2>{m.jublawoma_join_questions_title()}</h2>
 					<div className="button-row">
 						<a className="button light" href="mailto:scharleitung@jublawoma.ch">
 							<Mail size={17} />
-							{m.jublawoma_routes_join_text_2()}
+							{m.jublawoma_join_contact_leadership()}
 						</a>
 						<a
 							className="text-link light"
@@ -56,7 +54,7 @@ function Join() {
 							rel="noopener"
 						>
 							<Download size={16} />
-							{m.jublawoma_routes_join_text_3()}
+							{m.jublawoma_join_open_registration()}
 						</a>
 					</div>
 				</div>
