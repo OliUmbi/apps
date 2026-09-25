@@ -28,14 +28,11 @@ repository root, add -f services/pom.xml.
 
 For local execution, build first and run the application's main class in the IDE
 or its packaged JAR, for example java -jar identity/target/identity-0.1.0.jar.
-The shared startup loader discovers the repository root and reads `.env.development`
-automatically, whether the working directory is the repository, reactor, or a service.
-The checked-in file contains local-only defaults. No IntelliJ env-file link is needed.
-Shell/IDE variables, JVM properties and command-line settings take precedence.
-Remove old `APP_ENV_FILE` overrides to use discovery; an explicit `APP_ENV_FILE`
-still selects an alternate file (and fails if unreadable). Outside a checkout,
-services use externally supplied configuration. Use unquoted `KEY=value` entries,
-no interpolation, and forward slashes for paths in the shared file.
+Each service reads Spring configuration from `src/main/resources/application.yaml`.
+Supply the referenced environment variables through your shell or IDE run
+configuration. An IDE environment-file loader can use the repository's
+`.env.development`, which contains local-only defaults. The applications do not
+read that file themselves and do not implement `APP_ENV_FILE`.
 
 Import services/pom.xml as the Maven project in IntelliJ so all modules are linked.
 The reactor currently has no permanent automated tests; `mvn test` still verifies
@@ -43,14 +40,16 @@ that every module compiles and packages its test classpath correctly.
 
 ## Containers
 
-Run docker compose build identity messaging from the repository root.
-Both Dockerfiles use services as their build context and build the selected
+Run `docker compose --env-file .env.development up -d --build identity messaging assets`
+from the repository root. Compose forwards the variables declared in each service's
+`environment` section; `--env-file` alone does not pass every variable to a container.
+All three Dockerfiles use services as their build context and build the selected
 application plus shared through the reactor. They do not depend on locally
 installed shared artifacts. Generated target directories are excluded.
 
 ## Shared code
 
-The `shared` module contains cross-service infrastructure such as environment
-loading, database configuration, OpenAPI setup, and internal bearer-token
-verification. Domain behavior remains in the service that owns it. Consumers
+The `shared` module provides the UTC clock, OpenAPI setup, API exception handling
+and internal bearer-token verification. Each service owns its application and
+database configuration. Domain behavior remains in the service that owns it. Consumers
 import `shared` through the reactor rather than a separately installed artifact.

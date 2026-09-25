@@ -22,7 +22,7 @@ export function createInquiryService(database: DatabasePool, sender: string) {
 					inquiryNotification(values, reference, sender),
 				);
 			});
-			return { outcome: "sent" as const, reference };
+			return { outcome: "accepted" as const, reference };
 		},
 	};
 }

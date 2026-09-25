@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { imageVariantSizes } from "./urls";
 
 export const imageSchema = z.object({
 	id: z.uuid(),
@@ -14,7 +15,7 @@ export const documentSchema = imageSchema.extend({
 	checksum: z.string(),
 });
 export const variantSchema = z.object({
-	size: z.string(),
+	size: z.enum(imageVariantSizes),
 	contentType: z.string(),
 	width: z.number(),
 	height: z.number(),

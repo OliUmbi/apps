@@ -13,7 +13,9 @@ function About() {
 					<h1>
 						{m.jublawoma_about_title()}
 						<br />
-						<span>{m.jublawoma_about_title_accent()}</span>
+						<span className="page-title-accent">
+							{m.jublawoma_about_title_accent()}
+						</span>
 					</h1>
 					<p>{m.jublawoma_about_description()}</p>
 				</div>

@@ -520,21 +520,6 @@ a {
 	color: var(--primary);
 }
 
-.editor-surface,
-.record-detail {
-	position: relative;
-	overflow: hidden;
-	border-top: 1px solid var(--border);
-	border-bottom: 1px solid var(--border);
-	background: transparent;
-}
-
-.editor-surface.is-inline,
-.record-detail.is-inline {
-	margin-top: 18px;
-	box-shadow: none;
-}
-
 .editor-heading {
 	display: flex;
 	min-height: 92px;
@@ -546,20 +531,12 @@ a {
 	background: transparent;
 }
 
-.editor-heading h2,
-.related-heading h2 {
+.editor-heading h2 {
 	margin: 4px 0 0;
 	color: var(--primary);
 	font-size: clamp(1.35rem, 3vw, 2rem);
 	font-weight: 600;
 	letter-spacing: -0.035em;
-}
-
-.editor-index {
-	color: #8178d8;
-	font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
-	font-size: 0.75rem;
-	letter-spacing: 0.08em;
 }
 
 .editor-form {
@@ -574,49 +551,12 @@ a {
 	gap: 22px;
 }
 
-.editor-field-wide {
-	grid-column: 1 / -1;
-}
-
-.editor-field-wide textarea {
-	min-height: 150px;
-	resize: vertical;
-	line-height: 1.65;
-}
-
-.editor-field-wide.is-compact textarea {
-	min-height: 5.5rem;
-}
-
-.is-editorial .editor-field-wide textarea[rows="18"] {
-	min-height: 440px;
-	padding: 18px;
-	font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
-	font-size: 0.9375rem;
-}
-
 .editor-actions {
 	display: flex;
 	justify-content: flex-end;
 	gap: 10px;
 	border-top: 1px solid var(--border-soft);
 	padding-top: 20px;
-}
-
-.slug-preview {
-	margin: 7px 0 0;
-	color: #8e88c7;
-	font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
-	font-size: 0.75rem;
-}
-
-.save-first-note {
-	margin: 0;
-	border: 1px dashed #4a475f;
-	border-radius: 6px;
-	padding: 18px;
-	color: var(--muted);
-	background: rgb(124 113 223 / 5%);
 }
 
 .date-control {
@@ -681,38 +621,6 @@ a {
 	--rdp-nav-button-height: 30px;
 	margin: 0;
 	font-size: 0.78rem;
-}
-
-.markdown-hint {
-	margin: 8px 0 0;
-	color: var(--muted);
-	font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
-	font-size: 0.72rem;
-	line-height: 1.55;
-}
-.field-suggestions {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 6px;
-	margin-top: 8px;
-	border: 0;
-	padding: 0;
-}
-.field-suggestions button {
-	border: 1px solid var(--border);
-	border-radius: 999px;
-	padding: 5px 9px;
-	color: var(--muted);
-	background: transparent;
-	font-size: 0.75rem;
-}
-.field-suggestions button:hover {
-	color: var(--primary);
-	border-color: #514d79;
-}
-
-.record-field-wide {
-	grid-column: 1 / -1;
 }
 
 .profile-entry {
@@ -896,27 +804,6 @@ a {
 	}
 }
 
-.related-area {
-	display: grid;
-	gap: 16px;
-	margin-top: 8px;
-}
-
-.related-heading {
-	display: flex;
-	align-items: flex-end;
-	justify-content: space-between;
-	gap: 20px;
-	border-bottom: 1px solid var(--border);
-	padding: 8px var(--content-inset) 18px;
-}
-
-.related-heading > span {
-	color: var(--faint);
-	font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
-	font-size: 2.25rem;
-}
-
 .related-grid {
 	display: grid;
 	gap: 16px;
@@ -943,8 +830,7 @@ a {
 	font-weight: 600;
 }
 
-.related-panel header p,
-.related-empty {
+.related-panel header p {
 	margin: 4px 0 0;
 	color: var(--muted);
 	font-size: 0.8125rem;
@@ -1311,10 +1197,6 @@ tbody tr:hover {
 	.record-fields,
 	.date-control.has-time {
 		grid-template-columns: 1fr;
-	}
-
-	.editor-index {
-		display: none;
 	}
 
 	.message-filters {

@@ -1,10 +1,12 @@
 import type { SiteId } from "@oliumbi/contracts";
+import { m } from "@oliumbi/i18n/messages";
 import { contentSections } from "./content-sections";
 
 export { type SiteId, siteIds } from "@oliumbi/contracts";
 export interface StudioSection {
 	id: string;
 	label: string;
+	description: () => string;
 	icon: "home" | "inbox" | "content" | "people" | "commerce" | "newsletter";
 }
 export interface StudioSite {
@@ -48,12 +50,32 @@ const siteDetails = [
 export const studioSites: StudioSite[] = siteDetails.map((site) => ({
 	...site,
 	sections: [
-		{ id: "overview", label: "Übersicht", icon: "home" },
+		{
+			id: "overview",
+			label: "Übersicht",
+			description: m.studio_dashboard_workspaces_title,
+			icon: "home",
+		},
 		...contentSections
 			.filter((section) => section.site === site.id)
-			.map(({ id, label, icon }) => ({ id, label, icon })),
-		{ id: "images", label: "Bilder", icon: "content" },
-		{ id: "documents", label: "Dokumente", icon: "content" },
+			.map(({ id, label, description, icon }) => ({
+				id,
+				label,
+				description,
+				icon,
+			})),
+		{
+			id: "images",
+			label: "Bilder",
+			description: m.studio_overview_content,
+			icon: "content",
+		},
+		{
+			id: "documents",
+			label: "Dokumente",
+			description: m.studio_overview_content,
+			icon: "content",
+		},
 	],
 }));
 export function getSite(id: string): StudioSite {

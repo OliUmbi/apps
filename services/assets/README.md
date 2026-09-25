@@ -52,5 +52,6 @@ mvn -pl assets -am package
 ```
 
 The service listens on port 8083 by default. Configuration lives in
-`src/main/resources/application.yaml`; the shared startup loader reads the
-repository's `.env.development` for local runs.
+`src/main/resources/application.yaml`. Supply environment variables through your
+shell, IDE run configuration or Compose as described in the
+[service development guide](../README.md#build).

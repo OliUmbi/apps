@@ -193,28 +193,6 @@ img {
 	@apply bg-sage/40;
 	border-bottom: 1px solid var(--line);
 }
-.event-banner {
-	display: grid;
-	min-height: 120px;
-	grid-template-columns: 160px 1fr auto;
-	align-items: center;
-	gap: 2rem;
-}
-.event-banner > div {
-	display: flex;
-	align-items: center;
-	gap: 2rem;
-}
-.event-banner strong {
-	font-size: 1.6rem;
-}
-.event-banner span {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.5rem;
-	color: #686b5d;
-	font-size: 0.82rem;
-}
 .split-body h2,
 .contact-card h2 {
 	margin: 0;
@@ -222,7 +200,7 @@ img {
 	letter-spacing: -0.06em;
 	line-height: 0.95;
 }
-.page-hero h1 span {
+.page-title-accent {
 	color: var(--wine);
 	font-family: Georgia, serif;
 	font-style: italic;
@@ -505,18 +483,6 @@ img {
 	.stories-page {
 		grid-template-columns: 1fr;
 	}
-	.event-banner {
-		grid-template-columns: 1fr auto;
-		padding-block: 1.5rem;
-	}
-	.event-banner > .kicker {
-		grid-column: 1 / -1;
-	}
-	.event-banner > div {
-		align-items: flex-start;
-		flex-direction: column;
-		gap: 0.7rem;
-	}
 	.steps {
 		grid-template-columns: 1fr;
 	}
@@ -682,47 +648,11 @@ img {
 .honest-empty p:last-child {
 	color: #686b5d;
 }
-.detail-hero {
-	display: grid;
-	min-height: 620px;
-	grid-template-columns: 1fr 1fr;
-	align-items: center;
-	gap: 5rem;
-	padding-block: 5rem;
-}
-.detail-hero h1,
 .story-detail-header h1 {
 	margin: 1rem 0;
 	font-size: clamp(4rem, 8vw, 7rem);
 	letter-spacing: -0.07em;
 	line-height: 0.9;
-}
-.detail-hero > .content-image-fallback,
-.detail-hero > img {
-	width: 100%;
-	aspect-ratio: 4 / 3;
-	object-fit: cover;
-}
-.detail-hero > div > p {
-	color: #686b5d;
-	font-size: 1.05rem;
-	line-height: 1.7;
-}
-.detail-meta {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 1rem;
-	margin: 1.5rem 0;
-}
-.detail-meta span {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.5rem;
-	color: #686b5d;
-}
-.detail-meta svg {
-	width: 17px;
-	color: var(--wine);
 }
 .story-detail-header {
 	max-width: 930px;
@@ -816,11 +746,6 @@ img {
 	.story-grid article > img,
 	.story-grid .content-image-fallback {
 		grid-row: auto;
-	}
-	.detail-hero {
-		grid-template-columns: 1fr;
-		gap: 2rem;
-		min-height: auto;
 	}
 	.media-gallery {
 		grid-template-columns: 1fr;

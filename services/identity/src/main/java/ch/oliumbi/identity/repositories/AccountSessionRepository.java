@@ -3,7 +3,6 @@ package ch.oliumbi.identity.repositories;
 import ch.oliumbi.identity.data.entities.AccountSession;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 

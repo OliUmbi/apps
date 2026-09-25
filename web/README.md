@@ -9,14 +9,15 @@ Each site owns its routes, page components, styling and public server functions.
 | `unclet-data` | Uncle-T showcases, reviews and inquiries |
 | `zelglihof-data` | Farm articles, products, reservations, inquiries and newsletter workflows |
 | `jublawoma-data` | Club events, stories, members, promotions and donations |
-| `database` | Connections, transactions and generic parameterized CRUD helpers |
-| `contracts` | Generic validation and resource metadata types |
+| `database` | Drizzle connections, transaction types, column helpers and pagination |
+| `contracts` | Shared validation, site identifiers, links and page contracts |
 | `identity` | Typed access to the identity HTTP API |
 | `assets` | Typed access to image/document management and public asset URLs |
 | `messaging` | Typed access to delivery history and attempts |
 | `queue` | Insert one prepared message in the caller's transaction |
 | `http-client` | Authentication, HTTP errors, response validation and pagination |
 | `query` | React Query provider and shared cache defaults |
+| `ui` | Shared rendering and form behavior, including images, Markdown and paginated lists |
 | `i18n` | Paraglide configuration, generated runtime and message catalog |
 | `environment` | Shared Vite environment loading for local development and builds |
 
@@ -34,24 +35,25 @@ Every public site uses the same small set of source directories:
 src/
   components/  visual components named for what they render
   data/        feature-specific reads, mutations and server functions
-  routes/      TanStack route definitions only
+  model/       public view models and presentation helpers
+  routes/      TanStack route definitions and page composition
   server/      runtime infrastructure such as database setup
   fonts.css
   styles.css
 ```
 
-Studio follows the same layout and adds `model/` for resource schemas, labels and site configuration. It does not nest another `studio/` directory inside the Studio app.
+Studio uses `components/` for workspace views and editors, `hooks/` for client behavior, `model/` for navigation, labels and form contracts, and `server/` for authenticated server functions and service setup. It has no `data/` directory. Its `components/content/` and `server/content/` trees group management features by site.
 
-Components stay flat until a page has several meaningful sections; those sections may share a page-named folder, as Jublawoma's `components/home` does. Avoid generic buckets such as `ui`, `content` and `pages`, one-file component directories, and barrel files that hide the real dependency. Empty directories are not kept.
+Components stay flat until a page or feature has several meaningful parts; those parts may share a named folder, as Jublawoma's `components/home` does. Studio's `content` folder specifically means managed site content. Prefer descriptive module imports and avoid extra directory layers that do not express a feature or responsibility.
 
-Package modules use descriptive feature and role names. Related files use `<feature>.<role>.ts` (for example `newsletter.server.ts` or `donation.reader.ts`), while each site's public record adapter is named `public.repository.ts` and its corresponding shared shape is `public.types.ts`.
+Data packages use `<feature>.<role>.ts`, such as `donation.repository.ts` and `reservation.service.ts`. Their `public.repository.ts` modules contain public database reads. Each public site's `data/` modules adapt those records to the view models in its own `model/` directory. Studio's editable record contracts live in the owning data package's `content/` modules.
 
 ## Implemented application workflows
 
 - Jublawoma: upcoming events, stories and galleries, members, active promotions, donation needs and commitments. Studio manages their source records and reads commitment snapshots.
 - Uncle-T: published showcases and galleries, visible reviews, inquiry submission and inquiry management.
 - Zelglihof: published articles and galleries, products and variants, stock-aware reservations, contact inquiries, newsletter confirmation/unsubscription, subscriber corrections and campaign sending.
-- Studio: schema-specific CRUD, full record details, image and parent-record selection, image/document uploads and visibility, account management and permissions, and delivery history.
+- Studio: schema-specific CRUD, full record details, nested child editors, image selection, image/document uploads and visibility, account management and permissions, and delivery history.
 
 `oliumbi` currently has no content tables or public app in this workspace; Studio exposes its assets only. `studio.account_notification` has no defined event catalog or dispatch contract yet and is not connected to these workflows. Owner notifications currently use the site's configured owner address. These are remaining product capabilities, not substitute tables or fabricated service endpoints.
 
@@ -61,9 +63,15 @@ Use the pinned pnpm version from `package.json`. Install from `web` with `pnpm i
 
 The checked-in root `.env.development` contains development-only defaults. All four Vite development servers load it automatically, regardless of which site you start. Existing root `.env` values remain a fallback; `.env.development` overrides them. Site-local files override shared values, and shell/IDE environment variables override both. Only `VITE_` variables are exposed to browser code. Restart the dev process after changing environment files, and never reuse the development credentials in a deployed environment.
 
-Run a built site locally with `pnpm --filter studio start:dev` (or another site name). This uses Node's native loader for the same root `.env.development`, with shell variables taking precedence. `start:dev` loads only that shared file; Vite-specific site overrides do not apply. The regular `start` command uses the deployment's environment. Production builds do not load `.env.development`.
+To run a built Studio locally, execute this from `web/`:
 
-Java automatically finds the repository root from its working directory and loads `.env.development` through the shared library. Rebuild Java after pulling this change. Remove the old IntelliJ env-file link and `APP_ENV_FILE` override to use discovery; an explicit `APP_ENV_FILE` still selects an alternate file. Shell/IDE values take precedence. Keep shared values unquoted, without interpolation, and use forward slashes in paths because Java reads the file as UTF-8 properties.
+```text
+node --env-file=../.env.development sites/studio/.output/server/index.mjs
+```
+
+Replace `studio` with another site name as needed. Node loads the shared development file, with shell variables taking precedence; Vite-specific site overrides do not apply. The regular `pnpm --filter studio start` command expects environment variables to be supplied externally. Production builds do not load `.env.development`.
+
+Java does not load `.env.development` automatically and does not implement `APP_ENV_FILE`. Supply variables through the shell or the IDE run configuration, including an IDE environment-file loader if available. See [Java development](../services/README.md#build) for the supported setup.
 
 Use `docker compose --env-file .env.development up -d --build` from the repository root to share these values with containers. Compose sets container-network hostnames separately. For native application development, start only infrastructure with `docker compose --env-file .env.development up -d postgres flyway mailpit`, then launch Java and the desired web apps locally.
 
@@ -73,7 +81,7 @@ Run `pnpm dev:studio`, `pnpm dev:jublawoma`, `pnpm dev:unclet` or `pnpm dev:zelg
 
 Studio requires the identity and assets service URLs and their `*_INTERNAL_AUTHORIZATION_TOKEN` values; delivery history also requires the messaging service. Access is granted by `studio.admin` or the corresponding `<site>.manage` permission. Account administration and delivery history require `studio.admin`. No default administrator is created by the web apps.
 
-For hosted environments set `STUDIO_SECURE_COOKIES=true`, the site public URL, owner email addresses, and `ASSETS_PUBLIC_URL`. Public sites proxy images through their own origin, so `ASSETS_PUBLIC_URL` may safely use the internal asset-service hostname and can change at runtime without rebuilding the browser bundle.
+For hosted environments set `STUDIO_SECURE_COOKIES=true`, the site public URL, owner email addresses, and `ASSETS_SERVICE_URL` (`ASSETS_PUBLIC_URL` is a fallback). Public sites proxy images through their own origin, so the asset service URL may use the internal hostname and can change at runtime without rebuilding the browser bundle.
 
 Paraglide generates its runtime during Vite builds. Source messages are in `packages/i18n/messages/de-CH.json`; generated code is ignored. Only Swiss German is currently configured. English source routes are canonical, without German route wrapper files.
 

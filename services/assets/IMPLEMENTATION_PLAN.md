@@ -72,7 +72,7 @@ Creation: stage and process outside a DB transaction, publish the completed dire
 
 Deletion: commit DB deletion first, then attempt file deletion independently. A filesystem failure must not roll back the DB deletion. Return success only once the DB commit succeeds; DB availability cannot literally be guaranteed. Missing files count as already deleted. Log leftovers; a bounded periodic orphan sweep can retry both upload leftovers and deletion leftovers without a queue/table. Only remove sufficiently old unreferenced UUID directories, with a grace period longer than the maximum active upload duration. Cached images follow the policy above.
 
-Review referencing foreign keys: disposable image-link rows should cascade, while optional content references can become null. Current SET NULL references involving primary-key image columns need correction. Edit initial migrations directly during development.
+Story, showcase and article image-link rows use `ON DELETE CASCADE`. Optional content image references use `ON DELETE SET NULL`. Flyway owns these constraints; see [database development](../../database/README.md) for the migration policy.
 
 ## Confirmed limits and regeneration
 

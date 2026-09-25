@@ -6,6 +6,7 @@ import {
 } from "@oliumbi/http-client";
 import type { z } from "zod";
 import { documentSchema, imageDetailSchema, imageSchema } from "./schemas";
+import type { ImageVariantSize } from "./urls";
 
 export type * from "./types";
 
@@ -37,7 +38,7 @@ export function createAssetsClient(options: Omit<ServiceOptions, "name">) {
 				),
 			get: (site: SiteId, id: string) =>
 				http.json(url(site, `/${encodeURIComponent(id)}`), detail),
-			content: (site: SiteId, id: string, size = "xl") =>
+			content: (site: SiteId, id: string, size: ImageVariantSize = "xl") =>
 				http.request(url(site, `/${encodeURIComponent(id)}/content`, { size })),
 			async upload(
 				site: SiteId,

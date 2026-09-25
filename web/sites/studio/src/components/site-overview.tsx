@@ -46,9 +46,7 @@ export function SiteOverview({
 							</span>
 							<OverviewIcon icon={item.icon} />
 							<span className="overview-label">{item.label}</span>
-							<span className="overview-description">
-								{sectionDescription(item.icon)}
-							</span>
+							<span className="overview-description">{item.description()}</span>
 							<ArrowUpRight className="overview-arrow" size={17} />
 						</Button>
 					))}
@@ -78,15 +76,4 @@ function OverviewIcon({
 			aria-hidden="true"
 		/>
 	);
-}
-
-function sectionDescription(icon: StudioSite["sections"][number]["icon"]) {
-	return {
-		inbox: m.studio_overview_inbox(),
-		content: m.studio_overview_content(),
-		people: m.studio_overview_people(),
-		commerce: m.studio_overview_commerce(),
-		newsletter: m.studio_overview_newsletter(),
-		home: m.studio_overview_content(),
-	}[icon];
 }

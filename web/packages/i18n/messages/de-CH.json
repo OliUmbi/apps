@@ -261,7 +261,7 @@
   "studio_overview_newsletter": "Nachrichten vorbereiten und gezielt versenden.",
   "studio_overview_people": "Personen, Rückmeldungen und Kontakte verwalten.",
   "studio_password_confirmation": "Neues Passwort wiederholen",
-  "studio_password_help": "Wähle ein einzigartiges Passwort mit mindestens zehn Zeichen, Gross- und Kleinbuchstaben sowie einer Zahl.",
+  "studio_password_help": "Wähle ein einzigartiges Passwort mit mindestens zehn Zeichen, Gross- und Kleinbuchstaben sowie einer Zahl. Nach dem Speichern wirst du abgemeldet. Melde dich danach mit dem neuen Passwort an.",
   "studio_password_mismatch": "Die Passwörter stimmen nicht überein oder erfüllen die Anforderungen nicht.",
   "studio_password_reset": "Passwort zurücksetzen",
   "studio_password_reset_help": "Setzt ein neues Startpasswort für dieses Konto. Teile es anschliessend über einen sicheren Kanal.",

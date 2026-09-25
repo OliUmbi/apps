@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { profilePasswordSchema, profileSchema } from "../model/profile";
-import { requireAuthenticatedActor } from "./auth.server";
+import { clearSessionCookie, requireAuthenticatedActor } from "./auth.server";
 import { identity } from "./identity.server";
 
 export const getProfile = createServerFn({ method: "GET" }).handler(
@@ -26,4 +26,5 @@ export const changeProfilePassword = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		const actor = await requireAuthenticatedActor();
 		await identity.changePassword(actor.id, data.password);
+		clearSessionCookie();
 	});

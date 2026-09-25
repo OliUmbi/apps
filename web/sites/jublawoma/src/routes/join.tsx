@@ -12,7 +12,9 @@ function Join() {
 					<h1>
 						{m.jublawoma_join_title_discover()}
 						<br />
-						<span>{m.jublawoma_join_title_participate()}</span>
+						<span className="page-title-accent">
+							{m.jublawoma_join_title_participate()}
+						</span>
 						<br />
 						{m.jublawoma_join_title_belong()}
 					</h1>

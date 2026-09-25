@@ -1,5 +1,5 @@
 import { idSchema } from "@oliumbi/contracts";
-import { imageSizes, imageUrl } from "./urls";
+import { imageUrl, publicImageSizes } from "./urls";
 
 const REQUEST_TIMEOUT_MS = 10_000;
 
@@ -7,7 +7,7 @@ export async function proxyPublicImage(request: Request, id: string) {
 	const parsedId = idSchema.safeParse(id);
 	if (!parsedId.success) return new Response(null, { status: 400 });
 	const requestedSize = new URL(request.url).searchParams.get("size");
-	const size = imageSizes.find((size) => size === requestedSize) ?? "xl";
+	const size = publicImageSizes.find((size) => size === requestedSize) ?? "xl";
 	const requestHeaders = new Headers();
 	const validator = request.headers.get("If-None-Match");
 	if (validator) requestHeaders.set("If-None-Match", validator);

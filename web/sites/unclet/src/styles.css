@@ -139,23 +139,6 @@ img {
 	object-fit: cover;
 	filter: saturate(0.82) contrast(1.04);
 }
-.field-control {
-	width: 100%;
-	border: 0;
-	border-bottom: 1px solid rgb(242 238 229 / 25%);
-	border-radius: 0;
-	padding: 0.85rem 0;
-	color: #f2eee5;
-	background: transparent;
-	outline: none;
-	transition: border-color 160ms ease;
-}
-.field-control:focus {
-	border-color: #b99a5b;
-}
-.field-control::placeholder {
-	color: rgb(242 238 229 / 38%);
-}
 
 .button-dark {
 	display: inline-flex;

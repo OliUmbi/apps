@@ -36,6 +36,9 @@ docker compose --env-file .env.development up -d --build
 Mailpit receives development email at <http://localhost:8025>. To work on a
 frontend locally while infrastructure stays in Docker, start PostgreSQL,
 Flyway, and Mailpit, then run the relevant `pnpm dev:*` command from `web/`.
+Run the supporting Java services in Docker or your IDE as well: public images
+need Assets, queued email needs Messaging, and Studio also needs Identity.
+See [Java development](services/README.md#build) for native environment setup.
 
 Set `STUDIO_SECURE_COOKIES=true` whenever Studio is served over HTTPS. Restart
 running processes after changing environment values, and rebuild Java services

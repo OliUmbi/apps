@@ -22,7 +22,7 @@ export function createInquiryService(database: DatabasePool, sender: string) {
 				for (const message of inquiryEmails(sender, values, reference))
 					await queue.enqueue(message);
 			});
-			return { outcome: "sent" as const, reference };
+			return { outcome: "accepted" as const, reference };
 		},
 	};
 }

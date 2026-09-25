@@ -2,6 +2,8 @@
 
 Reviewed on 2026-09-25 against the working tree, including the pending refactor.
 
+Follow-up status: **10 findings resolved; 28 remain open.** Resolved: R05–R06, R25–R27, R30 and R35–R38. R33 also has a completed import cleanup; its tooling work remains open. The latest change completes password-change sign-out; other workflow, database and architecture changes remain open.
+
 ## Assessment and scope
 
 The project has useful boundaries, but it is not yet consistently simple to reason about. The main problems are incomplete workflow contracts, generic interfaces that hide domain rules, and documentation that describes removed code. Another broad rewrite would add risk. Fix the concrete boundaries below in small changes.
@@ -40,17 +42,17 @@ Priorities:
 
 - [ ] Require a saved draft before sending, and make the confirmation refer to the exact saved version being queued.
 
-### R05 — Password changes leave the interface using a revoked session (P2)
+### R05 — Password changes leave the interface using a revoked session (resolved)
 
-[AccountService.changePassword](../services/identity/src/main/java/ch/oliumbi/identity/services/AccountService.java#L90) revokes every account session. [The Studio handler](../web/sites/studio/src/server/profile.functions.ts#L28) does not clear the session cookie, and [the form](../web/sites/studio/src/components/profile/profile-password-form.tsx#L29) only resets its fields. Studio still appears signed in until a later request discovers the revoked session.
+[The Studio handler](../web/sites/studio/src/server/profile.functions.ts#L28) now clears the session cookie after Identity confirms the password change. [The form](../web/sites/studio/src/components/profile/profile-password-form.tsx#L17) then refreshes authentication state, so the route returns to login and replaces the authenticated query provider. The help text explains sign-out before submission. Failed password updates preserve the cookie and show the existing error feedback.
 
-- [ ] Complete the password-change workflow by clearing the cookie and refreshing authentication state. Explain that the user must sign in again.
+- [x] Clear the cookie only after a successful password update, refresh authentication state and explain that the user must sign in again. Identity's session revocation behavior is unchanged.
 
-### R06 — Compose omits configuration that Studio actually uses (P1)
+### R06 — Compose omits configuration that Studio actually uses (resolved)
 
-[Studio's container environment](../compose.yaml#L147) omits `STUDIO_SECURE_COOKIES` and `ZELGLIHOF_OWNER_EMAIL`. [Authentication](../web/sites/studio/src/server/auth.server.ts#L9) and [newsletter operations](../web/sites/studio/src/server/newsletter.functions.ts#L10) read those variables. Setting them in the file passed to Compose does not forward them automatically. The provided deployment consequently retains insecure-cookie behavior and the fallback sender unless its configuration is extended elsewhere.
+[Studio's container environment](../compose.yaml#L147) now explicitly forwards `STUDIO_SECURE_COOKIES` and `ZELGLIHOF_OWNER_EMAIL`. The HTTP development default remains `false`; HTTPS deployments must set secure cookies to `true` as documented.
 
-- [ ] Pass both settings explicitly. Keep container configuration aligned with the settings consumed by each application.
+- [x] Pass both settings explicitly. Compose configuration validation confirmed that supplied values reach Studio.
 
 ### R07 — Database constraints do not enforce application invariants (P2)
 
@@ -142,7 +144,7 @@ Data packages such as [zelglihof-data](../web/packages/zelglihof-data/package.js
 
 ### R21 — Validation errors lose their actual meaning (P2)
 
-[Public forms](../web/packages/ui/src/use-submission-form.ts#L40) discard field paths and failure reasons. The `required` translation key actually displays the generic message “Bitte prüfe deine Angaben.” [The password form](../web/sites/studio/src/components/profile/profile-password-form.tsx#L24) combines mismatch and complexity failures into one message. Content editors instead concatenate raw schema messages. These approaches make users infer which field needs attention, and the translation names do not clearly describe their broader meaning.
+[Public forms](../web/packages/ui/src/use-submission-form.ts#L40) discard field paths and failure reasons. The `required` translation key actually displays the generic message “Bitte prüfe deine Angaben.” [The password form](../web/sites/studio/src/components/profile/profile-password-form.tsx#L28) combines mismatch and complexity failures into one message. Content editors instead concatenate raw schema messages. These approaches make users infer which field needs attention, and the translation names do not clearly describe their broader meaning.
 
 - [ ] Preserve field paths and a small set of validation reasons. Translate them consistently and associate errors with their fields.
 
@@ -164,23 +166,23 @@ Data packages such as [zelglihof-data](../web/packages/zelglihof-data/package.js
 
 - [ ] Give availability one explicit policy and time basis. Keep the write-time check authoritative. Return meaningful state and let the presentation layer choose its translated label.
 
-### R25 — Inquiry results claim delivery before delivery happens (P3)
+### R25 — Inquiry results claim delivery before delivery happens (resolved)
 
-[The inquiry service](../web/packages/zelglihof-data/src/inquiry.service.ts#L25) returns `outcome: "sent"` after storing the inquiry and queueing its notification. Actual delivery happens later in messaging and can fail. Uncle-T uses the same naming. This makes an important asynchronous boundary invisible to callers.
+The [Zelglihof](../web/packages/zelglihof-data/src/inquiry.service.ts#L25) and [Uncle-T](../web/packages/unclet-data/src/inquiry.service.ts#L25) inquiry services now return `outcome: "accepted"`. This describes the stored inquiry and queued notification without claiming delivery.
 
-- [ ] Name the result `accepted` or `queued`, and reserve `sent` for a confirmed delivery outcome.
+- [x] Rename both inquiry outcomes and check their consumers. Queue and delivery behavior are unchanged.
 
-### R26 — Overview text is selected by an icon (P3)
+### R26 — Overview text is selected by an icon (resolved)
 
-[SiteOverview](../web/sites/studio/src/components/site-overview.tsx#L50) chooses its description using `item.icon`. Changing a section's visual icon can therefore change the meaning of its help text. The section model does not say which description belongs to the section.
+[Studio sections](../web/sites/studio/src/model/content-sections.ts) now declare their own description functions. [SiteOverview](../web/sites/studio/src/components/site-overview.tsx) renders that description directly. Changing an icon no longer changes the help text, and translation functions are evaluated when rendering.
 
-- [ ] Associate the description with the section or its semantic kind. Keep icon selection independent.
+- [x] Associate descriptions with their sections and remove the icon-based description mapping.
 
-### R27 — Removed components have left substantial dead CSS (P3)
+### R27 — Removed components have left substantial dead CSS (resolved)
 
-Examples with no matching component usage include [Studio's `.editor-surface`, `.record-detail` and `.editor-index`](../web/sites/studio/src/styles.css#L523), [Jubla's `.event-banner`](../web/sites/jublawoma/src/styles.css#L196) and [`.detail-hero`](../web/sites/jublawoma/src/styles.css#L685), and old field selectors in [Uncle-T](../web/sites/unclet/src/styles.css#L142) and [Zelglihof](../web/sites/zelglihof/src/styles.css#L147). These obsolete rules make visual changes harder to trace.
+Removed 46 obsolete selectors and their responsive overrides across [Studio](../web/sites/studio/src/styles.css), [Jubla](../web/sites/jublawoma/src/styles.css), [Uncle-T](../web/sites/unclet/src/styles.css) and [Zelglihof](../web/sites/zelglihof/src/styles.css). Component and shared UI sources were checked for each removed class. Shared rules retain their live selectors. Jubla's highlighted page titles now use an explicit `page-title-accent` class to avoid unrelated specificity warnings.
 
-- [ ] Remove verified dead selectors, including their responsive overrides. Group remaining styles by the feature that owns them. Do not split files solely to meet a line-count target.
+- [x] Remove the verified obsolete styles without restructuring the stylesheets or changing the intended design.
 
 ### R28 — Shared pagination assumes a site's CSS contract (P3)
 
@@ -194,11 +196,11 @@ For example, [showcase listing](../web/packages/unclet-data/src/public.repositor
 
 - [ ] Select the fields a list needs and give summaries bounded content. Add bounded account listing before its size becomes significant.
 
-### R30 — Image-size contracts disagree across the service boundary (P2)
+### R30 — Image-size contracts disagree across the service boundary (resolved)
 
-[The web asset API](../web/packages/assets/src/urls.ts#L1) includes `original` in its supported image sizes, and [the public proxy](../web/packages/assets/src/public-image.server.ts#L10) forwards it. [Java's ImageSize](../services/assets/src/main/java/ch/oliumbi/assets/domain/ImageSize.java#L25) rejects that value; it uses `master`, which is available only internally. A value accepted by the TypeScript interface therefore produces a bad request. Response validation also accepts any string as a variant size, so it does not expose this drift.
+[The asset types](../web/packages/assets/src/urls.ts) now distinguish public renditions from stored variants, which also include the private `master`. The public proxy uses only public sizes, the internal client accepts known variants, and response validation checks those names against an enum. The unsupported `original` image size is gone.
 
-- [ ] Define the public rendition names consistently. Represent the private master separately and keep it unavailable through the public proxy.
+- [x] Align rendition names with Java and keep the master out of public image URLs.
 
 ## Build and configuration consistency
 
@@ -216,8 +218,9 @@ For example, [showcase listing](../web/packages/unclet-data/src/public.repositor
 
 ### R33 — Check commands have inconsistent meanings and incomplete coverage (P3)
 
-[`web/package.json`](../web/package.json#L11) uses `check` for Biome, while child packages use `check` for TypeScript. [Biome's include list](../web/biome.json#L10) excludes package manifests, TypeScript configuration and translation catalogs. Java has no enforced style checks; for example, [AccountSessionRepository](../services/identity/src/main/java/ch/oliumbi/identity/repositories/AccountSessionRepository.java#L6) still imports unused `EntityGraph`. Maven's requested local version is documented but not enforced by a wrapper or version rule.
+[`web/package.json`](../web/package.json#L11) uses `check` for Biome, while child packages use `check` for TypeScript. [Biome's include list](../web/biome.json#L10) excludes package manifests, TypeScript configuration and translation catalogs. Java has no enforced style checks. Maven's requested local version is documented but not enforced by a wrapper or version rule.
 
+- [x] Remove the unused `EntityGraph` import from `AccountSessionRepository`.
 - [ ] Use consistent script names and cover maintained configuration files. Add a small Java formatting/import check and a reproducible Maven entry point. Keep this separate from expanding the test suite.
 
 ### R34 — Container definitions duplicate version and runtime decisions (P3)
@@ -228,29 +231,29 @@ For example, [showcase listing](../web/packages/unclet-data/src/public.repositor
 
 ## Documentation errors
 
-### R35 — The web architecture guide describes removed abstractions (P2)
+### R35 — The web architecture guide describes removed abstractions (resolved)
 
-[The package table](../web/README.md#L12) still assigns generic CRUD helpers to `database` and resource metadata to `contracts`. Those responsibilities are gone, while the shared `ui` package is omitted. [The source-layout section](../web/README.md#L43) says only Studio adds `model`, implies Studio has the public sites' `data` layout, discourages `content` folders that Studio actually uses, and refers to nonexistent `public.types.ts` files. A new contributor receives the wrong map of the codebase.
+[The web guide](../web/README.md) now describes the actual database helpers, shared UI package, public view models and Studio directory layout. It distinguishes public repositories from site adapters and explains Studio's managed-content folders.
 
-- [ ] Describe the actual package responsibilities and source layout. Explain the intentional Studio differences and remove conventions the project does not follow.
+- [x] Correct package responsibilities, source layout and file conventions. Remove references to deleted abstractions.
 
-### R36 — Java setup instructions promise an environment loader that is absent (P2)
+### R36 — Java setup instructions promise an environment loader that is absent (resolved)
 
-[The service guide](../services/README.md#L31), [web guide](../web/README.md#L66) and [assets guide](../services/assets/README.md#L55) claim that Java discovers `.env.development`, supports `APP_ENV_FILE` and no longer needs an IDE environment-file link. No such startup loader exists in the maintained Java sources or resource configuration. [The shared-module description](../services/README.md#L53) also lists environment loading and database configuration that the module does not contain.
+[The service](../services/README.md), [web](../web/README.md) and [assets](../services/assets/README.md) guides now describe shell, IDE and Compose configuration. They no longer promise automatic environment-file discovery or `APP_ENV_FILE` support. The shared-module description now lists its actual responsibilities. The root guide also identifies which supporting services a native frontend needs.
 
-- [ ] Document the actual shell, IDE or container configuration path. Do not instruct contributors to remove required environment setup based on a removed implementation.
+- [x] Correct Java environment setup and shared-module documentation without adding a new loader.
 
-### R37 — The documented built-site development command does not exist (P2)
+### R37 — The documented built-site development command does not exist (resolved)
 
-[The web guide](../web/README.md#L64) recommends `pnpm --filter studio start:dev` and describes its environment loading. [Studio's scripts](../web/sites/studio/package.json#L5), like the other sites' scripts, provide only `build`, `check`, `dev` and `start`.
+[The web guide](../web/README.md) now gives a Node command that explicitly loads the shared development file and runs the built site. It distinguishes this from the existing `start` script, which expects externally supplied environment variables.
 
-- [ ] Replace the example with a working, verified command and accurately describe how it receives environment variables.
+- [x] Replace the nonexistent script example. Check the environment-file loading and built entry-point path.
 
-### R38 — The asset plan contains completed work as an open correction (P3)
+### R38 — The asset plan contains completed work as an open correction (resolved)
 
-[The asset implementation plan](../services/assets/IMPLEMENTATION_PLAN.md#L75) says image-link primary keys still have invalid `SET NULL` references. The current story, showcase and article image-link migrations already use `ON DELETE CASCADE`. The document mixes an implementation plan, current design and old follow-up work.
+[The asset design notes](../services/assets/IMPLEMENTATION_PLAN.md#L75) now describe the existing `CASCADE` behavior for image links and `SET NULL` behavior for optional content references. The obsolete migration correction is removed, with a link to the database migration policy.
 
-- [ ] Remove the stale correction. Keep current lifecycle decisions with the asset documentation and unresolved tasks in open work.
+- [x] Replace the stale task with the implemented foreign-key behavior.
 
 ## Keep these choices
 
@@ -264,10 +267,14 @@ For example, [showcase listing](../web/packages/unclet-data/src/public.repositor
 
 ## Suggested order
 
-1. Fix profile-field ownership, campaign sending, password-change completion, upload readiness and Studio's missing container settings.
+1. Fix profile-field ownership, campaign sending and upload readiness.
 2. Fix quantity precision, submission retries, database invariants and edit conflicts.
 3. Simplify Studio's route dependencies and collection capabilities. Keep business states within their owning features.
-4. Correct setup documentation and standardize generation, runtime versions and checks.
-5. Remove dead styles and tighten smaller naming, query and presentation interfaces.
+4. Standardize generation, runtime versions and checks.
+5. Tighten the remaining query, naming and presentation interfaces.
 
-[Open work](open-work.md) remains the short launch and product checklist. Its role checks, unsaved edits, cancellation policy, submission retries and operational verification are still valid. Existing tests and builds were not rerun for this documentation-only review, and no new tests were added. The findings above do not replace staging verification or the existing deferred testing decision.
+[Open work](open-work.md) remains the short launch and product checklist. Its role checks, unsaved edits, cancellation policy, submission retries and operational verification are still valid.
+
+The small-fix follow-up passed `pnpm check`, `pnpm typecheck`, all four production builds and Compose configuration validation. Public image-size names were compared with the Java enum, and documentation links were checked. No tests were added. Java was not rebuilt for the unused-import removal, and authenticated workflows were not exercised. These checks do not replace staging verification or the existing deferred testing decision.
+
+The R05 follow-up passed Studio's build, type check and lint check. An isolated check of the actual server handler confirmed that cookie clearing waits for success, service failures preserve the cookie and unauthenticated requests cannot update a password. No test files were added. A complete browser flow against Identity remains part of staging verification.
