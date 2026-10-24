@@ -73,7 +73,7 @@ export function ProductsView() {
 				},
 			]}
 			renderRelated={(record) => (
-				<div className="related-grid">
+				<div className="grid gap-4">
 					<ProductVariantsView
 						key={`product_variant:${record.id}`}
 						productId={record.id}

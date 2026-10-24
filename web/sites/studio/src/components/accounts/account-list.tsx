@@ -16,7 +16,7 @@ export function AccountList({
 	const list = useServerFn(listAccounts);
 	const query = useQuery({ queryKey: ["accounts"], queryFn: () => list() });
 	return (
-		<div className="content-stack">
+		<div className="grid gap-[22px]">
 			<header className="page-heading">
 				<div>
 					<p className="page-kicker">{m.studio_system()}</p>
@@ -30,7 +30,7 @@ export function AccountList({
 			<FormFeedback error={query.isError ? m.error_generic() : null} />
 			{query.isPending && <p role="status">{m.loading()}</p>}
 			{query.isSuccess && query.data.length === 0 && <p>{m.empty()}</p>}
-			<div className="account-list">
+			<div className="grid gap-px overflow-hidden rounded-[7px] border border-border-soft bg-border-soft">
 				{query.data?.map((account) => (
 					<button
 						type="button"

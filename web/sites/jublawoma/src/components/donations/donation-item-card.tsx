@@ -33,7 +33,9 @@ export function DonationItemCard({
 						: m.jublawoma_donation_choose()}
 				</button>
 			) : (
-				<p className="donation-complete">{m.jublawoma_donation_complete()}</p>
+				<p className="rounded-2xl bg-sage p-6 leading-[1.6]">
+					{m.jublawoma_donation_complete()}
+				</p>
 			)}
 		</article>
 	);

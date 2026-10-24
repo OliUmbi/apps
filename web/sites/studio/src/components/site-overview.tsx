@@ -18,7 +18,7 @@ export function SiteOverview({
 	onSelectSection: (section: string) => void;
 }) {
 	return (
-		<div className="content-stack overview-page">
+		<div className="grid gap-[30px]">
 			<header className="overview-heading">
 				<div>
 					<p className="page-kicker">{site.domain}</p>
@@ -32,7 +32,7 @@ export function SiteOverview({
 					{site.short}
 				</div>
 			</header>
-			<div className="overview-grid">
+			<div className="grid grid-cols-3 gap-3 max-[760px]:grid-cols-1">
 				{site.sections
 					.filter((item) => item.id !== "overview")
 					.map((item, index) => (
@@ -45,9 +45,16 @@ export function SiteOverview({
 								{String(index + 1).padStart(2, "0")}
 							</span>
 							<OverviewIcon icon={item.icon} />
-							<span className="overview-label">{item.label}</span>
-							<span className="overview-description">{item.description()}</span>
-							<ArrowUpRight className="overview-arrow" size={17} />
+							<span className="col-span-full self-end text-primary text-base font-semibold">
+								{item.label}
+							</span>
+							<span className="col-[1/3] text-muted text-[0.77rem] leading-[1.5]">
+								{item.description()}
+							</span>
+							<ArrowUpRight
+								className="self-end justify-self-end text-faint"
+								size={17}
+							/>
 						</Button>
 					))}
 			</div>
@@ -70,7 +77,7 @@ function OverviewIcon({
 	}[icon];
 	return (
 		<Icon
-			className="overview-icon"
+			className="col-start-3 text-[#a79ff4]"
 			size={19}
 			strokeWidth={1.6}
 			aria-hidden="true"

@@ -20,7 +20,7 @@ function StoryDetail() {
 	return (
 		<article>
 			<StoryIntroduction story={story} />
-			<section className="shell detail-body">
+			<section className="mx-auto w-[min(100%_-_2rem,1240px)] max-w-[780px] py-20">
 				<MarkdownContent value={story.body} />
 			</section>
 			<StoryGallery images={story.gallery} />

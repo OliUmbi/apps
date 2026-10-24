@@ -25,7 +25,7 @@ export function Header() {
 			</Link>
 			<Dialog.Root open={open} onOpenChange={setOpen}>
 				<Dialog.Trigger
-					className="menu-button"
+					className="hidden h-11 w-11 place-items-center text-bark max-[850px]:grid"
 					type="button"
 					aria-expanded={open}
 					aria-label={open ? m.close_menu() : m.open_menu()}

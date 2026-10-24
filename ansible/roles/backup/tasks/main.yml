@@ -1,0 +1,33 @@
+---
+- name: backup script
+  ansible.builtin.copy:
+    src: "{{ repo_root }}/ansible/files/backup.sh"
+    dest: /usr/local/sbin/apps-backup.sh
+    mode: "0750"
+
+- name: backup units
+  ansible.builtin.copy:
+    src: "{{ repo_root }}/ansible/files/{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+    mode: "0644"
+  loop:
+    - apps-backup.service
+    - apps-backup.timer
+
+- name: backup environment
+  ansible.builtin.copy:
+    dest: /etc/default/apps-backup
+    mode: "0640"
+    content: |
+      BACKUP_DIR={{ backup_dir }}
+      BACKUP_KEEP={{ backup_keep }}
+      AGE_RECIPIENT={{ vault_age_recipient }}
+      TEXTFILE_DIR={{ textfile_dir }}
+      PROJECT_DIR={{ project_dir }}
+
+- name: backup timer
+  ansible.builtin.systemd:
+    name: apps-backup.timer
+    enabled: true
+    state: started
+    daemon_reload: true

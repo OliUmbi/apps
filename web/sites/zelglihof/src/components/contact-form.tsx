@@ -9,7 +9,9 @@ export function ContactForm() {
 	return (
 		<div className="contact-form-card">
 			<header>
-				<p className="eyebrow text-clay">{m.zelglihof_contact_eyebrow()}</p>
+				<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-clay">
+					{m.zelglihof_contact_eyebrow()}
+				</p>
 				<h2 className="mt-4 font-serif text-4xl font-bold">
 					{m.zelglihof_contact_title()}
 				</h2>
@@ -42,7 +44,7 @@ export function ContactForm() {
 						name: "phone",
 						label: m.phone(),
 						type: "tel",
-						placeholder: "+41 79 123 45 67",
+						placeholder: "079 123 45 67",
 						autoComplete: "tel",
 						required: true,
 					},

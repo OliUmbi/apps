@@ -1,0 +1,59 @@
+---
+# Copy to vault.yml and fill in:
+#   ansible-vault create group_vars/vault.yml
+# Never commit vault.yml. These values become /apps/.env on the server.
+
+# ---- wireguard ----
+vault_wireguard_server_private_key: ""
+vault_wireguard_laptop_public_key: ""
+
+# ---- dns / tls ----
+# one API token for everything: caddy ACME DNS-01 and the dyndns timer
+# (scopes: domain:read, dns:read, dns:write)
+vault_acme_email: ""
+vault_infomaniak_api_token: ""
+
+# ---- database ----
+vault_postgres_db: "apps"
+vault_postgres_migrator_user: "apps_migrator"
+vault_postgres_migrator_password: ""
+vault_identity_database_user: "identity"
+vault_identity_database_password: ""
+vault_identity_internal_authorization_token: ""
+vault_messaging_database_user: "messaging"
+vault_messaging_database_password: ""
+vault_messaging_internal_authorization_token: ""
+vault_assets_database_user: "assets"
+vault_assets_database_password: ""
+vault_assets_internal_authorization_token: ""
+vault_jublawoma_database_user: "jublawoma"
+vault_jublawoma_database_password: ""
+vault_unclet_database_user: "unclet"
+vault_unclet_database_password: ""
+vault_zelglihof_database_user: "zelglihof"
+vault_zelglihof_database_password: ""
+vault_studio_database_user: "studio"
+vault_studio_database_password: ""
+
+# ---- mail ----
+vault_smtp_host: ""
+vault_smtp_port: "587"
+vault_smtp_username: ""
+vault_smtp_password: ""
+
+# ---- sites ----
+vault_jublawoma_owner_email: ""
+vault_unclet_owner_email: ""
+vault_zelglihof_owner_email: ""
+
+# ---- backups ----
+# age public key of the workstation that pulls the backups
+vault_age_recipient: ""
+
+# ---- monitoring ----
+# alertmanager receiver: the ntfy topic url, e.g.
+# https://ntfy.sh/oliumbi-alerts-<random> (optionally with topic protection:
+# https://:tk_<token>@ntfy.sh/<topic>). Treated as a secret because it is a
+# capability; anyone holding it can publish to your topic.
+vault_ntfy_webhook_url: ""
+vault_grafana_admin_password: ""

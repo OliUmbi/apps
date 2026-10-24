@@ -1,0 +1,128 @@
+# Reverse proxy for the apps stack.
+#
+# Certificates: Let's Encrypt via DNS-01 (Infomaniak API), one wildcard cert
+# per domain. Nothing depends on port 80 during issuance and new subdomains
+# are covered automatically.
+#
+# This file is baked into ghcr.io/oliumbi/apps-caddy (infrastructure/caddy),
+# so config changes ship as a new image tag like everything else.
+
+{
+	email {$ACME_EMAIL}
+	acme_dns infomaniak {env.INFOMANIAK_API_TOKEN}
+}
+
+# Shared behaviour for all sites: compression, the legacy security headers
+# (HSTS includeSubDomains is already in the wild, keep it) and a 10M body
+# limit (legacy nginx: client_max_body_size 10M).
+(common) {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		defer
+	}
+
+	# Static files in public/ (pdfs, logos, fonts) are not content hashed and
+	# get replaced in place, so no long immutable caching -- only a default
+	# for responses where the app set none. Uploaded images under
+	# /api/assets/* carry their own Cache-Control + ETag and must win.
+	@static path /assets/* /images/* /fonts/*
+	header @static ?Cache-Control "public, max-age=3600"
+
+	request_body {
+		max_size 10MB
+	}
+}
+
+# ---------------------------------------------------------------------------
+# jublawoma.ch
+# ---------------------------------------------------------------------------
+jublawoma.ch, *.jublawoma.ch {
+	# admin/studio names converge on studio.oliumbi.ch so sessions survive
+	@studio host studio.jublawoma.ch admin.jublawoma.ch
+	handle @studio {
+		redir https://studio.oliumbi.ch{uri} permanent
+	}
+
+	@www host www.jublawoma.ch
+	handle @www {
+		redir https://jublawoma.ch{uri} permanent
+	}
+
+	handle {
+		import common
+		reverse_proxy jublawoma:8001
+	}
+}
+
+# ---------------------------------------------------------------------------
+# uncle-t.ch
+# ---------------------------------------------------------------------------
+uncle-t.ch, *.uncle-t.ch {
+	@studio host studio.uncle-t.ch admin.uncle-t.ch
+	handle @studio {
+		redir https://studio.oliumbi.ch{uri} permanent
+	}
+
+	@www host www.uncle-t.ch
+	handle @www {
+		redir https://uncle-t.ch{uri} permanent
+	}
+
+	handle {
+		import common
+		reverse_proxy unclet:8002
+	}
+}
+
+# ---------------------------------------------------------------------------
+# zelglihof-maegenwil.ch
+# ---------------------------------------------------------------------------
+zelglihof-maegenwil.ch, *.zelglihof-maegenwil.ch {
+	@studio host studio.zelglihof-maegenwil.ch admin.zelglihof-maegenwil.ch
+	handle @studio {
+		redir https://studio.oliumbi.ch{uri} permanent
+	}
+
+	@www host www.zelglihof-maegenwil.ch
+	handle @www {
+		redir https://zelglihof-maegenwil.ch{uri} permanent
+	}
+
+	handle {
+		import common
+		reverse_proxy zelglihof:8003
+	}
+}
+
+# ---------------------------------------------------------------------------
+# oliumbi.ch
+# ---------------------------------------------------------------------------
+oliumbi.ch, *.oliumbi.ch {
+	@studio host studio.oliumbi.ch
+	handle @studio {
+		import common
+		reverse_proxy studio:8000
+	}
+
+	@admin host admin.oliumbi.ch
+	handle @admin {
+		redir https://studio.oliumbi.ch{uri} permanent
+	}
+
+	@www host www.oliumbi.ch
+	handle @www {
+		redir https://oliumbi.ch{uri} permanent
+	}
+
+	handle {
+		# TODO: the new stack has no oliumbi site container yet. Placeholder so
+		# the apex is not empty at cutover -- replace with the site reverse
+		# proxy once it exists.
+		redir https://studio.oliumbi.ch{uri} permanent
+	}
+}

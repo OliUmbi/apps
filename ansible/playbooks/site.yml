@@ -1,0 +1,11 @@
+---
+# Full server setup: base system, wireguard, dns timer, the app stack, backup
+# and housekeeping timers. Idempotent; run it any time.
+- name: server
+  hosts: server
+  roles:
+    - server
+    - app
+    - dyndns
+    - backup
+    - housekeep

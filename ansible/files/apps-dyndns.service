@@ -1,0 +1,7 @@
+[Unit]
+Description=OliUmbi dyndns update (Infomaniak A records)
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/default/apps-dyndns
+ExecStart=/usr/local/sbin/apps-dyndns.sh

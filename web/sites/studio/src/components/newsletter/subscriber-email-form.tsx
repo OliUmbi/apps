@@ -26,7 +26,7 @@ export function SubscriberEmailForm({
 	return (
 		<>
 			<Form
-				className="subscriber-email-form"
+				className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 max-[760px]:grid-cols-1"
 				onSubmit={(event) => {
 					event.preventDefault();
 					if (correction.isPending) return;

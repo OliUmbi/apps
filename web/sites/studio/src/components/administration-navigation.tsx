@@ -22,8 +22,10 @@ export function AdministrationNavigation({
 				<ArrowLeft size={15} aria-hidden="true" />
 				{m.studio_websites()}
 			</Button>
-			<nav aria-label={m.studio_administration()} className="site-navigation">
-				<p className="nav-caption">{m.studio_administration()}</p>
+			<nav aria-label={m.studio_administration()} className="p-[9px]">
+				<p className="px-2 pt-2 pb-1.5 text-xs font-semibold tracking-[0.08em] uppercase text-muted">
+					{m.studio_administration()}
+				</p>
 				{administrationSections.map((item) => {
 					const Icon = item.icon;
 					return (

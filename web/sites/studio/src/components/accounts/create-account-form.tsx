@@ -24,7 +24,7 @@ export function CreateAccountForm({
 		onSuccess: () => cache.invalidateQueries({ queryKey: ["accounts"] }),
 	});
 	return (
-		<div className="content-stack workspace-page">
+		<div className="grid gap-[22px] w-full">
 			<Button className="workspace-back" onClick={() => onClose()}>
 				<ArrowLeft size={16} /> {m.studio_back_to_accounts()}
 			</Button>
@@ -35,7 +35,7 @@ export function CreateAccountForm({
 					<p>{m.studio_create_account_help()}</p>
 				</div>
 			</header>
-			<section className="settings-panel settings-panel-narrow">
+			<section className="settings-panel max-w-[640px]">
 				<header>
 					<UserRound size={19} />
 					<div>
@@ -76,7 +76,7 @@ export function CreateAccountForm({
 						label={m.studio_new_password()}
 						required
 					/>
-					<div className="settings-actions">
+					<div className="flex justify-end gap-2 border-t border-border-soft pt-[18px]">
 						<Button type="button" className="button" onClick={() => onClose()}>
 							{m.cancel()}
 						</Button>

@@ -21,7 +21,7 @@ export function SubscriberInvite() {
 	});
 	return (
 		<Form
-			className="panel grid gap-4 p-6"
+			className="overflow-hidden rounded-md border border-border-soft bg-surface grid gap-4 p-6"
 			onChange={() => {
 				if (mutation.isSuccess || mutation.isError) mutation.reset();
 			}}

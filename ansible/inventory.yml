@@ -1,0 +1,9 @@
+# Single host, reached over WireGuard. SSH is expected to be bound to the
+# tunnel (server role, opt-in via restrict_ssh).
+all:
+  hosts:
+    server:
+      ansible_host: 10.8.0.1
+      ansible_user: deploy
+  vars:
+    ansible_python_interpreter: /usr/bin/python3

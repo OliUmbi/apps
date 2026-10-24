@@ -7,9 +7,11 @@ import { SubmissionForm } from "./submission-form";
 export function InquiryForm() {
 	const submit = useServerFn(sendInquiry);
 	return (
-		<div className="inquiry-form-card">
-			<header>
-				<p className="eyebrow text-brass">{m.unclet_inquiry_form_eyebrow()}</p>
+		<div className="relative overflow-hidden border border-bone/15 bg-[linear-gradient(135deg,rgb(185_154_91_/_10%),transparent_46%),#1a1a17] p-[clamp(1.5rem,5vw,4rem)] before:absolute before:top-0 before:left-0 before:h-0.5 before:w-28 before:bg-brass before:content-['']">
+			<header className="mb-12">
+				<p className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-brass">
+					{m.unclet_inquiry_form_eyebrow()}
+				</p>
 				<h2 className="mt-4 font-serif text-4xl md:text-5xl">
 					{m.unclet_inquiry_form_title()}
 				</h2>
@@ -42,7 +44,7 @@ export function InquiryForm() {
 						name: "phone",
 						label: m.phone(),
 						type: "tel",
-						placeholder: "+41 79 123 45 67",
+						placeholder: "079 123 45 67",
 						autoComplete: "tel",
 						required: true,
 					},

@@ -1,0 +1,64 @@
+# Alert rules: everything here maps to "do something now".
+# Missing on purpose: log-based alerts (logs are for debugging, metrics are
+# for alerting) and anything external (box-down detection needs a probe
+# outside the box -- tracked in documentation/open-work.md).
+groups:
+  - name: availability
+    rules:
+      - alert: SiteProbeFailing
+        expr: probe_success{job="app-http"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.instance }} is not answering"
+
+      - alert: PostgresNotAnswering
+        expr: probe_success{job="postgres-tcp"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "postgres is not accepting connections"
+
+      - alert: NodeExporterDown
+        expr: up{job="node"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "node exporter is down (host or docker problem)"
+
+      - alert: ContainerRestartLoop
+        expr: changes(container_start_time_seconds{name=~"oliumbi-apps-.*"}[1h]) > 2
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.name }} restarted several times in the last hour"
+
+  - name: capacity
+    rules:
+      - alert: DiskFillingUp
+        expr: node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"} < 0.15
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "root filesystem is more than 85% full"
+
+      - alert: BackupStale
+        expr: time() - apps_backup_last_success_timestamp_seconds > 36 * 3600
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "no successful backup in the last 36 hours"
+
+      - alert: CertificateExpiringSoon
+        expr: probe_ssl_earliest_cert_expiry - time() < 14 * 24 * 3600
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "certificate for {{ $labels.instance }} expires within 14 days"

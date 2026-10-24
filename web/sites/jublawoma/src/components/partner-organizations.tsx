@@ -31,8 +31,8 @@ const partners = [
 
 export function PartnerOrganizations() {
 	return (
-		<section className="network">
-			<div className="shell">
+		<section className="bg-moss text-oat py-20">
+			<div className="mx-auto w-[min(100%_-_2rem,1240px)]">
 				<p className="kicker light">{m.jublawoma_about_partners_title()}</p>
 				<div className="mt-8 grid gap-px overflow-hidden rounded-3xl bg-white/20 sm:grid-cols-2 lg:grid-cols-3">
 					{partners.map((partner) => (

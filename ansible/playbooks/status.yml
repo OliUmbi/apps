@@ -1,0 +1,46 @@
+---
+# Quick overview without touching the machine: containers, disk, timers,
+# last backup.
+- name: status
+  hosts: server
+  gather_facts: false
+  tasks:
+    - name: containers
+      ansible.builtin.command:
+        cmd: docker compose --env-file .env -f {{ item }} ps
+        chdir: "{{ project_dir }}"
+      changed_when: false
+      loop:
+        - compose.prod.yaml
+        - compose.monitoring.yaml
+      register: containers
+
+    - name: disk
+      ansible.builtin.command: df -h /
+      changed_when: false
+      register: disk
+
+    - name: docker disk usage
+      ansible.builtin.command: docker system df
+      changed_when: false
+      register: docker_disk
+
+    - name: timers
+      ansible.builtin.command: systemctl list-timers apps-* --no-pager
+      changed_when: false
+      register: timers
+
+    - name: last backup
+      ansible.builtin.command: ls -lhtr {{ backup_dir }}
+      changed_when: false
+      failed_when: false
+      register: backups
+
+    - name: report
+      ansible.builtin.debug:
+        msg:
+          - "{{ containers.results | map(attribute='stdout_lines') | list }}"
+          - "{{ disk.stdout_lines }}"
+          - "{{ docker_disk.stdout_lines }}"
+          - "{{ timers.stdout_lines }}"
+          - "{{ backups.stdout_lines | default(['no backups yet']) }}"

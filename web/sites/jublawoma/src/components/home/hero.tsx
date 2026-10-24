@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 export function Hero() {
 	return (
 		<section className="overflow-hidden bg-oat text-bark">
-			<div className="shell grid min-h-[680px] items-center gap-10 py-16 lg:grid-cols-[1.1fr_.9fr]">
+			<div className="mx-auto w-[min(100%_-_2rem,1240px)] grid min-h-[680px] items-center gap-10 py-16 lg:grid-cols-[1.1fr_.9fr]">
 				<div>
 					<p className="kicker">{m.jublawoma_home_hero_eyebrow()}</p>
 					<h1 className="my-5 max-w-3xl text-[clamp(3.8rem,8vw,7.8rem)] leading-[.88] font-black tracking-[-.075em]">
@@ -24,7 +24,10 @@ export function Hero() {
 							{m.jublawoma_home_hero_primary_action()}
 							<ArrowRight size={18} />
 						</Link>
-						<Link to="/events" className="text-link">
+						<Link
+							to="/events"
+							className="inline-flex items-center gap-2 border-b-2 border-current py-[0.45rem] text-[0.78rem] font-extrabold"
+						>
 							{m.jublawoma_home_hero_events_action()}
 						</Link>
 					</div>

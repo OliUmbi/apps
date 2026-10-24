@@ -31,7 +31,11 @@ export function WorkspaceNavigation({
 	}
 	if (area === "profile") {
 		if (allowedSites.length === 0)
-			return <p className="profile-access-note">{m.studio_no_access()}</p>;
+			return (
+				<p className="mx-4 my-3 text-muted text-[0.78rem] leading-[1.55]">
+					{m.studio_no_access()}
+				</p>
+			);
 		return (
 			<Button
 				className="workspace-switch"

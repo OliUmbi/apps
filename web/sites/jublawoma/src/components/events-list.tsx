@@ -6,10 +6,10 @@ import { MediaImage } from "./media-image";
 export function EventsList({ events }: { events: PublicEvent[] }) {
 	if (events.length === 0) return null;
 	return (
-		<section className="shell event-list">
+		<section className="mx-auto w-[min(100%_-_2rem,1240px)] event-list">
 			{events.map((event, index) => (
 				<article key={event.id}>
-					<div className="event-number">
+					<div className="self-start pt-8 text-moss text-[0.7rem] font-black max-[520px]:pt-0">
 						{String(index + 1).padStart(2, "0")}
 					</div>
 					<MediaImage
@@ -28,7 +28,7 @@ export function EventsList({ events }: { events: PublicEvent[] }) {
 							<MapPin size={16} /> {event.location}
 						</p>
 					</div>
-					<CalendarDays className="event-icon" />
+					<CalendarDays className="text-moss max-[850px]:hidden" />
 				</article>
 			))}
 		</section>

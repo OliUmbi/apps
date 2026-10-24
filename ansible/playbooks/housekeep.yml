@@ -1,0 +1,9 @@
+---
+# Run housekeeping now instead of waiting for the weekly timer.
+- name: housekeep now
+  hosts: server
+  gather_facts: false
+  tasks:
+    - name: run housekeeping
+      ansible.builtin.command: /usr/local/sbin/apps-housekeep.sh
+      changed_when: true

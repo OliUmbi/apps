@@ -6,7 +6,7 @@ import { AssetImage } from "./asset-image";
 export function ProductCatalog({ products }: { products: ProductSummary[] }) {
 	if (products.length === 0) return null;
 	return (
-		<section className="shell grid gap-6 pb-24 md:grid-cols-2">
+		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-6 pb-24 md:grid-cols-2">
 			{products.map((product, index) => (
 				<Link
 					key={product.id}

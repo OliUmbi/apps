@@ -9,7 +9,7 @@ export const Route = createFileRoute("/legal")({
 function Imprint() {
 	const leadership = Route.useLoaderData();
 	return (
-		<section className="shell legal">
+		<section className="mx-auto w-[min(100%_-_2rem,1240px)] legal">
 			<p className="kicker">{m.legal()}</p>
 			<h1>{m.imprint()}</h1>
 			<h2>{m.contact()}</h2>

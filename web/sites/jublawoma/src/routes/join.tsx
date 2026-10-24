@@ -6,13 +6,13 @@ export const Route = createFileRoute("/join")({ component: Join });
 function Join() {
 	return (
 		<>
-			<section className="page-hero shell join-hero">
+			<section className="page-hero mx-auto w-[min(100%_-_2rem,1240px)] join-hero">
 				<div>
 					<p className="kicker">{m.jublawoma_join_eyebrow()}</p>
 					<h1>
 						{m.jublawoma_join_title_discover()}
 						<br />
-						<span className="page-title-accent">
+						<span className="font-[Georgia,serif] font-normal italic text-moss">
 							{m.jublawoma_join_title_participate()}
 						</span>
 						<br />
@@ -22,7 +22,7 @@ function Join() {
 				</div>
 				<img src="/assets/images/doodles/dog.svg" alt="" />
 			</section>
-			<section className="shell steps">
+			<section className="mx-auto w-[min(100%_-_2rem,1240px)] steps">
 				<article>
 					<span>1</span>
 					<h2>{m.jublawoma_join_contact_title()}</h2>
@@ -39,7 +39,7 @@ function Join() {
 					<p>{m.jublawoma_join_register_body()}</p>
 				</article>
 			</section>
-			<section className="contact-card shell">
+			<section className="contact-card mx-auto w-[min(100%_-_2rem,1240px)]">
 				<img src="/assets/images/doodles/groovy-sitting.svg" alt="" />
 				<div>
 					<p className="kicker light">{m.jublawoma_join_questions_eyebrow()}</p>
@@ -50,7 +50,7 @@ function Join() {
 							{m.jublawoma_join_contact_leadership()}
 						</a>
 						<a
-							className="text-link light"
+							className="inline-flex items-center gap-2 border-b-2 border-current py-[0.45rem] text-[0.78rem] font-extrabold text-white"
 							href="/assets/documents/Anmeldung-Jubla-Woma.pdf"
 							target="_blank"
 							rel="noopener"

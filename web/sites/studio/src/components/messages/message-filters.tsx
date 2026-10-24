@@ -10,7 +10,7 @@ export function MessageFilters({
 	onChange: (filter: MessageFilter) => void;
 }) {
 	return (
-		<div className="message-filters">
+		<div className="grid grid-cols-[repeat(2,minmax(0,220px))] gap-3 max-[767px]:grid-cols-2">
 			<Button
 				className={
 					filter === "all" ? "message-filter is-active" : "message-filter"

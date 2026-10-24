@@ -4,12 +4,12 @@ import { Check } from "lucide-react";
 export function CateringFormats() {
 	return (
 		<section className="bg-paper py-24 text-night md:py-32">
-			<div className="shell grid gap-16 lg:grid-cols-[.75fr_1.25fr]">
+			<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[90rem] md:w-[calc(100%_-_5rem)] grid gap-16 lg:grid-cols-[.75fr_1.25fr]">
 				<div>
-					<p className="eyebrow text-brass">
+					<p className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-brass">
 						{m.unclet_services_formats_eyebrow()}
 					</p>
-					<h2 className="display-title mt-6 text-5xl md:text-7xl">
+					<h2 className="font-serif font-medium leading-[0.95] tracking-[-0.045em] mt-6 text-5xl md:text-7xl">
 						{m.unclet_services_formats_title()}
 					</h2>
 				</div>

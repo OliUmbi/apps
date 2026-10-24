@@ -7,17 +7,20 @@ import { ShopEmptyState } from "../shop-empty-state";
 export function FarmShop({ products }: { products: ProductSummary[] }) {
 	return (
 		<section className="bg-cream py-24 md:py-32">
-			<div className="shell">
+			<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)]">
 				<div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
 					<div>
-						<p className="eyebrow text-moss">
+						<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-moss">
 							{m.zelglihof_home_shop_eyebrow()}
 						</p>
-						<h2 className="display-title mt-5 max-w-2xl text-5xl md:text-6xl">
+						<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 max-w-2xl text-5xl md:text-6xl">
 							{m.zelglihof_home_shop_title()}
 						</h2>
 					</div>
-					<Link to="/products" className="button-secondary">
+					<Link
+						to="/products"
+						className="inline-flex min-h-12 items-center justify-center gap-[0.55rem] rounded-full border border-forest/35 bg-transparent px-[1.15rem] py-3 text-[0.9rem] font-[720] leading-none text-forest transition hover:border-forest hover:bg-white/35"
+					>
 						{m.zelglihof_home_visit_shop()}
 						<ArrowRight size={17} />
 					</Link>

@@ -1,0 +1,285 @@
+# Production stack.
+#
+# The server only needs this file and .env -- there are deliberately no bind
+# mounts: migrations are baked into apps-migrate, the Caddyfile into
+# apps-caddy, everything else lives in named volumes.
+#
+#   IMAGE_TAG=2026.10.24 docker compose --env-file .env up -d
+#
+# Only caddy publishes ports; every other service is reachable exclusively on
+# the internal network.
+#
+name: oliumbi-apps
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+
+  # ------------------------- edge -------------------------
+
+  caddy:
+    image: ghcr.io/oliumbi/apps-caddy:${IMAGE_TAG:?set IMAGE_TAG}
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL}
+      INFOMANIAK_API_TOKEN: ${INFOMANIAK_API_TOKEN:?set INFOMANIAK_API_TOKEN}
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+    networks: [apps]
+    logging: *default-logging
+
+  # ------------------------- data -------------------------
+
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_MIGRATOR_USER:?set POSTGRES_MIGRATOR_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_MIGRATOR_PASSWORD:?set POSTGRES_MIGRATOR_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_MIGRATOR_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [apps]
+    logging: *default-logging
+
+  migrate:
+    image: ghcr.io/oliumbi/apps-migrate:${IMAGE_TAG:?set IMAGE_TAG}
+    restart: "no"
+    command:
+      - -url=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      - -user=${POSTGRES_MIGRATOR_USER}
+      - -password=${POSTGRES_MIGRATOR_PASSWORD}
+      - -connectRetries=60
+      - -locations=filesystem:/flyway/sql
+      - migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [apps]
+    logging: *default-logging
+
+  # ----------------------- services -----------------------
+
+  identity:
+    image: ghcr.io/oliumbi/apps-identity:${IMAGE_TAG:?set IMAGE_TAG}
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://postgres:5432/${POSTGRES_DB}
+      IDENTITY_DATABASE_USER: ${IDENTITY_DATABASE_USER:?set IDENTITY_DATABASE_USER}
+      IDENTITY_DATABASE_PASSWORD: ${IDENTITY_DATABASE_PASSWORD:?set IDENTITY_DATABASE_PASSWORD}
+      IDENTITY_INTERNAL_AUTHORIZATION_TOKEN: ${IDENTITY_INTERNAL_AUTHORIZATION_TOKEN:?set IDENTITY_INTERNAL_AUTHORIZATION_TOKEN}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/8081'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+    networks: [apps]
+    logging: *default-logging
+
+  messaging:
+    image: ghcr.io/oliumbi/apps-messaging:${IMAGE_TAG:?set IMAGE_TAG}
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://postgres:5432/${POSTGRES_DB}
+      MESSAGING_DATABASE_USER: ${MESSAGING_DATABASE_USER:?set MESSAGING_DATABASE_USER}
+      MESSAGING_DATABASE_PASSWORD: ${MESSAGING_DATABASE_PASSWORD:?set MESSAGING_DATABASE_PASSWORD}
+      MESSAGING_INTERNAL_AUTHORIZATION_TOKEN: ${MESSAGING_INTERNAL_AUTHORIZATION_TOKEN:?set MESSAGING_INTERNAL_AUTHORIZATION_TOKEN}
+      SMTP_HOST: ${SMTP_HOST:?set SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_AUTH: ${SMTP_AUTH:-true}
+      SMTP_TLS: ${SMTP_TLS:-true}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/8082'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+    networks: [apps]
+    logging: *default-logging
+
+  assets:
+    image: ghcr.io/oliumbi/apps-assets:${IMAGE_TAG:?set IMAGE_TAG}
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://postgres:5432/${POSTGRES_DB}
+      ASSETS_DATABASE_USER: ${ASSETS_DATABASE_USER:?set ASSETS_DATABASE_USER}
+      ASSETS_DATABASE_PASSWORD: ${ASSETS_DATABASE_PASSWORD:?set ASSETS_DATABASE_PASSWORD}
+      ASSETS_INTERNAL_AUTHORIZATION_TOKEN: ${ASSETS_INTERNAL_AUTHORIZATION_TOKEN:?set ASSETS_INTERNAL_AUTHORIZATION_TOKEN}
+      ASSETS_STORAGE_ROOT: /media
+    volumes:
+      - assets-data:/media
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/8083'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+    networks: [apps]
+    logging: *default-logging
+
+  # ------------------------- sites ------------------------
+
+  jublawoma:
+    image: ghcr.io/oliumbi/apps-jublawoma:${IMAGE_TAG:?set IMAGE_TAG}
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://${JUBLAWOMA_DATABASE_USER:?set JUBLAWOMA_DATABASE_USER}:${JUBLAWOMA_DATABASE_PASSWORD:?set JUBLAWOMA_DATABASE_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-10}
+      ASSETS_SERVICE_URL: http://assets:8083
+      MESSAGING_SERVICE_URL: http://messaging:8082
+      JUBLAWOMA_PUBLIC_URL: https://jublawoma.ch
+      JUBLAWOMA_OWNER_EMAIL: ${JUBLAWOMA_OWNER_EMAIL:?set JUBLAWOMA_OWNER_EMAIL}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      assets:
+        condition: service_started
+      messaging:
+        condition: service_started
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8001/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks: [apps]
+    logging: *default-logging
+
+  unclet:
+    image: ghcr.io/oliumbi/apps-unclet:${IMAGE_TAG:?set IMAGE_TAG}
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://${UNCLET_DATABASE_USER:?set UNCLET_DATABASE_USER}:${UNCLET_DATABASE_PASSWORD:?set UNCLET_DATABASE_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-10}
+      ASSETS_SERVICE_URL: http://assets:8083
+      MESSAGING_SERVICE_URL: http://messaging:8082
+      UNCLET_PUBLIC_URL: https://uncle-t.ch
+      UNCLET_OWNER_EMAIL: ${UNCLET_OWNER_EMAIL:?set UNCLET_OWNER_EMAIL}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      assets:
+        condition: service_started
+      messaging:
+        condition: service_started
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8002/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks: [apps]
+    logging: *default-logging
+
+  zelglihof:
+    image: ghcr.io/oliumbi/apps-zelglihof:${IMAGE_TAG:?set IMAGE_TAG}
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://${ZELGLIHOF_DATABASE_USER:?set ZELGLIHOF_DATABASE_USER}:${ZELGLIHOF_DATABASE_PASSWORD:?set ZELGLIHOF_DATABASE_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-10}
+      ASSETS_SERVICE_URL: http://assets:8083
+      MESSAGING_SERVICE_URL: http://messaging:8082
+      ZELGLIHOF_PUBLIC_URL: https://zelglihof-maegenwil.ch
+      ZELGLIHOF_OWNER_EMAIL: ${ZELGLIHOF_OWNER_EMAIL:?set ZELGLIHOF_OWNER_EMAIL}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      assets:
+        condition: service_started
+      messaging:
+        condition: service_started
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8003/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks: [apps]
+    logging: *default-logging
+
+  studio:
+    image: ghcr.io/oliumbi/apps-studio:${IMAGE_TAG:?set IMAGE_TAG}
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://${STUDIO_DATABASE_USER:?set STUDIO_DATABASE_USER}:${STUDIO_DATABASE_PASSWORD:?set STUDIO_DATABASE_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-10}
+      STUDIO_SECURE_COOKIES: "true"
+      ZELGLIHOF_PUBLIC_URL: https://zelglihof-maegenwil.ch
+      ZELGLIHOF_OWNER_EMAIL: ${ZELGLIHOF_OWNER_EMAIL:?set ZELGLIHOF_OWNER_EMAIL}
+      ASSETS_SERVICE_URL: http://assets:8083
+      ASSETS_INTERNAL_AUTHORIZATION_TOKEN: ${ASSETS_INTERNAL_AUTHORIZATION_TOKEN:?set ASSETS_INTERNAL_AUTHORIZATION_TOKEN}
+      MESSAGING_SERVICE_URL: http://messaging:8082
+      MESSAGING_INTERNAL_AUTHORIZATION_TOKEN: ${MESSAGING_INTERNAL_AUTHORIZATION_TOKEN:?set MESSAGING_INTERNAL_AUTHORIZATION_TOKEN}
+      IDENTITY_SERVICE_URL: http://identity:8081
+      IDENTITY_INTERNAL_AUTHORIZATION_TOKEN: ${IDENTITY_INTERNAL_AUTHORIZATION_TOKEN:?set IDENTITY_INTERNAL_AUTHORIZATION_TOKEN}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      identity:
+        condition: service_started
+      messaging:
+        condition: service_started
+      assets:
+        condition: service_started
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks: [apps]
+    logging: *default-logging
+
+  # monitoring (prometheus/grafana/...) lands here later
+
+networks:
+  apps:
+    driver: bridge
+
+volumes:
+  caddy-data:
+  caddy-config:
+  postgres-data:
+  assets-data:

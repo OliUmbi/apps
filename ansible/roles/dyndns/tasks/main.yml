@@ -1,0 +1,30 @@
+---
+- name: dyndns script
+  ansible.builtin.copy:
+    src: "{{ repo_root }}/ansible/files/dyndns.sh"
+    dest: /usr/local/sbin/apps-dyndns.sh
+    mode: "0750"
+
+- name: dyndns units
+  ansible.builtin.copy:
+    src: "{{ repo_root }}/ansible/files/{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+    mode: "0644"
+  loop:
+    - apps-dyndns.service
+    - apps-dyndns.timer
+
+- name: dyndns environment
+  ansible.builtin.copy:
+    dest: /etc/default/apps-dyndns
+    mode: "0640"
+    content: |
+      INFOMANIAK_API_TOKEN={{ vault_infomaniak_api_token }}
+      INFOMANIAK_RECORDS="{{ dyndns_records | join(' ') }}"
+
+- name: dyndns timer
+  ansible.builtin.systemd:
+    name: apps-dyndns.timer
+    enabled: true
+    state: started
+    daemon_reload: true

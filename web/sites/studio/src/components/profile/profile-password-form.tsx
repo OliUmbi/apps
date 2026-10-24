@@ -65,7 +65,7 @@ export function ProfilePasswordForm() {
 					label={m.studio_password_confirmation()}
 					required
 				/>
-				<div className="settings-actions">
+				<div className="flex justify-end gap-2 border-t border-border-soft pt-[18px]">
 					<Button
 						className="button"
 						type="submit"

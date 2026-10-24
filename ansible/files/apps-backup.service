@@ -1,0 +1,8 @@
+[Unit]
+Description=OliUmbi apps backup
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/default/apps-backup
+ExecStart=/usr/local/sbin/apps-backup.sh
+Nice=10

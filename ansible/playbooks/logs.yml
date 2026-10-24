@@ -1,0 +1,20 @@
+---
+# Read logs without SSH-ing into the machine:
+#   ansible-playbook playbooks/logs.yml -e service=identity
+#   ansible-playbook playbooks/logs.yml -e service=caddy -e lines=500
+- name: logs
+  hosts: server
+  gather_facts: false
+  tasks:
+    - name: read logs
+      ansible.builtin.command:
+        cmd: >-
+          docker compose --env-file .env -f compose.prod.yaml
+          logs --tail {{ lines | default(200) }} {{ service | default("") }}
+        chdir: "{{ project_dir }}"
+      changed_when: false
+      register: logs
+
+    - name: print
+      ansible.builtin.debug:
+        msg: "{{ logs.stdout_lines }}"

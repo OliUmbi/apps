@@ -48,7 +48,7 @@ export function AssetsView({
 		},
 	});
 	return (
-		<div className="content-stack">
+		<div className="grid gap-[22px]">
 			<header className="page-heading">
 				<h1>{kind === "images" ? "Bilder" : "Dokumente"}</h1>
 			</header>

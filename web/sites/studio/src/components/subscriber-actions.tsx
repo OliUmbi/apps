@@ -6,7 +6,7 @@ import { SubscriberStatusActions } from "./newsletter/subscriber-status-actions"
 
 export function SubscriberActions({ subscriber }: { subscriber: Subscriber }) {
 	return (
-		<section className="settings-panel subscriber-workspace">
+		<section className="settings-panel mt-1">
 			<header>
 				<MailCheck size={19} />
 				<div>

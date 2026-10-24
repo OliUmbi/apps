@@ -4,12 +4,12 @@ import { ReservationForm } from "./reservation-form";
 
 export function ProductReservation({ product }: { product: Product }) {
 	return (
-		<section className="shell grid gap-12 py-20 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-12 py-20 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
 			<div>
-				<p className="eyebrow text-moss">
+				<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-moss">
 					{m.zelglihof_product_reservation_eyebrow()}
 				</p>
-				<h2 className="display-title mt-5 text-5xl">
+				<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-5xl">
 					{m.zelglihof_product_reservation_title()}
 				</h2>
 				<div className="mt-8 grid gap-6 text-sm leading-relaxed text-ink/60">
@@ -38,7 +38,7 @@ export function ProductReservation({ product }: { product: Product }) {
 			) : (
 				<div>
 					<div className="rounded-[1.5rem] bg-sun p-7 md:p-9">
-						<p className="eyebrow">
+						<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-['']">
 							{m.zelglihof_product_out_of_season_eyebrow()}
 						</p>
 						<h2 className="mt-5 font-serif text-4xl font-bold">

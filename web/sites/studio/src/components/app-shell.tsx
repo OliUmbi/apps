@@ -25,7 +25,7 @@ export function AppShell({
 	const context = workspaceContext(workspace);
 	const navigation = (
 		<>
-			<div className="sidebar-brand">
+			<div className="flex h-14 items-center gap-2.5 border-b border-border-soft px-3.5 text-sm font-semibold">
 				<span className="brand-mark">O</span>
 				{m.studio_name()}
 			</div>
@@ -34,7 +34,7 @@ export function AppShell({
 				navigation={actions}
 				onNavigate={() => setOpen(false)}
 			/>
-			<div className="account-card mt-auto">
+			<div className="account-card m-2 flex items-center gap-[9px] border-t border-border-soft pt-[13px] px-[5px] pb-[5px]">
 				<Button
 					className={`profile-entry ${workspace.area === "profile" ? "is-active" : ""}`}
 					onClick={() => {
@@ -53,9 +53,11 @@ export function AppShell({
 	);
 	return (
 		<div
-			className={`studio-app ${workspace.area === "administration" ? "is-administration" : ""}`}
+			className={`grid min-h-screen grid-cols-[244px_minmax(0,1fr)] max-[767px]:block ${workspace.area === "administration" ? "is-administration" : ""}`}
 		>
-			<aside className="studio-sidebar hidden md:flex">{navigation}</aside>
+			<aside className="sticky top-0 z-30 h-screen flex-col border-r border-border-soft bg-sidebar hidden md:flex">
+				{navigation}
+			</aside>
 			<Dialog.Root open={open} onOpenChange={setOpen}>
 				<Dialog.Trigger
 					className="fixed left-3 top-3 z-40 rounded border border-white/15 bg-zinc-900 p-2 md:hidden"
@@ -77,14 +79,16 @@ export function AppShell({
 					</Dialog.Popup>
 				</Dialog.Portal>
 			</Dialog.Root>
-			<div className="studio-main">
+			<div className="relative min-w-0">
 				<header className="studio-topbar">
 					<div className="workspace-context ml-12 md:ml-0">
 						<small>{context.label}</small>
 						<strong>{context.title}</strong>
 					</div>
 				</header>
-				<main className="studio-content">{children}</main>
+				<main className="mx-auto w-[min(100%_-_48px,1280px)] pt-[38px] pb-16 max-[767px]:w-[min(100%_-_28px,1280px)] max-[767px]:pt-[26px]">
+					{children}
+				</main>
 			</div>
 		</div>
 	);

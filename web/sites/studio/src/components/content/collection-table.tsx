@@ -20,7 +20,7 @@ export function CollectionTable<Row>({
 	onOpen: (record: Row) => void;
 }) {
 	return (
-		<div className="data-table">
+		<div className="overflow-x-auto rounded-md border border-border-soft">
 			<table className="w-full text-left text-sm">
 				<thead>
 					<tr>

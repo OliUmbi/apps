@@ -19,8 +19,8 @@ function ReviewPage() {
 				title={m.unclet_review_title()}
 				description={m.unclet_review_description()}
 			/>
-			<section className="shell pb-24 md:pb-32">
-				<div className="review-form-card mx-auto max-w-3xl">
+			<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[90rem] md:w-[calc(100%_-_5rem)] pb-24 md:pb-32">
+				<div className="relative overflow-hidden border border-bone/15 bg-[linear-gradient(135deg,rgb(185_154_91_/_10%),transparent_46%),#1a1a17] p-[clamp(1.5rem,5vw,4rem)] before:absolute before:top-0 before:left-0 before:h-0.5 before:w-28 before:bg-brass before:content-[''] mx-auto max-w-3xl">
 					<SubmissionForm
 						schema={reviewSchema}
 						submit={(data) => submit({ data })}

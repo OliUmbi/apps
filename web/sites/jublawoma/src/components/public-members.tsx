@@ -7,7 +7,7 @@ import { AssetImage } from "./asset-image";
 
 export function PublicMembers() {
 	return (
-		<section className="shell pb-20">
+		<section className="mx-auto w-[min(100%_-_2rem,1240px)] pb-20">
 			<Leadership />
 			<MemberList />
 		</section>

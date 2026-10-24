@@ -7,7 +7,7 @@ import { formatEventDates } from "../../model/dates";
 export function NextEvent({ event }: { event: PublicEvent }) {
 	return (
 		<section className="border-b border-bark/15 bg-sage/40">
-			<div className="shell grid min-h-28 items-center gap-5 py-6 md:grid-cols-[10rem_1fr_auto]">
+			<div className="mx-auto w-[min(100%_-_2rem,1240px)] grid min-h-28 items-center gap-5 py-6 md:grid-cols-[10rem_1fr_auto]">
 				<p className="kicker">{m.jublawoma_home_next_event_eyebrow()}</p>
 				<div className="flex flex-wrap items-center gap-x-8 gap-y-2">
 					<strong className="text-2xl">{event.title}</strong>
@@ -22,7 +22,7 @@ export function NextEvent({ event }: { event: PublicEvent }) {
 				</div>
 				<Link
 					to="/events"
-					className="round-link"
+					className="grid h-[52px] w-[52px] flex-none place-items-center rounded-full bg-moss text-white"
 					aria-label={m.jublawoma_home_next_event_action_label()}
 				>
 					<ArrowRight />

@@ -21,12 +21,12 @@ export function MessageDetail({
 		queryFn: () => get({ data: id }),
 	});
 	return (
-		<div className="content-stack workspace-page">
+		<div className="grid gap-[22px] w-full">
 			<Button className="workspace-back" onClick={onClose}>
 				<ArrowLeft size={15} aria-hidden="true" />
 				{m.studio_messages()}
 			</Button>
-			<section className="message-detail">
+			<section className="overflow-hidden rounded-[7px] border border-border bg-surface">
 				<header className="editor-heading">
 					<div>
 						<p className="page-kicker">{m.studio_delivery_attempts()}</p>

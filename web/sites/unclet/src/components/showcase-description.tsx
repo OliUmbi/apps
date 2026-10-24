@@ -10,12 +10,14 @@ export function ShowcaseDescription({
 }) {
 	return (
 		<div className="showcase-body lg:sticky lg:top-28 lg:self-start">
-			<p className="eyebrow text-brass">{m.unclet_showcase_event()}</p>
-			<h1 className="display-title mt-7 text-5xl md:text-6xl xl:text-7xl">
+			<p className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-brass">
+				{m.unclet_showcase_event()}
+			</p>
+			<h1 className="font-serif font-medium leading-[0.95] tracking-[-0.045em] mt-7 text-5xl md:text-6xl xl:text-7xl">
 				{showcase.title}
 			</h1>
 			<ShowcaseFacts showcase={showcase} />
-			<div className="rule my-8" />
+			<div className="h-px bg-linear-to-r from-brass to-brass/0 my-8" />
 			<SimpleMarkdown value={showcase.body} className="unclet-markdown" />
 		</div>
 	);

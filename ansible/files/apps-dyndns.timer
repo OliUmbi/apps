@@ -1,0 +1,10 @@
+[Unit]
+Description=Keep Infomaniak A records pointing at this server
+
+[Timer]
+OnBootSec=2min
+OnCalendar=*:0/15
+Persistent=true
+
+[Install]
+WantedBy=timers.target

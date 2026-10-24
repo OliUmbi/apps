@@ -74,7 +74,7 @@ export function AccountDetailsForm({ account }: { account: Account }) {
 						disabled={save.isPending}
 						name="enabled"
 						defaultChecked={account.enabled}
-						className="studio-checkbox"
+						className="grid size-5 place-items-center rounded border border-[#55545e] bg-[#0d0d0f] data-checked:border-accent data-checked:bg-accent"
 					>
 						<Checkbox.Indicator>
 							<Check size={13} aria-hidden="true" />
@@ -82,7 +82,7 @@ export function AccountDetailsForm({ account }: { account: Account }) {
 					</Checkbox.Root>
 					<Field.Label>{m.studio_account_enabled()}</Field.Label>
 				</Field.Root>
-				<div className="settings-actions">
+				<div className="flex justify-end gap-2 border-t border-border-soft pt-[18px]">
 					<Button
 						type="submit"
 						className="button primary"

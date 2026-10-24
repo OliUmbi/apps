@@ -47,7 +47,7 @@ export function ContentForm<Row, Input>({
 
 	return (
 		<Form
-			className="editor-form"
+			className="grid gap-6 px-4 py-[26px]"
 			onSubmit={(event) => {
 				event.preventDefault();
 				if (pending) return;
@@ -62,14 +62,17 @@ export function ContentForm<Row, Input>({
 				onSave(result.data);
 			}}
 		>
-			<fieldset disabled={pending} className="editor-fields">
+			<fieldset
+				disabled={pending}
+				className="grid grid-cols-2 gap-[22px] max-[767px]:grid-cols-1"
+			>
 				{editor.renderFields({ values, onChange })}
 			</fieldset>
 			<FormFeedback
 				error={validation || (error ? m.error_generic() : null)}
 				success={saved && !edited ? m.studio_content_saved() : null}
 			/>
-			<footer className="editor-actions">
+			<footer className="flex justify-end gap-2.5 border-t border-border-soft pt-5">
 				<Button
 					type="button"
 					className="button"

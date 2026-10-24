@@ -68,7 +68,7 @@ export function ArticlesView() {
 				},
 			]}
 			renderRelated={(record) => (
-				<div className="related-grid">
+				<div className="grid gap-4">
 					<ArticleImagesView
 						key={`article_image:${record.id}`}
 						articleId={record.id}

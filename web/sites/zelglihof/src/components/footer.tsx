@@ -1,11 +1,12 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, MapPin, Sprout } from "lucide-react";
+import { farmMapLink } from "../model/location";
 
 export default function Footer() {
 	return (
 		<footer className="mt-24 bg-forest text-cream">
-			<div className="shell grid gap-14 py-14 md:grid-cols-[1.3fr_0.7fr_0.7fr] md:py-20">
+			<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-14 py-14 md:grid-cols-[1.3fr_0.7fr_0.7fr] md:py-20">
 				<div className="max-w-md">
 					<div className="flex items-center gap-3">
 						<span className="grid size-11 place-items-center rounded-full bg-sun text-ink">
@@ -20,7 +21,7 @@ export default function Footer() {
 					</p>
 				</div>
 				<div>
-					<p className="eyebrow text-sun">
+					<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-sun">
 						{m.zelglihof_footer_explore_title()}
 					</p>
 					<nav className="mt-6 grid gap-3 text-sm font-semibold">
@@ -39,13 +40,13 @@ export default function Footer() {
 					</nav>
 				</div>
 				<div>
-					<p className="eyebrow text-sun">
+					<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-sun">
 						{m.zelglihof_footer_address_title()}
 					</p>
 					<a
-						href="https://www.openstreetmap.org/search?query=Zelgliweg%202%2C%205506%20M%C3%A4genwil"
+						href={farmMapLink}
 						target="_blank"
-						rel="noreferrer"
+						rel="noopener noreferrer"
 						className="mt-6 flex items-start gap-2 text-sm leading-relaxed text-cream/75 hover:text-cream"
 					>
 						<MapPin className="mt-0.5 shrink-0" size={17} />
@@ -59,7 +60,7 @@ export default function Footer() {
 				</div>
 			</div>
 			<div className="border-t border-white/12">
-				<div className="shell flex flex-col gap-4 py-6 text-xs text-cream/50 md:flex-row md:items-center md:justify-between">
+				<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] flex flex-col gap-4 py-6 text-xs text-cream/50 md:flex-row md:items-center md:justify-between">
 					<p>
 						© {new Date().getFullYear()}
 						{m.zelglihof_footer_ownership()}

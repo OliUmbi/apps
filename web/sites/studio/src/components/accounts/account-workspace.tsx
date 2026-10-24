@@ -43,7 +43,7 @@ export function AccountWorkspace({
 					}}
 				/>
 			) : (
-				<div className="content-stack workspace-page">
+				<div className="grid gap-[22px] w-full">
 					<Button className="workspace-back" onClick={onClose}>
 						<ArrowLeft size={16} aria-hidden="true" />{" "}
 						{m.studio_back_to_accounts()}

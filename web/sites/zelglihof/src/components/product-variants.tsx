@@ -4,7 +4,7 @@ import { AssetImage } from "./asset-image";
 export function ProductVariants({ product }: { product: Product }) {
 	if (product.variants.length === 0) return null;
 	return (
-		<section className="shell grid gap-6 py-8 md:grid-cols-2">
+		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-6 py-8 md:grid-cols-2">
 			{product.variants.map((variant) => (
 				<article
 					key={variant.id}

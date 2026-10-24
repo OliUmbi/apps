@@ -1,0 +1,22 @@
+# Restore drill on the workstation. Used as an override on top of
+# compose.prod.yaml: the edge is not started (nothing public is needed) and
+# the sites publish on localhost for clicking through.
+#
+#   cp .env .env.restore   # adjust passwords if restoring into a fresh db
+#   docker compose --env-file .env.restore \
+#     -f compose.prod.yaml -f compose.restore.yaml up -d
+#
+# Extract media.tgz into the assets volume before starting the stack and walk
+# through Studio and every site. See documentation/operations.md.
+services:
+  caddy:
+    profiles: ["no-edge"]
+
+  jublawoma:
+    ports: ["127.0.0.1:8001:8001"]
+  unclet:
+    ports: ["127.0.0.1:8002:8002"]
+  zelglihof:
+    ports: ["127.0.0.1:8003:8003"]
+  studio:
+    ports: ["127.0.0.1:8000:8000"]

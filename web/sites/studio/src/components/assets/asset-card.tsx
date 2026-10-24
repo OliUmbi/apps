@@ -19,7 +19,7 @@ export function AssetCard({
 	onDelete: () => void;
 }) {
 	return (
-		<article className="panel flex flex-wrap items-center justify-between gap-4 p-4">
+		<article className="overflow-hidden rounded-md border border-border-soft bg-surface flex flex-wrap items-center justify-between gap-4 p-4">
 			<div>
 				{kind === "images" && (
 					<img

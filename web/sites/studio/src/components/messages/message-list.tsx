@@ -13,7 +13,7 @@ export function MessageList({
 	onOpen: (id: string) => void;
 }) {
 	return (
-		<div className="message-list">
+		<div className="grid gap-px overflow-hidden rounded-md border border-border-soft bg-border-soft">
 			{messages.map((message) => (
 				<Button
 					key={message.id}

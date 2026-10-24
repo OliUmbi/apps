@@ -64,7 +64,7 @@ export function DonationsView() {
 				},
 			]}
 			renderRelated={(record) => (
-				<div className="related-grid">
+				<div className="grid gap-4">
 					<DonationItemsView
 						key={`donation_item:${record.id}`}
 						donationId={record.id}

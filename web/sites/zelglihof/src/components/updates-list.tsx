@@ -6,7 +6,7 @@ import { AssetImage } from "./asset-image";
 export function UpdatesList({ updates }: { updates: UpdateSummary[] }) {
 	if (updates.length === 0) return null;
 	return (
-		<section className="shell grid gap-7 pb-24">
+		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-7 pb-24">
 			{updates.map((update, index) => (
 				<article
 					key={update.slug}

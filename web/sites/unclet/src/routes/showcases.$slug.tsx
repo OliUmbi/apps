@@ -18,7 +18,7 @@ export const Route = createFileRoute("/showcases/$slug")({
 function ShowcasePage() {
 	const showcase = Route.useLoaderData();
 	return (
-		<article className="showcase-detail shell pb-24 pt-32 md:pb-32 md:pt-36">
+		<article className="showcase-detail mx-auto w-[calc(100%_-_2rem)] max-w-[90rem] md:w-[calc(100%_-_5rem)] pb-24 pt-32 md:pb-32 md:pt-36">
 			<Link
 				to="/showcases"
 				className="mb-12 inline-flex min-h-11 items-center gap-3 border border-brass/45 px-5 text-sm font-semibold text-brass-light transition hover:bg-brass hover:text-night"

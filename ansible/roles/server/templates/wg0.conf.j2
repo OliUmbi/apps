@@ -1,0 +1,9 @@
+[Interface]
+Address = {{ wireguard_address }}
+ListenPort = {{ wireguard_port }}
+PrivateKey = {{ vault_wireguard_server_private_key }}
+
+[Peer]
+# workstation
+PublicKey = {{ vault_wireguard_laptop_public_key }}
+AllowedIPs = 10.8.0.2/32

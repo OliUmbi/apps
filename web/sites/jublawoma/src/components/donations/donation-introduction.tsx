@@ -15,7 +15,9 @@ export function DonationIntroduction({
 			<div>
 				<p className="kicker">{m.jublawoma_donations_eyebrow()}</p>
 				<h1>{campaign.title}</h1>
-				<p className="donation-lead">{campaign.description}</p>
+				<p className="max-w-[50rem] text-[1.1rem] leading-[1.7] text-[#686b5d]">
+					{campaign.description}
+				</p>
 			</div>
 			<div className="donation-meta">
 				<span>

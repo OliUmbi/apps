@@ -4,7 +4,7 @@ import { MediaImage } from "./media-image";
 export function StoryGallery({ images }: { images: ContentImage[] }) {
 	if (!images.length) return null;
 	return (
-		<section className="shell media-gallery">
+		<section className="mx-auto w-[min(100%_-_2rem,1240px)] media-gallery">
 			{images.map((image) => (
 				<MediaImage
 					key={image.id}

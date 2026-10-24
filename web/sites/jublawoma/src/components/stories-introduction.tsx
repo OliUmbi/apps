@@ -3,7 +3,7 @@ import { Camera } from "lucide-react";
 
 export function StoriesIntroduction() {
 	return (
-		<section className="shell stories-page compact">
+		<section className="mx-auto w-[min(100%_-_2rem,1240px)] stories-page compact">
 			<div>
 				<p className="kicker">{m.jublawoma_stories_eyebrow()}</p>
 				<h1>

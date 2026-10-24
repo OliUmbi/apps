@@ -3,7 +3,7 @@ import { Download } from "lucide-react";
 
 export function EventsIntroduction() {
 	return (
-		<section className="page-hero shell">
+		<section className="page-hero mx-auto w-[min(100%_-_2rem,1240px)]">
 			<div>
 				<p className="kicker">{m.jublawoma_events_eyebrow()}</p>
 				<h1>

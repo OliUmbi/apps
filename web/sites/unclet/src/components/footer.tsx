@@ -5,7 +5,7 @@ import { ArrowUpRight } from "lucide-react";
 export default function Footer() {
 	return (
 		<footer className="border-t border-bone/10 bg-night py-14">
-			<div className="shell grid gap-12 md:grid-cols-[1.5fr_1fr_1fr]">
+			<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[90rem] md:w-[calc(100%_-_5rem)] grid gap-12 md:grid-cols-[1.5fr_1fr_1fr]">
 				<div>
 					<p className="font-serif text-4xl">{m.unclet_brand()}</p>
 					<p className="mt-4 max-w-sm text-sm leading-relaxed text-bone/55">
@@ -13,7 +13,9 @@ export default function Footer() {
 					</p>
 				</div>
 				<div className="text-sm leading-7 text-bone/60">
-					<p className="eyebrow mb-3 text-brass">{m.contact()}</p>
+					<p className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.18em] mb-3 text-brass">
+						{m.contact()}
+					</p>
 					<p>{m.unclet_footer_company_contact()}</p>
 					<p>{m.unclet_footer_address()}</p>
 					<a
@@ -24,7 +26,9 @@ export default function Footer() {
 					</a>
 				</div>
 				<div className="flex flex-col items-start gap-3 text-sm text-bone/60">
-					<p className="eyebrow mb-1 text-brass">{m.unclet_footer_more()}</p>
+					<p className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.18em] mb-1 text-brass">
+						{m.unclet_footer_more()}
+					</p>
 					<a
 						href="https://www.instagram.com/unclet_gmbh/"
 						target="_blank"

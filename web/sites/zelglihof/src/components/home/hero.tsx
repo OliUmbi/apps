@@ -8,15 +8,21 @@ export function Hero({
 	featuredProduct?: ProductSummary;
 }) {
 	return (
-		<section className="shell grid gap-5 pt-5 lg:grid-cols-[1.05fr_0.95fr] lg:pt-8">
+		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-5 pt-5 lg:grid-cols-[1.05fr_0.95fr] lg:pt-8">
 			<div className="relative flex min-h-[34rem] flex-col justify-between overflow-hidden rounded-[2rem] bg-forest p-7 text-cream md:p-11 lg:min-h-[42rem]">
 				<div className="absolute -right-24 -top-20 size-72 rounded-full border border-white/10" />
 				<div className="absolute -right-10 top-10 size-44 rounded-full border border-white/10" />
-				<p className="eyebrow relative text-sun">
-					{m.zelglihof_home_hero_eyebrow()}
-				</p>
+				<div className="relative flex flex-wrap items-center gap-x-4 gap-y-2">
+					<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-sun">
+						{m.zelglihof_home_hero_eyebrow()}
+					</p>
+					<p className="inline-flex items-center gap-2 rounded-full border border-sun/45 px-3.5 py-1.5 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-sun">
+						<span className="size-1.5 rounded-full bg-sun" aria-hidden="true" />
+						{m.zelglihof_home_hero_notice()}
+					</p>
+				</div>
 				<div className="relative">
-					<h1 className="display-title max-w-xl text-[clamp(4.2rem,9vw,7.8rem)]">
+					<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] max-w-xl text-[clamp(4.2rem,9vw,7.8rem)]">
 						{m.zelglihof_home_hero_title()}
 						<br />
 						<span className="text-sun">
@@ -27,13 +33,16 @@ export function Hero({
 						{m.zelglihof_home_hero_description()}
 					</p>
 					<div className="mt-8 flex flex-wrap gap-3">
-						<Link to="/products" className="button-light">
+						<Link
+							to="/products"
+							className="inline-flex min-h-12 items-center justify-center gap-[0.55rem] rounded-full border border-transparent bg-cream px-[1.15rem] py-3 text-[0.9rem] font-[720] leading-none text-ink transition hover:-translate-y-0.5 hover:bg-sun"
+						>
 							{m.zelglihof_home_reserve()}
 							<ArrowRight size={17} />
 						</Link>
 						<Link
 							to="/about"
-							className="button-secondary border-white/25 text-cream hover:border-white hover:bg-white/10"
+							className="inline-flex min-h-12 items-center justify-center gap-[0.55rem] rounded-full border border-forest/35 bg-transparent px-[1.15rem] py-3 text-[0.9rem] font-[720] leading-none transition hover:border-forest hover:bg-white/35 border-white/25 text-cream hover:border-white hover:bg-white/10"
 						>
 							{m.zelglihof_home_discover_farm()}
 						</Link>
@@ -49,7 +58,7 @@ export function Hero({
 			</div>
 			<div className="relative min-h-[32rem] overflow-hidden rounded-[2rem] lg:min-h-[42rem]">
 				<img
-					src="/images/demo/demo-hof.jpg"
+					src="/images/spinat-beregnung.jpg"
 					alt={m.zelglihof_home_farm_alt()}
 					className="absolute inset-0 h-full w-full object-cover"
 				/>

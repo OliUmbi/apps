@@ -10,7 +10,7 @@ export function ProfileView() {
 	const get = useServerFn(getProfile);
 	const profile = useQuery({ queryKey: ["profile"], queryFn: () => get() });
 	return (
-		<div className="content-stack workspace-page">
+		<div className="grid gap-[22px] w-full">
 			<header className="page-heading">
 				<div>
 					<p className="page-kicker">{m.studio_personal_workspace()}</p>
@@ -21,7 +21,7 @@ export function ProfileView() {
 			{profile.isPending ? <p>{m.loading()}</p> : null}
 			<FormFeedback error={profile.isError ? m.error_generic() : null} />
 			{profile.data ? (
-				<div className="settings-grid">
+				<div className="grid grid-cols-2 gap-4 items-start max-[760px]:grid-cols-1">
 					<ProfileDetailsForm
 						key={profile.data.account.id}
 						account={profile.data.account}

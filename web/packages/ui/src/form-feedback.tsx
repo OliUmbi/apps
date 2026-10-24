@@ -9,7 +9,7 @@ export function FormFeedback({
 		return (
 			<p
 				role="alert"
-				className="rounded-lg border border-red-500/30 p-3 text-sm text-red-500"
+				className="rounded-lg border border-danger/30 p-3 text-sm text-danger"
 			>
 				{error}
 			</p>

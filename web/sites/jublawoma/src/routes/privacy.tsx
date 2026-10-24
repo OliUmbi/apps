@@ -5,7 +5,7 @@ import { Download } from "lucide-react";
 export const Route = createFileRoute("/privacy")({ component: Privacy });
 function Privacy() {
 	return (
-		<section className="shell legal">
+		<section className="mx-auto w-[min(100%_-_2rem,1240px)] legal">
 			<p className="kicker">{m.jublawoma_privacy_eyebrow()}</p>
 			<h1>{m.privacy()}</h1>
 			<p>{m.jublawoma_privacy_personal_data_body()}</p>

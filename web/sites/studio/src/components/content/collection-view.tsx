@@ -81,7 +81,7 @@ export function CollectionView<Row, Input = never>({
 
 	return (
 		<section
-			className={inline ? "related-panel content-stack" : "content-stack"}
+			className={inline ? "related-panel grid gap-[22px]" : "grid gap-[22px]"}
 		>
 			<header className="page-heading">
 				{inline ? <h3>{title}</h3> : <h1>{title}</h1>}

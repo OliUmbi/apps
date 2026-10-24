@@ -29,7 +29,7 @@ export function MessagesView() {
 
 	const messages = query.data?.pages.flatMap((page) => page.items) ?? [];
 	return (
-		<div className="content-stack">
+		<div className="grid gap-[22px]">
 			<header className="page-heading">
 				<div>
 					<p className="page-kicker">SYSTEM / DELIVERY</p>

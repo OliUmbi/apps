@@ -23,14 +23,14 @@ export function EventPlanning() {
 	];
 
 	return (
-		<section className="shell py-24 md:py-32">
+		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[90rem] md:w-[calc(100%_-_5rem)] py-24 md:py-32">
 			<div className="grid gap-12 lg:grid-cols-2">
 				<div className="image-treatment min-h-[520px]">
 					<img src="/images/buffet.jpg" alt={m.unclet_services_buffet_alt()} />
 				</div>
 				<div className="flex items-center lg:px-12">
 					<div>
-						<p className="eyebrow text-brass">
+						<p className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-brass">
 							{m.unclet_services_planning_title()}
 						</p>
 						<div className="mt-10">
@@ -49,7 +49,10 @@ export function EventPlanning() {
 								</div>
 							))}
 						</div>
-						<Link to="/inquiry" className="button-primary mt-8">
+						<Link
+							to="/inquiry"
+							className="inline-flex min-h-[3.25rem] items-center justify-center gap-[0.65rem] border border-transparent bg-brass px-[1.6rem] py-[0.9rem] text-[0.78rem] font-bold uppercase tracking-[0.11em] text-night transition-colors hover:bg-brass-light mt-8"
+						>
 							{m.unclet_services_discuss_event()}
 							<ArrowRight size={17} />
 						</Link>

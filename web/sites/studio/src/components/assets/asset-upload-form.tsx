@@ -21,7 +21,7 @@ export function AssetUploadForm({
 	const creation = useMutation({ mutationFn: upload, onSuccess: onUploaded });
 	return (
 		<Form
-			className="panel grid gap-4 p-6"
+			className="overflow-hidden rounded-md border border-border-soft bg-surface grid gap-4 p-6"
 			onChange={() => {
 				if (creation.isSuccess || creation.isError) creation.reset();
 			}}

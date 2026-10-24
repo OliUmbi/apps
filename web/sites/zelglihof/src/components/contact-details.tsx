@@ -1,14 +1,17 @@
 import { m } from "@oliumbi/i18n/messages";
 import { ArrowUpRight, Clock3, MapPin } from "lucide-react";
+import { farmMapLink } from "../model/location";
 import { ContactForm } from "./contact-form";
 
 export function ContactDetails() {
 	return (
 		<>
-			<section className="shell py-14 md:py-24">
-				<p className="eyebrow text-clay">{m.contact()}</p>
+			<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] py-14 md:py-24">
+				<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-clay">
+					{m.contact()}
+				</p>
 				<div className="mt-5 grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-end">
-					<h1 className="display-title text-6xl md:text-8xl">
+					<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] text-6xl md:text-8xl">
 						{m.zelglihof_contact_hero_title()}
 						<br />
 						{m.zelglihof_contact_hero_title_accent()}
@@ -18,7 +21,7 @@ export function ContactDetails() {
 					</p>
 				</div>
 			</section>
-			<section className="shell grid gap-6 pb-24 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+			<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-6 pb-24 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
 				<div className="grid gap-5">
 					<div className="rounded-[2rem] bg-forest p-7 text-cream md:p-9">
 						<MapPin className="text-sun" size={30} />
@@ -28,10 +31,10 @@ export function ContactDetails() {
 							{m.zelglihof_postal_address()}
 						</h2>
 						<a
-							href="https://www.openstreetmap.org/search?query=Zelgliweg%202%2C%205506%20M%C3%A4genwil"
+							href={farmMapLink}
 							target="_blank"
-							rel="noreferrer"
-							className="button-light mt-7"
+							rel="noopener noreferrer"
+							className="inline-flex min-h-12 items-center justify-center gap-[0.55rem] rounded-full border border-transparent bg-cream px-[1.15rem] py-3 text-[0.9rem] font-[720] leading-none text-ink transition hover:-translate-y-0.5 hover:bg-sun mt-7"
 						>
 							{m.zelglihof_contact_directions()}
 							<ArrowUpRight size={17} />

@@ -22,12 +22,12 @@ export function ServiceFormats() {
 
 	return (
 		<section id="angebot" className="bg-paper py-24 text-night md:py-36">
-			<div className="shell">
+			<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[90rem] md:w-[calc(100%_-_5rem)]">
 				<div className="grid gap-12 md:grid-cols-[.8fr_1.2fr] md:items-end">
-					<p className="eyebrow text-brass">
+					<p className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-brass">
 						{m.unclet_home_services_eyebrow()}
 					</p>
-					<h2 className="display-title text-5xl md:text-7xl">
+					<h2 className="font-serif font-medium leading-[0.95] tracking-[-0.045em] text-5xl md:text-7xl">
 						{m.unclet_home_services_title()}
 						<br />
 						{m.unclet_home_services_title_accent()}

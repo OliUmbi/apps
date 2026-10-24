@@ -7,6 +7,7 @@ import { useState } from "react";
 const links = [
 	{ label: m.zelglihof_updates, to: "/latest" },
 	{ label: m.zelglihof_shop, to: "/products" },
+	{ label: m.zelglihof_crops_nav, to: "/crops" },
 	{ label: m.zelglihof_farm, to: "/about" },
 	{ label: m.contact, to: "/contact" },
 ];
@@ -14,7 +15,7 @@ const links = [
 export default function Header() {
 	return (
 		<header className="sticky top-0 z-40 border-b border-forest/10 bg-oat/90 backdrop-blur-xl">
-			<div className="shell flex h-20 items-center justify-between gap-6">
+			<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] flex h-20 items-center justify-between gap-6">
 				<Brand />
 				<nav
 					className="hidden items-center gap-7 lg:flex"
@@ -31,7 +32,10 @@ export default function Header() {
 					))}
 				</nav>
 				<div className="hidden lg:block">
-					<Link to="/products" className="button-primary">
+					<Link
+						to="/products"
+						className="inline-flex min-h-12 items-center justify-center gap-[0.55rem] rounded-full border border-transparent bg-forest px-[1.15rem] py-3 text-[0.9rem] font-[720] leading-none text-cream transition hover:-translate-y-0.5 hover:bg-[#172f20]"
+					>
 						{m.zelglihof_navigation_reserve_meat()}
 						<ArrowUpRight size={17} />
 					</Link>

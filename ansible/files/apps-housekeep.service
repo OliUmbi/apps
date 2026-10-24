@@ -1,0 +1,7 @@
+[Unit]
+Description=OliUmbi apps housekeeping
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/apps-housekeep.sh
+Nice=10

@@ -35,7 +35,7 @@ export function AccountPermissions({ accountId }: { accountId: string }) {
 					<p>{m.studio_permissions_help()}</p>
 				</div>
 			</header>
-			<div className="permission-list">
+			<div className="grid gap-px overflow-hidden rounded-[5px] border border-border-soft bg-border-soft">
 				{permissionSchema.options.map((value) => (
 					<Field.Root key={value} className="permission-row">
 						<Checkbox.Root
@@ -50,7 +50,7 @@ export function AccountPermissions({ accountId }: { accountId: string }) {
 									data: { id: accountId, permission: value, granted },
 								})
 							}
-							className="studio-checkbox"
+							className="grid size-5 place-items-center rounded border border-[#55545e] bg-[#0d0d0f] data-checked:border-accent data-checked:bg-accent"
 						>
 							<Checkbox.Indicator>
 								<Check size={13} aria-hidden="true" />

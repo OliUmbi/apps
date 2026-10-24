@@ -23,11 +23,11 @@ export function SiteSwitcher({
 			</Menu.Trigger>
 			<Menu.Portal>
 				<Menu.Positioner className="z-70" sideOffset={6}>
-					<Menu.Popup className="studio-menu">
+					<Menu.Popup className="w-60 rounded-md border border-[#35353b] bg-[#141416] p-[5px] text-primary shadow-[0_16px_42px_rgb(0_0_0/38%)]">
 						{sites.map((item) => (
 							<Menu.Item
 								key={item.id}
-								className="studio-menu-item"
+								className="flex min-h-9 items-center gap-2 rounded px-[9px] text-sm cursor-pointer data-highlighted:bg-[#202024] data-highlighted:outline-none"
 								onClick={() => onSelect(item.id)}
 							>
 								<span className="flex-1">{item.name}</span>

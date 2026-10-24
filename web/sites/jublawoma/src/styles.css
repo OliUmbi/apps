@@ -7,8 +7,10 @@
 	--color-oat: #f5f0e6;
 	--color-clay: #a46f51;
 	--color-sage: #d0d8c3;
+	--color-danger: #b91c1c;
 }
 
+/* Base element styles: not expressible as utilities. */
 :root {
 	color: #343d30;
 	background: #f5f0e6;
@@ -46,10 +48,37 @@ img {
 	color: white;
 	background: var(--wine);
 }
-.shell {
-	width: min(100% - 2rem, 1240px);
-	margin-inline: auto;
-}
+
+/*
+ * The rules below stay in CSS deliberately:
+ * - `.shell` is used on 29 wrappers; inlining it would bloat every layout
+ *   container for two utilities.
+ * - `.kicker`, `.button` and `.nav-cta` are referenced by sibling/descendant
+ *   selectors below (`p:not(.kicker)`, `.page-hero .button`,
+ *   `a:not(.nav-cta)`); dropping the class names would leak those rules onto
+ *   the wrong elements, and they are used 24/11/2 times.
+ * - `.brand`, `.site-nav`, `.page-hero`, `.stories-page`, `.split-body`,
+ *   `.contact-card`, `.event-list`, `.steps`, `.status-page`, `.footer-grid`,
+ *   `.story-art`, `.story-grid`, `.content-image-fallback`,
+ *   `.story-detail-header`, `.story-cover`, `.media-gallery`, `.honest-empty`,
+ *   `.promotion-body`, `.donation-focus`, `.donation-meta`,
+ *   `.donation-items-heading`, `.donation-item`, `.donation-item-body`,
+ *   `.donation-progress`, `.donation-remaining`, `.donation-action`,
+ *   `.donation-form` and `.legal` anchor descendant/child rules; converting
+ *   the anchor would orphan its children. Their `:hover`/modifier states
+ *   (`.button.light`, `.kicker.light`, `.stories-page.compact`,
+ *   `.donation-item.is-selected`, `img.photo`) stay with them for the same
+ *   reason and to preserve the unlayered precedence over utilities.
+ * - `.markdown-content` styles HTML emitted by the markdown renderer, which
+ *   cannot carry utility classes.
+ * - `.site-header` and `.promotion-card` would each become ~12-utility
+ *   strings (viewport-calc padding, hover transform + shadow); clearer as
+ *   named rules.
+ * - `.event-image` and `.promotion-card` have responsive overrides whose
+ *   precedence depends on source order (e.g. the 520px rule must beat the
+ *   850px rule for event images), safer as ordered CSS than as competing
+ *   `max-[...]` variants.
+ */
 .kicker {
 	margin: 0;
 	color: var(--wine);
@@ -129,15 +158,6 @@ img {
 	color: #343d30;
 	background: #e3d4af;
 }
-.menu-button {
-	@apply text-bark;
-	display: none;
-	width: 44px;
-	height: 44px;
-	place-items: center;
-	border: 0;
-	background: none;
-}
 .page-hero h1,
 .stories-page h1 {
 	margin: 1.2rem 0;
@@ -167,32 +187,6 @@ img {
 	color: white;
 	background: var(--dark);
 }
-.text-link {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.5rem;
-	border-bottom: 2px solid currentColor;
-	padding: 0.45rem 0;
-	font-size: 0.78rem;
-	font-weight: 800;
-}
-.text-link.light {
-	color: white;
-}
-.round-link {
-	display: grid;
-	width: 52px;
-	height: 52px;
-	flex: 0 0 auto;
-	place-items: center;
-	border-radius: 50%;
-	color: white;
-	background: var(--wine);
-}
-.next-event {
-	@apply bg-sage/40;
-	border-bottom: 1px solid var(--line);
-}
 .split-body h2,
 .contact-card h2 {
 	margin: 0;
@@ -200,19 +194,9 @@ img {
 	letter-spacing: -0.06em;
 	line-height: 0.95;
 }
-.page-title-accent {
-	color: var(--wine);
-	font-family: Georgia, serif;
-	font-style: italic;
-	font-weight: 400;
-}
-.contact-card,
-.network {
+.contact-card {
 	color: white;
 	background: var(--wine);
-}
-.network {
-	@apply bg-moss text-oat;
 }
 .page-hero {
 	display: grid;
@@ -270,16 +254,6 @@ img {
 	gap: 0.5rem;
 	color: #706b67;
 }
-.event-number {
-	align-self: start;
-	padding-top: 2rem;
-	color: var(--wine);
-	font-size: 0.7rem;
-	font-weight: 900;
-}
-.event-icon {
-	color: var(--wine);
-}
 .split-body {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
@@ -294,9 +268,6 @@ img {
 	color: #68645f;
 	font-size: 1.05rem;
 	line-height: 1.75;
-}
-.network {
-	padding-block: 5rem;
 }
 .steps {
 	display: grid;
@@ -420,32 +391,13 @@ img {
 	overflow-wrap: anywhere;
 	letter-spacing: -0.06em;
 }
-.status-page-description {
-	max-width: 560px;
-	margin: 0 0 2rem;
-	color: #68645f;
-	font-size: 1.05rem;
-	line-height: 1.7;
-}
 .status-page > img {
 	width: min(100%, 380px);
-}
-.footer {
-	padding-block: 5rem;
-	color: #c8c8cb;
-	background: var(--dark);
 }
 .footer-grid {
 	display: grid;
 	grid-template-columns: 1.3fr 1fr 0.6fr;
 	gap: 4rem;
-}
-.footer-title {
-	margin: 0 0 2rem;
-	color: white;
-	font-size: 2rem;
-	font-weight: 900;
-	letter-spacing: -0.04em;
 }
 .footer-grid > div {
 	display: flex;
@@ -466,9 +418,6 @@ img {
 @media (max-width: 850px) {
 	.site-header {
 		min-height: 68px;
-	}
-	.menu-button {
-		display: grid;
 	}
 	.site-nav {
 		display: none;
@@ -503,9 +452,6 @@ img {
 	}
 	.event-image {
 		height: 140px;
-	}
-	.event-icon {
-		display: none;
 	}
 	.split-body {
 		gap: 2rem;
@@ -549,9 +495,6 @@ img {
 	}
 	.event-image {
 		height: 180px;
-	}
-	.event-number {
-		padding: 0;
 	}
 	.page-hero h1,
 	.stories-page h1 {
@@ -659,11 +602,6 @@ img {
 	padding-block: 7rem 4rem;
 	text-align: center;
 }
-.story-author {
-	margin: 0.75rem 0 0;
-	color: var(--wine);
-	font-weight: 800;
-}
 /* biome-ignore lint/style/noDescendingSpecificity: This selector is unrelated to the earlier event-list rule. */
 .story-detail-header > p:last-child {
 	max-width: 700px;
@@ -681,10 +619,6 @@ img {
 	max-height: 700px;
 	aspect-ratio: 16 / 9;
 	object-fit: cover;
-}
-.detail-body {
-	max-width: 780px;
-	padding-block: 5rem;
 }
 .markdown-content {
 	color: #403d39;
@@ -755,9 +689,6 @@ img {
 	}
 }
 
-.promotion-list {
-	padding-block: 2rem 5rem;
-}
 .promotion-card {
 	display: grid;
 	overflow: hidden;
@@ -772,10 +703,6 @@ img {
 .promotion-card:hover {
 	transform: translateY(-4px);
 	box-shadow: 0 24px 70px rgb(52 61 48 / 12%);
-}
-.promotion-image {
-	min-height: 18rem;
-	background: var(--blue);
 }
 .promotion-body {
 	display: flex;
@@ -794,18 +721,6 @@ img {
 	max-width: 42rem;
 	line-height: 1.7;
 }
-.promotion-link {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.5rem;
-	margin-top: 1.5rem;
-	border-bottom: 2px solid currentColor;
-	padding-bottom: 0.35rem;
-	font-weight: 800;
-}
-.donation-campaign {
-	padding-block: clamp(4rem, 9vw, 8rem);
-}
 .donation-focus {
 	display: grid;
 	gap: 3rem;
@@ -821,12 +736,6 @@ img {
 	letter-spacing: -0.075em;
 	line-height: 0.9;
 }
-.donation-lead {
-	max-width: 50rem;
-	color: #686b5d;
-	font-size: 1.1rem;
-	line-height: 1.7;
-}
 .donation-meta {
 	display: grid;
 	gap: 1rem;
@@ -840,9 +749,6 @@ img {
 }
 .donation-meta svg {
 	color: var(--wine);
-}
-.donation-items {
-	padding-top: 4rem;
 }
 .donation-items-heading {
 	display: flex;
@@ -914,12 +820,6 @@ img {
 	font-size: clamp(2rem, 4vw, 3.2rem);
 	letter-spacing: -0.05em;
 }
-.donation-select-help {
-	max-width: 42rem;
-	margin: 2rem auto 0;
-	color: #686b5d;
-	text-align: center;
-}
 .donation-form {
 	display: grid;
 	gap: 1rem;
@@ -927,19 +827,10 @@ img {
 .donation-form textarea {
 	min-height: 4rem;
 }
-.donation-complete {
-	border-radius: 1rem;
-	padding: 1.5rem;
-	background: var(--blue);
-	line-height: 1.6;
-}
 @media (max-width: 850px) {
 	.promotion-card,
 	.donation-focus {
 		grid-template-columns: 1fr;
-	}
-	.promotion-image {
-		min-height: 14rem;
 	}
 	.donation-meta {
 		border-left: 0;

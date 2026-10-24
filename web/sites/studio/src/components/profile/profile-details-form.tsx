@@ -58,7 +58,7 @@ export function ProfileDetailsForm({ account }: { account: Account }) {
 					defaultValue={account.email}
 					required
 				/>
-				<div className="settings-actions">
+				<div className="flex justify-end gap-2 border-t border-border-soft pt-[18px]">
 					<Button
 						className="button primary"
 						type="submit"

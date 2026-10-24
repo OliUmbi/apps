@@ -19,8 +19,10 @@ export function SiteNavigation({
 	onSelect: (section: string) => void;
 }) {
 	return (
-		<nav aria-label={site.name} className="site-navigation overflow-y-auto">
-			<p className="nav-caption">{site.name}</p>
+		<nav aria-label={site.name} className="p-[9px] overflow-y-auto">
+			<p className="px-2 pt-2 pb-1.5 text-xs font-semibold tracking-[0.08em] uppercase text-muted">
+				{site.name}
+			</p>
 			{site.sections.map((item) => (
 				<Button
 					key={item.id}

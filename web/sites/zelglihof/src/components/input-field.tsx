@@ -16,7 +16,7 @@ export function InputField({
 					`min-h-12 w-full rounded-xl border border-forest/20 bg-white/55 px-4 py-3 transition placeholder:text-ink/35 focus:border-clay focus:bg-white focus:outline-2 focus:outline-offset-2 disabled:opacity-50 ${(typeof className === "function" ? className(state) : className) ?? ""}`
 				}
 			/>
-			<Field.Error className="text-red-600" />
+			<Field.Error className="text-danger" />
 		</Field.Root>
 	);
 }

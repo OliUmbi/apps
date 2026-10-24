@@ -3,10 +3,10 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Egg, Sprout, Wheat } from "lucide-react";
 export function FarmIntroduction() {
 	return (
-		<section className="shell grid gap-5 py-24 md:grid-cols-[1.15fr_0.85fr] md:py-32">
+		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-5 py-24 md:grid-cols-[1.15fr_0.85fr] md:py-32">
 			<div className="relative min-h-[34rem] overflow-hidden rounded-[2rem]">
 				<img
-					src="/images/demo/demo-saat.jpg"
+					src="/images/broccoli-ernte-team.jpg"
 					alt={m.zelglihof_home_sowing_alt()}
 					className="absolute inset-0 h-full w-full object-cover"
 				/>
@@ -17,8 +17,10 @@ export function FarmIntroduction() {
 			</div>
 			<div className="flex flex-col justify-between rounded-[2rem] bg-sun p-7 md:p-10">
 				<div>
-					<p className="eyebrow">{m.zelglihof_home_family_business()}</p>
-					<h2 className="display-title mt-6 text-5xl md:text-6xl">
+					<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-['']">
+						{m.zelglihof_home_family_business()}
+					</p>
+					<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-6 text-5xl md:text-6xl">
 						{m.zelglihof_home_farm_title()}
 					</h2>
 					<p className="mt-6 text-lg leading-relaxed text-ink/70">
@@ -29,29 +31,38 @@ export function FarmIntroduction() {
 					<div>
 						<Egg className="mx-auto" size={24} />
 						<p className="mt-2 text-xs font-bold uppercase tracking-wider">
-							{m.zelglihof_home_hens()}
+							{m.zelglihof_home_fact_hens()}
 						</p>
 					</div>
 					<div>
 						<Wheat className="mx-auto" size={24} />
 						<p className="mt-2 text-xs font-bold uppercase tracking-wider">
-							{m.zelglihof_home_crops()}
+							{m.zelglihof_home_fact_crops()}
 						</p>
 					</div>
 					<div>
 						<Sprout className="mx-auto" size={24} />
 						<p className="mt-2 text-xs font-bold uppercase tracking-wider">
-							{m.zelglihof_home_seasonal()}
+							{m.zelglihof_home_fact_since()}
 						</p>
 					</div>
 				</div>
-				<Link
-					to="/about"
-					className="mt-8 inline-flex items-center gap-2 font-bold"
-				>
-					{m.zelglihof_home_about_farm()}
-					<ArrowRight size={17} />
-				</Link>
+				<div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-3">
+					<Link
+						to="/about"
+						className="inline-flex items-center gap-2 font-bold"
+					>
+						{m.zelglihof_home_about_farm()}
+						<ArrowRight size={17} />
+					</Link>
+					<Link
+						to="/crops"
+						className="inline-flex items-center gap-2 font-bold text-ink/65 hover:text-ink"
+					>
+						{m.zelglihof_farm_crops_action()}
+						<ArrowRight size={17} />
+					</Link>
+				</div>
 			</div>
 		</section>
 	);

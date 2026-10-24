@@ -21,7 +21,7 @@ function ProductsPage() {
 				initialPage={initialPage}
 				load={(page) => getProductPage({ data: { page } })}
 				emptyState={
-					<section className="shell pb-24">
+					<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] pb-24">
 						<ShopEmptyState />
 					</section>
 				}

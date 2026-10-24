@@ -1,0 +1,20 @@
+---
+- name: restart docker
+  ansible.builtin.systemd:
+    name: docker
+    state: restarted
+
+- name: restart journald
+  ansible.builtin.systemd:
+    name: systemd-journald
+    state: restarted
+
+- name: restart wireguard
+  ansible.builtin.systemd:
+    name: wg-quick@wg0
+    state: restarted
+
+- name: restart sshd
+  ansible.builtin.systemd:
+    name: sshd
+    state: restarted

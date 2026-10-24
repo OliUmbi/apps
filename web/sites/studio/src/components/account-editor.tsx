@@ -16,7 +16,7 @@ export function AccountEditor({
 	onDelete: () => void;
 }) {
 	return (
-		<div className="content-stack workspace-page">
+		<div className="grid gap-[22px] w-full">
 			<Button className="workspace-back" onClick={onClose}>
 				<ArrowLeft size={16} /> {m.studio_back_to_accounts()}
 			</Button>
@@ -27,7 +27,7 @@ export function AccountEditor({
 					<p>{m.studio_account_settings()}</p>
 				</div>
 			</header>
-			<div className="settings-grid">
+			<div className="grid grid-cols-2 gap-4 items-start max-[760px]:grid-cols-1">
 				<AccountDetailsForm account={account} />
 				<AccountPermissions accountId={account.id} />
 				<AccountPasswordForm accountId={account.id} />

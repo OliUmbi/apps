@@ -1,0 +1,82 @@
+name: publish
+
+on:
+  push:
+    tags:
+      - '*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: apps-identity
+            context: ./services
+            dockerfile: ./services/identity/Dockerfile
+          - image: apps-messaging
+            context: ./services
+            dockerfile: ./services/messaging/Dockerfile
+          - image: apps-assets
+            context: ./services
+            dockerfile: ./services/assets/Dockerfile
+          - image: apps-studio
+            context: ./web
+            dockerfile: ./web/sites/studio/Dockerfile
+          - image: apps-jublawoma
+            context: ./web
+            dockerfile: ./web/sites/jublawoma/Dockerfile
+          - image: apps-unclet
+            context: ./web
+            dockerfile: ./web/sites/unclet/Dockerfile
+          - image: apps-zelglihof
+            context: ./web
+            dockerfile: ./web/sites/zelglihof/Dockerfile
+          - image: apps-migrate
+            context: ./database
+            dockerfile: ./database/Dockerfile
+          - image: apps-caddy
+            context: ./infrastructure/caddy
+            dockerfile: ./infrastructure/caddy/Dockerfile
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: set up buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: docker login
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/oliumbi/${{ matrix.image }}
+          tags: |
+            type=ref,event=tag
+            type=sha,prefix=sha-
+            type=raw,value=latest
+
+      - name: build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

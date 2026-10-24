@@ -54,7 +54,7 @@ export function SubmissionForm<Input, Result>({
 			<FormFeedback error={form.error} />
 			<Button
 				type="submit"
-				className="button-primary disabled:opacity-50"
+				className="inline-flex min-h-[3.25rem] items-center justify-center gap-[0.65rem] border border-transparent bg-brass px-[1.6rem] py-[0.9rem] text-[0.78rem] font-bold uppercase tracking-[0.11em] text-night transition-colors hover:bg-brass-light disabled:opacity-50"
 				disabled={form.pending}
 			>
 				{form.pending ? m.saving() : submitLabel}

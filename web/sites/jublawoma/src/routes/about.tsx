@@ -7,13 +7,13 @@ export const Route = createFileRoute("/about")({ component: About });
 function About() {
 	return (
 		<>
-			<section className="page-hero shell about-hero">
+			<section className="page-hero mx-auto w-[min(100%_-_2rem,1240px)] about-hero">
 				<div>
 					<p className="kicker">{m.jublawoma_about_eyebrow()}</p>
 					<h1>
 						{m.jublawoma_about_title()}
 						<br />
-						<span className="page-title-accent">
+						<span className="font-[Georgia,serif] font-normal italic text-moss">
 							{m.jublawoma_about_title_accent()}
 						</span>
 					</h1>
@@ -25,7 +25,7 @@ function About() {
 					alt={m.jublawoma_about_leadership_alt()}
 				/>
 			</section>
-			<section className="shell split-body">
+			<section className="mx-auto w-[min(100%_-_2rem,1240px)] split-body">
 				<h2>
 					{m.jublawoma_about_training_title()}
 					<br />

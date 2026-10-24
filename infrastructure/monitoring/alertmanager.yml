@@ -1,0 +1,21 @@
+# Alertmanager routes every alert to one receiver. The url placeholder is
+# replaced by ansible from the vault (roles/app) before start -- the receiver
+# url is treated as a secret because it contains a topic/token.
+#
+# Channel is deliberately swappable:
+#   ntfy     -> webhook url (phone app subscribes to the topic; the alert
+#               body arrives as raw JSON, good enough for a first setup)
+#   email    -> replace webhook_configs with smtpl_configs (vault has SMTP)
+#   telegram -> webhook relay, or keep it empty and use Grafana alerting
+route:
+  receiver: default
+  group_by: [alertname]
+  group_wait: 1m
+  group_interval: 30m
+  repeat_interval: 12h
+
+receivers:
+  - name: default
+    webhook_configs:
+      - url: __NTFY_WEBHOOK_URL__
+        send_resolved: true

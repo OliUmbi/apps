@@ -22,7 +22,7 @@ export function ReviewCard({ review }: { review: PublicReview }) {
 				</p>
 				<Quote size={28} className="text-brass/35" aria-hidden="true" />
 			</div>
-			<p className="review-quote my-7 leading-relaxed text-bone/75">
+			<p className="font-serif text-[clamp(1.2rem,2vw,1.7rem)] my-7 leading-relaxed text-bone/75">
 				{review.description}
 			</p>
 			<footer className="border-t border-bone/10 pt-5 font-serif text-xl">

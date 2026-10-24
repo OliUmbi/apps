@@ -21,7 +21,7 @@ export function AccountPasswordForm({ accountId }: { accountId: string }) {
 			}),
 	});
 	return (
-		<section className="settings-panel settings-panel-wide">
+		<section className="settings-panel col-span-full max-[760px]:col-auto">
 			<header>
 				<KeyRound size={19} />
 				<div>
@@ -30,7 +30,7 @@ export function AccountPasswordForm({ accountId }: { accountId: string }) {
 				</div>
 			</header>
 			<Form
-				className="password-reset-form"
+				className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 max-[760px]:grid-cols-1"
 				onChange={() => {
 					if (resetPassword.isSuccess || resetPassword.isError)
 						resetPassword.reset();

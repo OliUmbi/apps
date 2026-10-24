@@ -1,0 +1,8 @@
+---
+# Deploy a published image tag:
+#   ansible-playbook playbooks/deploy.yml -e image_tag=2026.10.24
+# Rollback: same command with the previous tag.
+- name: deploy
+  hosts: server
+  roles:
+    - app

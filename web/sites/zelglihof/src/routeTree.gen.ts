@@ -12,9 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CropsRouteImport } from './routes/crops'
 import { Route as LegalRouteImport } from './routes/legal'
 import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as ServicesRouteImport } from './routes/services'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as LatestIndexRouteImport } from './routes/latest.index'
 import { Route as LatestSlugRouteImport } from './routes/latest.$slug'
@@ -40,6 +40,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CropsRoute = CropsRouteImport.update({
+  id: '/crops',
+  path: '/crops',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LegalRoute = LegalRouteImport.update({
   id: '/legal',
   path: '/legal',
@@ -48,11 +53,6 @@ const LegalRoute = LegalRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ServicesRoute = ServicesRouteImport.update({
-  id: '/services',
-  path: '/services',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -107,9 +107,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/crops': typeof CropsRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
-  '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
   '/latest/$slug': typeof LatestSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
@@ -124,9 +124,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/crops': typeof CropsRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
-  '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
   '/latest/$slug': typeof LatestSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
@@ -142,9 +142,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/crops': typeof CropsRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
-  '/services': typeof ServicesRoute
   '/terms': typeof TermsRoute
   '/latest/$slug': typeof LatestSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
@@ -161,9 +161,9 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/crops'
     | '/legal'
     | '/privacy'
-    | '/services'
     | '/terms'
     | '/latest/$slug'
     | '/products/$productId'
@@ -178,9 +178,9 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/crops'
     | '/legal'
     | '/privacy'
-    | '/services'
     | '/terms'
     | '/latest/$slug'
     | '/products/$productId'
@@ -195,9 +195,9 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/crops'
     | '/legal'
     | '/privacy'
-    | '/services'
     | '/terms'
     | '/latest/$slug'
     | '/products/$productId'
@@ -213,9 +213,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  CropsRoute: typeof CropsRoute
   LegalRoute: typeof LegalRoute
   PrivacyRoute: typeof PrivacyRoute
-  ServicesRoute: typeof ServicesRoute
   TermsRoute: typeof TermsRoute
   LatestSlugRoute: typeof LatestSlugRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
@@ -250,6 +250,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/crops': {
+      id: '/crops'
+      path: '/crops'
+      fullPath: '/crops'
+      preLoaderRoute: typeof CropsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/legal': {
       id: '/legal'
       path: '/legal'
@@ -262,13 +269,6 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/services': {
-      id: '/services'
-      path: '/services'
-      fullPath: '/services'
-      preLoaderRoute: typeof ServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -341,9 +341,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  CropsRoute: CropsRoute,
   LegalRoute: LegalRoute,
   PrivacyRoute: PrivacyRoute,
-  ServicesRoute: ServicesRoute,
   TermsRoute: TermsRoute,
   LatestSlugRoute: LatestSlugRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,

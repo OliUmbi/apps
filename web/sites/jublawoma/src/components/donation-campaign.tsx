@@ -19,9 +19,9 @@ export function DonationCampaign({
 	const selected = items.find((item) => item.id === selectedId);
 
 	return (
-		<section className="donation-campaign shell">
+		<section className="mx-auto w-[min(100%_-_2rem,1240px)] py-[clamp(4rem,9vw,8rem)]">
 			<DonationIntroduction campaign={campaign} />
-			<div className="donation-items">
+			<div className="pt-16">
 				<div className="donation-items-heading">
 					<HeartHandshake size={28} aria-hidden="true" />
 					<div>
@@ -46,7 +46,7 @@ export function DonationCampaign({
 						item={selected}
 					/>
 				) : availableItems.length ? (
-					<p className="donation-select-help">
+					<p className="mx-auto mt-8 max-w-[42rem] text-center text-[#686b5d]">
 						{m.jublawoma_donation_select_help()}
 					</p>
 				) : null}

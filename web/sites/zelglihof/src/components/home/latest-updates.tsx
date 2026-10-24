@@ -5,13 +5,16 @@ import type { UpdateSummary } from "../../model/content";
 import { AssetImage } from "../asset-image";
 export function LatestUpdates({ updates }: { updates: UpdateSummary[] }) {
 	return (
-		<section id="aktuell" className="shell py-24 md:py-32">
+		<section
+			id="aktuell"
+			className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] py-24 md:py-32"
+		>
 			<div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:items-end">
 				<div>
-					<p className="eyebrow text-clay">
+					<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-clay">
 						{m.zelglihof_home_updates_eyebrow()}
 					</p>
-					<h2 className="display-title mt-5 text-5xl md:text-6xl">
+					<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-5xl md:text-6xl">
 						{m.zelglihof_home_updates_title()}
 					</h2>
 				</div>
@@ -33,7 +36,7 @@ export function LatestUpdates({ updates }: { updates: UpdateSummary[] }) {
 					<div className="updates-empty md:col-span-3">
 						<Sprout size={34} aria-hidden="true" />
 						<div>
-							<p className="eyebrow text-clay">
+							<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-clay">
 								{m.zelglihof_updates_empty_eyebrow()}
 							</p>
 							<h3 className="mt-3 font-serif text-3xl font-bold">

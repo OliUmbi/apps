@@ -7,7 +7,7 @@ import { MediaImage } from "./media-image";
 export function StoriesList({ stories }: { stories: StorySummary[] }) {
 	if (stories.length === 0) return null;
 	return (
-		<section className="shell story-grid">
+		<section className="mx-auto w-[min(100%_-_2rem,1240px)] story-grid">
 			{stories.map((story) => (
 				<Link to="/stories/$slug" params={{ slug: story.slug }} key={story.id}>
 					<article>

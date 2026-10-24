@@ -1,0 +1,9 @@
+---
+# Run a backup now instead of waiting for the nightly timer.
+- name: backup now
+  hosts: server
+  gather_facts: false
+  tasks:
+    - name: run backup
+      ansible.builtin.command: /usr/local/sbin/apps-backup.sh
+      changed_when: true

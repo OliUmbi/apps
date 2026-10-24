@@ -5,8 +5,8 @@ import { ArrowLeft, ScanLine } from "lucide-react";
 export function NotFound() {
 	return (
 		<main className="login-page">
-			<div className="login-panel not-found-panel">
-				<div className="login-brand">
+			<div className="relative w-[min(100%,390px)] rounded-xl border border-border bg-[rgb(21_21_24/92%)] shadow-[0_30px_90px_rgb(0_0_0/45%),inset_0_1px_rgb(255_255_255/4%)] not-found-panel">
+				<div className="flex items-center gap-2.5 border-b border-border-soft px-5 py-[17px] text-sm font-semibold">
 					<span className="brand-mark large">O</span>
 					{m.studio_brand()}
 				</div>

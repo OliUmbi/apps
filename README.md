@@ -15,8 +15,10 @@ shared PostgreSQL schema.
 | Messaging | Email queue and delivery history | <http://localhost:8082> |
 | Assets | Image and document storage | <http://localhost:8083> |
 
-The web workspace is documented in [web/README.md](web/README.md), the Java
-reactor in [services/README.md](services/README.md), and outstanding work in
+Start with [documentation/README.md](documentation/README.md) for the reading
+order. The web workspace is documented in
+[web/README.md](web/README.md), the Java reactor in
+[services/README.md](services/README.md), and outstanding work in
 [documentation/open-work.md](documentation/open-work.md).
 
 ## Local development

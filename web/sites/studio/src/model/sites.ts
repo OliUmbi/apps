@@ -21,7 +21,7 @@ const siteDetails = [
 	{
 		id: "zelglihof",
 		name: "Zelglihof",
-		domain: "zelglihof.ch",
+		domain: "zelglihof-maegenwil.ch",
 		short: "ZH",
 		accent: "#7ca680",
 	},

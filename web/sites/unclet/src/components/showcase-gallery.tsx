@@ -17,7 +17,7 @@ export function ShowcaseGallery({
 				alt={cover?.alt ?? title}
 				loading="eager"
 				sizes="(min-width: 1024px) 64vw, 100vw"
-				className="showcase-cover w-full object-cover"
+				className="aspect-[4/5] min-h-[30rem] max-sm:min-h-[24rem] w-full object-cover"
 			/>
 			{images.length > 0 && (
 				<div className="grid gap-4 sm:grid-cols-2">

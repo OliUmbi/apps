@@ -72,7 +72,7 @@ export function ShowcasesView() {
 				},
 			]}
 			renderRelated={(record) => (
-				<div className="related-grid">
+				<div className="grid gap-4">
 					<ShowcaseImagesView
 						key={`showcase_image:${record.id}`}
 						showcaseId={record.id}

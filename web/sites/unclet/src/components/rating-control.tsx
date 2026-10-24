@@ -12,7 +12,7 @@ export function RatingControl({
 	disabled: boolean;
 }) {
 	const maximum = field.max ?? 5;
-	const [rating, setRating] = useState(maximum);
+	const [rating, setRating] = useState<number | null>(null);
 	return (
 		<Field.Root name={field.name} className="grid gap-3">
 			<Field.Label className="font-medium">{field.label}</Field.Label>
@@ -25,7 +25,9 @@ export function RatingControl({
 					(value) => (
 						<label
 							key={value}
-							className={value <= rating ? "is-active" : undefined}
+							className={
+								rating !== null && value <= rating ? "is-active" : undefined
+							}
 						>
 							<input
 								type="radio"
@@ -33,6 +35,7 @@ export function RatingControl({
 								value={value}
 								checked={rating === value}
 								disabled={disabled}
+								required={field.required && value === 1}
 								onChange={() => setRating(value)}
 								aria-label={m.star_rating({ rating: value, maximum })}
 							/>

@@ -43,7 +43,7 @@ export function ImageThumbnail({
 			src={`/api/assets/${encodeURIComponent(id)}?site=${encodeURIComponent(site)}&size=xs`}
 			alt=""
 			loading="lazy"
-			className="table-thumbnail"
+			className="block h-[46px] w-[68px] rounded-md object-cover"
 		/>
 	) : null;
 }

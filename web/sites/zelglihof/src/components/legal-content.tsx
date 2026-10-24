@@ -11,9 +11,13 @@ function LegalPage({
 	children: ReactNode;
 }) {
 	return (
-		<article className="shell max-w-4xl py-14 md:py-24">
-			<p className="eyebrow text-clay">{eyebrow}</p>
-			<h1 className="display-title mt-5 text-6xl md:text-7xl">{title}</h1>
+		<article className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] max-w-4xl py-14 md:py-24">
+			<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-clay">
+				{eyebrow}
+			</p>
+			<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-6xl md:text-7xl">
+				{title}
+			</h1>
 			<div className="mt-14 space-y-10 rounded-[2rem] bg-cream p-7 leading-relaxed text-ink/68 md:p-12 [&_h2]:font-serif [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:text-ink [&_p]:mt-3 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-5">
 				{children}
 			</div>

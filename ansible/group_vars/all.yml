@@ -1,0 +1,47 @@
+---
+# Non-secret configuration. Secrets live in group_vars/vault.yml
+# (create with: ansible-vault create group_vars/vault.yml), see
+# vault.yml.example for the expected keys.
+
+# paths on the server
+project_dir: /apps
+textfile_dir: /var/lib/node-exporter-textfile
+
+# wireguard
+wireguard_subnet: 10.8.0.0/24
+wireguard_address: 10.8.0.1/24
+wireguard_port: 51820
+# sshd is only bound to the wireguard address when this is true.
+# Verify provider console/KVM access before enabling.
+restrict_ssh: false
+
+# deploy
+image_tag: "latest" # override per deploy: -e image_tag=2026.10.24
+
+# backup
+backup_dir: /var/backups/apps
+backup_keep: 3 # local rotating copies
+backup_hour: 3
+
+# housekeeping
+housekeep_hour: 4
+housekeep_day: sun
+
+# monitoring: admin interfaces bind to the wireguard address only
+monitoring_bind: "{{ wireguard_address.split('/')[0] }}"
+
+# dns: A records kept pointing at this server by the dyndns timer.
+# Create them once in the Infomaniak manager; the timer only updates them.
+dyndns_records:
+  - jublawoma.ch
+  - www.jublawoma.ch
+  - uncle-t.ch
+  - www.uncle-t.ch
+  - zelglihof-maegenwil.ch
+  - www.zelglihof-maegenwil.ch
+  - oliumbi.ch
+  - www.oliumbi.ch
+  - vpn.oliumbi.ch # wireguard endpoint for the laptop
+
+# repository root, for copying compose/config files to the server
+repo_root: "{{ playbook_dir | dirname | dirname }}"

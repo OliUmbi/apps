@@ -4,7 +4,9 @@ import { Mail, MapPin } from "lucide-react";
 export function InquiryContact() {
 	return (
 		<aside className="lg:col-start-1 lg:row-start-1">
-			<p className="eyebrow text-brass">{m.unclet_inquiry_contact_title()}</p>
+			<p className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-brass">
+				{m.unclet_inquiry_contact_title()}
+			</p>
 			<div className="mt-8 space-y-6 text-bone/60">
 				<a
 					href="mailto:info@uncle-t.ch"
@@ -24,7 +26,7 @@ export function InquiryContact() {
 					</p>
 				</div>
 			</div>
-			<div className="rule mt-10" />
+			<div className="h-px bg-linear-to-r from-brass to-brass/0 mt-10" />
 			<p className="mt-6 text-sm leading-relaxed text-bone/45">
 				{m.unclet_inquiry_service_area_body()}
 			</p>

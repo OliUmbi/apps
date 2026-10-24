@@ -10,7 +10,7 @@ export function Promotions() {
 	});
 	if (!query.data?.length) return null;
 	return (
-		<div className="shell grid gap-4 py-6">
+		<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-4 py-6">
 			{query.data.map((promotion) => (
 				<a
 					key={promotion.id}

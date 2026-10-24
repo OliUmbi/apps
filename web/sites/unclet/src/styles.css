@@ -14,8 +14,10 @@
 	--color-brass: #b99a5b;
 	--color-brass-light: #dbc38f;
 	--color-smoke: #aaa69d;
+	--color-danger: #f87171;
 }
 
+/* Base element styles: not expressible as utilities. */
 :root {
 	color-scheme: dark;
 	color: #f2eee5;
@@ -37,7 +39,7 @@ body {
 body::before {
 	position: fixed;
 	inset: 0;
-	z-index: 50;
+	z-index: -1;
 	pointer-events: none;
 	content: "";
 	opacity: 0.035;
@@ -62,65 +64,16 @@ img {
 	background: #b99a5b;
 }
 
-.shell {
-	width: min(100% - 2rem, 1440px);
-	margin-inline: auto;
-}
-.measure {
-	width: min(100% - 2rem, 920px);
-	margin-inline: auto;
-}
-.eyebrow {
-	font-family: var(--font-mono);
-	font-size: 0.72rem;
-	font-weight: 600;
-	letter-spacing: 0.18em;
-	text-transform: uppercase;
-}
-.display-title {
-	font-family: var(--font-serif);
-	font-weight: 500;
-	letter-spacing: -0.045em;
-	line-height: 0.95;
-}
-.button-primary,
-.button-secondary {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	gap: 0.65rem;
-	min-height: 3.25rem;
-	padding: 0.75rem 1.25rem;
-	border: 1px solid transparent;
-	font-size: 0.78rem;
-	font-weight: 700;
-	letter-spacing: 0.11em;
-	text-transform: uppercase;
-	transition:
-		background 180ms ease,
-		color 180ms ease,
-		border-color 180ms ease;
-}
-.button-primary {
-	color: #11110f;
-	background: #b99a5b;
-}
-.button-primary:hover {
-	background: #dbc38f;
-}
-.button-secondary {
-	color: #f2eee5;
-	border-color: rgb(242 238 229 / 28%);
-	background: rgb(17 17 15 / 35%);
-}
-.button-secondary:hover {
-	border-color: #b99a5b;
-	color: #dbc38f;
-}
-.rule {
-	height: 1px;
-	background: linear-gradient(90deg, #b99a5b, rgb(185 154 91 / 0%));
-}
+/*
+ * The rules below stay in CSS deliberately:
+ * - `.image-treatment`, `.rating-control` and `.two-column-form` anchor
+ *   descendant/child selectors, so replacing the anchor with utilities would
+ *   orphan the children.
+ * - `.review-card` relies on breakpoint precedence over `:first-child`, which is
+ *   clearer and safer as ordered CSS than as competing variants.
+ * - `.unclet-markdown` styles HTML emitted by the markdown renderer, which
+ *   cannot carry utility classes.
+ */
 .image-treatment {
 	position: relative;
 	overflow: hidden;
@@ -140,47 +93,6 @@ img {
 	filter: saturate(0.82) contrast(1.04);
 }
 
-.button-dark {
-	display: inline-flex;
-	min-height: 3.25rem;
-	align-items: center;
-	justify-content: center;
-	gap: 0.65rem;
-	border: 1px solid #11110f;
-	padding: 0.75rem 1.25rem;
-	color: #f2eee5;
-	background: #11110f;
-	font-size: 0.78rem;
-	font-weight: 700;
-	letter-spacing: 0.11em;
-	text-transform: uppercase;
-}
-.button-dark:hover {
-	color: #11110f;
-	background: #dbc38f;
-}
-.inquiry-form-card,
-.review-form-card {
-	position: relative;
-	overflow: hidden;
-	border: 1px solid rgb(242 238 229 / 15%);
-	padding: clamp(1.5rem, 5vw, 4rem);
-	background:
-		linear-gradient(135deg, rgb(185 154 91 / 10%), transparent 46%), #1a1a17;
-}
-.inquiry-form-card::before,
-.review-form-card::before {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 7rem;
-	height: 2px;
-	content: "";
-	background: #b99a5b;
-}
-.inquiry-form-card > header {
-	margin-bottom: 3rem;
-}
 .two-column-form {
 	display: grid;
 	gap: 1.4rem 2rem;
@@ -190,6 +102,7 @@ img {
 .two-column-form > button {
 	grid-column: 1 / -1;
 }
+
 .rating-control {
 	display: flex;
 	gap: 0.35rem;
@@ -215,11 +128,7 @@ img {
 	outline: 2px solid #dbc38f;
 	outline-offset: 3px;
 }
-.review-grid {
-	display: grid;
-	grid-template-columns: repeat(12, minmax(0, 1fr));
-	gap: 1rem;
-}
+
 .review-card {
 	grid-column: span 4;
 	min-height: 18rem;
@@ -231,14 +140,7 @@ img {
 	grid-column: span 8;
 	background: linear-gradient(135deg, rgb(185 154 91 / 10%), transparent);
 }
-.review-quote {
-	font-family: var(--font-serif);
-	font-size: clamp(1.2rem, 2vw, 1.7rem);
-}
-.showcase-cover {
-	min-height: 30rem;
-	aspect-ratio: 4 / 5;
-}
+
 .unclet-markdown {
 	color: rgb(242 238 229 / 68%);
 	font-size: 1.02rem;
@@ -275,18 +177,6 @@ img {
 	border-top: 1px solid rgb(242 238 229 / 15%);
 }
 
-@media (min-width: 768px) {
-	.shell,
-	.measure {
-		width: min(100% - 5rem, var(--page-width, 1440px));
-	}
-	.measure {
-		--page-width: 920px;
-	}
-	.two-column-form {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-}
 @media (max-width: 900px) {
 	.review-card,
 	.review-card:first-child {
@@ -297,10 +187,6 @@ img {
 	.review-card,
 	.review-card:first-child {
 		grid-column: 1 / -1;
-	}
-	.showcase-cover {
-		min-height: 24rem;
-		aspect-ratio: 4 / 5;
 	}
 }
 @media (prefers-reduced-motion: reduce) {
