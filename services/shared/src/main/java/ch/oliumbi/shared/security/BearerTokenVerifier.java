@@ -28,7 +28,9 @@ public final class BearerTokenVerifier {
 
     public void requireValid(String authorization) {
         if (!valid(authorization)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            // Kept distinct from dead session tokens (RS-B7) so callers can tell a broken
+            // integration apart from a session that simply needs a new sign-in.
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing or invalid internal bearer token");
         }
     }
 }

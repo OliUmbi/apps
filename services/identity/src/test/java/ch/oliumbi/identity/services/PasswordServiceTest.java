@@ -3,10 +3,16 @@ package ch.oliumbi.identity.services;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class PasswordServiceTest {
 
@@ -52,5 +58,27 @@ class PasswordServiceTest {
         assertThat(passwordService.matches("CorrectHorse1", hash)).isTrue();
         assertThat(passwordService.matches("WrongHorse1", hash)).isFalse();
         assertThat(passwordService.matches(null, hash)).isFalse();
+    }
+
+    @Test
+    void matchesDummyRunsABcryptComparison() {
+        var encoder = mock(PasswordEncoder.class);
+        when(encoder.encode(any())).thenReturn("$2a$12$dummy-hash-for-timing");
+        var service = new PasswordService(encoder);
+
+        assertThat(service.matchesDummy("CorrectHorse1")).isFalse();
+
+        verify(encoder).matches("CorrectHorse1", "$2a$12$dummy-hash-for-timing");
+    }
+
+    @Test
+    void matchesDummySkipsBcryptForUnsupportedPasswords() {
+        var encoder = mock(PasswordEncoder.class);
+        when(encoder.encode(any())).thenReturn("$2a$12$dummy-hash-for-timing");
+        var service = new PasswordService(encoder);
+
+        assertThat(service.matchesDummy("x".repeat(73))).isFalse();
+
+        verify(encoder, never()).matches(any(), any());
     }
 }

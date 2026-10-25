@@ -31,7 +31,7 @@ public class MessageController {
     }
 
     @GetMapping
-    public PagedModel<MessageResponse> history(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+    public PagedModel<MessageResponse> history(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
                                               @RequestParam(required = false) String status,
                                               @SortDefault(sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         this.authorization.requireValid(authorization);
@@ -39,7 +39,7 @@ public class MessageController {
     }
 
     @GetMapping("/{id}")
-    public MessageDetailResponse get(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+    public MessageDetailResponse get(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
                                      @PathVariable UUID id) {
         this.authorization.requireValid(authorization);
         return messageService.get(id);

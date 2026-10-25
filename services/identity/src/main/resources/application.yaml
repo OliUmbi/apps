@@ -5,6 +5,11 @@ spring:
     url: jdbc:${DATABASE_URL}
     username: ${IDENTITY_DATABASE_USER}
     password: ${IDENTITY_DATABASE_PASSWORD}
+  data:
+    web:
+      pageable:
+        default-page-size: 50
+        max-page-size: 100
   jpa:
     hibernate:
       ddl-auto: validate
@@ -14,9 +19,25 @@ management:
     web:
       exposure:
         include: health
+# /docs stays closed outside the dev profile (RS-D4); health stays open for compose checks.
 springdoc:
+  api-docs:
+    enabled: false
   swagger-ui:
     path: /docs
+    enabled: false
 identity:
   authorization-token: ${IDENTITY_INTERNAL_AUTHORIZATION_TOKEN}
   session-expiration-days: 7
+  session-retention-days: 30
+  session-purge-delay-ms: 3600000
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true

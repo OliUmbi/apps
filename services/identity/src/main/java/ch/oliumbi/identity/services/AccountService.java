@@ -8,13 +8,14 @@ import ch.oliumbi.identity.data.responses.AccountDetailResponse;
 import ch.oliumbi.identity.data.responses.AccountResponse;
 import ch.oliumbi.identity.repositories.AccountRepository;
 import ch.oliumbi.identity.repositories.AccountSessionRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Clock;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -36,10 +37,9 @@ public class AccountService {
     }
 
     @Transactional(readOnly = true)
-    public List<AccountResponse> list() {
-        return accountRepository.findAll().stream()
-                .map(AccountResponse::fromAccount)
-                .toList();
+    public Page<AccountResponse> list(Pageable pageable) {
+        return accountRepository.findAll(pageable)
+                .map(AccountResponse::fromAccount);
     }
 
     @Transactional(readOnly = true)

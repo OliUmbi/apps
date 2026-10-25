@@ -1,4 +1,8 @@
-import { createHttpClient, type ServiceOptions } from "@oliumbi/http-client";
+import {
+	createHttpClient,
+	pagedSchema,
+	type ServiceOptions,
+} from "@oliumbi/http-client";
 import { z } from "zod";
 import {
 	accountSchema,
@@ -22,7 +26,12 @@ export function createIdentityClient(options: Omit<ServiceOptions, "name">) {
 			http.json("/session/validate", actorSchema, post({ token })),
 		revokeSession: (token: string) =>
 			http.empty("/session/revoke", post({ token })),
-		listAccounts: () => http.json("/account", z.array(accountSchema)),
+		// The service pages the account list; the studio overview consumes the
+		// bounded first page as the plain array it has always rendered.
+		listAccounts: () =>
+			http
+				.json("/account", pagedSchema(accountSchema))
+				.then((page) => page.items),
 		getAccount: (id: string) =>
 			http.json(
 				`/account/${encodeURIComponent(id)}`,

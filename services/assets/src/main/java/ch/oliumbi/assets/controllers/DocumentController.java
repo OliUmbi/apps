@@ -54,7 +54,7 @@ public class DocumentController {
     }
 
     @GetMapping("/internal/documents")
-    public PagedModel<DocumentResponse> list(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+    public PagedModel<DocumentResponse> list(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token,
                                              @RequestParam @NotBlank @Size(max = 100) String site, @RequestParam(required = false) Boolean visible,
                                              @SortDefault(sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         authorization.requireValid(token);
@@ -63,7 +63,7 @@ public class DocumentController {
 
     @PostMapping(value = "/internal/documents", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public DocumentResponse create(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+    public DocumentResponse create(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token,
                                    @RequestParam @NotBlank @Size(max = 100) String site,
                                    @Valid @RequestPart("metadata") DocumentCreateRequest metadata,
                                    @RequestPart("file") MultipartFile file) throws IOException {
@@ -72,14 +72,14 @@ public class DocumentController {
     }
 
     @GetMapping("/internal/documents/{id}")
-    public DocumentResponse get(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @PathVariable UUID id,
+    public DocumentResponse get(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token, @PathVariable UUID id,
                                 @RequestParam @NotBlank @Size(max = 100) String site) {
         authorization.requireValid(token);
         return service.get(id, site);
     }
 
     @GetMapping("/internal/documents/{id}/content")
-    public ResponseEntity<Resource> content(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+    public ResponseEntity<Resource> content(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token,
                                             @PathVariable UUID id, @RequestParam @NotBlank @Size(max = 100) String site,
                                             WebRequest webRequest) {
         authorization.requireValid(token);
@@ -87,7 +87,7 @@ public class DocumentController {
     }
 
     @PatchMapping("/internal/documents/{id}/visibility")
-    public DocumentResponse visibility(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+    public DocumentResponse visibility(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token,
                                        @PathVariable UUID id, @RequestParam @NotBlank @Size(max = 100) String site,
                                        @Valid @RequestBody VisibilityRequest request) {
         authorization.requireValid(token);
@@ -96,7 +96,7 @@ public class DocumentController {
 
     @DeleteMapping("/internal/documents/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @PathVariable UUID id,
+    public void delete(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token, @PathVariable UUID id,
                        @RequestParam @NotBlank @Size(max = 100) String site) {
         authorization.requireValid(token);
         service.delete(id, site);

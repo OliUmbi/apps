@@ -56,7 +56,7 @@ public class ImageController {
     }
 
     @GetMapping("/internal/images")
-    public PagedModel<ImageResponse> list(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+    public PagedModel<ImageResponse> list(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token,
                                           @RequestParam @NotBlank @Size(max = 100) String site, @RequestParam(required = false) Boolean visible,
                                           @SortDefault(sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         authorization.requireValid(token);
@@ -65,7 +65,7 @@ public class ImageController {
 
     @PostMapping(value = "/internal/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ImageDetailResponse create(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+    public ImageDetailResponse create(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token,
                                       @RequestParam @NotBlank @Size(max = 100) String site,
                                       @Valid @RequestPart("metadata") ImageCreateRequest metadata,
                                       @RequestPart("file") MultipartFile file) throws IOException {
@@ -74,14 +74,14 @@ public class ImageController {
     }
 
     @GetMapping("/internal/images/{id}")
-    public ImageDetailResponse get(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @PathVariable UUID id,
+    public ImageDetailResponse get(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token, @PathVariable UUID id,
                                    @RequestParam @NotBlank @Size(max = 100) String site) {
         authorization.requireValid(token);
         return service.get(id, site);
     }
 
     @GetMapping("/internal/images/{id}/content")
-    public ResponseEntity<Resource> content(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+    public ResponseEntity<Resource> content(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token,
                                             @PathVariable UUID id, @RequestParam @NotBlank @Size(max = 100) String site,
                                             @RequestParam(defaultValue = "xl") String size, WebRequest webRequest) {
         authorization.requireValid(token);
@@ -89,7 +89,7 @@ public class ImageController {
     }
 
     @PatchMapping("/internal/images/{id}/visibility")
-    public ImageResponse visibility(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+    public ImageResponse visibility(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token,
                                     @PathVariable UUID id, @RequestParam @NotBlank @Size(max = 100) String site,
                                     @Valid @RequestBody VisibilityRequest request) {
         authorization.requireValid(token);
@@ -98,7 +98,7 @@ public class ImageController {
 
     @DeleteMapping("/internal/images/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @PathVariable UUID id,
+    public void delete(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token, @PathVariable UUID id,
                        @RequestParam @NotBlank @Size(max = 100) String site) {
         authorization.requireValid(token);
         service.delete(id, site);

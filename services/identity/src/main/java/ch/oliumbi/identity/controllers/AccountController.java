@@ -8,6 +8,10 @@ import ch.oliumbi.identity.data.responses.AccountResponse;
 import ch.oliumbi.identity.services.AccountService;
 import ch.oliumbi.shared.security.BearerTokenVerifier;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedModel;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -37,13 +40,15 @@ public class AccountController {
     }
 
     @GetMapping
-    public List<AccountResponse> list(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
+    public PagedModel<AccountResponse> list(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+            @SortDefault(sort = {"createdAt", "id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         this.authorization.requireValid(authorization);
-        return accountService.list();
+        return new PagedModel<>(accountService.list(pageable));
     }
 
     @GetMapping("/{id}")
-    public AccountDetailResponse get(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+    public AccountDetailResponse get(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
                                      @PathVariable UUID id) {
         this.authorization.requireValid(authorization);
         return accountService.get(id);
@@ -51,14 +56,14 @@ public class AccountController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AccountResponse create(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+    public AccountResponse create(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
                                   @Valid @RequestBody AccountCreateRequest request) {
         this.authorization.requireValid(authorization);
         return accountService.create(request);
     }
 
     @PutMapping("/{id}")
-    public AccountResponse update(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+    public AccountResponse update(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
                                   @PathVariable UUID id,
                                   @Valid @RequestBody AccountUpdateRequest request) {
         this.authorization.requireValid(authorization);
@@ -67,7 +72,7 @@ public class AccountController {
 
     @PutMapping("/{id}/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void changePassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+    public void changePassword(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
                                @PathVariable UUID id,
                                @Valid @RequestBody AccountPasswordRequest request) {
         this.authorization.requireValid(authorization);
@@ -76,7 +81,7 @@ public class AccountController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+    public void delete(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
                        @PathVariable UUID id) {
         this.authorization.requireValid(authorization);
         accountService.delete(id);

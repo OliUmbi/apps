@@ -31,7 +31,7 @@ public class SessionController {
 
     @PostMapping
     public SessionCreateResponse create(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
             @Valid @RequestBody SessionCreateRequest sessionCreateRequest
     ) {
         this.authorization.requireValid(authorization);
@@ -40,7 +40,7 @@ public class SessionController {
 
     @PostMapping("/validate")
     public SessionActorResponse validate(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
             @Valid @RequestBody SessionValidateRequest sessionValidateRequest) {
         this.authorization.requireValid(authorization);
         return sessionService.validate(sessionValidateRequest);
@@ -49,7 +49,7 @@ public class SessionController {
     @PostMapping("/revoke")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void revoke(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
             @Valid @RequestBody SessionRevokeRequest sessionRevokeRequest) {
         this.authorization.requireValid(authorization);
         sessionService.revoke(sessionRevokeRequest);

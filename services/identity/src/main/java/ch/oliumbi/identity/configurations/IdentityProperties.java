@@ -9,5 +9,6 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties("identity")
 public record IdentityProperties(
         @NotBlank String authorizationToken,
-        @Min(1) int sessionExpirationDays) {
+        @Min(1) int sessionExpirationDays,
+        @Min(1) int sessionRetentionDays) {
 }

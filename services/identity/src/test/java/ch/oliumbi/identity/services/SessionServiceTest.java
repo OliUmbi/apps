@@ -21,9 +21,11 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,7 +40,7 @@ class SessionServiceTest {
     private final SessionService sessionService = new SessionService(
             accounts, sessions, new IdentityInputNormalizer(), tokenService,
             Clock.fixed(NOW, ZoneOffset.UTC), passwordService,
-            new IdentityProperties("internal-token", 7));
+            new IdentityProperties("internal-token", 7, 30));
 
     private Account account() {
         return new Account("alice", "alice@example.com", passwordService.encode("CorrectHorse1"), true);
@@ -63,6 +65,35 @@ class SessionServiceTest {
     }
 
     @Test
+    void createComparesThePasswordForKnownAccounts() {
+        var mockedPasswords = mock(PasswordService.class);
+        var service = new SessionService(accounts, sessions, new IdentityInputNormalizer(), tokenService,
+                Clock.fixed(NOW, ZoneOffset.UTC), mockedPasswords, new IdentityProperties("internal-token", 7, 30));
+        when(accounts.findByNameAndEnabledTrue("alice"))
+                .thenReturn(Optional.of(new Account("alice", "alice@example.com", "hash", true)));
+        when(mockedPasswords.matches("CorrectHorse1", "hash")).thenReturn(true);
+
+        service.create(new SessionCreateRequest("Alice", "CorrectHorse1"));
+
+        verify(mockedPasswords).matches("CorrectHorse1", "hash");
+        verify(mockedPasswords, never()).matchesDummy(any());
+    }
+
+    @Test
+    void createComparesAgainstADummyHashForUnknownAccounts() {
+        var mockedPasswords = mock(PasswordService.class);
+        var service = new SessionService(accounts, sessions, new IdentityInputNormalizer(), tokenService,
+                Clock.fixed(NOW, ZoneOffset.UTC), mockedPasswords, new IdentityProperties("internal-token", 7, 30));
+        when(accounts.findByNameAndEnabledTrue("alice")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.create(new SessionCreateRequest("Alice", "CorrectHorse1")))
+                .isInstanceOf(ResponseStatusException.class);
+
+        verify(mockedPasswords).matchesDummy("CorrectHorse1");
+        verify(mockedPasswords, never()).matches(any(), any());
+    }
+
+    @Test
     void createStoresTheTokenHashedAndExpiresTheSessionInSevenDays() {
         var account = account();
         when(accounts.findByNameAndEnabledTrue("alice")).thenReturn(Optional.of(account));
@@ -78,8 +109,8 @@ class SessionServiceTest {
     }
 
     @Test
-    void validateReturnsTheActorAndTouchesLastSeen() {
-        var session = new AccountSession(account(), "hash", NOW.plus(7, ChronoUnit.DAYS), NOW.minusSeconds(60));
+    void validateReturnsTheActorAndTouchesAStaleLastSeen() {
+        var session = new AccountSession(account(), "hash", NOW.plus(7, ChronoUnit.DAYS), NOW.minus(10, ChronoUnit.MINUTES));
         when(sessions.findValidSession(tokenService.hash("the-token"), NOW)).thenReturn(Optional.of(session));
 
         var actor = sessionService.validate(new SessionValidateRequest("the-token"));
@@ -89,28 +120,38 @@ class SessionServiceTest {
     }
 
     @Test
+    void validateLeavesARecentLastSeenUntouched() {
+        var session = new AccountSession(account(), "hash", NOW.plus(7, ChronoUnit.DAYS), NOW.minus(1, ChronoUnit.MINUTES));
+        when(sessions.findValidSession(tokenService.hash("the-token"), NOW)).thenReturn(Optional.of(session));
+
+        var actor = sessionService.validate(new SessionValidateRequest("the-token"));
+
+        assertThat(actor).isNotNull();
+        assertThat(session.getLastSeenAt()).isEqualTo(NOW.minus(1, ChronoUnit.MINUTES));
+    }
+
+    @Test
     void validateRejectsAnUnknownToken() {
         when(sessions.findValidSession(any(), any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> sessionService.validate(new SessionValidateRequest("unknown")))
-                .isInstanceOf(ResponseStatusException.class);
+                .isInstanceOf(ResponseStatusException.class)
+                .extracting(exception -> ((ResponseStatusException) exception).getStatusCode())
+                .isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test
     void revokeMarksTheSessionRevoked() {
-        var session = new AccountSession(account(), "hash", NOW.plus(7, ChronoUnit.DAYS), NOW);
-        when(sessions.findValidSession(tokenService.hash("the-token"), NOW)).thenReturn(Optional.of(session));
-
         sessionService.revoke(new SessionRevokeRequest("the-token"));
 
-        assertThat(session.getRevokedAt()).isEqualTo(NOW);
+        verify(sessions).revokeByTokenHash(tokenService.hash("the-token"), NOW);
     }
 
     @Test
-    void revokeRejectsAnUnknownToken() {
-        when(sessions.findValidSession(any(), any())).thenReturn(Optional.empty());
+    void revokeOfADeadTokenIsANoOp() {
+        assertThatCode(() -> sessionService.revoke(new SessionRevokeRequest("unknown")))
+                .doesNotThrowAnyException();
 
-        assertThatThrownBy(() -> sessionService.revoke(new SessionRevokeRequest("unknown")))
-                .isInstanceOf(ResponseStatusException.class);
+        verify(sessions).revokeByTokenHash(tokenService.hash("unknown"), NOW);
     }
 }

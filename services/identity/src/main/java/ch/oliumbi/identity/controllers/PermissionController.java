@@ -32,7 +32,7 @@ public class PermissionController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void grant(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+    public void grant(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
                       @PathVariable UUID accountId,
                       @Valid @RequestBody PermissionGrantRequest request) {
         this.authorization.requireValid(authorization);
@@ -41,7 +41,7 @@ public class PermissionController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void revoke(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+    public void revoke(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
                        @PathVariable UUID accountId,
                        @Valid @RequestBody PermissionRevokeRequest request) {
         this.authorization.requireValid(authorization);

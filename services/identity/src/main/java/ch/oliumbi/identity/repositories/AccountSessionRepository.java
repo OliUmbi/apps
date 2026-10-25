@@ -22,6 +22,23 @@ public interface AccountSessionRepository extends CrudRepository<AccountSession,
             """)
     void revokeByAccountId(@Param("accountId") UUID accountId, @Param("now") Instant now);
 
+    @Modifying
+    @Query("""
+            UPDATE  AccountSession s
+            SET     s.revokedAt = :now,
+                    s.updatedAt = :now
+            WHERE   s.tokenHash = :tokenHash
+            AND     s.revokedAt IS NULL
+            """)
+    void revokeByTokenHash(@Param("tokenHash") String tokenHash, @Param("now") Instant now);
+
+    @Modifying
+    @Query("""
+            DELETE  FROM AccountSession s
+            WHERE   s.expiresAt < :cutoff
+            """)
+    int deleteByExpiredBefore(@Param("cutoff") Instant cutoff);
+
     @Query("""
             SELECT  s
             FROM    AccountSession s
