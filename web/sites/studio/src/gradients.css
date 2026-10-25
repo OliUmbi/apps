@@ -122,7 +122,13 @@
  * percentage and bracketed forms.
  */
 @utility noise-* {
-	--noise-alpha: --value(--noise-alpha-*, number, percentage, [number], [percentage]);
+	--noise-alpha: --value(
+		--noise-alpha-*,
+		number,
+		percentage,
+		[number],
+		[percentage]
+	);
 	position: relative;
 
 	&::after {

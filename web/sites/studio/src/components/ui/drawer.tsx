@@ -35,7 +35,11 @@ export function Drawer({
 export function DrawerClose({ label }: { label: string }) {
 	return (
 		<Dialog.Close
-			render={<IconButton label={label}>{<X size={17} aria-hidden="true" />}</IconButton>}
+			render={
+				<IconButton label={label}>
+					{<X size={17} aria-hidden="true" />}
+				</IconButton>
+			}
 		/>
 	);
 }

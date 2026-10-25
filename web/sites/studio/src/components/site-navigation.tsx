@@ -2,10 +2,10 @@ import {
 	FileText,
 	Home,
 	Inbox,
+	type LucideIcon,
 	Mail,
 	ShoppingBasket,
 	Users,
-	type LucideIcon,
 } from "lucide-react";
 import type { StudioSite } from "../model/sites";
 import { Nav, NavItem, NavSection } from "./ui/nav";

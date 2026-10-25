@@ -1,6 +1,3 @@
-import { Button } from "../ui/button";
-import { Panel } from "../ui/panel";
-import { PageHeader } from "../ui/page-header";
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
@@ -10,6 +7,9 @@ import { ArrowLeft, UserRound } from "lucide-react";
 import { newAccountSchema } from "../../model/accounts";
 import { createAccount } from "../../server/accounts.functions";
 import { InputField } from "../input-field";
+import { Button } from "../ui/button";
+import { PageHeader } from "../ui/page-header";
+import { Panel } from "../ui/panel";
 
 export function CreateAccountForm({
 	onClose,
@@ -72,7 +72,11 @@ export function CreateAccountForm({
 							required
 						/>
 						<div className="flex justify-end gap-2 border-t border-border-soft pt-[18px]">
-							<Button type="button" variant="secondary" onClick={() => onClose()}>
+							<Button
+								type="button"
+								variant="secondary"
+								onClick={() => onClose()}
+							>
 								{m.cancel()}
 							</Button>
 							<Button

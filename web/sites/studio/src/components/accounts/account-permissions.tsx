@@ -1,5 +1,3 @@
-import { Checkbox } from "../ui/checkbox";
-import { Panel } from "../ui/panel";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -9,6 +7,8 @@ import { ShieldCheck } from "lucide-react";
 import { permissionSchema } from "../../model/accounts";
 import { studioSites } from "../../model/sites";
 import { getAccount, setPermission } from "../../server/accounts.functions";
+import { Checkbox } from "../ui/checkbox";
+import { Panel } from "../ui/panel";
 
 export function AccountPermissions({ accountId }: { accountId: string }) {
 	const cache = useQueryClient();

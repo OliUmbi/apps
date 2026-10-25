@@ -1,6 +1,3 @@
-import { Button } from "../ui/button";
-import { PageHeader } from "../ui/page-header";
-import { Body, Title } from "../ui/text";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import type { ReactNode } from "react";
@@ -10,6 +7,9 @@ import type {
 	CollectionSource,
 } from "../../model/collection";
 import { DeleteConfirmation } from "../delete-confirmation";
+import { Button } from "../ui/button";
+import { PageHeader } from "../ui/page-header";
+import { Body, Title } from "../ui/text";
 import { CollectionList } from "./collection-list";
 import type { ContentColumn } from "./collection-table";
 import { type ContentEditor, ContentForm } from "./content-form";

@@ -2,12 +2,12 @@ import { m } from "@oliumbi/i18n/messages";
 import { MenuIcon, UserRound } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import type { StudioNavigation, StudioWorkspace } from "../model/navigation";
-import { WorkspaceNavigation } from "./workspace-navigation";
 import { Brand } from "./ui/brand";
 import { Button, IconButton } from "./ui/button";
 import { Drawer, DrawerClose } from "./ui/drawer";
 import { Sidebar, SidebarFooter, SidebarHeader } from "./ui/sidebar";
 import { TopBar } from "./ui/top-bar";
+import { WorkspaceNavigation } from "./workspace-navigation";
 
 /*
  * The application frame: navigation rail on the left, context bar and content

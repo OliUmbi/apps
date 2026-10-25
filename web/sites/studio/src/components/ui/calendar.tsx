@@ -1,4 +1,4 @@
-import type { CSSProperties, ComponentProps } from "react";
+import type { ComponentProps, CSSProperties } from "react";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 

@@ -336,7 +336,9 @@
 	background: var(--color-layer-1);
 	font-size: 0.875rem;
 	font-weight: 500;
-	transition: background-color 120ms ease, border-color 120ms ease;
+	transition:
+		background-color 120ms ease,
+		border-color 120ms ease;
 }
 
 .button:hover {

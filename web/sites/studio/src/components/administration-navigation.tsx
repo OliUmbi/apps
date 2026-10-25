@@ -1,6 +1,6 @@
 import { Button } from "@base-ui/react/button";
 import { m } from "@oliumbi/i18n/messages";
-import { ArrowLeft, Mail, Users, type LucideIcon } from "lucide-react";
+import { ArrowLeft, type LucideIcon, Mail, Users } from "lucide-react";
 import { Nav, NavItem } from "./ui/nav";
 
 const administrationSections: {

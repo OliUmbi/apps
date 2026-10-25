@@ -1,6 +1,6 @@
 import { Button } from "@base-ui/react/button";
-import type { ComponentProps, ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
+import type { ComponentProps, ReactNode } from "react";
 import { Kicker } from "./text";
 
 /*

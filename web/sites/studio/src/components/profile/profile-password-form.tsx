@@ -1,5 +1,3 @@
-import { Button } from "../ui/button";
-import { Panel } from "../ui/panel";
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
@@ -11,6 +9,8 @@ import { type FormEvent, useState } from "react";
 import { profilePasswordSchema } from "../../model/profile";
 import { changeProfilePassword } from "../../server/profile.functions";
 import { InputField } from "../input-field";
+import { Button } from "../ui/button";
+import { Panel } from "../ui/panel";
 
 export function ProfilePasswordForm() {
 	const router = useRouter();

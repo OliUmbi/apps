@@ -1,4 +1,3 @@
-import { Button } from "../ui/button";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import type { Subscriber } from "@oliumbi/zelglihof-data/content/subscriber";
@@ -8,6 +7,7 @@ import {
 	requestSubscriberConfirmation,
 	unsubscribeSubscriber,
 } from "../../server/newsletter.functions";
+import { Button } from "../ui/button";
 
 export function SubscriberStatusActions({
 	subscriber,

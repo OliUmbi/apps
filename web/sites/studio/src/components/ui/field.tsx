@@ -18,7 +18,10 @@ export function FieldRoot({
 	...props
 }: ComponentProps<typeof Field.Root>) {
 	return (
-		<Field.Root className="grid content-start items-start gap-1.5 text-sm" {...props}>
+		<Field.Root
+			className="grid content-start items-start gap-1.5 text-sm"
+			{...props}
+		>
 			{children}
 		</Field.Root>
 	);
@@ -48,7 +51,9 @@ export function FieldControl({
 			className={(state) =>
 				[
 					controlClass,
-					typeof className === "function" ? className(state) : (className ?? ""),
+					typeof className === "function"
+						? className(state)
+						: (className ?? ""),
 				].join(" ")
 			}
 		/>
@@ -60,10 +65,7 @@ export function FieldControl({
  * when the caller must own the element's `id`: Base UI's Field.Control generates
  * its own, which silently breaks an explicit label association.
  */
-export function FieldInput({
-	className,
-	...props
-}: ComponentProps<"input">) {
+export function FieldInput({ className, ...props }: ComponentProps<"input">) {
 	return (
 		<input className={[controlClass, className ?? ""].join(" ")} {...props} />
 	);

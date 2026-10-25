@@ -1,4 +1,3 @@
-import { Button } from "../ui/button";
 import { Form } from "@base-ui/react/form";
 import type { SiteId } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
@@ -7,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { uploadAsset } from "../../server/assets.functions";
 import { InputField } from "../input-field";
+import { Button } from "../ui/button";
 
 export function AssetUploadForm({
 	site,
@@ -56,11 +56,7 @@ export function AssetUploadForm({
 			<p className="text-sm text-zinc-400">
 				{m.studio_assets_upload_privacy_description()}
 			</p>
-			<Button
-				type="submit"
-				disabled={creation.isPending}
-				variant="primary"
-			>
+			<Button type="submit" disabled={creation.isPending} variant="primary">
 				{m.upload()}
 			</Button>
 			<FormFeedback

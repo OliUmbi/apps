@@ -23,7 +23,11 @@ export function Panel({
 		<section className="rounded-panel border border-line bg-layer-1">
 			<header className="flex items-start gap-3 border-b border-line-subtle px-6 py-5">
 				{Icon ? (
-					<Icon size={18} className="mt-0.5 text-fg-subtle" aria-hidden="true" />
+					<Icon
+						size={18}
+						className="mt-0.5 text-fg-subtle"
+						aria-hidden="true"
+					/>
 				) : null}
 				<div className="grid gap-1">
 					<Title as="h2" size="sm">

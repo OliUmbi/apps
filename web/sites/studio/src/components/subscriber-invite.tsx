@@ -1,4 +1,3 @@
-import { Button } from "./ui/button";
 import { Form } from "@base-ui/react/form";
 import { emailSchema } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
@@ -7,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { requestSubscriberConfirmation } from "../server/newsletter.functions";
 import { InputField } from "./input-field";
+import { Button } from "./ui/button";
 
 export function SubscriberInvite() {
 	const request = useServerFn(requestSubscriberConfirmation);
@@ -41,11 +41,7 @@ export function SubscriberInvite() {
 			<p className="text-sm text-zinc-400">
 				{m.studio_subscriber_invite_help()}
 			</p>
-			<Button
-				type="submit"
-				variant="primary"
-				disabled={mutation.isPending}
-			>
+			<Button type="submit" variant="primary" disabled={mutation.isPending}>
 				{m.studio_subscriber_invite()}
 			</Button>
 			<FormFeedback

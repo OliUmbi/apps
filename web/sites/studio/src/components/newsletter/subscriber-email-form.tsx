@@ -1,4 +1,3 @@
-import { Button } from "../ui/button";
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
@@ -7,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { correctSubscriberEmail } from "../../server/newsletter.functions";
 import { InputField } from "../input-field";
+import { Button } from "../ui/button";
 
 export function SubscriberEmailForm({
 	subscriber,

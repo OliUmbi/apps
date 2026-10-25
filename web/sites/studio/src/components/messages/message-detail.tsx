@@ -1,5 +1,3 @@
-import { Button } from "../ui/button";
-import { Panel } from "../ui/panel";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useQuery } from "@tanstack/react-query";
@@ -7,6 +5,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft } from "lucide-react";
 import { formatTimestamp } from "../../model/dates";
 import { getMessage } from "../../server/messages.functions";
+import { Button } from "../ui/button";
+import { Panel } from "../ui/panel";
 import { MessageStatus } from "./message-status";
 
 export function MessageDetail({

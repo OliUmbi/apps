@@ -16,7 +16,11 @@ export function SiteSwitcher({
 		<MenuRoot>
 			<MenuTrigger>
 				<Brand monogram={site.short} name={site.name} detail={site.domain} />
-				<ChevronsUpDown size={15} className="ml-auto shrink-0" aria-hidden="true" />
+				<ChevronsUpDown
+					size={15}
+					className="ml-auto shrink-0"
+					aria-hidden="true"
+				/>
 			</MenuTrigger>
 			<MenuPanel>
 				{sites.map((item) => (

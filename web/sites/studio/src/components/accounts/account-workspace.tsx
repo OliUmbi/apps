@@ -1,5 +1,3 @@
-import { Button } from "../ui/button";
-import { Title } from "../ui/text";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -9,6 +7,8 @@ import { useState } from "react";
 import { deleteAccount, getAccount } from "../../server/accounts.functions";
 import { AccountEditor } from "../account-editor";
 import { DeleteConfirmation } from "../delete-confirmation";
+import { Button } from "../ui/button";
+import { Title } from "../ui/text";
 
 export function AccountWorkspace({
 	id,

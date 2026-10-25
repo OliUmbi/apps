@@ -1,5 +1,3 @@
-import { Button } from "../ui/button";
-import { Panel } from "../ui/panel";
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
 import type { Account } from "@oliumbi/identity";
@@ -11,6 +9,8 @@ import { UserRound } from "lucide-react";
 import { profileSchema } from "../../model/profile";
 import { updateProfile } from "../../server/profile.functions";
 import { InputField } from "../input-field";
+import { Button } from "../ui/button";
+import { Panel } from "../ui/panel";
 
 export function ProfileDetailsForm({ account }: { account: Account }) {
 	const cache = useQueryClient();
@@ -57,11 +57,7 @@ export function ProfileDetailsForm({ account }: { account: Account }) {
 					required
 				/>
 				<div className="flex justify-end gap-2 border-t border-border-soft pt-[18px]">
-					<Button
-						variant="primary"
-						type="submit"
-						disabled={saving.isPending}
-					>
+					<Button variant="primary" type="submit" disabled={saving.isPending}>
 						{m.save()}
 					</Button>
 				</div>

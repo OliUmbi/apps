@@ -24,7 +24,9 @@ export function CheckboxField({
 	value: boolean;
 	onChange: (value: boolean) => void;
 }) {
-	return <Checkbox name={name} label={label} checked={value} onChange={onChange} />;
+	return (
+		<Checkbox name={name} label={label} checked={value} onChange={onChange} />
+	);
 }
 
 export function NumberField({

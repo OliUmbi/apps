@@ -1,5 +1,3 @@
-import { Button } from "../ui/button";
-import { Panel } from "../ui/panel";
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
@@ -9,6 +7,8 @@ import { KeyRound } from "lucide-react";
 import { passwordSchema } from "../../model/accounts";
 import { changePassword } from "../../server/accounts.functions";
 import { InputField } from "../input-field";
+import { Button } from "../ui/button";
+import { Panel } from "../ui/panel";
 
 export function AccountPasswordForm({ accountId }: { accountId: string }) {
 	const changeAccountPassword = useServerFn(changePassword);

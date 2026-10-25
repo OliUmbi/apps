@@ -1,4 +1,3 @@
-import { Button } from "../ui/button";
 import { limits, type Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
@@ -8,6 +7,7 @@ import type {
 } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { InputField } from "../input-field";
+import { Button } from "../ui/button";
 import { CollectionTable, type ContentColumn } from "./collection-table";
 
 export function CollectionList<Row>({

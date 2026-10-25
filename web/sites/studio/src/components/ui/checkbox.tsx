@@ -1,5 +1,6 @@
 import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
 import { Check } from "lucide-react";
+import { useId } from "react";
 
 /*
  * The only checkbox. Checked is an inverted neutral, same as the primary
@@ -16,19 +17,23 @@ export function Checkbox({
 	checked: boolean;
 	onChange: (checked: boolean) => void;
 }) {
+	const labelId = useId();
 	return (
-		<label className="flex items-center gap-2.5 text-sm">
+		<div className="flex items-center gap-2.5 text-sm">
 			<BaseCheckbox.Root
 				name={name}
 				checked={checked}
 				onCheckedChange={(next) => onChange(Boolean(next))}
+				aria-labelledby={labelId}
 				className="grid size-5 shrink-0 place-items-center rounded-control border border-line bg-field data-checked:border-transparent data-checked:bg-fg"
 			>
 				<BaseCheckbox.Indicator>
 					<Check size={13} strokeWidth={3} className="text-canvas" />
 				</BaseCheckbox.Indicator>
 			</BaseCheckbox.Root>
-			<span className="text-fg-muted">{label}</span>
-		</label>
+			<span id={labelId} className="text-fg-muted">
+				{label}
+			</span>
+		</div>
 	);
 }

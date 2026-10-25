@@ -1,5 +1,3 @@
-import { Button } from "./ui/button";
-import { PageHeader } from "./ui/page-header";
 import { limits } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
@@ -11,6 +9,8 @@ import { listMessages } from "../server/messages.functions";
 import { MessageDetail } from "./messages/message-detail";
 import { MessageFilters } from "./messages/message-filters";
 import { MessageList } from "./messages/message-list";
+import { Button } from "./ui/button";
+import { PageHeader } from "./ui/page-header";
 
 export function MessagesView() {
 	const list = useServerFn(listMessages);

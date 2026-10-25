@@ -1,4 +1,3 @@
-import { PageHeader } from "./ui/page-header";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useQuery } from "@tanstack/react-query";
@@ -6,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { getProfile } from "../server/profile.functions";
 import { ProfileDetailsForm } from "./profile/profile-details-form";
 import { ProfilePasswordForm } from "./profile/profile-password-form";
+import { PageHeader } from "./ui/page-header";
 
 export function ProfileView() {
 	const get = useServerFn(getProfile);

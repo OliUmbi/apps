@@ -1,12 +1,12 @@
-import { Button } from "./ui/button";
-import { DangerZone } from "./ui/danger-zone";
-import { PageHeader } from "./ui/page-header";
 import { m } from "@oliumbi/i18n/messages";
 import type { Account } from "@oliumbi/identity";
 import { ArrowLeft } from "lucide-react";
 import { AccountDetailsForm } from "./accounts/account-details-form";
 import { AccountPasswordForm } from "./accounts/account-password-form";
 import { AccountPermissions } from "./accounts/account-permissions";
+import { Button } from "./ui/button";
+import { DangerZone } from "./ui/danger-zone";
+import { PageHeader } from "./ui/page-header";
 
 export function AccountEditor({
 	account,

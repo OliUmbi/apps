@@ -1,6 +1,6 @@
-import { Button } from "../ui/button";
 import { m } from "@oliumbi/i18n/messages";
 import type { ReactNode } from "react";
+import { Button } from "../ui/button";
 
 export interface ContentColumn<Row> {
 	id: string;
@@ -43,10 +43,7 @@ export function CollectionTable<Row>({
 								</td>
 							))}
 							<td>
-								<Button
-									variant="link"
-									onClick={() => onOpen(record)}
-								>
+								<Button variant="link" onClick={() => onOpen(record)}>
 									{m.studio_open_record()}
 								</Button>
 							</td>

@@ -1,4 +1,3 @@
-import { Button } from "./ui/button";
 import type { SiteId } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
@@ -17,6 +16,7 @@ import {
 import { AssetCard } from "./assets/asset-card";
 import { AssetUploadForm } from "./assets/asset-upload-form";
 import { DeleteConfirmation } from "./delete-confirmation";
+import { Button } from "./ui/button";
 
 export function AssetsView({
 	site,

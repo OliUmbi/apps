@@ -1,6 +1,3 @@
-import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
-import { Panel } from "../ui/panel";
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
 import type { Account } from "@oliumbi/identity";
@@ -13,6 +10,9 @@ import { useState } from "react";
 import { updateAccountSchema } from "../../model/accounts";
 import { updateAccount } from "../../server/accounts.functions";
 import { InputField } from "../input-field";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
+import { Panel } from "../ui/panel";
 
 export function AccountDetailsForm({ account }: { account: Account }) {
 	const cache = useQueryClient();
@@ -75,11 +75,7 @@ export function AccountDetailsForm({ account }: { account: Account }) {
 					onChange={setEnabled}
 				/>
 				<div className="flex justify-end gap-2 border-t border-border-soft pt-[18px]">
-					<Button
-						type="submit"
-						variant="primary"
-						disabled={save.isPending}
-					>
+					<Button type="submit" variant="primary" disabled={save.isPending}>
 						{m.save()}
 					</Button>
 				</div>

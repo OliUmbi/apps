@@ -47,7 +47,8 @@ export function ContentForm<Row, Input>({
 	};
 
 	const failure = validation || (error ? m.error_generic() : null);
-	const message = failure || (saved && !edited ? m.studio_content_saved() : null);
+	const message =
+		failure || (saved && !edited ? m.studio_content_saved() : null);
 
 	return (
 		<Form
