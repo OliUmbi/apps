@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import type { QueuedEmail } from "./message";
 
 export function escapeHtml(value: string) {
@@ -30,8 +30,17 @@ export function emailMessage(
 	};
 }
 
-const REFERENCE_LENGTH = 8;
+const REFERENCE_LENGTH = 12;
 
-export function referenceFor(id: string) {
-	return id.slice(0, REFERENCE_LENGTH).toUpperCase();
+/**
+ * Derived from the submission id, so a retry of the same submission reports the
+ * same reference. Hashing keeps the reference from disclosing the idempotency
+ * key and from being guessed from row order.
+ */
+export function referenceFor(submissionId: string) {
+	return createHash("sha256")
+		.update(submissionId)
+		.digest("hex")
+		.slice(0, REFERENCE_LENGTH)
+		.toUpperCase();
 }

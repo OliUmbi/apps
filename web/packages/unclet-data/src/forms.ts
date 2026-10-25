@@ -1,5 +1,6 @@
 import {
 	emailSchema,
+	idSchema,
 	limits,
 	nameSchema,
 	phoneSchema,
@@ -8,6 +9,7 @@ import {
 import { z } from "zod";
 
 export const inquirySchema = z.object({
+	submissionId: idSchema,
 	name: nameSchema,
 	email: emailSchema,
 	phone: phoneSchema,
@@ -19,6 +21,8 @@ export const inquirySchema = z.object({
 export type InquiryInput = z.infer<typeof inquirySchema>;
 
 export const reviewSchema = z.strictObject({
+	// Every public form fill carries one submission id (D1); reviews are not deduplicated yet.
+	submissionId: idSchema,
 	stars: z.number().int().min(1).max(5),
 	name: nameSchema,
 	description: z.string().trim().min(5).max(limits.text),

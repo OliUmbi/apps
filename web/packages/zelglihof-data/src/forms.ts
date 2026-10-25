@@ -9,6 +9,7 @@ import {
 import { z } from "zod";
 
 export const contactSchema = z.object({
+	submissionId: idSchema,
 	name: nameSchema,
 	email: optionalEmailSchema,
 	phone: phoneSchema,
@@ -17,6 +18,7 @@ export const contactSchema = z.object({
 });
 export type ContactInput = z.infer<typeof contactSchema>;
 export const reservationSchema = z.object({
+	submissionId: idSchema,
 	productId: idSchema,
 	variantId: idSchema,
 	name: nameSchema,

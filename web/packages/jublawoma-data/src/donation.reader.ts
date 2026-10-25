@@ -2,6 +2,7 @@ import type { DatabaseExecutor } from "@oliumbi/database";
 import { eq, sql } from "drizzle-orm";
 import { donationCommitment, donationItem } from "./schema";
 
+// Quantities reach the site as decimal strings; display formatting happens there (D2).
 export function createDonationReader(db: DatabaseExecutor) {
 	return {
 		items(donationId: string) {
@@ -10,13 +11,10 @@ export function createDonationReader(db: DatabaseExecutor) {
 					id: donationItem.id,
 					name: donationItem.name,
 					detail: donationItem.detail,
-					quantity: donationItem.quantity,
-					step: donationItem.step,
+					quantity: sql<string>`${donationItem.quantity}::text`,
+					step: sql<string>`${donationItem.step}::text`,
 					unit: donationItem.unit,
-					remaining:
-						sql`greatest(0, ${donationItem.quantity} - coalesce(sum(${donationCommitment.quantity}), 0))`.mapWith(
-							Number,
-						),
+					remaining: sql<string>`greatest(0, ${donationItem.quantity} - coalesce(sum(${donationCommitment.quantity}), 0))::text`,
 				})
 				.from(donationItem)
 				.leftJoin(

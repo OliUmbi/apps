@@ -26,9 +26,11 @@ export const getCurrentDonation = createServerFn({ method: "GET" }).handler(
 				id: item.id,
 				name: item.name,
 				description: item.detail ?? "",
-				quantity: item.quantity,
-				remaining: item.remaining,
-				step: item.step,
+				// Quantities stay decimal strings until this display boundary; the
+				// view model rounds them for presentation only.
+				quantity: Number(item.quantity),
+				remaining: Number(item.remaining),
+				step: Number(item.step),
 				unit: item.unit,
 			})),
 		};

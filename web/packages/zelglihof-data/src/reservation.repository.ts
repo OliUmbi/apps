@@ -29,6 +29,14 @@ export function createReservationRepository(transaction: Transaction) {
 				.for("update");
 			return variant;
 		},
+		async findBySubmissionId(submissionId: string) {
+			const [row] = await transaction
+				.select({ id: productReservation.id })
+				.from(productReservation)
+				.where(eq(productReservation.submissionId, submissionId))
+				.limit(1);
+			return row ?? null;
+		},
 		async decrementStock(variantId: string, quantity: number, now: Date) {
 			await transaction
 				.update(productVariant)
@@ -49,24 +57,30 @@ export function createReservationRepository(transaction: Transaction) {
 			variant: ReservableVariant,
 			now: Date,
 		) {
-			await transaction.insert(productReservation).values({
-				id,
-				productId: input.productId,
-				productVariantId: input.variantId,
-				productName: variant.productName,
-				variantName: variant.variantName,
-				variantDescription: variant.description,
-				variantQuantity: variant.quantity,
-				variantPrice: variant.price,
-				name: input.name,
-				phone: input.phone,
-				email: input.email || null,
-				quantity: input.quantity,
-				note: input.note || null,
-				status: "new",
-				createdAt: now.toISOString(),
-				updatedAt: now.toISOString(),
-			});
+			const inserted = await transaction
+				.insert(productReservation)
+				.values({
+					id,
+					submissionId: input.submissionId,
+					productId: input.productId,
+					productVariantId: input.variantId,
+					productName: variant.productName,
+					variantName: variant.variantName,
+					variantDescription: variant.description,
+					variantQuantity: variant.quantity,
+					variantPrice: variant.price,
+					name: input.name,
+					phone: input.phone,
+					email: input.email || null,
+					quantity: input.quantity,
+					note: input.note || null,
+					status: "new",
+					createdAt: now.toISOString(),
+					updatedAt: now.toISOString(),
+				})
+				.onConflictDoNothing({ target: productReservation.submissionId })
+				.returning({ id: productReservation.id });
+			return inserted.length > 0;
 		},
 	};
 }

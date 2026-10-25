@@ -9,3 +9,7 @@ export interface ReservableVariant {
 export type ReservationResult =
 	| { outcome: "reserved"; reference: string }
 	| { outcome: "unavailable" };
+export interface ReservationPlan {
+	outcome: ReservationResult["outcome"];
+	insert: boolean;
+}

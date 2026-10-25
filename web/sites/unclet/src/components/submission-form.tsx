@@ -3,6 +3,7 @@ import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useSubmissionForm } from "@oliumbi/ui/use-submission-form";
+import { useState } from "react";
 import type { z } from "zod";
 import { SubmissionControl, type SubmissionField } from "./submission-control";
 
@@ -27,11 +28,14 @@ export function SubmissionForm<Input, Result>({
 	className?: string;
 	submitLabel?: string;
 }) {
+	// One submission id per form fill: a retry of the same fill replays the same
+	// id, so the server reports the original outcome instead of committing twice.
+	const [submissionId] = useState(() => crypto.randomUUID());
 	const form = useSubmissionForm({
 		schema,
 		submit,
 		getResultError,
-		defaults,
+		defaults: { ...defaults, submissionId },
 		numberFields: fields
 			.filter((field) => field.type === "number" || field.type === "rating")
 			.map((field) => field.name),

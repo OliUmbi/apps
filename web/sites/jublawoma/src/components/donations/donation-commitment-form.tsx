@@ -20,7 +20,9 @@ export function DonationCommitmentForm({
 	const submit = useServerFn(submitCommitment);
 	async function sendCommitment(data: CommitmentInput) {
 		const result = await submit({ data });
-		await router.invalidate();
+		// A failed cache refresh must not turn a committed result into an error;
+		// that would invite resubmits of an already committed fill (J-09).
+		void router.invalidate().catch(() => {});
 		return result;
 	}
 	const remaining = roundQuantity(item.remaining);
@@ -35,7 +37,14 @@ export function DonationCommitmentForm({
 				defaults={{ donationId, itemId: item.id }}
 				submit={sendCommitment}
 				getResultError={(result) =>
-					result.outcome === "unavailable" ? m.unavailable() : null
+					result.outcome === "unavailable"
+						? m.unavailable()
+						: result.outcome === "invalid-increment"
+							? m.jublawoma_donation_invalid_increment({
+									step: String(step),
+									unit: item.unit,
+								})
+							: null
 				}
 				success={m.jublawoma_donation_success()}
 				submitLabel={m.jublawoma_donation_submit()}
@@ -53,8 +62,8 @@ export function DonationCommitmentForm({
 					},
 					{
 						name: "quantity",
-						label: item.unit,
-						type: "number",
+						label: m.jublawoma_donation_quantity_label({ unit: item.unit }),
+						type: "decimal",
 						min: step,
 						max: remaining,
 						step,

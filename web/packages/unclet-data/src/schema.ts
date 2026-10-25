@@ -59,6 +59,8 @@ export const inquiry = unclet.table("inquiry", {
 	location: text("location"),
 	guestCount: integer("guest_count"),
 	note: text("note"),
+	// Idempotency key from the public form; unique index in V011.
+	submissionId: uuid("submission_id"),
 	createdAt: isoTimestamp("created_at").notNull(),
 	updatedAt: isoTimestamp("updated_at").notNull(),
 });

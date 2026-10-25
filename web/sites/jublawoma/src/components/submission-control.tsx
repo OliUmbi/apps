@@ -5,7 +5,9 @@ import { InputField } from "./input-field";
 export interface SubmissionField {
 	name: string;
 	label: string;
-	type?: "text" | "email" | "tel" | "date" | "number" | "textarea";
+	// "decimal" renders like a number input but stays a decimal string in the
+	// payload; float64 must never touch a quantity (D2).
+	type?: "text" | "email" | "tel" | "date" | "number" | "decimal" | "textarea";
 	required?: boolean;
 	min?: number;
 	max?: number;
@@ -57,7 +59,13 @@ export function SubmissionControl({
 			disabled={disabled}
 			name={field.name}
 			label={field.label}
-			type={field.type === "textarea" ? undefined : (field.type ?? "text")}
+			type={
+				field.type === "textarea"
+					? undefined
+					: field.type === "decimal"
+						? "number"
+						: (field.type ?? "text")
+			}
 			render={
 				field.type === "textarea" ? (
 					<textarea rows={field.rows ?? 5} />
@@ -67,7 +75,11 @@ export function SubmissionControl({
 			min={field.min}
 			max={field.max}
 			step={field.step}
-			defaultValue={field.type === "number" ? (field.min ?? 1) : undefined}
+			defaultValue={
+				field.type === "number" || field.type === "decimal"
+					? (field.min ?? 1)
+					: undefined
+			}
 		/>
 	);
 }

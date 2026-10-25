@@ -12,8 +12,9 @@ export function createDonationRepository(transaction: Transaction) {
 					title: donation.title,
 					name: donationItem.name,
 					detail: donationItem.detail,
-					quantity: donationItem.quantity,
-					step: donationItem.step,
+					// Exact decimal strings; numeric stays authoritative in PostgreSQL (D2).
+					quantity: sql<string>`${donationItem.quantity}::text`,
+					step: sql<string>`${donationItem.step}::text`,
 					unit: donationItem.unit,
 					active: sql<boolean>`${donation.startsAt} <= now() AND ${donation.endsAt} >= now()`,
 				})
@@ -28,35 +29,46 @@ export function createDonationRepository(transaction: Transaction) {
 				.for("update");
 			return item;
 		},
+		async findBySubmissionId(submissionId: string) {
+			const [row] = await transaction
+				.select({ id: donationCommitment.id })
+				.from(donationCommitment)
+				.where(eq(donationCommitment.submissionId, submissionId))
+				.limit(1);
+			return row ?? null;
+		},
 		async committedQuantity(itemId: string) {
 			const [row] = await transaction
 				.select({
-					quantity:
-						sql`coalesce(sum(${donationCommitment.quantity}), 0)`.mapWith(
-							Number,
-						),
+					quantity: sql<string>`coalesce(sum(${donationCommitment.quantity}), 0)::text`,
 				})
 				.from(donationCommitment)
 				.where(eq(donationCommitment.donationItemId, itemId));
 			return row.quantity;
 		},
 		async insert(input: CommitmentInput, item: DonationItem, now: Date) {
-			await transaction.insert(donationCommitment).values({
-				donationId: input.donationId,
-				donationItemId: input.itemId,
-				donationTitle: item.title,
-				itemName: item.name,
-				itemDetail: item.detail,
-				itemQuantity: item.quantity,
-				step: item.step,
-				unit: item.unit,
-				name: input.name,
-				phone: input.phone,
-				quantity: input.quantity,
-				note: input.note || null,
-				createdAt: now.toISOString(),
-				updatedAt: now.toISOString(),
-			});
+			const inserted = await transaction
+				.insert(donationCommitment)
+				.values({
+					submissionId: input.submissionId,
+					donationId: input.donationId,
+					donationItemId: input.itemId,
+					donationTitle: item.title,
+					itemName: item.name,
+					itemDetail: item.detail,
+					itemQuantity: sql`${item.quantity}`,
+					step: sql`${item.step}`,
+					unit: item.unit,
+					name: input.name,
+					phone: input.phone,
+					quantity: sql`${input.quantity}`,
+					note: input.note || null,
+					createdAt: now.toISOString(),
+					updatedAt: now.toISOString(),
+				})
+				.onConflictDoNothing({ target: donationCommitment.submissionId })
+				.returning({ id: donationCommitment.id });
+			return inserted.length > 0;
 		},
 	};
 }

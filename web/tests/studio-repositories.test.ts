@@ -747,6 +747,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 						stars: 5,
 						name,
 						description: "A public submission",
+						submissionId: randomUUID(),
 					});
 					await transaction.execute(sql`SET LOCAL ROLE studio`);
 					const [review] = await transaction

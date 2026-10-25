@@ -91,6 +91,8 @@ export const productReservation = zelglihof.table("product_reservation", {
 	quantity: integer("quantity").notNull(),
 	note: text("note"),
 	status: text("status", { enum: statusValues }).notNull(),
+	// Idempotency key from the public form; unique index in V011.
+	submissionId: uuid("submission_id"),
 	createdAt: isoTimestamp("created_at").notNull(),
 	updatedAt: isoTimestamp("updated_at").notNull(),
 });
@@ -126,6 +128,8 @@ export const inquiry = zelglihof.table("inquiry", {
 	phone: text("phone").notNull(),
 	email: text("email"),
 	message: text("message").notNull(),
+	// Idempotency key from the public form; unique index in V011.
+	submissionId: uuid("submission_id"),
 	createdAt: isoTimestamp("created_at").notNull(),
 	updatedAt: isoTimestamp("updated_at").notNull(),
 });
