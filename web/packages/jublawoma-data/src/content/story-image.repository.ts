@@ -3,6 +3,7 @@ import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { storyImage } from "../schema";
+import { RecordKeyMismatchError } from "./errors";
 import type { StoryImageInput, StoryImageKey } from "./story-image";
 
 export function createStoryImageRepository(db: DatabaseExecutor) {
@@ -34,10 +35,15 @@ export function createStoryImageRepository(db: DatabaseExecutor) {
 			return record;
 		},
 		async update(key: StoryImageKey, input: StoryImageInput) {
+			// The composite key is the row's identity: it is never written on update,
+			// and values that claim another identity are rejected instead of silently
+			// re-parenting or renaming the row.
+			if (input.storyId !== key.storyId || input.imageId !== key.imageId)
+				throw new RecordKeyMismatchError("jublawoma.story_image");
 			const [record] = await db
 				.update(storyImage)
 				.set({
-					...input,
+					description: input.description,
 					updatedAt: new Date().toISOString(),
 				})
 				.where(

@@ -4,6 +4,7 @@ import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { articleImage } from "../schema";
 import type { ArticleImageInput, ArticleImageKey } from "./article-image";
+import { RecordKeyMismatchError } from "./errors";
 
 export function createArticleImageRepository(db: DatabaseExecutor) {
 	return {
@@ -34,10 +35,15 @@ export function createArticleImageRepository(db: DatabaseExecutor) {
 			return record;
 		},
 		async update(key: ArticleImageKey, input: ArticleImageInput) {
+			// The composite key is the row's identity: it is never written on update,
+			// and values that claim another identity are rejected instead of silently
+			// re-parenting or renaming the row.
+			if (input.articleId !== key.articleId || input.imageId !== key.imageId)
+				throw new RecordKeyMismatchError("zelglihof.article_image");
 			const [record] = await db
 				.update(articleImage)
 				.set({
-					...input,
+					description: input.description,
 					updatedAt: new Date().toISOString(),
 				})
 				.where(

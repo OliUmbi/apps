@@ -32,6 +32,38 @@ services:
       postgres:
         condition: service_healthy
 
+  # Migrations create the application roles as NOLOGIN without passwords; this
+  # one-shot provisioner grants login credentials per environment (see
+  # database/README.md). Production provisions the same statements from the
+  # vault through Ansible instead.
+  roles:
+    image: postgres:18-alpine
+    environment:
+      PGPASSWORD: ${POSTGRES_MIGRATOR_PASSWORD:-dev-migrator-password}
+    entrypoint:
+      - psql
+      - -h
+      - postgres
+      - -U
+      - ${POSTGRES_MIGRATOR_USER:-apps_migrator}
+      - -d
+      - ${POSTGRES_DB:-apps}
+      - -v
+      - ON_ERROR_STOP=1
+      - -c
+      - >-
+        ALTER ROLE ${IDENTITY_DATABASE_USER:-identity} LOGIN PASSWORD '${IDENTITY_DATABASE_PASSWORD:-identity_password}';
+        ALTER ROLE ${MESSAGING_DATABASE_USER:-messaging} LOGIN PASSWORD '${MESSAGING_DATABASE_PASSWORD:-messaging_password}';
+        ALTER ROLE ${ASSETS_DATABASE_USER:-assets} LOGIN PASSWORD '${ASSETS_DATABASE_PASSWORD:-assets_password}';
+        ALTER ROLE ${STUDIO_DATABASE_USER:-studio} LOGIN PASSWORD '${STUDIO_DATABASE_PASSWORD:-studio_password}';
+        ALTER ROLE ${OLIUMBI_DATABASE_USER:-oliumbi} LOGIN PASSWORD '${OLIUMBI_DATABASE_PASSWORD:-oliumbi_password}';
+        ALTER ROLE ${JUBLAWOMA_DATABASE_USER:-jublawoma} LOGIN PASSWORD '${JUBLAWOMA_DATABASE_PASSWORD:-jublawoma_password}';
+        ALTER ROLE ${UNCLET_DATABASE_USER:-unclet} LOGIN PASSWORD '${UNCLET_DATABASE_PASSWORD:-unclet_password}';
+        ALTER ROLE ${ZELGLIHOF_DATABASE_USER:-zelglihof} LOGIN PASSWORD '${ZELGLIHOF_DATABASE_PASSWORD:-zelglihof_password}'
+    depends_on:
+      flyway:
+        condition: service_completed_successfully
+
   mailpit:
     image: axllent/mailpit:v1.27
     ports:
@@ -50,7 +82,7 @@ services:
     ports:
       - "8081:8081"
     depends_on:
-      flyway:
+      roles:
         condition: service_completed_successfully
 
   messaging:
@@ -71,7 +103,7 @@ services:
     ports:
       - "8082:8082"
     depends_on:
-      flyway:
+      roles:
         condition: service_completed_successfully
       mailpit:
         condition: service_started
@@ -91,7 +123,7 @@ services:
     ports:
       - "8083:8083"
     depends_on:
-      flyway:
+      roles:
         condition: service_completed_successfully
   zelglihof:
     build:
@@ -108,7 +140,7 @@ services:
     ports:
       - "8003:8003"
     depends_on:
-      flyway:
+      roles:
         condition: service_completed_successfully
       messaging:
         condition: service_started
@@ -126,7 +158,7 @@ services:
     ports:
       - "8002:8002"
     depends_on:
-      flyway:
+      roles:
         condition: service_completed_successfully
       messaging:
         condition: service_started
@@ -142,7 +174,7 @@ services:
       DATABASE_URL: postgres://${JUBLAWOMA_DATABASE_USER:-jublawoma}:${JUBLAWOMA_DATABASE_PASSWORD:-jublawoma_password}@postgres:5432/${POSTGRES_DB:-apps}
       DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-10}
     depends_on:
-      flyway:
+      roles:
         condition: service_completed_successfully
 
   studio:

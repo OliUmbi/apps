@@ -29,3 +29,8 @@ CREATE TABLE identity.account_session
     created_at   timestamptz NOT NULL,
     updated_at   timestamptz NOT NULL
 );
+
+-- The session table only grows: account delete cascades and the expiry purge
+-- both filter on these columns (RS-E3).
+CREATE INDEX account_session_account_id_idx ON identity.account_session (account_id);
+CREATE INDEX account_session_expires_at_idx ON identity.account_session (expires_at);

@@ -10,6 +10,8 @@ import type {
 
 export function createProductReservationRepository(db: DatabaseExecutor) {
 	return {
+		// Orphaned reservations (deleted product) stay listed here with their
+		// stored snapshots; the scoped list only shows a product's own rows.
 		list(input: PageInput) {
 			return paginate(
 				db

@@ -31,7 +31,9 @@ CREATE TABLE unclet.review
     description text        NOT NULL,
     visible     boolean     NOT NULL,
     created_at  timestamptz NOT NULL,
-    updated_at  timestamptz NOT NULL
+    updated_at  timestamptz NOT NULL,
+    -- Reviews are a five-star scale; moderation is the visible flag.
+    CONSTRAINT review_stars_range CHECK (stars BETWEEN 1 AND 5)
 );
 
 CREATE TABLE unclet.inquiry
@@ -46,5 +48,6 @@ CREATE TABLE unclet.inquiry
     guest_count integer,
     note        text,
     created_at  timestamptz NOT NULL,
-    updated_at  timestamptz NOT NULL
+    updated_at  timestamptz NOT NULL,
+    CONSTRAINT inquiry_status_domain CHECK (status IN ('new', 'in-progress', 'completed', 'cancelled'))
 );

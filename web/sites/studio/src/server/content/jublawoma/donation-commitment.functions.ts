@@ -6,13 +6,13 @@ import { requireActor } from "../../auth.server";
 import { database } from "../../database.server";
 
 export const listDonationCommitments = createServerFn({ method: "GET" })
-	.validator(pageSchema.extend({ donationId: idSchema }))
+	.validator(pageSchema.extend({ donationId: idSchema.optional() }))
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return createDonationCommitmentRepository(database.db).listForDonation(
-			data,
-			data.donationId,
-		);
+		const repository = createDonationCommitmentRepository(database.db);
+		return data.donationId
+			? repository.listForDonation(data, data.donationId)
+			: repository.list(data);
 	});
 
 export const getDonationCommitment = createServerFn({ method: "GET" })

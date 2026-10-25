@@ -77,10 +77,10 @@ export function ProductReservationsView({
 			renderActions={(record) => (
 				<RecordFields>
 					<RecordField label={m.product()}>
-						{record.productId ?? "—"}
+						{record.productId ?? "gelöscht"}
 					</RecordField>
 					<RecordField label={m.product_variant()}>
-						{record.productVariantId ?? "—"}
+						{record.productVariantId ?? "gelöscht"}
 					</RecordField>
 					<RecordField label={m.studio_field_product_name()}>
 						{record.productName}

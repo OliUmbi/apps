@@ -8,12 +8,20 @@ import {
 } from "@oliumbi/contracts";
 import { z } from "zod";
 
+// The contact category vocabulary; the database domain (V010) mirrors it.
+export const inquirySubjectValues = [
+	"hofladen",
+	"reservation",
+	"hof",
+	"other",
+] as const;
+
 export const contactSchema = z.object({
 	submissionId: idSchema,
 	name: nameSchema,
 	email: optionalEmailSchema,
 	phone: phoneSchema,
-	subject: z.enum(["hofladen", "reservation", "hof", "other"]),
+	subject: z.enum(inquirySubjectValues),
 	message: textSchema.min(10),
 });
 export type ContactInput = z.infer<typeof contactSchema>;

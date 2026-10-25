@@ -15,7 +15,6 @@ import {
 } from "../../../server/content/jublawoma/donation-item.functions";
 import { InputField } from "../../input-field";
 import type { EditorFieldsProps } from "../content-form";
-import { NumberField } from "../editor-controls";
 import { InlineCollectionView } from "../inline-collection-view";
 
 export function DonationItemsView({ donationId }: { donationId: string }) {
@@ -90,23 +89,19 @@ function DonationItemFields({
 				value={values.detail ?? ""}
 				onChange={(event) => onChange("detail", event.target.value || null)}
 			/>
-			<NumberField
+			<InputField
 				name="quantity"
 				label={m.quantity()}
 				value={values.quantity}
-				min={0}
-				step={"any"}
 				required
-				onChange={(value) => onChange("quantity", value ?? Number.NaN)}
+				onChange={(event) => onChange("quantity", event.target.value)}
 			/>
-			<NumberField
+			<InputField
 				name="step"
 				label={m.studio_field_step()}
 				value={values.step}
-				min={0.000001}
-				step={"any"}
 				required
-				onChange={(value) => onChange("step", value ?? Number.NaN)}
+				onChange={(event) => onChange("step", event.target.value)}
 			/>
 			<InputField
 				name="unit"

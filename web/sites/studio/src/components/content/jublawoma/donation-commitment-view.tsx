@@ -7,14 +7,21 @@ import {
 } from "../../../server/content/jublawoma/donation-commitment.functions";
 import { RecordField, RecordFields } from "../../ui/record-fields";
 import { InlineCollectionView } from "../inline-collection-view";
+import { RoutedCollectionView } from "../routed-collection-view";
 
+// Without a donation scope the list includes orphaned commitments (deleted
+// donation) with their stored snapshots; they must never vanish from admin
+// views. Their parent fields show the deletion marker.
 export function DonationCommitmentsView({
 	donationId,
 }: {
-	donationId: string;
-}) {
+	donationId?: string;
+} = {}) {
+	const CommitmentCollection = donationId
+		? InlineCollectionView
+		: RoutedCollectionView;
 	return (
-		<InlineCollectionView<DonationCommitment>
+		<CommitmentCollection<DonationCommitment>
 			collection="jublawoma.donation_commitment"
 			title="Zusagen"
 			scope={donationId}
@@ -54,10 +61,10 @@ export function DonationCommitmentsView({
 			renderDetails={(record) => (
 				<RecordFields>
 					<RecordField label={m.studio_donation()}>
-						{record.donationId ?? "—"}
+						{record.donationId ?? "gelöscht"}
 					</RecordField>
 					<RecordField label={m.studio_donation_item()}>
-						{record.donationItemId ?? "—"}
+						{record.donationItemId ?? "gelöscht"}
 					</RecordField>
 					<RecordField label={m.studio_field_donation_title()}>
 						{record.donationTitle}

@@ -41,7 +41,22 @@ export function createNewsletterRepository(transaction: Transaction) {
 				sql`SELECT pg_advisory_xact_lock(hashtextextended(${email}, 0))`,
 			);
 		},
-		async correctEmail(id: string, email: string, hash: string, now: Date) {
+		async changeEmail(id: string, email: string, now: Date) {
+			// Address correction alone never changes the subscription state.
+			await transaction
+				.update(subscriber)
+				.set({
+					email,
+					updatedAt: now.toISOString(),
+				})
+				.where(eq(subscriber.id, id));
+		},
+		async restartConfirmation(
+			id: string,
+			email: string,
+			hash: string,
+			now: Date,
+		) {
 			await transaction
 				.update(subscriber)
 				.set({
@@ -80,6 +95,9 @@ export function createNewsletterRepository(transaction: Transaction) {
 						confirmedAt: null,
 						unsubscribedAt: null,
 						confirmationTokenHash: hash,
+						// A re-subscribe keeps the stored unsubscribe token: links in
+						// already-delivered emails must keep working.
+						unsubscribeToken: sql`${subscriber.unsubscribeToken}`,
 						updatedAt: now.toISOString(),
 					},
 				})

@@ -24,7 +24,15 @@ export async function requestSubscription(
 		)
 			return;
 		const token = newToken();
-		await repository.request(normalized, hashToken(token), newToken(), now);
+		// A re-subscribe keeps the stored unsubscribe token (delivered links stay
+		// valid); a new subscriber gets a fresh one.
+		const unsubscribeToken = existing?.unsubscribeToken ?? newToken();
+		await repository.request(
+			normalized,
+			hashToken(token),
+			unsubscribeToken,
+			now,
+		);
 		await createQueueClient(transaction).enqueue(
 			confirmationEmail(options, normalized, token),
 		);

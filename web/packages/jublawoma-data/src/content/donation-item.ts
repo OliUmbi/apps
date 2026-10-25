@@ -4,6 +4,7 @@ import {
 	titleSchema,
 } from "@oliumbi/contracts/content-validation";
 import { z } from "zod";
+import { decimalSchema } from "../forms";
 import type { donationItem } from "../schema";
 
 export const donationItemKeySchema = z.strictObject({
@@ -17,8 +18,10 @@ export const donationItemInputSchema = z.strictObject({
 	donationId: idSchema,
 	name: titleSchema,
 	detail: optionalTextSchema,
-	quantity: z.number().nonnegative(),
-	step: z.number().positive(),
+	// Decimal strings keep quantities exact end to end (D2); the database
+	// additionally rejects non-positive quantities and steps.
+	quantity: decimalSchema,
+	step: decimalSchema,
 	unit: titleSchema,
 });
 export type DonationItemInput = z.infer<typeof donationItemInputSchema>;
@@ -28,8 +31,8 @@ export function newDonationItemInput(donationId: string): DonationItemInput {
 		donationId: donationId,
 		name: "",
 		detail: null,
-		quantity: 1,
-		step: 0.5,
+		quantity: "1",
+		step: "0.5",
 		unit: "",
 	};
 }

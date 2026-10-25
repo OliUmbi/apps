@@ -6,12 +6,14 @@ import { createDatabasePool } from "../packages/database/src";
 import { createDonationRepository as jublawomaDonationStore } from "../packages/jublawoma-data/src/content/donation.repository";
 import { createDonationCommitmentRepository as jublawomaDonationCommitmentStore } from "../packages/jublawoma-data/src/content/donation-commitment.repository";
 import { createDonationItemRepository as jublawomaDonationItemStore } from "../packages/jublawoma-data/src/content/donation-item.repository";
+import { RecordKeyMismatchError as JublawomaRecordKeyMismatchError } from "../packages/jublawoma-data/src/content/errors";
 import { createEventRepository as jublawomaEventStore } from "../packages/jublawoma-data/src/content/event.repository";
 import { createMemberRepository as jublawomaMemberStore } from "../packages/jublawoma-data/src/content/member.repository";
 import { createPromotionRepository as jublawomaPromotionStore } from "../packages/jublawoma-data/src/content/promotion.repository";
 import { createStoryRepository as jublawomaStoryStore } from "../packages/jublawoma-data/src/content/story.repository";
 import { createStoryImageRepository as jublawomaStoryImageStore } from "../packages/jublawoma-data/src/content/story-image.repository";
 import * as jublawoma from "../packages/jublawoma-data/src/schema";
+import { RecordKeyMismatchError as UncletRecordKeyMismatchError } from "../packages/unclet-data/src/content/errors";
 import { createInquiryRepository as uncletInquiryStore } from "../packages/unclet-data/src/content/inquiry.repository";
 import { createReviewRepository as uncletReviewStore } from "../packages/unclet-data/src/content/review.repository";
 import { createShowcaseRepository as uncletShowcaseStore } from "../packages/unclet-data/src/content/showcase.repository";
@@ -21,6 +23,7 @@ import * as unclet from "../packages/unclet-data/src/schema";
 import { createArticleRepository as zelglihofArticleStore } from "../packages/zelglihof-data/src/content/article.repository";
 import { createArticleImageRepository as zelglihofArticleImageStore } from "../packages/zelglihof-data/src/content/article-image.repository";
 import { createCampaignRepository as zelglihofCampaignStore } from "../packages/zelglihof-data/src/content/campaign.repository";
+import { RecordKeyMismatchError as ZelglihofRecordKeyMismatchError } from "../packages/zelglihof-data/src/content/errors";
 import { createInquiryRepository as zelglihofInquiryStore } from "../packages/zelglihof-data/src/content/inquiry.repository";
 import { createProductRepository as zelglihofProductStore } from "../packages/zelglihof-data/src/content/product.repository";
 import { createProductReservationRepository as zelglihofProductReservationStore } from "../packages/zelglihof-data/src/content/product-reservation.repository";
@@ -147,18 +150,19 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 						description: "Updated",
 					});
 					assert.equal(updated.description, "Updated");
+					// A key/values mismatch cannot rename the key or re-parent the row.
 					const replacementId = replacementImageIds.jublawoma;
-					const replaced = await store.update(key, {
-						...input,
-						imageId: replacementId,
-					});
-					assert.equal(await store.get(key), null);
-					assert.equal(replaced.storyId, record.storyId);
-					await store.delete({ ...key, imageId: replacementId });
+					await assert.rejects(
+						store.update(key, { ...input, imageId: replacementId }),
+						JublawomaRecordKeyMismatchError,
+					);
+					assert.notEqual(await store.get(key), null);
 					assert.equal(
-						await store.get({ ...key, imageId: replacementId }),
+						await store.get({ storyId: key.storyId, imageId: replacementId }),
 						null,
 					);
+					await store.delete(key);
+					assert.equal(await store.get(key), null);
 				},
 			);
 			await context.test(
@@ -244,8 +248,8 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 						donationId: ids.get("jublawoma.Donation") ?? "",
 						name: "Review name",
 						detail: null,
-						quantity: 2.5,
-						step: 0.5,
+						quantity: "2.5",
+						step: "0.5",
 						unit: "Review unit",
 					};
 					const record = await store.create(input);
@@ -263,6 +267,12 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 						name: "Updated",
 					});
 					assert.equal(updated.name, "Updated");
+					// A mismatched parent cannot move the item to another donation.
+					await assert.rejects(
+						store.update(key, { ...input, donationId: randomUUID() }),
+						JublawomaRecordKeyMismatchError,
+					);
+					assert.equal((await store.get(key))?.donationId, input.donationId);
 				},
 			);
 			await context.test(
@@ -278,12 +288,12 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 							donationTitle: "Review donationTitle",
 							itemName: "Review itemName",
 							itemDetail: null,
-							itemQuantity: 2.5,
-							step: 0.5,
+							itemQuantity: "2.5",
+							step: "0.5",
 							unit: "Review unit",
 							name: "Review name",
 							phone: "+41 79 000 00 00",
-							quantity: 2.5,
+							quantity: "2.5",
 							note: null,
 
 							createdAt: new Date().toISOString(),
@@ -363,18 +373,22 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 						description: "Updated",
 					});
 					assert.equal(updated.description, "Updated");
+					// A key/values mismatch cannot rename the key or re-parent the row.
 					const replacementId = replacementImageIds.unclet;
-					const replaced = await store.update(key, {
-						...input,
-						imageId: replacementId,
-					});
-					assert.equal(await store.get(key), null);
-					assert.equal(replaced.showcaseId, record.showcaseId);
-					await store.delete({ ...key, imageId: replacementId });
+					await assert.rejects(
+						store.update(key, { ...input, imageId: replacementId }),
+						UncletRecordKeyMismatchError,
+					);
+					assert.notEqual(await store.get(key), null);
 					assert.equal(
-						await store.get({ ...key, imageId: replacementId }),
+						await store.get({
+							showcaseId: key.showcaseId,
+							imageId: replacementId,
+						}),
 						null,
 					);
+					await store.delete(key);
+					assert.equal(await store.get(key), null);
 				},
 			);
 			await context.test(
@@ -517,18 +531,22 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 						description: "Updated",
 					});
 					assert.equal(updated.description, "Updated");
+					// A key/values mismatch cannot rename the key or re-parent the row.
 					const replacementId = replacementImageIds.zelglihof;
-					const replaced = await store.update(key, {
-						...input,
-						imageId: replacementId,
-					});
-					assert.equal(await store.get(key), null);
-					assert.equal(replaced.articleId, record.articleId);
-					await store.delete({ ...key, imageId: replacementId });
+					await assert.rejects(
+						store.update(key, { ...input, imageId: replacementId }),
+						ZelglihofRecordKeyMismatchError,
+					);
+					assert.notEqual(await store.get(key), null);
 					assert.equal(
-						await store.get({ ...key, imageId: replacementId }),
+						await store.get({
+							articleId: key.articleId,
+							imageId: replacementId,
+						}),
 						null,
 					);
+					await store.delete(key);
+					assert.equal(await store.get(key), null);
 				},
 			);
 			await context.test(
@@ -596,6 +614,12 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 						name: "Updated",
 					});
 					assert.equal(updated.name, "Updated");
+					// A mismatched parent cannot move the variant to another product.
+					await assert.rejects(
+						store.update(key, { ...input, productId: randomUUID() }),
+						ZelglihofRecordKeyMismatchError,
+					);
+					assert.equal((await store.get(key))?.productId, input.productId);
 				},
 			);
 			await context.test(
@@ -716,6 +740,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 						.values({
 							id: randomUUID(),
 							status: "new",
+							subject: "other",
 							name: "Review name",
 							phone: "+41 79 000 00 00",
 							email: null,

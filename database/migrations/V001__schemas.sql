@@ -11,15 +11,18 @@ CREATE SCHEMA unclet;
 CREATE SCHEMA zelglihof;
 
 -- roles
-CREATE ROLE identity LOGIN PASSWORD 'identity_password';
-CREATE ROLE messaging LOGIN PASSWORD 'messaging_password';
-CREATE ROLE assets LOGIN PASSWORD 'assets_password';
+-- Roles are created NOLOGIN without passwords: credentials are provisioned per
+-- environment (development bootstrap in database/README.md, production through
+-- the vault/Ansible flow) so no password literal is committed anywhere.
+CREATE ROLE identity NOLOGIN;
+CREATE ROLE messaging NOLOGIN;
+CREATE ROLE assets NOLOGIN;
 
-CREATE ROLE studio LOGIN PASSWORD 'studio_password';
-CREATE ROLE oliumbi LOGIN PASSWORD 'oliumbi_password';
-CREATE ROLE jublawoma LOGIN PASSWORD 'jublawoma_password';
-CREATE ROLE unclet LOGIN PASSWORD 'unclet_password';
-CREATE ROLE zelglihof LOGIN PASSWORD 'zelglihof_password';
+CREATE ROLE studio NOLOGIN;
+CREATE ROLE oliumbi NOLOGIN;
+CREATE ROLE jublawoma NOLOGIN;
+CREATE ROLE unclet NOLOGIN;
+CREATE ROLE zelglihof NOLOGIN;
 
 -- permissions
 REVOKE CREATE ON SCHEMA public FROM PUBLIC;

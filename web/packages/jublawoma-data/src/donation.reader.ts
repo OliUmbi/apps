@@ -11,8 +11,8 @@ export function createDonationReader(db: DatabaseExecutor) {
 					id: donationItem.id,
 					name: donationItem.name,
 					detail: donationItem.detail,
-					quantity: sql<string>`${donationItem.quantity}::text`,
-					step: sql<string>`${donationItem.step}::text`,
+					quantity: donationItem.quantity,
+					step: donationItem.step,
 					unit: donationItem.unit,
 					remaining: sql<string>`greatest(0, ${donationItem.quantity} - coalesce(sum(${donationCommitment.quantity}), 0))::text`,
 				})

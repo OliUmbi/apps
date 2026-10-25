@@ -3,6 +3,7 @@ import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { showcaseImage } from "../schema";
+import { RecordKeyMismatchError } from "./errors";
 import type { ShowcaseImageInput, ShowcaseImageKey } from "./showcase-image";
 
 export function createShowcaseImageRepository(db: DatabaseExecutor) {
@@ -34,10 +35,15 @@ export function createShowcaseImageRepository(db: DatabaseExecutor) {
 			return record;
 		},
 		async update(key: ShowcaseImageKey, input: ShowcaseImageInput) {
+			// The composite key is the row's identity: it is never written on update,
+			// and values that claim another identity are rejected instead of silently
+			// re-parenting or renaming the row.
+			if (input.showcaseId !== key.showcaseId || input.imageId !== key.imageId)
+				throw new RecordKeyMismatchError("unclet.showcase_image");
 			const [record] = await db
 				.update(showcaseImage)
 				.set({
-					...input,
+					description: input.description,
 					updatedAt: new Date().toISOString(),
 				})
 				.where(

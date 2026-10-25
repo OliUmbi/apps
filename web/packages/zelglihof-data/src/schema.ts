@@ -9,6 +9,7 @@ import {
 	text,
 	uuid,
 } from "drizzle-orm/pg-core";
+import { inquirySubjectValues } from "./forms";
 
 // Flyway owns migrations and database constraints. These tables describe query types.
 const zelglihof = pgSchema("zelglihof");
@@ -124,6 +125,7 @@ export const campaign = zelglihof.table("campaign", {
 export const inquiry = zelglihof.table("inquiry", {
 	id: uuid("id").primaryKey().defaultRandom(),
 	status: text("status", { enum: statusValues }).notNull(),
+	subject: text("subject", { enum: inquirySubjectValues }).notNull(),
 	name: text("name").notNull(),
 	phone: text("phone").notNull(),
 	email: text("email"),

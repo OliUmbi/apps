@@ -8,7 +8,8 @@ CREATE TABLE jublawoma.promotion
     starts_at   timestamptz NOT NULL,
     ends_at     timestamptz NOT NULL,
     created_at  timestamptz NOT NULL,
-    updated_at  timestamptz NOT NULL
+    updated_at  timestamptz NOT NULL,
+    CONSTRAINT promotion_window CHECK (starts_at < ends_at)
 );
 
 CREATE TABLE jublawoma.story
@@ -46,7 +47,9 @@ CREATE TABLE jublawoma.event
     starts_on   date        NOT NULL,
     ends_on     date        NOT NULL,
     created_at  timestamptz NOT NULL,
-    updated_at  timestamptz NOT NULL
+    updated_at  timestamptz NOT NULL,
+    -- Single-day events are legitimate (starts_on = ends_on).
+    CONSTRAINT event_period CHECK (starts_on <= ends_on)
 );
 
 CREATE TABLE jublawoma.member
@@ -69,7 +72,8 @@ CREATE TABLE jublawoma.donation
     starts_at   timestamptz NOT NULL,
     ends_at     timestamptz NOT NULL,
     created_at  timestamptz NOT NULL,
-    updated_at  timestamptz NOT NULL
+    updated_at  timestamptz NOT NULL,
+    CONSTRAINT donation_window CHECK (starts_at < ends_at)
 );
 
 CREATE TABLE jublawoma.donation_item
@@ -82,7 +86,10 @@ CREATE TABLE jublawoma.donation_item
     step        numeric     NOT NULL,
     unit        text        NOT NULL,
     created_at  timestamptz NOT NULL,
-    updated_at  timestamptz NOT NULL
+    updated_at  timestamptz NOT NULL,
+    -- Quantities and steps are exact numerics; only positive values are sellable.
+    CONSTRAINT donation_item_quantity_positive CHECK (quantity > 0),
+    CONSTRAINT donation_item_step_positive CHECK (step > 0)
 );
 
 CREATE TABLE jublawoma.donation_commitment
@@ -101,5 +108,9 @@ CREATE TABLE jublawoma.donation_commitment
     quantity         numeric     NOT NULL,
     note             text,
     created_at       timestamptz NOT NULL,
-    updated_at       timestamptz NOT NULL
+    updated_at       timestamptz NOT NULL,
+    -- A commitment always carries positive snapshots and a positive quantity.
+    CONSTRAINT donation_commitment_item_quantity_positive CHECK (item_quantity > 0),
+    CONSTRAINT donation_commitment_step_positive CHECK (step > 0),
+    CONSTRAINT donation_commitment_quantity_positive CHECK (quantity > 0)
 );

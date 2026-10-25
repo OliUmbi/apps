@@ -20,6 +20,7 @@ export function createInquiryRepository(transaction: Transaction) {
 					id,
 					submissionId: input.submissionId,
 					status: "new",
+					subject: input.subject,
 					name: input.name,
 					phone: input.phone,
 					email: input.email || null,

@@ -4,6 +4,7 @@ import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { donationItem } from "../schema";
 import type { DonationItemInput, DonationItemKey } from "./donation-item";
+import { RecordKeyMismatchError } from "./errors";
 
 export function createDonationItemRepository(db: DatabaseExecutor) {
 	return {
@@ -29,16 +30,30 @@ export function createDonationItemRepository(db: DatabaseExecutor) {
 			return record;
 		},
 		async update(key: DonationItemKey, input: DonationItemInput) {
+			// The parent reference is an identity column: it is never written on
+			// update, so an item cannot be moved to another donation by a
+			// key/values mismatch.
 			const [record] = await db
 				.update(donationItem)
 				.set({
-					...input,
+					name: input.name,
+					detail: input.detail,
+					quantity: input.quantity,
+					step: input.step,
+					unit: input.unit,
 					updatedAt: new Date().toISOString(),
 				})
-				.where(eq(donationItem.id, key.id))
+				.where(
+					and(
+						eq(donationItem.id, key.id),
+						eq(donationItem.donationId, input.donationId),
+					),
+				)
 				.returning();
-			if (!record) throw new Error("Record not found or no longer editable");
-			return record;
+			if (record) return record;
+			if (await this.get(key))
+				throw new RecordKeyMismatchError("jublawoma.donation_item");
+			throw new Error("Record not found or no longer editable");
 		},
 		async delete(key: DonationItemKey): Promise<void> {
 			await db.delete(donationItem).where(eq(donationItem.id, key.id));

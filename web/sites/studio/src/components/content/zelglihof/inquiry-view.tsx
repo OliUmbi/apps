@@ -60,6 +60,7 @@ export function InquiriesView() {
 			]}
 			renderActions={(record) => (
 				<RecordFields>
+					<RecordField label={m.subject()}>{record.subject}</RecordField>
 					<RecordField label={m.name()}>{record.name}</RecordField>
 					<RecordField label={m.phone()}>{record.phone}</RecordField>
 					<RecordField label={m.email()}>{record.email ?? "—"}</RecordField>
