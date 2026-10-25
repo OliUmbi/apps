@@ -50,15 +50,9 @@ export function ContentForm<Row, Input>({
 		setValidation("");
 	};
 
-	// The message catalog owns no conflict wording yet (its files belong to the
-	// i18n package), so the two strings stay literal here.
 	const failure =
 		validation ||
-		(conflict
-			? "Dieser Eintrag wurde seit dem Laden geändert."
-			: error
-				? m.error_generic()
-				: null);
+		(conflict ? m.studio_content_conflict() : error ? m.error_generic() : null);
 	const message =
 		failure || (saved && !edited ? m.studio_content_saved() : null);
 
@@ -91,7 +85,7 @@ export function ContentForm<Row, Input>({
 							disabled={pending}
 							onClick={onReload}
 						>
-							Neu laden
+							{m.studio_content_reload()}
 						</Button>
 					) : null}
 				</Alert>
