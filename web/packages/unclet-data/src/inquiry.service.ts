@@ -6,7 +6,10 @@ import { type InquiryInput, inquirySchema } from "./forms";
 import { inquiryEmails } from "./inquiry.email";
 import { createInquiryRepository } from "./inquiry.repository";
 
-export function createInquiryService(database: DatabasePool, sender: string) {
+export function createInquiryService(
+	database: DatabasePool,
+	requestsEmail: string,
+) {
 	return {
 		async submit(input: InquiryInput) {
 			const values = inquirySchema.parse(input);
@@ -19,7 +22,7 @@ export function createInquiryService(database: DatabasePool, sender: string) {
 					new Date(),
 				);
 				const queue = createQueueClient(transaction);
-				for (const message of inquiryEmails(sender, values, reference))
+				for (const message of inquiryEmails(requestsEmail, values, reference))
 					await queue.enqueue(message);
 			});
 			return { outcome: "accepted" as const, reference };

@@ -15,6 +15,6 @@ export const sendInquiry = createServerFn({ method: "POST" })
 function saveInquiry(input: InquiryInput) {
 	return createInquiryService(
 		database,
-		process.env.UNCLET_OWNER_EMAIL ?? "info@uncle-t.ch",
+		process.env.UNCLET_REQUESTS_EMAIL ?? "info@uncle-t.ch",
 	).submit(input);
 }

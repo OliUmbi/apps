@@ -10,12 +10,13 @@ public record MessageCreateRequest(
         @NotBlank @Pattern(regexp = "email") String type,
         @NotBlank @Email String sender,
         @NotBlank @Email String recipient,
+        @Email String replyTo,
         @NotBlank String subject,
         @NotBlank String text,
         String html) {
 
     public static MessageCreateRequest fromClaim(DeliveryClaim claim) {
         return new MessageCreateRequest(claim.site(), claim.type(), claim.sender(),
-                claim.recipient(), claim.subject(), claim.text(), claim.html());
+                claim.recipient(), claim.replyTo(), claim.subject(), claim.text(), claim.html());
     }
 }

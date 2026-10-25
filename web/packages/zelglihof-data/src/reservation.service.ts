@@ -9,7 +9,7 @@ import type { ReservationResult } from "./reservation.types";
 
 export function createReservationService(
 	database: DatabasePool,
-	sender: string,
+	requestsEmail: string,
 ) {
 	return {
 		async reserve(input: ReservationInput): Promise<ReservationResult> {
@@ -30,7 +30,7 @@ export function createReservationService(
 				await repository.insert(id, values, variant, now);
 				const queue = createQueueClient(transaction);
 				for (const message of reservationEmails(
-					sender,
+					requestsEmail,
 					values,
 					variant,
 					reference,

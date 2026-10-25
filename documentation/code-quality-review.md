@@ -50,7 +50,7 @@ Priorities:
 
 ### R06 — Compose omits configuration that Studio actually uses (resolved)
 
-[Studio's container environment](../compose.yaml#L147) now explicitly forwards `STUDIO_SECURE_COOKIES` and `ZELGLIHOF_OWNER_EMAIL`. The HTTP development default remains `false`; HTTPS deployments must set secure cookies to `true` as documented.
+[Studio's container environment](../infrastructure/compose.dev.yaml) now explicitly forwards `STUDIO_SECURE_COOKIES` and `ZELGLIHOF_OWNER_EMAIL`. The HTTP development default remains `false`; HTTPS deployments must set secure cookies to `true` as documented.
 
 - [x] Pass both settings explicitly. Compose configuration validation confirmed that supplied values reach Studio.
 

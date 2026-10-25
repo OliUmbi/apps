@@ -9,7 +9,8 @@ import { database } from "./database.server";
 
 const options = () => ({
 	publicUrl: process.env.ZELGLIHOF_PUBLIC_URL ?? "http://localhost:8003",
-	sender: process.env.ZELGLIHOF_OWNER_EMAIL ?? "hof@zelglihof.ch",
+	sender: process.env.ZELGLIHOF_NEWSLETTER_EMAIL ?? "newsletter@zelglihof.ch",
+	replyTo: process.env.ZELGLIHOF_REQUESTS_EMAIL ?? "hof@zelglihof.ch",
 });
 export const sendCampaign = createServerFn({ method: "POST" })
 	.validator(z.object({ id: idSchema }))

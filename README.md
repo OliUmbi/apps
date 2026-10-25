@@ -25,14 +25,14 @@ order. The web workspace is documented in
 
 Requirements: Docker Desktop, Node.js 24+, pnpm 11+, JDK 25, and Maven 3.9.12.
 
-The checked-in `.env.development` contains local-only defaults. Override values
-through your shell or IDE when needed, and never reuse the development
-credentials in a deployed environment.
+The checked-in `infrastructure/.env.development` contains local-only defaults.
+Override values through your shell or IDE when needed, and never reuse the
+development credentials in a deployed environment.
 
 Start the complete stack from the repository root:
 
 ```powershell
-docker compose --env-file .env.development up -d --build
+docker compose -f infrastructure/compose.dev.yaml --env-file infrastructure/.env.development up -d --build
 ```
 
 Mailpit receives development email at <http://localhost:8025>. To work on a

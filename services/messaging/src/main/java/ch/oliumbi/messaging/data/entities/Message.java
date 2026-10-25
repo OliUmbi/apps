@@ -45,6 +45,9 @@ public class Message {
     @Column(nullable = false, columnDefinition = "text")
     private String recipient;
 
+    @Column(name = "reply_to", columnDefinition = "text")
+    private String replyTo;
+
     @Column(nullable = false, columnDefinition = "text")
     private String subject;
 
@@ -89,6 +92,7 @@ public class Message {
         this.type = request.getType();
         this.sender = request.getSender();
         this.recipient = request.getRecipient();
+        this.replyTo = request.getReplyTo();
         this.subject = request.getSubject();
         this.text = request.getText();
         this.html = request.getHtml();
@@ -132,6 +136,6 @@ public class Message {
 
     public DeliveryClaim claim() {
         if (status != MessageStatus.PROCESSING) throw new IllegalStateException("Message is not processing");
-        return new DeliveryClaim(id, attemptCount, site, type, sender, recipient, subject, text, html);
+        return new DeliveryClaim(id, attemptCount, site, type, sender, recipient, replyTo, subject, text, html);
     }
 }

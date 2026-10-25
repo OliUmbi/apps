@@ -2,7 +2,7 @@ import { emailMessage } from "@oliumbi/queue/email";
 import type { InquiryInput } from "./forms";
 
 export function inquiryEmails(
-	sender: string,
+	requestsEmail: string,
 	input: InquiryInput,
 	reference: string,
 ) {
@@ -17,13 +17,21 @@ export function inquiryEmails(
 		reference,
 	].join("\n");
 	return [
-		emailMessage("unclet", sender, sender, "Neue Anfrage", details),
 		emailMessage(
 			"unclet",
-			sender,
+			requestsEmail,
+			requestsEmail,
+			"Neue Anfrage",
+			details,
+			input.email || undefined,
+		),
+		emailMessage(
+			"unclet",
+			requestsEmail,
 			input.email,
 			"Deine Anfrage bei Uncle-T",
 			`Danke für deine Anfrage. Wir melden uns persönlich bei dir. Referenz: ${reference}`,
+			requestsEmail,
 		),
 	];
 }

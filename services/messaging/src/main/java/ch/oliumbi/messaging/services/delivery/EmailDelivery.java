@@ -60,6 +60,9 @@ public class EmailDelivery {
         var helper = new MimeMessageHelper(message, true, "UTF-8");
         helper.setFrom(claim.sender());
         helper.setTo(claim.recipient());
+        if (claim.replyTo() != null && !claim.replyTo().isBlank()) {
+            helper.setReplyTo(claim.replyTo());
+        }
         helper.setSubject(claim.subject());
         if (claim.html() == null || claim.html().isBlank()) {
             helper.setText(claim.text());

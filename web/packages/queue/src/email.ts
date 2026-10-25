@@ -16,12 +16,14 @@ export function emailMessage(
 	recipient: string,
 	subject: string,
 	text: string,
+	replyTo?: string,
 ): QueuedEmail {
 	return {
 		id: randomUUID(),
 		site,
 		sender,
 		recipient,
+		replyTo: replyTo ?? null,
 		subject,
 		text,
 		html: `<p>${escapeHtml(text).replaceAll("\n", "<br>")}</p>`,

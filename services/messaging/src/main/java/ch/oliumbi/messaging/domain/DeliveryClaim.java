@@ -9,6 +9,7 @@ public record DeliveryClaim(
         String type,
         String sender,
         String recipient,
+        String replyTo,
         String subject,
         String text,
         String html) {

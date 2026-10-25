@@ -34,6 +34,9 @@ public class QueuedMessage {
     @Column(nullable = false, columnDefinition = "text")
     private String recipient;
 
+    @Column(name = "reply_to", columnDefinition = "text")
+    private String replyTo;
+
     @Column(nullable = false, columnDefinition = "text")
     private String subject;
 

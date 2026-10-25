@@ -13,6 +13,7 @@ export function confirmationEmail(
 		email,
 		"Newsletter bestätigen",
 		`Bitte bestätige deine Anmeldung innerhalb von 48 Stunden:\n${url}\n\nFalls du dich nicht angemeldet hast, kannst du diese Nachricht ignorieren.`,
+		options.replyTo,
 	);
 }
 export function welcomeEmail(
@@ -28,5 +29,6 @@ export function welcomeEmail(
 		email,
 		"Willkommen beim Zelglihof",
 		`Danke für deine Anmeldung.\n\nAbmelden: ${url}`,
+		options.replyTo,
 	);
 }

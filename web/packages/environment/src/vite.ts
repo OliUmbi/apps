@@ -5,13 +5,20 @@ const repositoryDirectory = fileURLToPath(
 	new URL("../../../../", import.meta.url),
 );
 
+/** Checked-in shared defaults live with the rest of the runtime config. */
+const environmentDirectory = fileURLToPath(
+	new URL("../../../../infrastructure/", import.meta.url),
+);
+
 export function environmentValues(
 	mode: string,
 	rootDirectory: string,
 	siteDirectory: string,
 ) {
+	// Precedence: site > shared defaults (infrastructure/) > root fallback.
 	return {
 		...loadEnv(mode, rootDirectory, ""),
+		...loadEnv(mode, environmentDirectory, ""),
 		...loadEnv(mode, siteDirectory, ""),
 	};
 }

@@ -20,5 +20,6 @@ export function campaignEmail(
 		recipient.email,
 		campaign.subject,
 		`${campaign.body}\n\nNewsletter abbestellen: ${unsubscribe}`,
+		options.replyTo,
 	);
 }

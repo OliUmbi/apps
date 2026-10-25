@@ -4,7 +4,7 @@ import type { ContactInput } from "./forms";
 export function inquiryNotification(
 	input: ContactInput,
 	reference: string,
-	sender: string,
+	requestsEmail: string,
 ) {
 	const text = [
 		input.name,
@@ -14,5 +14,12 @@ export function inquiryNotification(
 		input.message,
 		reference,
 	].join("\n");
-	return emailMessage("zelglihof", sender, sender, "Neue Hofanfrage", text);
+	return emailMessage(
+		"zelglihof",
+		requestsEmail,
+		requestsEmail,
+		"Neue Hofanfrage",
+		text,
+		input.email || undefined,
+	);
 }

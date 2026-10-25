@@ -15,6 +15,6 @@ export const sendContactInquiry = createServerFn({ method: "POST" })
 function saveContactInquiry(input: ContactInput) {
 	return createInquiryService(
 		database,
-		process.env.ZELGLIHOF_OWNER_EMAIL ?? "hof@zelglihof.ch",
+		process.env.ZELGLIHOF_REQUESTS_EMAIL ?? "hof@zelglihof.ch",
 	).submit(input);
 }

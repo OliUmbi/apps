@@ -1,13 +1,15 @@
 # infrastructure
 
-Production deployment. Everything here is versioned in git; images come from
-ghcr and are pinned by `IMAGE_TAG`, so a deploy is deterministic and a
-rollback is deploying the previous tag.
+Runtime configuration and production deployment. Everything here is versioned
+in git; images come from ghcr and are pinned by `IMAGE_TAG`, so a deploy is
+deterministic and a rollback is deploying the previous tag.
 
 ## layout
 
 | path | purpose |
 |---|---|
+| `compose.dev.yaml` | the local development stack |
+| `.env.development` | checked-in development defaults (Vite, compose and IDE runs) |
 | `compose.prod.yaml` | the app stack (caddy, postgres, migrate, services, sites) |
 | `compose.monitoring.yaml` | prometheus, node-exporter, cAdvisor, blackbox, alertmanager, grafana |
 | `compose.restore.yaml` | override for the local restore drill (see documentation/operations.md) |

@@ -6,6 +6,7 @@ export const messageSchema = z.object({
 	site: z.string(),
 	type: z.string(),
 	recipient: z.string(),
+	replyTo: z.string().nullable(),
 	subject: z.string(),
 	status: z.string(),
 	attemptCount: z.number(),

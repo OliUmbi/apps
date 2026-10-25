@@ -44,7 +44,7 @@ caddy with DNS-01 wildcards (Infomaniak), manual deploys over WireGuard. Context
 - [ ] Define reservation cancellation and stock restoration, including deleted variants.
 - [ ] Connect notifications to users with site access. Choose event names and initial subscribers.
 - [ ] Show campaign delivery results per recipient. Agree retry rules for failed and uncertain sends.
-- [ ] Add allowed senders per site, Reply-To and unsubscribe headers. Add an optional `replyTo` to the message contract; split `*_OWNER_EMAIL` into `*_REQUESTS_EMAIL` (recipient/Reply-To) and `*_NEWSLETTER_EMAIL` (sender). Set retention rules for messages, tokens and personal data.
+- [ ] Add allowed senders per site and List-Unsubscribe headers (the `replyTo` contract field and the `*_REQUESTS_EMAIL` / `*_NEWSLETTER_EMAIL` split are implemented). Set retention rules for messages, tokens and personal data.
 - [ ] Clarify image publication and retention when linked content outlives an image.
 - [ ] Improve image selection and previews in Studio.
 
@@ -79,4 +79,4 @@ caddy with DNS-01 wildcards (Infomaniak), manual deploys over WireGuard. Context
 - [ ] Check Paraglide URL translation, such as `/kontakt` and `/contact`. Use German customer URLs and English source filenames.
 - [ ] Revisit queued newsletter cancellation and stale confirmation links as volume grows. Current priority is low.
 - [ ] Add email verification and password recovery only if public accounts are introduced; Studio is excluded.
-- [ ] Add critical integration tests and Java style checks later. Java currently has no tests.
+- [ ] Java unit tests exist for all services (`mvn test`, 66 tests). Follow-ups: integration tests against a real PostgreSQL (see the assessment in the test report), Java style checks, and running the Java and web checks in CI.

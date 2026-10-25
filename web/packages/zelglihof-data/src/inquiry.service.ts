@@ -6,7 +6,10 @@ import { type ContactInput, contactSchema } from "./forms";
 import { inquiryNotification } from "./inquiry.email";
 import { createInquiryRepository } from "./inquiry.repository";
 
-export function createInquiryService(database: DatabasePool, sender: string) {
+export function createInquiryService(
+	database: DatabasePool,
+	requestsEmail: string,
+) {
 	return {
 		async submit(input: ContactInput) {
 			const values = contactSchema.parse(input);
@@ -19,7 +22,7 @@ export function createInquiryService(database: DatabasePool, sender: string) {
 					new Date(),
 				);
 				await createQueueClient(transaction).enqueue(
-					inquiryNotification(values, reference, sender),
+					inquiryNotification(values, reference, requestsEmail),
 				);
 			});
 			return { outcome: "accepted" as const, reference };

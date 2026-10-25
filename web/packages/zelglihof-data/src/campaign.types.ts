@@ -9,6 +9,9 @@ export type CampaignRecipient = Pick<
 	"id" | "email" | "unsubscribeToken"
 >;
 export interface CampaignOptions {
+	/** sending identity for subscriber mail (newsletter@) */
 	sender: string;
+	/** human inbox replies go to (requests@) */
+	replyTo: string;
 	publicUrl: string;
 }

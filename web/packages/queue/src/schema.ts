@@ -11,6 +11,7 @@ export const message = queue.table("message", {
 	type: text("type").notNull(),
 	sender: text("sender").notNull(),
 	recipient: text("recipient").notNull(),
+	replyTo: text("reply_to"),
 	subject: text("subject").notNull(),
 	text: text("text").notNull(),
 	html: text("html"),

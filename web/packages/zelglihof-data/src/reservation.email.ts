@@ -3,7 +3,7 @@ import type { ReservationInput } from "./forms";
 import type { ReservableVariant } from "./reservation.types";
 
 export function reservationEmails(
-	sender: string,
+	requestsEmail: string,
 	input: ReservationInput,
 	variant: ReservableVariant,
 	reference: string,
@@ -19,16 +19,24 @@ export function reservationEmails(
 		reference,
 	].join("\n");
 	const messages = [
-		emailMessage("zelglihof", sender, sender, "Neue Reservation", details),
+		emailMessage(
+			"zelglihof",
+			requestsEmail,
+			requestsEmail,
+			"Neue Reservation",
+			details,
+			input.email || undefined,
+		),
 	];
 	if (input.email)
 		messages.push(
 			emailMessage(
 				"zelglihof",
-				sender,
+				requestsEmail,
 				input.email,
 				"Deine Reservation beim Zelglihof",
 				details,
+				requestsEmail,
 			),
 		);
 	return messages;

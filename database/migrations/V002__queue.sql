@@ -5,6 +5,7 @@ CREATE TABLE queue.message
     type       text        NOT NULL,
     sender     text        NOT NULL,
     recipient  text        NOT NULL,
+    reply_to   text,
     subject    text        NOT NULL,
     text       text        NOT NULL,
     html       text,

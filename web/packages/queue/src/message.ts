@@ -3,6 +3,7 @@ export interface QueuedEmail {
 	site: string;
 	sender: string;
 	recipient: string;
+	replyTo: string | null;
 	subject: string;
 	text: string;
 	html: string;
