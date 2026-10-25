@@ -75,6 +75,7 @@ services:
       context: ../services
       dockerfile: identity/Dockerfile
     environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
       DATABASE_URL: postgresql://postgres:5432/${POSTGRES_DB:-apps}
       IDENTITY_DATABASE_USER: ${IDENTITY_DATABASE_USER:-identity}
       IDENTITY_DATABASE_PASSWORD: ${IDENTITY_DATABASE_PASSWORD:-identity_password}
@@ -90,6 +91,7 @@ services:
       context: ../services
       dockerfile: messaging/Dockerfile
     environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
       DATABASE_URL: postgresql://postgres:5432/${POSTGRES_DB:-apps}
       MESSAGING_DATABASE_USER: ${MESSAGING_DATABASE_USER:-messaging}
       MESSAGING_DATABASE_PASSWORD: ${MESSAGING_DATABASE_PASSWORD:-messaging_password}
@@ -100,6 +102,7 @@ services:
       MESSAGING_SMTP_PASSWORD: ${MESSAGING_SMTP_PASSWORD:-}
       MESSAGING_SMTP_AUTH: ${MESSAGING_SMTP_AUTH:-false}
       MESSAGING_SMTP_TLS: ${MESSAGING_SMTP_TLS:-false}
+      MESSAGING_SMTP_TLS_REQUIRED: ${MESSAGING_SMTP_TLS_REQUIRED:-false}
     ports:
       - "8082:8082"
     depends_on:
@@ -113,6 +116,7 @@ services:
       context: ../services
       dockerfile: assets/Dockerfile
     environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
       DATABASE_URL: postgresql://postgres:5432/${POSTGRES_DB:-apps}
       ASSETS_DATABASE_USER: ${ASSETS_DATABASE_USER:-assets}
       ASSETS_DATABASE_PASSWORD: ${ASSETS_DATABASE_PASSWORD:-assets_password}

@@ -108,6 +108,7 @@ services:
       MESSAGING_SMTP_PASSWORD: ${MESSAGING_SMTP_PASSWORD:-}
       MESSAGING_SMTP_AUTH: ${MESSAGING_SMTP_AUTH:-true}
       MESSAGING_SMTP_TLS: ${MESSAGING_SMTP_TLS:-true}
+      MESSAGING_SMTP_TLS_REQUIRED: ${MESSAGING_SMTP_TLS_REQUIRED:-true}
     depends_on:
       migrate:
         condition: service_completed_successfully
