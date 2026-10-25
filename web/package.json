@@ -2,6 +2,9 @@
   "name": "web",
   "private": true,
   "packageManager": "pnpm@11.20.0",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "build": "pnpm --workspace-concurrency=1 --filter \"./sites/*\" -r build",
     "build:jublawoma": "pnpm --filter jublawoma build",
@@ -14,8 +17,9 @@
     "dev:unclet": "pnpm --filter unclet dev",
     "dev:zelglihof": "pnpm --filter zelglihof dev",
     "fix": "biome check --write",
+    "generate": "pnpm --filter @oliumbi/i18n generate",
     "test": "tsx --test tests/*.test.ts",
-    "typecheck": "pnpm -r check && tsc --project tests/tsconfig.json"
+    "typecheck": "pnpm generate && pnpm -r check && tsc --project tests/tsconfig.json"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",

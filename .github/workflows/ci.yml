@@ -2,11 +2,13 @@ name: ci
 
 # Runs the verification commands from documentation/refactoring-plan.md §2:
 # web `pnpm check` / `pnpm typecheck` / `pnpm test` / `pnpm build` and Java
-# `mvn -f services/pom.xml test`, on the toolchain majors documented in the
-# root README (Node 24, pnpm 11 via the web/package.json packageManager pin,
-# JDK 25, Maven 3.9.x). publish.yml calls this workflow and only builds and
-# pushes images when it is green, so tag pushes skip the standalone trigger
-# below and are verified through that call instead.
+# `services/mvnw -f services/pom.xml test`, on the toolchain majors documented in
+# the root README (Node 24, pnpm 11 via the web/package.json packageManager pin,
+# JDK 25, Maven 3.9.12 via the services/.mvn wrapper pin). `pnpm typecheck`
+# runs `pnpm generate` first (single owner of the Paraglide message output), so
+# a clean checkout type-checks without a build. publish.yml calls this workflow
+# and only builds and pushes images when it is green, so tag pushes skip the
+# standalone trigger below and are verified through that call instead.
 
 on:
   push:
@@ -99,7 +101,7 @@ jobs:
         run: pnpm build
 
   java:
-    name: services (mvn test)
+    name: services (mvnw test)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -110,8 +112,10 @@ jobs:
           java-version: 25
           cache: maven
 
-      - name: mvn -f services/pom.xml test
-        run: mvn -B -ntp -f services/pom.xml test
+      # The wrapper (services/.mvn/wrapper/maven-wrapper.properties) pins the
+      # same Maven version the READMEs document, so CI and local runs agree.
+      - name: services/mvnw -f services/pom.xml test
+        run: services/mvnw -B -ntp -f services/pom.xml test
 
   containers:
     name: containers (compose config)
