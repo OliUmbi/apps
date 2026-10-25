@@ -1,4 +1,3 @@
-import { statusValues } from "@oliumbi/contracts";
 import { isoTimestamp } from "@oliumbi/database/columns";
 import {
 	boolean,
@@ -9,6 +8,7 @@ import {
 	text,
 	uuid,
 } from "drizzle-orm/pg-core";
+import { inquiryStatusValues } from "./statuses";
 
 // Flyway owns migrations and database constraints. These tables describe query types.
 const unclet = pgSchema("unclet");
@@ -51,7 +51,7 @@ export const review = unclet.table("review", {
 
 export const inquiry = unclet.table("inquiry", {
 	id: uuid("id").primaryKey().defaultRandom(),
-	status: text("status", { enum: statusValues }).notNull(),
+	status: text("status", { enum: inquiryStatusValues }).notNull(),
 	name: text("name").notNull(),
 	email: text("email").notNull(),
 	phone: text("phone").notNull(),

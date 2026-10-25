@@ -1,4 +1,3 @@
-import { statusValues } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import type { ComponentProps } from "react";
 import { Checkbox } from "../ui/checkbox";
@@ -52,12 +51,17 @@ export function NumberField({
 	);
 }
 
-export function StatusField({
+// Renders one workflow's own status vocabulary: each caller passes the states
+// its workflow owns, so adding a state to one workflow never widens another
+// workflow's editor (plan decision D4).
+export function StatusField<Status extends string>({
+	statuses,
 	value,
 	onChange,
 }: {
-	value: (typeof statusValues)[number];
-	onChange: (value: (typeof statusValues)[number]) => void;
+	statuses: readonly Status[];
+	value: Status;
+	onChange: (value: Status) => void;
 }) {
 	return (
 		<FieldRoot>
@@ -65,7 +69,7 @@ export function StatusField({
 			<SelectRoot
 				value={value}
 				onValueChange={(next) => {
-					const status = statusValues.find((candidate) => candidate === next);
+					const status = statuses.find((candidate) => candidate === next);
 					if (status) onChange(status);
 				}}
 			>
@@ -73,7 +77,7 @@ export function StatusField({
 					<SelectValue>{displayStatus(value)}</SelectValue>
 				</SelectTrigger>
 				<SelectPanel>
-					{statusValues.map((status) => (
+					{statuses.map((status) => (
 						<SelectItem
 							key={status}
 							value={status}

@@ -1,14 +1,18 @@
-import type { PageInput } from "@oliumbi/contracts";
+import type { Page, PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { donationItem } from "../schema";
-import type { DonationItemInput, DonationItemKey } from "./donation-item";
+import type {
+	DonationItem,
+	DonationItemInput,
+	DonationItemKey,
+} from "./donation-item";
 import { updateMissError } from "./errors";
 
 export function createDonationItemRepository(db: DatabaseExecutor) {
 	return {
-		async get(key: DonationItemKey) {
+		async get(key: DonationItemKey): Promise<DonationItem | null> {
 			const [record] = await db
 				.select()
 				.from(donationItem)
@@ -16,7 +20,7 @@ export function createDonationItemRepository(db: DatabaseExecutor) {
 				.limit(1);
 			return record ?? null;
 		},
-		async create(input: DonationItemInput) {
+		async create(input: DonationItemInput): Promise<DonationItem> {
 			const now = new Date().toISOString();
 			const [record] = await db
 				.insert(donationItem)
@@ -33,7 +37,7 @@ export function createDonationItemRepository(db: DatabaseExecutor) {
 			key: DonationItemKey,
 			input: DonationItemInput,
 			expectedUpdatedAt: string,
-		) {
+		): Promise<DonationItem> {
 			// The parent reference is an identity column: it is never written on
 			// update, so an item cannot be moved to another donation by a
 			// key/values mismatch.
@@ -67,8 +71,11 @@ export function createDonationItemRepository(db: DatabaseExecutor) {
 		async delete(key: DonationItemKey): Promise<void> {
 			await db.delete(donationItem).where(eq(donationItem.id, key.id));
 		},
-		listForDonation(input: PageInput, donationId: string) {
-			return paginate(
+		listForDonation(
+			input: PageInput,
+			donationId: string,
+		): Promise<Page<DonationItem>> {
+			return paginate<DonationItem>(
 				db
 					.select()
 					.from(donationItem)

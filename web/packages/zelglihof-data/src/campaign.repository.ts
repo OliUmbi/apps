@@ -1,10 +1,14 @@
 import type { Transaction } from "@oliumbi/database";
 import { and, eq, gt } from "drizzle-orm";
+import type { CampaignDispatch, CampaignRecipient } from "./campaign.types";
 import { campaign, subscriber } from "./schema";
 
-export function createCampaignRepository(transaction: Transaction) {
+// Dispatch workflow repository: loads the campaign and its recipients for one
+// send run. Named for its role so it never reads like the studio CRUD
+// repository in content/campaign.repository.ts.
+export function createCampaignDispatchRepository(transaction: Transaction) {
 	return {
-		async lock(id: string) {
+		async lock(id: string): Promise<CampaignDispatch | undefined> {
 			const [record] = await transaction
 				.select({
 					id: campaign.id,
@@ -17,7 +21,10 @@ export function createCampaignRepository(transaction: Transaction) {
 				.for("update");
 			return record;
 		},
-		recipients(afterId: string | null, limit: number) {
+		recipients(
+			afterId: string | null,
+			limit: number,
+		): Promise<CampaignRecipient[]> {
 			return transaction
 				.select({
 					id: subscriber.id,

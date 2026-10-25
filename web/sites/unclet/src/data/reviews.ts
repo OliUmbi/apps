@@ -1,18 +1,21 @@
 import { pageSchema } from "@oliumbi/contracts";
 import { createPublicRepository } from "@oliumbi/unclet-data";
-import { reviewSchema } from "@oliumbi/unclet-data/contracts";
-import { createReviewRepository } from "@oliumbi/unclet-data/review.repository";
+import { reviewSchema } from "@oliumbi/unclet-data/forms";
+import { createReviewSubmissionRepository } from "@oliumbi/unclet-data/review.repository";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import type { PublicReview } from "../model/content";
 import { database } from "../server/database.server";
 
-export { type ReviewInput, reviewSchema } from "@oliumbi/unclet-data/contracts";
+export {
+	type ReviewSubmissionInput,
+	reviewSchema,
+} from "@oliumbi/unclet-data/forms";
 
 export const sendReview = createServerFn({ method: "POST" })
 	.validator(reviewSchema)
 	.handler(async ({ data }) => {
-		await createReviewRepository(database.db).submit(data);
+		await createReviewSubmissionRepository(database.db).submit(data);
 		return { outcome: "accepted" as const };
 	});
 

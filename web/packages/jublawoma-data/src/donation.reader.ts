@@ -1,11 +1,12 @@
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { eq, sql } from "drizzle-orm";
+import type { DonationItemAvailability } from "./donation.types";
 import { donationCommitment, donationItem } from "./schema";
 
 // Quantities reach the site as decimal strings; display formatting happens there (D2).
 export function createDonationReader(db: DatabaseExecutor) {
 	return {
-		items(donationId: string) {
+		items(donationId: string): Promise<DonationItemAvailability[]> {
 			return db
 				.select({
 					id: donationItem.id,

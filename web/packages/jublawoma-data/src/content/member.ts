@@ -1,14 +1,22 @@
-import { idSchema } from "@oliumbi/contracts";
-import { titleSchema } from "@oliumbi/contracts/content-validation";
+import { idSchema, titleSchema } from "@oliumbi/contracts";
 import { z } from "zod";
-import type { member } from "../schema";
 
 export const memberKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type MemberKey = z.infer<typeof memberKeySchema>;
 
-export type Member = typeof member.$inferSelect;
+// The managed member record as it crosses the package boundary. Written out on
+// purpose: a renamed storage column must not silently change this shape.
+export interface Member {
+	id: string;
+	name: string;
+	leadership: boolean;
+	imageId: string | null;
+	groupName: string;
+	createdAt: string;
+	updatedAt: string;
+}
 
 export const memberInputSchema = z.strictObject({
 	name: titleSchema,

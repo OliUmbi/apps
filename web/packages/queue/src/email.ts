@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import type { QueuedEmail } from "./message";
 
-export function escapeHtml(value: string) {
+function escapeHtml(value: string) {
 	return value
 		.replaceAll("&", "&amp;")
 		.replaceAll("<", "&lt;")

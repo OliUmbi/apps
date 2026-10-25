@@ -1,15 +1,15 @@
-import type { PageInput } from "@oliumbi/contracts";
+import type { Page, PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { review } from "../schema";
 import { updateMissError } from "./errors";
-import type { ReviewInput, ReviewKey } from "./review";
+import type { Review, ReviewInput, ReviewKey } from "./review";
 
 export function createReviewRepository(db: DatabaseExecutor) {
 	return {
-		list(input: PageInput) {
-			return paginate(
+		list(input: PageInput): Promise<Page<Review>> {
+			return paginate<Review>(
 				db
 					.select()
 					.from(review)
@@ -23,7 +23,7 @@ export function createReviewRepository(db: DatabaseExecutor) {
 				input,
 			);
 		},
-		async get(key: ReviewKey) {
+		async get(key: ReviewKey): Promise<Review | null> {
 			const [record] = await db
 				.select()
 				.from(review)
@@ -31,7 +31,7 @@ export function createReviewRepository(db: DatabaseExecutor) {
 				.limit(1);
 			return record ?? null;
 		},
-		async create(input: ReviewInput) {
+		async create(input: ReviewInput): Promise<Review> {
 			const now = new Date().toISOString();
 			const [record] = await db
 				.insert(review)
@@ -48,7 +48,7 @@ export function createReviewRepository(db: DatabaseExecutor) {
 			key: ReviewKey,
 			input: ReviewInput,
 			expectedUpdatedAt: string,
-		) {
+		): Promise<Review> {
 			const [record] = await db
 				.update(review)
 				.set({

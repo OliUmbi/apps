@@ -1,5 +1,5 @@
 import { m } from "@oliumbi/i18n/messages";
-import { newsletterSignupSchema } from "@oliumbi/zelglihof-data/contracts";
+import { newsletterSignupSchema } from "@oliumbi/zelglihof-data/forms";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, Mail } from "lucide-react";
 import { signupForNewsletter } from "../data/newsletter";

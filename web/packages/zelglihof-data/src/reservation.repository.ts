@@ -4,11 +4,14 @@ import type { ReservationInput } from "./forms";
 import type { ReservableVariant } from "./reservation.types";
 import { product, productReservation, productVariant } from "./schema";
 
+// Submission workflow repository: the public reservation form's idempotent
+// write path, with the row locks it needs. Named for its role so it never
+// reads like the studio CRUD repository in content/product-reservation.ts.
 export function createReservationRepository(transaction: Transaction) {
 	return {
 		async lockVariant(
 			input: Pick<ReservationInput, "productId" | "variantId">,
-		) {
+		): Promise<ReservableVariant | undefined> {
 			const [variant] = await transaction
 				.select({
 					productName: product.name,

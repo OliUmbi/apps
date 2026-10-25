@@ -1,14 +1,22 @@
-import { idSchema } from "@oliumbi/contracts";
-import { bodySchema, titleSchema } from "@oliumbi/contracts/content-validation";
+import { bodySchema, idSchema, titleSchema } from "@oliumbi/contracts";
 import { z } from "zod";
-import type { review } from "../schema";
 
 export const reviewKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type ReviewKey = z.infer<typeof reviewKeySchema>;
 
-export type Review = typeof review.$inferSelect;
+// The managed review record as it crosses the package boundary. Written out on
+// purpose: a renamed storage column must not silently change this shape.
+export interface Review {
+	id: string;
+	stars: number;
+	name: string;
+	description: string;
+	visible: boolean;
+	createdAt: string;
+	updatedAt: string;
+}
 
 export const reviewInputSchema = z.strictObject({
 	stars: z.number().int().min(1).max(5),

@@ -1,11 +1,14 @@
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { sql } from "drizzle-orm";
-import type { ReviewInput } from "./forms";
+import type { ReviewSubmissionInput } from "./forms";
 import { review } from "./schema";
 
-export function createReviewRepository(db: DatabaseExecutor) {
+// Submission workflow repository: the public review form's write path. Named
+// for its role so it never reads like the studio CRUD repository in
+// content/review.repository.ts.
+export function createReviewSubmissionRepository(db: DatabaseExecutor) {
 	return {
-		async submit(input: ReviewInput): Promise<void> {
+		async submit(input: ReviewSubmissionInput): Promise<void> {
 			await db.insert(review).values({
 				stars: input.stars,
 				name: input.name,

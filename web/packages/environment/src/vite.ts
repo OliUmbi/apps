@@ -5,7 +5,7 @@ const repositoryDirectory = fileURLToPath(
 	new URL("../../../../", import.meta.url),
 );
 
-export function environmentValues(
+function environmentValues(
 	mode: string,
 	rootDirectory: string,
 	siteDirectory: string,

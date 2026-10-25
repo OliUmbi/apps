@@ -4,7 +4,7 @@ import { createQueueClient } from "@oliumbi/queue";
 import { referenceFor } from "@oliumbi/queue/email";
 import { type ContactInput, contactSchema } from "./forms";
 import { inquiryNotification } from "./inquiry.email";
-import { createInquiryRepository } from "./inquiry.repository";
+import { createInquirySubmissionRepository } from "./inquiry.repository";
 
 export interface InquiryPlan {
 	outcome: "accepted";
@@ -25,7 +25,7 @@ export function createInquiryService(
 			const values = contactSchema.parse(input);
 			const reference = referenceFor(values.submissionId);
 			return database.transaction(async (transaction) => {
-				const repository = createInquiryRepository(transaction);
+				const repository = createInquirySubmissionRepository(transaction);
 				const plan = decideInquiry({
 					replayed:
 						(await repository.findBySubmissionId(values.submissionId)) !== null,

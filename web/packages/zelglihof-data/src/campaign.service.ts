@@ -1,17 +1,17 @@
 import type { DatabasePool, Transaction } from "@oliumbi/database";
 import { createQueueClient } from "@oliumbi/queue";
 import { campaignEmail } from "./campaign.email";
-import { createCampaignRepository } from "./campaign.repository";
-import type { Campaign, CampaignOptions } from "./campaign.types";
+import { createCampaignDispatchRepository } from "./campaign.repository";
+import type { CampaignDispatch, CampaignOptions } from "./campaign.types";
 
 const RECIPIENT_BATCH_SIZE = 100;
 
 async function queueRecipients(
 	transaction: Transaction,
-	campaign: Campaign,
+	campaign: CampaignDispatch,
 	options: CampaignOptions,
 ) {
-	const repository = createCampaignRepository(transaction);
+	const repository = createCampaignDispatchRepository(transaction);
 	const queue = createQueueClient(transaction);
 	let afterId: string | null = null;
 	let count = 0;
@@ -35,7 +35,7 @@ export function createCampaignService(
 	return {
 		send(id: string) {
 			return database.transaction(async (transaction) => {
-				const repository = createCampaignRepository(transaction);
+				const repository = createCampaignDispatchRepository(transaction);
 				const campaign = await repository.lock(id);
 				if (!campaign) throw new Error("Campaign not found");
 				if (campaign.status !== "draft")

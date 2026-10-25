@@ -1,7 +1,5 @@
-import { idSchema } from "@oliumbi/contracts";
-import { titleSchema } from "@oliumbi/contracts/content-validation";
+import { idSchema, titleSchema } from "@oliumbi/contracts";
 import { z } from "zod";
-import type { storyImage } from "../schema";
 
 export const storyImageKeySchema = z.strictObject({
 	storyId: idSchema,
@@ -9,7 +7,15 @@ export const storyImageKeySchema = z.strictObject({
 });
 export type StoryImageKey = z.infer<typeof storyImageKeySchema>;
 
-export type StoryImage = typeof storyImage.$inferSelect;
+// The managed story image record as it crosses the package boundary. Written
+// out on purpose: a renamed storage column must not silently change this shape.
+export interface StoryImage {
+	storyId: string;
+	imageId: string;
+	description: string;
+	createdAt: string;
+	updatedAt: string;
+}
 
 export const storyImageInputSchema = z.strictObject({
 	storyId: idSchema,

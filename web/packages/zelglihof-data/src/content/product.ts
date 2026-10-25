@@ -1,19 +1,32 @@
-import { idSchema } from "@oliumbi/contracts";
 import {
 	bodySchema,
+	idSchema,
 	timestampRangeIsValid,
 	timestampSchema,
 	titleSchema,
-} from "@oliumbi/contracts/content-validation";
+} from "@oliumbi/contracts";
 import { z } from "zod";
-import type { product } from "../schema";
 
 export const productKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type ProductKey = z.infer<typeof productKeySchema>;
 
-export type Product = typeof product.$inferSelect;
+// The managed product record as it crosses the package boundary. Written out on
+// purpose: a renamed storage column must not silently change this shape.
+export interface Product {
+	id: string;
+	name: string;
+	description: string;
+	body: string;
+	imageId: string | null;
+	visible: boolean;
+	reservable: boolean;
+	startsAt: string | null;
+	endsAt: string | null;
+	createdAt: string;
+	updatedAt: string;
+}
 
 export const productInputSchema = z
 	.strictObject({

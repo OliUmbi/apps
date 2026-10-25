@@ -1,19 +1,30 @@
-import { idSchema } from "@oliumbi/contracts";
 import {
 	dateRangeIsValid,
 	dateSchema,
+	idSchema,
 	optionalBodySchema,
 	titleSchema,
-} from "@oliumbi/contracts/content-validation";
+} from "@oliumbi/contracts";
 import { z } from "zod";
-import type { event } from "../schema";
 
 export const eventKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type EventKey = z.infer<typeof eventKeySchema>;
 
-export type Event = typeof event.$inferSelect;
+// The managed event record as it crosses the package boundary. Written out on
+// purpose: a renamed storage column must not silently change this shape.
+export interface Event {
+	id: string;
+	name: string;
+	description: string | null;
+	location: string;
+	imageId: string | null;
+	startsOn: string;
+	endsOn: string;
+	createdAt: string;
+	updatedAt: string;
+}
 
 export const eventInputSchema = z
 	.strictObject({

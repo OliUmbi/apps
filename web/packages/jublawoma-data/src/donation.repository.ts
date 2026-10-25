@@ -1,12 +1,17 @@
 import type { Transaction } from "@oliumbi/database";
 import { and, eq, sql } from "drizzle-orm";
-import type { DonationItem } from "./donation.types";
+import type { CommitmentItem } from "./donation.types";
 import type { CommitmentInput } from "./forms";
 import { donation, donationCommitment, donationItem } from "./schema";
 
-export function createDonationRepository(transaction: Transaction) {
+// Submission workflow repository: the public commitment form's idempotent
+// write path, with the row locks it needs. Named for its role so it never
+// reads like the studio CRUD repositories in content/.
+export function createCommitmentRepository(transaction: Transaction) {
 	return {
-		async lockItem(input: CommitmentInput) {
+		async lockItem(
+			input: CommitmentInput,
+		): Promise<CommitmentItem | undefined> {
 			const [item] = await transaction
 				.select({
 					title: donation.title,
@@ -46,7 +51,7 @@ export function createDonationRepository(transaction: Transaction) {
 				.where(eq(donationCommitment.donationItemId, itemId));
 			return row.quantity;
 		},
-		async insert(input: CommitmentInput, item: DonationItem, now: Date) {
+		async insert(input: CommitmentInput, item: CommitmentItem, now: Date) {
 			const inserted = await transaction
 				.insert(donationCommitment)
 				.values({

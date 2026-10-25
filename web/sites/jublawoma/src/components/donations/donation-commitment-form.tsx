@@ -2,7 +2,7 @@ import { m } from "@oliumbi/i18n/messages";
 import {
 	type CommitmentInput,
 	commitmentSchema,
-} from "@oliumbi/jublawoma-data/contracts";
+} from "@oliumbi/jublawoma-data/forms";
 import { useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { submitCommitment } from "../../data/donations";

@@ -8,7 +8,12 @@ import {
 } from "@oliumbi/contracts";
 import { z } from "zod";
 
-export const inquirySchema = z.object({
+/*
+ * Public submission contracts: one strict Zod schema per public form, shared by
+ * client and server. The types are named for the submission workflow so they
+ * never read like the studio record inputs in content/*.
+ */
+export const inquirySchema = z.strictObject({
 	submissionId: idSchema,
 	name: nameSchema,
 	email: emailSchema,
@@ -18,7 +23,7 @@ export const inquirySchema = z.object({
 	guests: z.number().int().positive().max(10_000),
 	note: textSchema,
 });
-export type InquiryInput = z.infer<typeof inquirySchema>;
+export type InquirySubmissionInput = z.infer<typeof inquirySchema>;
 
 export const reviewSchema = z.strictObject({
 	// Every public form fill carries one submission id (D1); reviews are not deduplicated yet.
@@ -27,4 +32,4 @@ export const reviewSchema = z.strictObject({
 	name: nameSchema,
 	description: z.string().trim().min(5).max(limits.text),
 });
-export type ReviewInput = z.infer<typeof reviewSchema>;
+export type ReviewSubmissionInput = z.infer<typeof reviewSchema>;

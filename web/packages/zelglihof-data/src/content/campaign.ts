@@ -1,14 +1,22 @@
-import { idSchema } from "@oliumbi/contracts";
-import { bodySchema, titleSchema } from "@oliumbi/contracts/content-validation";
+import { bodySchema, idSchema, titleSchema } from "@oliumbi/contracts";
 import { z } from "zod";
-import type { campaign } from "../schema";
+import type { CampaignStatus } from "../statuses";
 
 export const campaignKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type CampaignKey = z.infer<typeof campaignKeySchema>;
 
-export type Campaign = typeof campaign.$inferSelect;
+// The managed campaign record as it crosses the package boundary. Written out
+// on purpose: a renamed storage column must not silently change this shape.
+export interface Campaign {
+	id: string;
+	subject: string;
+	body: string;
+	status: CampaignStatus;
+	createdAt: string;
+	updatedAt: string;
+}
 
 export const campaignInputSchema = z.strictObject({
 	subject: titleSchema,

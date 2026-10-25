@@ -1,9 +1,12 @@
 import type { Transaction } from "@oliumbi/database";
 import { eq } from "drizzle-orm";
-import type { InquiryInput } from "./forms";
+import type { InquirySubmissionInput } from "./forms";
 import { inquiry } from "./schema";
 
-export function createInquiryRepository(transaction: Transaction) {
+// Submission workflow repository: the public form's idempotent write path for
+// one inquiry. Named for its role so it never reads like the studio CRUD
+// repository in content/inquiry.repository.ts.
+export function createInquirySubmissionRepository(transaction: Transaction) {
 	return {
 		async findBySubmissionId(submissionId: string) {
 			const [row] = await transaction
@@ -13,7 +16,11 @@ export function createInquiryRepository(transaction: Transaction) {
 				.limit(1);
 			return row ?? null;
 		},
-		async insert(id: string, input: InquiryInput, now: Date): Promise<boolean> {
+		async insert(
+			id: string,
+			input: InquirySubmissionInput,
+			now: Date,
+		): Promise<boolean> {
 			const inserted = await transaction
 				.insert(inquiry)
 				.values({

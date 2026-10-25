@@ -1,5 +1,4 @@
-import { idSchema, pageSchema } from "@oliumbi/contracts";
-import { timestampSchema } from "@oliumbi/contracts/content-validation";
+import { idSchema, pageSchema, timestampSchema } from "@oliumbi/contracts";
 import {
 	articleImageInputSchema,
 	articleImageKeySchema,

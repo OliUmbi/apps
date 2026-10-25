@@ -6,6 +6,7 @@ import {
 	productReservationInputFromRecord,
 	productReservationInputSchema,
 } from "@oliumbi/zelglihof-data/content/product-reservation";
+import { reservationStatusValues } from "@oliumbi/zelglihof-data/statuses";
 import {
 	deleteProductReservation,
 	getProductReservation,
@@ -118,6 +119,7 @@ function ProductReservationFields({
 }: EditorFieldsProps<ProductReservationInput>) {
 	return (
 		<StatusField
+			statuses={reservationStatusValues}
 			value={values.status}
 			onChange={(value) => onChange("status", value)}
 		/>

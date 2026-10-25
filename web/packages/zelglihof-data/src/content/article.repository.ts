@@ -1,15 +1,15 @@
-import type { PageInput } from "@oliumbi/contracts";
+import type { Page, PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { article } from "../schema";
-import type { ArticleInput, ArticleKey } from "./article";
+import type { Article, ArticleInput, ArticleKey } from "./article";
 import { updateMissError } from "./errors";
 
 export function createArticleRepository(db: DatabaseExecutor) {
 	return {
-		list(input: PageInput) {
-			return paginate(
+		list(input: PageInput): Promise<Page<Article>> {
+			return paginate<Article>(
 				db
 					.select()
 					.from(article)
@@ -23,7 +23,7 @@ export function createArticleRepository(db: DatabaseExecutor) {
 				input,
 			);
 		},
-		async get(key: ArticleKey) {
+		async get(key: ArticleKey): Promise<Article | null> {
 			const [record] = await db
 				.select()
 				.from(article)
@@ -31,7 +31,7 @@ export function createArticleRepository(db: DatabaseExecutor) {
 				.limit(1);
 			return record ?? null;
 		},
-		async create(input: ArticleInput) {
+		async create(input: ArticleInput): Promise<Article> {
 			const now = new Date().toISOString();
 			const [record] = await db
 				.insert(article)
@@ -48,7 +48,7 @@ export function createArticleRepository(db: DatabaseExecutor) {
 			key: ArticleKey,
 			input: ArticleInput,
 			expectedUpdatedAt: string,
-		) {
+		): Promise<Article> {
 			const [record] = await db
 				.update(article)
 				.set({

@@ -1,15 +1,15 @@
-import type { PageInput } from "@oliumbi/contracts";
+import type { Page, PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { inquiry } from "../schema";
 import { updateMissError } from "./errors";
-import type { InquiryInput, InquiryKey } from "./inquiry";
+import type { Inquiry, InquiryInput, InquiryKey } from "./inquiry";
 
 export function createInquiryRepository(db: DatabaseExecutor) {
 	return {
-		list(input: PageInput) {
-			return paginate(
+		list(input: PageInput): Promise<Page<Inquiry>> {
+			return paginate<Inquiry>(
 				db
 					.select()
 					.from(inquiry)
@@ -23,7 +23,7 @@ export function createInquiryRepository(db: DatabaseExecutor) {
 				input,
 			);
 		},
-		async get(key: InquiryKey) {
+		async get(key: InquiryKey): Promise<Inquiry | null> {
 			const [record] = await db
 				.select()
 				.from(inquiry)
@@ -35,7 +35,7 @@ export function createInquiryRepository(db: DatabaseExecutor) {
 			key: InquiryKey,
 			input: InquiryInput,
 			expectedUpdatedAt: string,
-		) {
+		): Promise<Inquiry> {
 			const [record] = await db
 				.update(inquiry)
 				.set({ status: input.status, updatedAt: new Date().toISOString() })

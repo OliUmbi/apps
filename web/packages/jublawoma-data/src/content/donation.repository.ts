@@ -1,15 +1,15 @@
-import type { PageInput } from "@oliumbi/contracts";
+import type { Page, PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { donation } from "../schema";
-import type { DonationInput, DonationKey } from "./donation";
+import type { Donation, DonationInput, DonationKey } from "./donation";
 import { updateMissError } from "./errors";
 
 export function createDonationRepository(db: DatabaseExecutor) {
 	return {
-		list(input: PageInput) {
-			return paginate(
+		list(input: PageInput): Promise<Page<Donation>> {
+			return paginate<Donation>(
 				db
 					.select()
 					.from(donation)
@@ -23,7 +23,7 @@ export function createDonationRepository(db: DatabaseExecutor) {
 				input,
 			);
 		},
-		async get(key: DonationKey) {
+		async get(key: DonationKey): Promise<Donation | null> {
 			const [record] = await db
 				.select()
 				.from(donation)
@@ -31,7 +31,7 @@ export function createDonationRepository(db: DatabaseExecutor) {
 				.limit(1);
 			return record ?? null;
 		},
-		async create(input: DonationInput) {
+		async create(input: DonationInput): Promise<Donation> {
 			const now = new Date().toISOString();
 			const [record] = await db
 				.insert(donation)
@@ -48,7 +48,7 @@ export function createDonationRepository(db: DatabaseExecutor) {
 			key: DonationKey,
 			input: DonationInput,
 			expectedUpdatedAt: string,
-		) {
+		): Promise<Donation> {
 			const [record] = await db
 				.update(donation)
 				.set({

@@ -1,14 +1,18 @@
-import type { PageInput } from "@oliumbi/contracts";
+import type { Page, PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { showcaseImage } from "../schema";
 import { RecordKeyMismatchError, updateMissError } from "./errors";
-import type { ShowcaseImageInput, ShowcaseImageKey } from "./showcase-image";
+import type {
+	ShowcaseImage,
+	ShowcaseImageInput,
+	ShowcaseImageKey,
+} from "./showcase-image";
 
 export function createShowcaseImageRepository(db: DatabaseExecutor) {
 	return {
-		async get(key: ShowcaseImageKey) {
+		async get(key: ShowcaseImageKey): Promise<ShowcaseImage | null> {
 			const [record] = await db
 				.select()
 				.from(showcaseImage)
@@ -21,7 +25,7 @@ export function createShowcaseImageRepository(db: DatabaseExecutor) {
 				.limit(1);
 			return record ?? null;
 		},
-		async create(input: ShowcaseImageInput) {
+		async create(input: ShowcaseImageInput): Promise<ShowcaseImage> {
 			const now = new Date().toISOString();
 			const [record] = await db
 				.insert(showcaseImage)
@@ -38,7 +42,7 @@ export function createShowcaseImageRepository(db: DatabaseExecutor) {
 			key: ShowcaseImageKey,
 			input: ShowcaseImageInput,
 			expectedUpdatedAt: string,
-		) {
+		): Promise<ShowcaseImage> {
 			// The composite key is the row's identity: it is never written on update,
 			// and values that claim another identity are rejected instead of silently
 			// re-parenting or renaming the row.
@@ -76,8 +80,11 @@ export function createShowcaseImageRepository(db: DatabaseExecutor) {
 					),
 				);
 		},
-		listForShowcase(input: PageInput, showcaseId: string) {
-			return paginate(
+		listForShowcase(
+			input: PageInput,
+			showcaseId: string,
+		): Promise<Page<ShowcaseImage>> {
+			return paginate<ShowcaseImage>(
 				db
 					.select()
 					.from(showcaseImage)

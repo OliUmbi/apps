@@ -1,19 +1,31 @@
-import { idSchema, linkSchema } from "@oliumbi/contracts";
 import {
 	bodySchema,
+	idSchema,
+	linkSchema,
 	timestampRangeIsValid,
 	timestampSchema,
 	titleSchema,
-} from "@oliumbi/contracts/content-validation";
+} from "@oliumbi/contracts";
 import { z } from "zod";
-import type { promotion } from "../schema";
 
 export const promotionKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type PromotionKey = z.infer<typeof promotionKeySchema>;
 
-export type Promotion = typeof promotion.$inferSelect;
+// The managed promotion record as it crosses the package boundary. Written out
+// on purpose: a renamed storage column must not silently change this shape.
+export interface Promotion {
+	id: string;
+	title: string;
+	description: string;
+	link: string;
+	imageId: string | null;
+	startsAt: string;
+	endsAt: string;
+	createdAt: string;
+	updatedAt: string;
+}
 
 export const promotionInputSchema = z
 	.strictObject({

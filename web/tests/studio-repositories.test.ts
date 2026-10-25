@@ -21,7 +21,7 @@ import { createInquiryRepository as uncletInquiryStore } from "../packages/uncle
 import { createReviewRepository as uncletReviewStore } from "../packages/unclet-data/src/content/review.repository";
 import { createShowcaseRepository as uncletShowcaseStore } from "../packages/unclet-data/src/content/showcase.repository";
 import { createShowcaseImageRepository as uncletShowcaseImageStore } from "../packages/unclet-data/src/content/showcase-image.repository";
-import { createReviewRepository } from "../packages/unclet-data/src/review.repository";
+import { createReviewSubmissionRepository } from "../packages/unclet-data/src/review.repository";
 import * as unclet from "../packages/unclet-data/src/schema";
 import { createArticleRepository as zelglihofArticleStore } from "../packages/zelglihof-data/src/content/article.repository";
 import { createArticleImageRepository as zelglihofArticleImageStore } from "../packages/zelglihof-data/src/content/article-image.repository";
@@ -874,7 +874,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 				async () => {
 					const name = `Review ${randomUUID()}`;
 					await transaction.execute(sql`SET LOCAL ROLE unclet`);
-					await createReviewRepository(transaction).submit({
+					await createReviewSubmissionRepository(transaction).submit({
 						stars: 5,
 						name,
 						description: "A public submission",

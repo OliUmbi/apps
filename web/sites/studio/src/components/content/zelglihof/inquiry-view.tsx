@@ -6,6 +6,7 @@ import {
 	inquiryInputSchema,
 	newInquiryInput,
 } from "@oliumbi/zelglihof-data/content/inquiry";
+import { inquiryStatusValues } from "@oliumbi/zelglihof-data/statuses";
 import {
 	deleteInquiry,
 	getInquiry,
@@ -76,6 +77,7 @@ export function InquiriesView() {
 function InquiryFields({ values, onChange }: EditorFieldsProps<InquiryInput>) {
 	return (
 		<StatusField
+			statuses={inquiryStatusValues}
 			value={values.status}
 			onChange={(value) => onChange("status", value)}
 		/>

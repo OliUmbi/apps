@@ -1,16 +1,31 @@
-import { idSchema, statusSchema } from "@oliumbi/contracts";
+import { idSchema } from "@oliumbi/contracts";
 import { z } from "zod";
-import type { inquiry } from "../schema";
+import { type InquiryStatus, inquiryStatusSchema } from "../statuses";
 
 export const inquiryKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type InquiryKey = z.infer<typeof inquiryKeySchema>;
 
-export type Inquiry = typeof inquiry.$inferSelect;
+// The managed inquiry record as it crosses the package boundary. Written out
+// on purpose: a renamed storage column must not silently change this shape.
+export interface Inquiry {
+	id: string;
+	status: InquiryStatus;
+	name: string;
+	email: string;
+	phone: string;
+	eventOn: string | null;
+	location: string | null;
+	guestCount: number | null;
+	note: string | null;
+	submissionId: string | null;
+	createdAt: string;
+	updatedAt: string;
+}
 
 export const inquiryInputSchema = z.strictObject({
-	status: statusSchema,
+	status: inquiryStatusSchema,
 });
 export type InquiryInput = z.infer<typeof inquiryInputSchema>;
 

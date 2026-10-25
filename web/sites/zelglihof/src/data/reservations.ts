@@ -1,7 +1,7 @@
 import {
 	type ReservationInput,
 	reservationSchema,
-} from "@oliumbi/zelglihof-data/contracts";
+} from "@oliumbi/zelglihof-data/forms";
 import { createReservationService } from "@oliumbi/zelglihof-data/reservation.service";
 import { createServerFn } from "@tanstack/react-start";
 import { database } from "../server/database.server";

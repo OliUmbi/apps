@@ -1,7 +1,12 @@
 import { idSchema } from "@oliumbi/contracts";
-import { imageUrl, publicImageSizes } from "./urls";
+import { type PublicImageSize, publicImageSizes } from "./sizes";
 
 const REQUEST_TIMEOUT_MS = 10_000;
+
+function imageUrl(baseUrl: string, id: string, size: PublicImageSize = "xl") {
+	return new URL(`/images/${encodeURIComponent(id)}?size=${size}`, baseUrl)
+		.href;
+}
 
 export async function proxyPublicImage(request: Request, id: string) {
 	const parsedId = idSchema.safeParse(id);

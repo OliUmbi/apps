@@ -1,10 +1,10 @@
 import type { DatabasePool } from "@oliumbi/database";
 import { referenceFor } from "@oliumbi/queue/email";
-import { createDonationRepository } from "./donation.repository";
+import { createCommitmentRepository } from "./donation.repository";
 import type {
+	CommitmentItem,
 	CommitmentOutcome,
 	CommitmentResult,
-	DonationItem,
 } from "./donation.types";
 import { type CommitmentInput, commitmentSchema } from "./forms";
 
@@ -65,7 +65,7 @@ export interface CommitmentPlan {
 // reports the original outcome and never writes again.
 export function decideCommitment(input: {
 	replayed: boolean;
-	item: Pick<DonationItem, "active" | "quantity" | "step"> | null | undefined;
+	item: Pick<CommitmentItem, "active" | "quantity" | "step"> | null | undefined;
 	quantity: string;
 	committed: string;
 }): CommitmentPlan {
@@ -91,7 +91,7 @@ export function createDonationService(database: DatabasePool) {
 			const reference = referenceFor(values.submissionId);
 			const committed: CommitmentResult = { outcome: "committed", reference };
 			return database.transaction(async (transaction) => {
-				const repository = createDonationRepository(transaction);
+				const repository = createCommitmentRepository(transaction);
 				// The item lock serializes concurrent fills; a retry sees the original row.
 				const item = await repository.lockItem(values);
 				const plan = decideCommitment({

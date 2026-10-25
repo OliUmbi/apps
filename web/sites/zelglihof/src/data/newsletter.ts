@@ -1,7 +1,7 @@
 import {
 	newsletterSignupSchema,
 	newsletterTokenSchema,
-} from "@oliumbi/zelglihof-data/contracts";
+} from "@oliumbi/zelglihof-data/forms";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import {

@@ -1,15 +1,15 @@
-import type { PageInput } from "@oliumbi/contracts";
+import type { Page, PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { event } from "../schema";
 import { updateMissError } from "./errors";
-import type { EventInput, EventKey } from "./event";
+import type { Event, EventInput, EventKey } from "./event";
 
 export function createEventRepository(db: DatabaseExecutor) {
 	return {
-		list(input: PageInput) {
-			return paginate(
+		list(input: PageInput): Promise<Page<Event>> {
+			return paginate<Event>(
 				db
 					.select()
 					.from(event)
@@ -23,7 +23,7 @@ export function createEventRepository(db: DatabaseExecutor) {
 				input,
 			);
 		},
-		async get(key: EventKey) {
+		async get(key: EventKey): Promise<Event | null> {
 			const [record] = await db
 				.select()
 				.from(event)
@@ -31,7 +31,7 @@ export function createEventRepository(db: DatabaseExecutor) {
 				.limit(1);
 			return record ?? null;
 		},
-		async create(input: EventInput) {
+		async create(input: EventInput): Promise<Event> {
 			const now = new Date().toISOString();
 			const [record] = await db
 				.insert(event)

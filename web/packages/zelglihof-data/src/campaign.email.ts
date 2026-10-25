@@ -1,12 +1,12 @@
 import { emailMessage } from "@oliumbi/queue/email";
 import type {
-	Campaign,
+	CampaignDispatch,
 	CampaignOptions,
 	CampaignRecipient,
 } from "./campaign.types";
 
 export function campaignEmail(
-	campaign: Campaign,
+	campaign: CampaignDispatch,
 	recipient: CampaignRecipient,
 	options: CampaignOptions,
 ) {

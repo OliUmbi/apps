@@ -1,7 +1,7 @@
 import {
 	type ContactInput,
 	contactSchema,
-} from "@oliumbi/zelglihof-data/contracts";
+} from "@oliumbi/zelglihof-data/forms";
 import { createInquiryService } from "@oliumbi/zelglihof-data/inquiry.service";
 import { createServerFn } from "@tanstack/react-start";
 import { database } from "../server/database.server";

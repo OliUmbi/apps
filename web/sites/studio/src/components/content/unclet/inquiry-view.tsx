@@ -6,6 +6,7 @@ import {
 	inquiryInputSchema,
 	newInquiryInput,
 } from "@oliumbi/unclet-data/content/inquiry";
+import { inquiryStatusValues } from "@oliumbi/unclet-data/statuses";
 import { formatDate } from "../../../model/dates";
 import {
 	deleteInquiry,
@@ -87,6 +88,7 @@ export function InquiriesView() {
 function InquiryFields({ values, onChange }: EditorFieldsProps<InquiryInput>) {
 	return (
 		<StatusField
+			statuses={inquiryStatusValues}
 			value={values.status}
 			onChange={(value) => onChange("status", value)}
 		/>

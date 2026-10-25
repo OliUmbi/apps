@@ -1,14 +1,18 @@
-import type { PageInput } from "@oliumbi/contracts";
+import type { Page, PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { articleImage } from "../schema";
-import type { ArticleImageInput, ArticleImageKey } from "./article-image";
+import type {
+	ArticleImage,
+	ArticleImageInput,
+	ArticleImageKey,
+} from "./article-image";
 import { RecordKeyMismatchError, updateMissError } from "./errors";
 
 export function createArticleImageRepository(db: DatabaseExecutor) {
 	return {
-		async get(key: ArticleImageKey) {
+		async get(key: ArticleImageKey): Promise<ArticleImage | null> {
 			const [record] = await db
 				.select()
 				.from(articleImage)
@@ -21,7 +25,7 @@ export function createArticleImageRepository(db: DatabaseExecutor) {
 				.limit(1);
 			return record ?? null;
 		},
-		async create(input: ArticleImageInput) {
+		async create(input: ArticleImageInput): Promise<ArticleImage> {
 			const now = new Date().toISOString();
 			const [record] = await db
 				.insert(articleImage)
@@ -38,7 +42,7 @@ export function createArticleImageRepository(db: DatabaseExecutor) {
 			key: ArticleImageKey,
 			input: ArticleImageInput,
 			expectedUpdatedAt: string,
-		) {
+		): Promise<ArticleImage> {
 			// The composite key is the row's identity: it is never written on update,
 			// and values that claim another identity are rejected instead of silently
 			// re-parenting or renaming the row.
@@ -76,8 +80,11 @@ export function createArticleImageRepository(db: DatabaseExecutor) {
 					),
 				);
 		},
-		listForArticle(input: PageInput, articleId: string) {
-			return paginate(
+		listForArticle(
+			input: PageInput,
+			articleId: string,
+		): Promise<Page<ArticleImage>> {
+			return paginate<ArticleImage>(
 				db
 					.select()
 					.from(articleImage)

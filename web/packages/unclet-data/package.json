@@ -4,8 +4,19 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./*": "./src/*.ts",
-    "./contracts": "./src/contracts.ts"
+    "./forms": "./src/forms.ts",
+    "./inquiry.service": "./src/inquiry.service.ts",
+    "./review.repository": "./src/review.repository.ts",
+    "./statuses": "./src/statuses.ts",
+    "./content/errors": "./src/content/errors.ts",
+    "./content/inquiry": "./src/content/inquiry.ts",
+    "./content/inquiry.repository": "./src/content/inquiry.repository.ts",
+    "./content/review": "./src/content/review.ts",
+    "./content/review.repository": "./src/content/review.repository.ts",
+    "./content/showcase": "./src/content/showcase.ts",
+    "./content/showcase-image": "./src/content/showcase-image.ts",
+    "./content/showcase-image.repository": "./src/content/showcase-image.repository.ts",
+    "./content/showcase.repository": "./src/content/showcase.repository.ts"
   },
   "scripts": {
     "check": "tsc --noEmit"

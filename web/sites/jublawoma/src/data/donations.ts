@@ -1,6 +1,6 @@
 import { createPublicRepository } from "@oliumbi/jublawoma-data";
-import { commitmentSchema } from "@oliumbi/jublawoma-data/contracts";
 import { createDonationService } from "@oliumbi/jublawoma-data/donation.service";
+import { commitmentSchema } from "@oliumbi/jublawoma-data/forms";
 import { createServerFn } from "@tanstack/react-start";
 import type { PublicDonationCampaign } from "../model/donations";
 import { database } from "../server/database.server";

@@ -1,5 +1,4 @@
-import { pageSchema } from "@oliumbi/contracts";
-import { timestampSchema } from "@oliumbi/contracts/content-validation";
+import { pageSchema, timestampSchema } from "@oliumbi/contracts";
 import {
 	concurrentUpdateMessage,
 	isConcurrentUpdateError,

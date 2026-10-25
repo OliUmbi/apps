@@ -3,6 +3,5 @@ export type {
 	Database,
 	DatabaseExecutor,
 	DatabasePool,
-	DatabasePoolOptions,
 	Transaction,
 } from "./database.types";

@@ -1,7 +1,12 @@
-import { pageSchema } from "@oliumbi/contracts";
+import { type Page, pageSchema } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate } from "@oliumbi/database/pagination";
 import { and, desc, eq, gte, lte, sql } from "drizzle-orm";
+import type { Article } from "./content/article";
+import type { ArticleImage } from "./content/article-image";
+import type { Product } from "./content/product";
+import type { ProductVariant } from "./content/product-variant";
+import type { Promotion } from "./content/promotion";
 import {
 	article,
 	articleImage,
@@ -16,8 +21,8 @@ export function createPublicRepository(db: DatabaseExecutor) {
 		lte(article.publishedOn, sql`current_date`),
 	);
 	return {
-		listArticles(page: number) {
-			return paginate(
+		listArticles(page: number): Promise<Page<Article>> {
+			return paginate<Article>(
 				db
 					.select()
 					.from(article)
@@ -27,7 +32,9 @@ export function createPublicRepository(db: DatabaseExecutor) {
 				pageSchema.parse({ page }),
 			);
 		},
-		async findArticle(slug: string) {
+		async findArticle(
+			slug: string,
+		): Promise<{ article: Article; images: ArticleImage[] } | null> {
 			const [record] = await db
 				.select()
 				.from(article)
@@ -43,8 +50,8 @@ export function createPublicRepository(db: DatabaseExecutor) {
 					.orderBy(articleImage.createdAt, articleImage.imageId),
 			};
 		},
-		listPromotions(page: number) {
-			return paginate(
+		listPromotions(page: number): Promise<Page<Promotion>> {
+			return paginate<Promotion>(
 				db
 					.select()
 					.from(promotion)
@@ -59,8 +66,8 @@ export function createPublicRepository(db: DatabaseExecutor) {
 				pageSchema.parse({ page }),
 			);
 		},
-		listProducts(page: number) {
-			return paginate(
+		listProducts(page: number): Promise<Page<Product>> {
+			return paginate<Product>(
 				db
 					.select()
 					.from(product)
@@ -70,7 +77,9 @@ export function createPublicRepository(db: DatabaseExecutor) {
 				pageSchema.parse({ page }),
 			);
 		},
-		async findProduct(id: string) {
+		async findProduct(
+			id: string,
+		): Promise<{ product: Product; variants: ProductVariant[] } | null> {
 			const [record] = await db
 				.select()
 				.from(product)

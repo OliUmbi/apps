@@ -1,19 +1,29 @@
-import { idSchema } from "@oliumbi/contracts";
 import {
 	bodySchema,
+	idSchema,
 	timestampRangeIsValid,
 	timestampSchema,
 	titleSchema,
-} from "@oliumbi/contracts/content-validation";
+} from "@oliumbi/contracts";
 import { z } from "zod";
-import type { donation } from "../schema";
 
 export const donationKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type DonationKey = z.infer<typeof donationKeySchema>;
 
-export type Donation = typeof donation.$inferSelect;
+// The managed donation record as it crosses the package boundary. Written out
+// on purpose: a renamed storage column must not silently change this shape.
+export interface Donation {
+	id: string;
+	title: string;
+	description: string;
+	contact: string;
+	startsAt: string;
+	endsAt: string;
+	createdAt: string;
+	updatedAt: string;
+}
 
 export const donationInputSchema = z
 	.strictObject({

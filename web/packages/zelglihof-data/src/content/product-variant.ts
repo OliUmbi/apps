@@ -1,17 +1,25 @@
-import { idSchema } from "@oliumbi/contracts";
-import {
-	optionalBodySchema,
-	titleSchema,
-} from "@oliumbi/contracts/content-validation";
+import { idSchema, optionalBodySchema, titleSchema } from "@oliumbi/contracts";
 import { z } from "zod";
-import type { productVariant } from "../schema";
 
 export const productVariantKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type ProductVariantKey = z.infer<typeof productVariantKeySchema>;
 
-export type ProductVariant = typeof productVariant.$inferSelect;
+// The managed product variant record as it crosses the package boundary.
+// Written out on purpose: a renamed storage column must not silently change
+// this shape. Price is display-only text (plan decision D5).
+export interface ProductVariant {
+	id: string;
+	productId: string;
+	name: string;
+	description: string | null;
+	imageId: string | null;
+	price: string;
+	quantity: number | null;
+	createdAt: string;
+	updatedAt: string;
+}
 
 export const productVariantInputSchema = z.strictObject({
 	productId: idSchema,

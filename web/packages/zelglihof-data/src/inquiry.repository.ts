@@ -3,7 +3,10 @@ import { eq } from "drizzle-orm";
 import type { ContactInput } from "./forms";
 import { inquiry } from "./schema";
 
-export function createInquiryRepository(transaction: Transaction) {
+// Submission workflow repository: the public contact form's idempotent write
+// path for one inquiry. Named for its role so it never reads like the studio
+// CRUD repository in content/inquiry.repository.ts.
+export function createInquirySubmissionRepository(transaction: Transaction) {
 	return {
 		async findBySubmissionId(submissionId: string) {
 			const [row] = await transaction

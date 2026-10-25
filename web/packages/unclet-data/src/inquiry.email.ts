@@ -1,9 +1,9 @@
 import { emailMessage } from "@oliumbi/queue/email";
-import type { InquiryInput } from "./forms";
+import type { InquirySubmissionInput } from "./forms";
 
 export function inquiryEmails(
 	requestsEmail: string,
-	input: InquiryInput,
+	input: InquirySubmissionInput,
 	reference: string,
 ) {
 	const details = [

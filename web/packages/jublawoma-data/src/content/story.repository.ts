@@ -1,15 +1,15 @@
-import type { PageInput } from "@oliumbi/contracts";
+import type { Page, PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { story } from "../schema";
 import { updateMissError } from "./errors";
-import type { StoryInput, StoryKey } from "./story";
+import type { Story, StoryInput, StoryKey } from "./story";
 
 export function createStoryRepository(db: DatabaseExecutor) {
 	return {
-		list(input: PageInput) {
-			return paginate(
+		list(input: PageInput): Promise<Page<Story>> {
+			return paginate<Story>(
 				db
 					.select()
 					.from(story)
@@ -23,7 +23,7 @@ export function createStoryRepository(db: DatabaseExecutor) {
 				input,
 			);
 		},
-		async get(key: StoryKey) {
+		async get(key: StoryKey): Promise<Story | null> {
 			const [record] = await db
 				.select()
 				.from(story)
@@ -31,7 +31,7 @@ export function createStoryRepository(db: DatabaseExecutor) {
 				.limit(1);
 			return record ?? null;
 		},
-		async create(input: StoryInput) {
+		async create(input: StoryInput): Promise<Story> {
 			const now = new Date().toISOString();
 			const [record] = await db
 				.insert(story)

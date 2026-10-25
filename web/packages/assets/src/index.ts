@@ -6,11 +6,9 @@ import {
 } from "@oliumbi/http-client";
 import type { z } from "zod";
 import { documentSchema, imageDetailSchema, imageSchema } from "./schemas";
-import type { ImageVariantSize } from "./urls";
+import type { ImageVariantSize } from "./sizes";
 
 export type * from "./types";
-
-export * from "./urls";
 
 export function createAssetsClient(options: Omit<ServiceOptions, "name">) {
 	const http = createHttpClient({ ...options, name: "Assets" });

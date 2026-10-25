@@ -1,15 +1,15 @@
-import type { PageInput } from "@oliumbi/contracts";
+import type { Page, PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { product } from "../schema";
 import { updateMissError } from "./errors";
-import type { ProductInput, ProductKey } from "./product";
+import type { Product, ProductInput, ProductKey } from "./product";
 
 export function createProductRepository(db: DatabaseExecutor) {
 	return {
-		list(input: PageInput) {
-			return paginate(
+		list(input: PageInput): Promise<Page<Product>> {
+			return paginate<Product>(
 				db
 					.select()
 					.from(product)
@@ -23,7 +23,7 @@ export function createProductRepository(db: DatabaseExecutor) {
 				input,
 			);
 		},
-		async get(key: ProductKey) {
+		async get(key: ProductKey): Promise<Product | null> {
 			const [record] = await db
 				.select()
 				.from(product)
@@ -31,7 +31,7 @@ export function createProductRepository(db: DatabaseExecutor) {
 				.limit(1);
 			return record ?? null;
 		},
-		async create(input: ProductInput) {
+		async create(input: ProductInput): Promise<Product> {
 			const now = new Date().toISOString();
 			const [record] = await db
 				.insert(product)
@@ -48,7 +48,7 @@ export function createProductRepository(db: DatabaseExecutor) {
 			key: ProductKey,
 			input: ProductInput,
 			expectedUpdatedAt: string,
-		) {
+		): Promise<Product> {
 			const [record] = await db
 				.update(product)
 				.set({

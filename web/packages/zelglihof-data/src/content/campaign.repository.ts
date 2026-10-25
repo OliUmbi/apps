@@ -1,15 +1,15 @@
-import type { PageInput } from "@oliumbi/contracts";
+import type { Page, PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { campaign } from "../schema";
-import type { CampaignInput, CampaignKey } from "./campaign";
+import type { Campaign, CampaignInput, CampaignKey } from "./campaign";
 import { updateMissError } from "./errors";
 
 export function createCampaignRepository(db: DatabaseExecutor) {
 	return {
-		list(input: PageInput) {
-			return paginate(
+		list(input: PageInput): Promise<Page<Campaign>> {
+			return paginate<Campaign>(
 				db
 					.select()
 					.from(campaign)
@@ -23,7 +23,7 @@ export function createCampaignRepository(db: DatabaseExecutor) {
 				input,
 			);
 		},
-		async get(key: CampaignKey) {
+		async get(key: CampaignKey): Promise<Campaign | null> {
 			const [record] = await db
 				.select()
 				.from(campaign)
@@ -31,7 +31,7 @@ export function createCampaignRepository(db: DatabaseExecutor) {
 				.limit(1);
 			return record ?? null;
 		},
-		async create(input: CampaignInput) {
+		async create(input: CampaignInput): Promise<Campaign> {
 			const now = new Date().toISOString();
 			const [record] = await db
 				.insert(campaign)
@@ -50,7 +50,7 @@ export function createCampaignRepository(db: DatabaseExecutor) {
 			key: CampaignKey,
 			input: CampaignInput,
 			expectedUpdatedAt: string,
-		) {
+		): Promise<Campaign> {
 			const [record] = await db
 				.update(campaign)
 				.set({

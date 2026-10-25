@@ -15,8 +15,11 @@ export const inquirySubjectValues = [
 	"hof",
 	"other",
 ] as const;
+export type InquirySubject = (typeof inquirySubjectValues)[number];
 
-export const contactSchema = z.object({
+// Public submission contracts: one strict Zod schema per public form, shared by
+// client and server.
+export const contactSchema = z.strictObject({
 	submissionId: idSchema,
 	name: nameSchema,
 	email: optionalEmailSchema,
@@ -25,7 +28,7 @@ export const contactSchema = z.object({
 	message: textSchema.min(10),
 });
 export type ContactInput = z.infer<typeof contactSchema>;
-export const reservationSchema = z.object({
+export const reservationSchema = z.strictObject({
 	submissionId: idSchema,
 	productId: idSchema,
 	variantId: idSchema,
@@ -36,5 +39,5 @@ export const reservationSchema = z.object({
 	note: textSchema,
 });
 export type ReservationInput = z.infer<typeof reservationSchema>;
-export const newsletterSignupSchema = z.object({ email: emailSchema });
+export const newsletterSignupSchema = z.strictObject({ email: emailSchema });
 export const newsletterTokenSchema = z.string().regex(/^[A-Za-z0-9_-]{43}$/);

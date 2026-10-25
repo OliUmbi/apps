@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const passwordRequirements = {
+const passwordRequirements = {
 	minimumCharacters: 10,
 	maximumBytes: 72,
 } as const;

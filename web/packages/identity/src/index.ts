@@ -11,7 +11,7 @@ import {
 	sessionSchema,
 } from "./schemas";
 
-export type * from "./types";
+export type { Account } from "./types";
 
 export function createIdentityClient(options: Omit<ServiceOptions, "name">) {
 	const http = createHttpClient({ ...options, name: "Identity" });

@@ -1,9 +1,9 @@
-import type { PageInput } from "@oliumbi/contracts";
+import type { Page, PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { desc, eq, ilike } from "drizzle-orm";
 import { subscriber } from "../schema";
-import type { SubscriberKey } from "./subscriber";
+import type { Subscriber, SubscriberKey } from "./subscriber";
 
 const subscriberSelection = {
 	id: subscriber.id,
@@ -18,8 +18,8 @@ const subscriberSelection = {
 
 export function createSubscriberRepository(db: DatabaseExecutor) {
 	return {
-		list(input: PageInput) {
-			return paginate(
+		list(input: PageInput): Promise<Page<Subscriber>> {
+			return paginate<Subscriber>(
 				db
 					.select(subscriberSelection)
 					.from(subscriber)
@@ -33,7 +33,7 @@ export function createSubscriberRepository(db: DatabaseExecutor) {
 				input,
 			);
 		},
-		async get(key: SubscriberKey) {
+		async get(key: SubscriberKey): Promise<Subscriber | null> {
 			const [record] = await db
 				.select(subscriberSelection)
 				.from(subscriber)

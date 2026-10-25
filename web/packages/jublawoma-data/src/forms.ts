@@ -13,7 +13,7 @@ export const decimalSchema = z
 	.regex(/^\d+(\.\d+)?$/)
 	.refine((value) => !/^0*(\.0*)?$/.test(value), "quantity must be positive");
 
-export const commitmentSchema = z.object({
+export const commitmentSchema = z.strictObject({
 	submissionId: idSchema,
 	donationId: idSchema,
 	itemId: idSchema,

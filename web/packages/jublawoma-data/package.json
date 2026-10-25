@@ -4,8 +4,25 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./*": "./src/*.ts",
-    "./contracts": "./src/contracts.ts"
+    "./forms": "./src/forms.ts",
+    "./donation.service": "./src/donation.service.ts",
+    "./content/donation": "./src/content/donation.ts",
+    "./content/donation-commitment": "./src/content/donation-commitment.ts",
+    "./content/donation-item": "./src/content/donation-item.ts",
+    "./content/donation.repository": "./src/content/donation.repository.ts",
+    "./content/donation-commitment.repository": "./src/content/donation-commitment.repository.ts",
+    "./content/donation-item.repository": "./src/content/donation-item.repository.ts",
+    "./content/errors": "./src/content/errors.ts",
+    "./content/event": "./src/content/event.ts",
+    "./content/event.repository": "./src/content/event.repository.ts",
+    "./content/member": "./src/content/member.ts",
+    "./content/member.repository": "./src/content/member.repository.ts",
+    "./content/promotion": "./src/content/promotion.ts",
+    "./content/promotion.repository": "./src/content/promotion.repository.ts",
+    "./content/story": "./src/content/story.ts",
+    "./content/story.repository": "./src/content/story.repository.ts",
+    "./content/story-image": "./src/content/story-image.ts",
+    "./content/story-image.repository": "./src/content/story-image.repository.ts"
   },
   "scripts": {
     "check": "tsc --noEmit"

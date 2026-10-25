@@ -1,15 +1,15 @@
-import type { PageInput } from "@oliumbi/contracts";
+import type { Page, PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { showcase } from "../schema";
 import { updateMissError } from "./errors";
-import type { ShowcaseInput, ShowcaseKey } from "./showcase";
+import type { Showcase, ShowcaseInput, ShowcaseKey } from "./showcase";
 
 export function createShowcaseRepository(db: DatabaseExecutor) {
 	return {
-		list(input: PageInput) {
-			return paginate(
+		list(input: PageInput): Promise<Page<Showcase>> {
+			return paginate<Showcase>(
 				db
 					.select()
 					.from(showcase)
@@ -23,7 +23,7 @@ export function createShowcaseRepository(db: DatabaseExecutor) {
 				input,
 			);
 		},
-		async get(key: ShowcaseKey) {
+		async get(key: ShowcaseKey): Promise<Showcase | null> {
 			const [record] = await db
 				.select()
 				.from(showcase)
@@ -31,7 +31,7 @@ export function createShowcaseRepository(db: DatabaseExecutor) {
 				.limit(1);
 			return record ?? null;
 		},
-		async create(input: ShowcaseInput) {
+		async create(input: ShowcaseInput): Promise<Showcase> {
 			const now = new Date().toISOString();
 			const [record] = await db
 				.insert(showcase)
@@ -48,7 +48,7 @@ export function createShowcaseRepository(db: DatabaseExecutor) {
 			key: ShowcaseKey,
 			input: ShowcaseInput,
 			expectedUpdatedAt: string,
-		) {
+		): Promise<Showcase> {
 			const [record] = await db
 				.update(showcase)
 				.set({

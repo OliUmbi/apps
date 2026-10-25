@@ -11,9 +11,9 @@ import {
 	submissionErrors,
 } from "../packages/ui/src/submission-types";
 import {
-	type InquiryInput,
+	type InquirySubmissionInput,
 	inquirySchema,
-	type ReviewInput,
+	type ReviewSubmissionInput,
 	reviewSchema,
 } from "../packages/unclet-data/src/forms";
 import type { ReservationInput } from "../packages/zelglihof-data/src/forms";
@@ -54,7 +54,7 @@ const reservationFields = [
 const reviewFields = [
 	{ name: "stars", kind: "rating", max: 5, label: "Sterne" },
 	{ name: "description", kind: "textarea", label: "Beschreibung" },
-] satisfies ReadonlyArray<SubmissionField<ReviewInput>>;
+] satisfies ReadonlyArray<SubmissionField<ReviewSubmissionInput>>;
 
 test("field descriptors type-check against the schema input types", () => {
 	assert.equal(quantityName, "quantity");
@@ -69,7 +69,7 @@ test("coercion derives from the field kind, not from a name list", () => {
 	const form = new FormData();
 	form.set("guests", "12");
 	form.set("date", "2026-11-01");
-	const values = coerceSubmissionValues<InquiryInput>(
+	const values = coerceSubmissionValues<InquirySubmissionInput>(
 		form,
 		[
 			{ name: "guests", kind: "number", label: "Gäste" },
@@ -94,7 +94,7 @@ test("coercion derives from the field kind, not from a name list", () => {
 	const stars = new FormData();
 	stars.set("stars", "4");
 	assert.deepEqual(
-		coerceSubmissionValues<ReviewInput>(
+		coerceSubmissionValues<ReviewSubmissionInput>(
 			stars,
 			[{ name: "stars", kind: "rating", max: 5, label: "Sterne" }],
 			{},
@@ -158,7 +158,7 @@ test("zod issues map to per-field reasons", () => {
 	const emptyName = reviewSchema.safeParse(emptyValues);
 	assert.equal(emptyName.success, false);
 	assert.equal(
-		submissionErrors<ReviewInput>(
+		submissionErrors<ReviewSubmissionInput>(
 			emptyName.success ? [] : emptyName.error.issues,
 			emptyValues,
 		).fields.name,
@@ -228,7 +228,7 @@ test("numeric bounds map to range and bad values map to invalid", () => {
 	const tooFew = inquirySchema.safeParse(fewValues);
 	assert.equal(tooFew.success, false);
 	assert.equal(
-		submissionErrors<InquiryInput>(
+		submissionErrors<InquirySubmissionInput>(
 			tooFew.success ? [] : tooFew.error.issues,
 			fewValues,
 		).fields.guests,
@@ -247,7 +247,7 @@ test("numeric bounds map to range and bad values map to invalid", () => {
 	};
 	const invalid = inquirySchema.safeParse(badValues);
 	assert.equal(invalid.success, false);
-	const invalidErrors = submissionErrors<InquiryInput>(
+	const invalidErrors = submissionErrors<InquirySubmissionInput>(
 		invalid.success ? [] : invalid.error.issues,
 		badValues,
 	);
@@ -264,7 +264,7 @@ test("numeric bounds map to range and bad values map to invalid", () => {
 	const badStars = reviewSchema.safeParse(starValues);
 	assert.equal(badStars.success, false);
 	assert.equal(
-		submissionErrors<ReviewInput>(
+		submissionErrors<ReviewSubmissionInput>(
 			badStars.success ? [] : badStars.error.issues,
 			starValues,
 		).fields.stars,
@@ -282,7 +282,7 @@ test("unattributable issues keep their reason on the form level", () => {
 	};
 	const extraKey = reviewSchema.safeParse(extraValues);
 	assert.equal(extraKey.success, false);
-	const errors = submissionErrors<ReviewInput>(
+	const errors = submissionErrors<ReviewSubmissionInput>(
 		extraKey.success ? [] : extraKey.error.issues,
 		extraValues,
 	);

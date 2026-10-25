@@ -1,15 +1,15 @@
-import type { PageInput } from "@oliumbi/contracts";
+import type { Page, PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { promotion } from "../schema";
 import { updateMissError } from "./errors";
-import type { PromotionInput, PromotionKey } from "./promotion";
+import type { Promotion, PromotionInput, PromotionKey } from "./promotion";
 
 export function createPromotionRepository(db: DatabaseExecutor) {
 	return {
-		list(input: PageInput) {
-			return paginate(
+		list(input: PageInput): Promise<Page<Promotion>> {
+			return paginate<Promotion>(
 				db
 					.select()
 					.from(promotion)
@@ -23,7 +23,7 @@ export function createPromotionRepository(db: DatabaseExecutor) {
 				input,
 			);
 		},
-		async get(key: PromotionKey) {
+		async get(key: PromotionKey): Promise<Promotion | null> {
 			const [record] = await db
 				.select()
 				.from(promotion)
@@ -31,7 +31,7 @@ export function createPromotionRepository(db: DatabaseExecutor) {
 				.limit(1);
 			return record ?? null;
 		},
-		async create(input: PromotionInput) {
+		async create(input: PromotionInput): Promise<Promotion> {
 			const now = new Date().toISOString();
 			const [record] = await db
 				.insert(promotion)
@@ -48,7 +48,7 @@ export function createPromotionRepository(db: DatabaseExecutor) {
 			key: PromotionKey,
 			input: PromotionInput,
 			expectedUpdatedAt: string,
-		) {
+		): Promise<Promotion> {
 			const [record] = await db
 				.update(promotion)
 				.set({

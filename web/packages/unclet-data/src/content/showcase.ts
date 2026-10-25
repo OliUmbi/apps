@@ -1,19 +1,33 @@
-import { idSchema, slugSchema } from "@oliumbi/contracts";
 import {
 	dateSchema,
+	idSchema,
 	optionalBodySchema,
 	publicationIsValid,
+	slugSchema,
 	titleSchema,
-} from "@oliumbi/contracts/content-validation";
+} from "@oliumbi/contracts";
 import { z } from "zod";
-import type { showcase } from "../schema";
 
 export const showcaseKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type ShowcaseKey = z.infer<typeof showcaseKeySchema>;
 
-export type Showcase = typeof showcase.$inferSelect;
+// The managed showcase record as it crosses the package boundary. Written out
+// on purpose: a renamed storage column must not silently change this shape.
+export interface Showcase {
+	id: string;
+	slug: string;
+	title: string;
+	location: string;
+	guestCount: number;
+	imageId: string | null;
+	published: boolean;
+	publishedOn: string | null;
+	body: string | null;
+	createdAt: string;
+	updatedAt: string;
+}
 
 export const showcaseInputSchema = z
 	.strictObject({

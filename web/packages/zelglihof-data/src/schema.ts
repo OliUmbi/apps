@@ -1,4 +1,3 @@
-import { statusValues } from "@oliumbi/contracts";
 import { isoTimestamp } from "@oliumbi/database/columns";
 import {
 	boolean,
@@ -10,6 +9,12 @@ import {
 	uuid,
 } from "drizzle-orm/pg-core";
 import { inquirySubjectValues } from "./forms";
+import {
+	campaignStatusValues,
+	inquiryStatusValues,
+	reservationStatusValues,
+	subscriberStatusValues,
+} from "./statuses";
 
 // Flyway owns migrations and database constraints. These tables describe query types.
 const zelglihof = pgSchema("zelglihof");
@@ -91,7 +96,7 @@ export const productReservation = zelglihof.table("product_reservation", {
 	email: text("email"),
 	quantity: integer("quantity").notNull(),
 	note: text("note"),
-	status: text("status", { enum: statusValues }).notNull(),
+	status: text("status", { enum: reservationStatusValues }).notNull(),
 	// Idempotency key from the public form; unique index in V011.
 	submissionId: uuid("submission_id"),
 	createdAt: isoTimestamp("created_at").notNull(),
@@ -101,9 +106,7 @@ export const productReservation = zelglihof.table("product_reservation", {
 export const subscriber = zelglihof.table("subscriber", {
 	id: uuid("id").primaryKey().defaultRandom(),
 	email: text("email").notNull().unique(),
-	status: text("status", {
-		enum: ["pending", "active", "unsubscribed"],
-	}).notNull(),
+	status: text("status", { enum: subscriberStatusValues }).notNull(),
 	requestedAt: isoTimestamp("requested_at").notNull(),
 	confirmedAt: isoTimestamp("confirmed_at"),
 	unsubscribedAt: isoTimestamp("unsubscribed_at"),
@@ -117,14 +120,14 @@ export const campaign = zelglihof.table("campaign", {
 	id: uuid("id").primaryKey().defaultRandom(),
 	subject: text("subject").notNull(),
 	body: text("body").notNull(),
-	status: text("status", { enum: ["draft", "queued"] }).notNull(),
+	status: text("status", { enum: campaignStatusValues }).notNull(),
 	createdAt: isoTimestamp("created_at").notNull(),
 	updatedAt: isoTimestamp("updated_at").notNull(),
 });
 
 export const inquiry = zelglihof.table("inquiry", {
 	id: uuid("id").primaryKey().defaultRandom(),
-	status: text("status", { enum: statusValues }).notNull(),
+	status: text("status", { enum: inquiryStatusValues }).notNull(),
 	subject: text("subject", { enum: inquirySubjectValues }).notNull(),
 	name: text("name").notNull(),
 	phone: text("phone").notNull(),

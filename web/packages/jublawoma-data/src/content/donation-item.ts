@@ -1,18 +1,26 @@
-import { idSchema } from "@oliumbi/contracts";
-import {
-	optionalTextSchema,
-	titleSchema,
-} from "@oliumbi/contracts/content-validation";
+import { idSchema, optionalTextSchema, titleSchema } from "@oliumbi/contracts";
 import { z } from "zod";
 import { decimalSchema } from "../forms";
-import type { donationItem } from "../schema";
 
 export const donationItemKeySchema = z.strictObject({
 	id: idSchema,
 });
 export type DonationItemKey = z.infer<typeof donationItemKeySchema>;
 
-export type DonationItem = typeof donationItem.$inferSelect;
+// The managed donation item record as it crosses the package boundary. Written
+// out on purpose: a renamed storage column must not silently change this shape.
+// Quantities stay exact decimal strings (D2).
+export interface DonationItem {
+	id: string;
+	donationId: string;
+	name: string;
+	detail: string | null;
+	quantity: string;
+	step: string;
+	unit: string;
+	createdAt: string;
+	updatedAt: string;
+}
 
 export const donationItemInputSchema = z.strictObject({
 	donationId: idSchema,

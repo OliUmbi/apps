@@ -1,16 +1,19 @@
-import type { PageInput } from "@oliumbi/contracts";
+import type { Page, PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { donationCommitment } from "../schema";
-import type { DonationCommitmentKey } from "./donation-commitment";
+import type {
+	DonationCommitment,
+	DonationCommitmentKey,
+} from "./donation-commitment";
 
 export function createDonationCommitmentRepository(db: DatabaseExecutor) {
 	return {
 		// Orphaned commitments (deleted donation) stay listed here with their
 		// stored snapshots; the scoped list only shows a donation's own rows.
-		list(input: PageInput) {
-			return paginate(
+		list(input: PageInput): Promise<Page<DonationCommitment>> {
+			return paginate<DonationCommitment>(
 				db
 					.select()
 					.from(donationCommitment)
@@ -24,7 +27,7 @@ export function createDonationCommitmentRepository(db: DatabaseExecutor) {
 				input,
 			);
 		},
-		async get(key: DonationCommitmentKey) {
+		async get(key: DonationCommitmentKey): Promise<DonationCommitment | null> {
 			const [record] = await db
 				.select()
 				.from(donationCommitment)
@@ -37,8 +40,11 @@ export function createDonationCommitmentRepository(db: DatabaseExecutor) {
 				.delete(donationCommitment)
 				.where(eq(donationCommitment.id, key.id));
 		},
-		listForDonation(input: PageInput, donationId: string) {
-			return paginate(
+		listForDonation(
+			input: PageInput,
+			donationId: string,
+		): Promise<Page<DonationCommitment>> {
+			return paginate<DonationCommitment>(
 				db
 					.select()
 					.from(donationCommitment)

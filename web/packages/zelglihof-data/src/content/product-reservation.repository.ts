@@ -1,10 +1,11 @@
-import type { PageInput } from "@oliumbi/contracts";
+import type { Page, PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { productReservation } from "../schema";
 import { updateMissError } from "./errors";
 import type {
+	ProductReservation,
 	ProductReservationInput,
 	ProductReservationKey,
 } from "./product-reservation";
@@ -13,8 +14,8 @@ export function createProductReservationRepository(db: DatabaseExecutor) {
 	return {
 		// Orphaned reservations (deleted product) stay listed here with their
 		// stored snapshots; the scoped list only shows a product's own rows.
-		list(input: PageInput) {
-			return paginate(
+		list(input: PageInput): Promise<Page<ProductReservation>> {
+			return paginate<ProductReservation>(
 				db
 					.select()
 					.from(productReservation)
@@ -28,7 +29,7 @@ export function createProductReservationRepository(db: DatabaseExecutor) {
 				input,
 			);
 		},
-		async get(key: ProductReservationKey) {
+		async get(key: ProductReservationKey): Promise<ProductReservation | null> {
 			const [record] = await db
 				.select()
 				.from(productReservation)
@@ -40,7 +41,7 @@ export function createProductReservationRepository(db: DatabaseExecutor) {
 			key: ProductReservationKey,
 			input: ProductReservationInput,
 			expectedUpdatedAt: string,
-		) {
+		): Promise<ProductReservation> {
 			const [record] = await db
 				.update(productReservation)
 				.set({ status: input.status, updatedAt: new Date().toISOString() })
@@ -64,8 +65,11 @@ export function createProductReservationRepository(db: DatabaseExecutor) {
 				.delete(productReservation)
 				.where(eq(productReservation.id, key.id));
 		},
-		listForProduct(input: PageInput, productId: string) {
-			return paginate(
+		listForProduct(
+			input: PageInput,
+			productId: string,
+		): Promise<Page<ProductReservation>> {
+			return paginate<ProductReservation>(
 				db
 					.select()
 					.from(productReservation)

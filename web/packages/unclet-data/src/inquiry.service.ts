@@ -2,9 +2,9 @@ import { randomUUID } from "node:crypto";
 import type { DatabasePool } from "@oliumbi/database";
 import { createQueueClient } from "@oliumbi/queue";
 import { referenceFor } from "@oliumbi/queue/email";
-import { type InquiryInput, inquirySchema } from "./forms";
+import { type InquirySubmissionInput, inquirySchema } from "./forms";
 import { inquiryEmails } from "./inquiry.email";
-import { createInquiryRepository } from "./inquiry.repository";
+import { createInquirySubmissionRepository } from "./inquiry.repository";
 
 export interface InquiryPlan {
 	outcome: "accepted";
@@ -21,11 +21,11 @@ export function createInquiryService(
 	requestsEmail: string,
 ) {
 	return {
-		async submit(input: InquiryInput) {
+		async submit(input: InquirySubmissionInput) {
 			const values = inquirySchema.parse(input);
 			const reference = referenceFor(values.submissionId);
 			return database.transaction(async (transaction) => {
-				const repository = createInquiryRepository(transaction);
+				const repository = createInquirySubmissionRepository(transaction);
 				const plan = decideInquiry({
 					replayed:
 						(await repository.findBySubmissionId(values.submissionId)) !== null,

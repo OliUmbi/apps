@@ -7,7 +7,7 @@ import type {
 	Transaction,
 } from "./database.types";
 
-export const poolDefaults = {
+const poolDefaults = {
 	connections: 10,
 	maximumConnections: 50,
 	idleTimeoutSeconds: 20,
@@ -29,7 +29,7 @@ export function databasePoolSize(value: string | undefined): number {
 	return size;
 }
 
-export function connectionOptions(options: DatabasePoolOptions) {
+function connectionOptions(options: DatabasePoolOptions) {
 	const connectionString = options.connectionString();
 	if (!connectionString) throw new Error("DATABASE_URL is not configured");
 	const url = new URL(connectionString);
