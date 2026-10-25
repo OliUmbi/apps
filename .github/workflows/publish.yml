@@ -11,7 +11,13 @@ permissions:
   packages: write
 
 jobs:
+  # Hard gate: the shared ci.yml (push/PR verification) must be green on this
+  # commit before any image is built or pushed.
+  verify:
+    uses: ./.github/workflows/ci.yml
+
   build:
+    needs: verify
     runs-on: ubuntu-latest
 
     strategy:

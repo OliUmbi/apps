@@ -70,6 +70,9 @@
     </dependencyManagement>
 
     <build>
+        <!-- Stable output name (target/<module>.jar) so the Dockerfiles never
+             track the project version. -->
+        <finalName>${project.artifactId}</finalName>
         <pluginManagement>
             <plugins>
                 <plugin>
