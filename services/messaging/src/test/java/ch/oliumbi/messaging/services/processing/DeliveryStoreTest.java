@@ -17,11 +17,14 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -55,17 +58,17 @@ class DeliveryStoreTest {
 
     @Test
     void claimIsEmptyWhenNothingIsDue() {
-        when(messages.findNext(NOW, NOW.minus(LEASE))).thenReturn(Optional.empty());
+        when(messages.findNext(NOW, NOW.minus(LEASE), "")).thenReturn(Optional.empty());
 
-        assertThat(store.claim()).isInstanceOf(DeliveryStore.ClaimResult.Empty.class);
+        assertThat(store.claim(new HashSet<>())).isInstanceOf(DeliveryStore.ClaimResult.Empty.class);
     }
 
     @Test
     void claimStartsADueMessageAndRecordsTheAttempt() {
         var message = message(new DeliveryState.Pending(0, NOW));
-        when(messages.findNext(NOW, NOW.minus(LEASE))).thenReturn(Optional.of(message));
+        when(messages.findNext(NOW, NOW.minus(LEASE), "")).thenReturn(Optional.of(message));
 
-        var result = store.claim();
+        var result = store.claim(new HashSet<>());
 
         assertThat(result).isInstanceOf(DeliveryStore.ClaimResult.Claimed.class);
         var claim = ((DeliveryStore.ClaimResult.Claimed) result).claim();
@@ -78,26 +81,52 @@ class DeliveryStoreTest {
     }
 
     @Test
-    void claimRecoversAnExpiredLeaseAndAbandonsTheOldAttempt() {
+    void claimRecoversAnExpiredLeaseSchedulesTheRetryWithBackoffAndAbandonsTheOldAttempt() {
         var message = message(new DeliveryState.Processing(1, NOW.minus(LEASE)));
         var attempt = mock(MessageAttempt.class);
-        when(messages.findNext(NOW, NOW.minus(LEASE))).thenReturn(Optional.of(message));
+        when(messages.findNext(NOW, NOW.minus(LEASE), "")).thenReturn(Optional.of(message));
         when(attempts.findByMessageIdAndAttemptNumber(message.getId(), 1)).thenReturn(Optional.of(attempt));
 
-        var result = store.claim();
+        var result = store.claim(new HashSet<>());
 
-        assertThat(result).isInstanceOf(DeliveryStore.ClaimResult.Claimed.class);
-        assertThat(((DeliveryStore.ClaimResult.Claimed) result).claim().attempt()).isEqualTo(2);
+        assertThat(result).isInstanceOf(DeliveryStore.ClaimResult.Deferred.class);
         verify(attempt).finish(AttemptOutcome.ABANDONED, Optional.of(FailureDetail.abandoned()), NOW);
+        assertThat(message.state())
+                .isEqualTo(new DeliveryState.Pending(1, NOW.plus(Duration.ofMinutes(1))));
+    }
+
+    @Test
+    void claimRecordsAPoisonedRowInTheRunSkipListBeforeFailing() {
+        var message = message(new DeliveryState.Processing(1, NOW.minus(LEASE)));
+        when(messages.findNext(NOW, NOW.minus(LEASE), "")).thenReturn(Optional.of(message));
+        when(attempts.findByMessageIdAndAttemptNumber(message.getId(), 1)).thenReturn(Optional.empty());
+
+        var skipped = new HashSet<UUID>();
+
+        assertThatThrownBy(() -> store.claim(skipped))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("message/attempt " + message.getId() + "/1");
+        assertThat(skipped).containsExactly(message.getId());
+    }
+
+    @Test
+    void claimPassesTheRunSkipListToTheSelection() {
+        var skipped = Set.of(UUID.fromString("11111111-2222-3333-4444-555555555555"));
+        when(messages.findNext(NOW, NOW.minus(LEASE), "11111111-2222-3333-4444-555555555555"))
+                .thenReturn(Optional.empty());
+
+        store.claim(skipped);
+
+        verify(messages).findNext(NOW, NOW.minus(LEASE), "11111111-2222-3333-4444-555555555555");
     }
 
     @Test
     void claimClosesAMessageThatExhaustedItsAttempts() {
         // two delays allow three attempts: the initial one plus two retries
         var message = message(new DeliveryState.Pending(3, NOW));
-        when(messages.findNext(NOW, NOW.minus(LEASE))).thenReturn(Optional.of(message));
+        when(messages.findNext(NOW, NOW.minus(LEASE), "")).thenReturn(Optional.of(message));
 
-        var result = store.claim();
+        var result = store.claim(new HashSet<>());
 
         assertThat(result).isInstanceOf(DeliveryStore.ClaimResult.Closed.class);
         assertThat(message.state()).isEqualTo(new DeliveryState.Failed(3, NOW));
@@ -131,5 +160,16 @@ class DeliveryStoreTest {
 
         verifyNoInteractions(attempts);
         assertThat(message.state()).isEqualTo(new DeliveryState.Processing(1, NOW));
+    }
+
+    @Test
+    void completeRejectsAMissingMessageWithADescriptiveFailure() {
+        when(messages.findLockedById(any())).thenReturn(Optional.empty());
+
+        var claim = message(new DeliveryState.Processing(1, NOW)).claim();
+
+        assertThatThrownBy(() -> store.complete(claim, new DeliveryResult.Sent()))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("message " + claim.messageId());
     }
 }

@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Applies state-machine decisions and attempt history in one transaction.
@@ -29,6 +32,7 @@ public class DeliveryStore {
     public sealed interface ClaimResult {
         record Empty() implements ClaimResult {}
         record Closed() implements ClaimResult {}
+        record Deferred() implements ClaimResult {}
         record Claimed(DeliveryClaim claim) implements ClaimResult {}
     }
 
@@ -46,42 +50,53 @@ public class DeliveryStore {
     }
 
     @Transactional
-    public ClaimResult claim() {
+    public ClaimResult claim(Set<UUID> skipped) {
         var now = clock.instant();
 
-        var candidate = messages.findNext(now, now.minus(stateMachine.leaseDuration()));
+        var candidate = messages.findNext(now, now.minus(stateMachine.leaseDuration()), skipList(skipped));
         if (candidate.isEmpty()) {
             return new ClaimResult.Empty();
         }
 
         var message = candidate.get();
-        return switch (stateMachine.claim(message.state(), now)) {
-            case DeliveryStateMachine.ClaimDecision.Idle ignored -> new ClaimResult.Empty();
-            case DeliveryStateMachine.ClaimDecision.Start start -> start(message, start.next(), now);
-            case DeliveryStateMachine.ClaimDecision.Recover recover -> {
-                abandon(message, now);
-                yield start(message, recover.next(), now);
-            }
-            case DeliveryStateMachine.ClaimDecision.Exhausted exhausted -> {
-                if (message.state() instanceof DeliveryState.Processing) {
+        try {
+            return switch (stateMachine.claim(message.state(), now)) {
+                case DeliveryStateMachine.ClaimDecision.Idle ignored -> new ClaimResult.Empty();
+                case DeliveryStateMachine.ClaimDecision.Start start -> start(message, start.next(), now);
+                case DeliveryStateMachine.ClaimDecision.Recover recover -> {
                     abandon(message, now);
+                    message.apply(recover.next());
+                    yield new ClaimResult.Deferred();
                 }
-                message.apply(exhausted.next());
-                log.warn("Message {} exhausted its attempts", message.getId());
-                yield new ClaimResult.Closed();
-            }
-        };
+                case DeliveryStateMachine.ClaimDecision.Exhausted exhausted -> {
+                    if (message.state() instanceof DeliveryState.Processing) {
+                        abandon(message, now);
+                    }
+                    message.apply(exhausted.next());
+                    log.warn("Message {} exhausted its attempts", message.getId());
+                    yield new ClaimResult.Closed();
+                }
+            };
+        } catch (RuntimeException exception) {
+            // The row is recorded in the run-scoped skip list before the transaction rolls back,
+            // so one poisoned row cannot starve the rest of the batch; it retries on a later run.
+            skipped.add(message.getId());
+            throw exception;
+        }
     }
 
     @Transactional
     public void complete(DeliveryClaim claim, DeliveryResult result) {
-        var message = messages.findLockedById(claim.messageId()).orElseThrow();
+        var message = messages.findLockedById(claim.messageId())
+                .orElseThrow(() -> new IllegalStateException("message " + claim.messageId() + " not found"));
         var now = clock.instant();
 
         switch (stateMachine.complete(message.state(), claim.attempt(), result, now)) {
             case DeliveryStateMachine.CompletionDecision.Stale ignored -> log.warn("Ignored stale completion for message {} attempt {}", claim.messageId(), claim.attempt());
             case DeliveryStateMachine.CompletionDecision.Accepted accepted -> {
-                var attempt = attempts.findByMessageIdAndAttemptNumber(claim.messageId(), claim.attempt()).orElseThrow();
+                var attempt = attempts.findByMessageIdAndAttemptNumber(claim.messageId(), claim.attempt())
+                        .orElseThrow(() -> new IllegalStateException(
+                                "message/attempt " + claim.messageId() + "/" + claim.attempt() + " not found"));
                 attempt.finish(accepted.outcome(), accepted.detail(), now);
                 message.apply(accepted.next());
                 accepted.detail().ifPresent(detail -> log.warn("Message {} attempt {}: {} ({})", claim.messageId(), claim.attempt(), detail.code(), accepted.outcome()));
@@ -96,9 +111,15 @@ public class DeliveryStore {
     }
 
     private void abandon(Message message, Instant now) {
-        var attempt = attempts.findByMessageIdAndAttemptNumber(message.getId(), message.getAttemptCount()).orElseThrow();
+        var attempt = attempts.findByMessageIdAndAttemptNumber(message.getId(), message.getAttemptCount())
+                .orElseThrow(() -> new IllegalStateException(
+                        "message/attempt " + message.getId() + "/" + message.getAttemptCount() + " not found"));
 
         attempt.finish(AttemptOutcome.ABANDONED, Optional.of(FailureDetail.abandoned()), now);
         log.warn("Message {} attempt {} abandoned", message.getId(), message.getAttemptCount());
+    }
+
+    private static String skipList(Set<UUID> skipped) {
+        return skipped.stream().map(UUID::toString).collect(Collectors.joining(","));
     }
 }

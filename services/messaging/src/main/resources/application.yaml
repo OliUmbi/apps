@@ -25,6 +25,7 @@ spring:
     properties:
       "mail.smtp.auth": ${MESSAGING_SMTP_AUTH:false}
       "mail.smtp.starttls.enable": ${MESSAGING_SMTP_TLS:false}
+      "mail.smtp.starttls.required": ${MESSAGING_SMTP_TLS_REQUIRED:false}
       "mail.smtp.connectiontimeout": 5000
       "mail.smtp.timeout": 5000
       "mail.smtp.writetimeout": 5000
@@ -40,6 +41,7 @@ messaging:
   authorization-token: ${MESSAGING_INTERNAL_AUTHORIZATION_TOKEN}
   worker:
     batch-size: 20
-    poll-delay-ms: 1000
+    accept-poll-delay-ms: 1000
+    deliver-poll-delay-ms: 1000
     lease-duration: 5m
     retry-delays: [2m, 4m, 8m, 16m]

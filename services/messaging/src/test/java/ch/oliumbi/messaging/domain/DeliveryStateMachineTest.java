@@ -73,12 +73,22 @@ class DeliveryStateMachineTest {
     }
 
     @Test
-    void processingMessageWithExpiredLeaseIsRecovered() {
+    void processingMessageWithExpiredLeaseIsRecoveredWithBackoff() {
         var decision = machine.claim(new DeliveryState.Processing(1, NOW.minus(LEASE)), NOW);
 
         assertThat(decision).isInstanceOf(DeliveryStateMachine.ClaimDecision.Recover.class)
                 .extracting(d -> ((DeliveryStateMachine.ClaimDecision.Recover) d).next())
-                .isEqualTo(new DeliveryState.Processing(2, NOW));
+                .isEqualTo(new DeliveryState.Pending(1, NOW.plus(Duration.ofMinutes(1))));
+    }
+
+    @Test
+    void aRecoveredMessageIsNotImmediatelyClaimableAgain() {
+        var decision = machine.claim(new DeliveryState.Processing(1, NOW.minus(LEASE)), NOW);
+        var recovered = ((DeliveryStateMachine.ClaimDecision.Recover) decision).next();
+
+        assertThat(machine.claim(recovered, NOW)).isInstanceOf(DeliveryStateMachine.ClaimDecision.Idle.class);
+        assertThat(machine.claim(recovered, NOW.plus(Duration.ofMinutes(1))))
+                .isInstanceOf(DeliveryStateMachine.ClaimDecision.Start.class);
     }
 
     @Test

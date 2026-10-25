@@ -14,7 +14,7 @@ public final class DeliveryStateMachine {
         record Start(DeliveryState.Processing next) implements ClaimDecision {
         }
 
-        record Recover(DeliveryState.Processing next) implements ClaimDecision {
+        record Recover(DeliveryState.Pending next) implements ClaimDecision {
         }
 
         record Exhausted(DeliveryState.Failed next) implements ClaimDecision {
@@ -72,7 +72,11 @@ public final class DeliveryStateMachine {
                     yield new ClaimDecision.Exhausted(new DeliveryState.Failed(processing.attempts(), now));
                 }
 
-                yield new ClaimDecision.Recover(new DeliveryState.Processing(processing.attempts() + 1, now));
+                // The expired attempt is abandoned and the next one is scheduled with the normal
+                // retry backoff; recovering immediately could resend while the original send is
+                // still in flight and turn a lease expiry into a duplicate email.
+                var retryAt = now.plus(retryDelays.get(processing.attempts() - 1));
+                yield new ClaimDecision.Recover(new DeliveryState.Pending(processing.attempts(), retryAt));
             }
             case DeliveryState.Sent ignored -> new ClaimDecision.Idle();
             case DeliveryState.Failed ignored -> new ClaimDecision.Idle();

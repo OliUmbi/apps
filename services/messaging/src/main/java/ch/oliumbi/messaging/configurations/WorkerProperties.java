@@ -13,7 +13,8 @@ import java.util.List;
 @ConfigurationProperties("messaging.worker")
 public record WorkerProperties(
         @Min(1) int batchSize,
-        @Min(1) long pollDelayMs,
+        @Min(1) long acceptPollDelayMs,
+        @Min(1) long deliverPollDelayMs,
         @NotNull Duration leaseDuration,
         @NotNull List<@NotNull Duration> retryDelays) {
 

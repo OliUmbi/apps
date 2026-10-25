@@ -23,12 +23,18 @@ public interface MessageRepository extends JpaRepository<Message, UUID> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Message> findLockedById(UUID id);
 
+    /**
+     * The run-scoped skip list arrives as a delimited UUID string because native-query
+     * collection binding is not portable; the text comparison is exact for canonical UUIDs.
+     */
     @Query(value = """
             SELECT * FROM messaging.message
-            WHERE (status = 'PENDING' AND available_at <= :now)
-               OR (status = 'PROCESSING' AND locked_at <= :staleBefore)
+            WHERE ((status = 'PENDING' AND available_at <= :now)
+                OR (status = 'PROCESSING' AND locked_at <= :staleBefore))
+              AND NOT (id::text = ANY(string_to_array(:skip, ',')))
             ORDER BY created_at, id
             LIMIT 1 FOR UPDATE SKIP LOCKED
             """, nativeQuery = true)
-    Optional<Message> findNext(@Param("now") Instant now, @Param("staleBefore") Instant staleBefore);
+    Optional<Message> findNext(@Param("now") Instant now, @Param("staleBefore") Instant staleBefore,
+                               @Param("skip") String skip);
 }

@@ -2,7 +2,10 @@ package ch.oliumbi.messaging.services.delivery;
 
 import ch.oliumbi.messaging.domain.DeliveryClaim;
 import ch.oliumbi.messaging.domain.DeliveryResult;
-import ch.oliumbi.messaging.domain.FailureDetail;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
@@ -10,11 +13,13 @@ import jakarta.validation.Validation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -86,23 +91,88 @@ class EmailDeliveryTest {
     }
 
     @Test
-    void mapsAuthenticationProblemsToARejection() {
+    void rejectsASubjectWithLineBreaksWithoutTalkingToSmtp() {
+        var claim = new DeliveryClaim(CLAIM.messageId(), CLAIM.attempt(), CLAIM.site(), CLAIM.type(),
+                CLAIM.sender(), CLAIM.recipient(), null,
+                "Hi\r\nReply-To: attacker@evil.com", CLAIM.text(), null);
+
+        var result = delivery.send(claim);
+
+        assertThat(result).isInstanceOf(DeliveryResult.Rejected.class);
+        var detail = ((DeliveryResult.Rejected) result).detail();
+        assertThat(detail.code()).isEqualTo("INVALID_REQUEST");
+        assertThat(detail.message()).contains("subject");
+        verify(mailSender, never()).send(any(MimeMessage.class));
+    }
+
+    @Test
+    void rejectsOversizedContentWithoutTalkingToSmtp() {
+        var claim = new DeliveryClaim(CLAIM.messageId(), CLAIM.attempt(), CLAIM.site(), CLAIM.type(),
+                CLAIM.sender(), CLAIM.recipient(), null,
+                "s".repeat(201), "t".repeat(65537), "h".repeat(262145));
+
+        var result = delivery.send(claim);
+
+        assertThat(result).isInstanceOf(DeliveryResult.Rejected.class);
+        var detail = ((DeliveryResult.Rejected) result).detail();
+        assertThat(detail.code()).isEqualTo("INVALID_REQUEST");
+        assertThat(detail.message()).contains("html, subject, text");
+        verify(mailSender, never()).send(any(MimeMessage.class));
+    }
+
+    @Test
+    void rejectsANonEmailTypeWithoutTalkingToSmtp() {
+        var claim = new DeliveryClaim(CLAIM.messageId(), CLAIM.attempt(), CLAIM.site(), "sms",
+                CLAIM.sender(), CLAIM.recipient(), null, CLAIM.subject(), CLAIM.text(), null);
+
+        var result = delivery.send(claim);
+
+        assertThat(result).isInstanceOf(DeliveryResult.Rejected.class);
+        assertThat(((DeliveryResult.Rejected) result).detail().code()).isEqualTo("INVALID_REQUEST");
+        verify(mailSender, never()).send(any(MimeMessage.class));
+    }
+
+    @Test
+    void mapsAuthenticationProblemsToARetryableFailure() {
         doThrow(new MailAuthenticationException("bad credentials")).when(mailSender).send(any(MimeMessage.class));
 
         var result = delivery.send(CLAIM);
 
-        assertThat(result).isInstanceOf(DeliveryResult.Rejected.class);
-        assertThat(((DeliveryResult.Rejected) result).detail().code()).isEqualTo("SMTP_AUTHENTICATION_FAILED");
+        assertThat(result).isInstanceOf(DeliveryResult.RetryableFailure.class);
+        assertThat(((DeliveryResult.RetryableFailure) result).detail().code()).isEqualTo("SMTP_AUTHENTICATION_FAILED");
     }
 
     @Test
-    void mapsSmtpProblemsToARetryableFailure() {
-        doThrow(new MailSendException("not confirmed")).when(mailSender).send(any(MimeMessage.class));
+    void mapsPerMessageSendFailuresToARetryableFailure() {
+        doThrow(new MailSendException(Map.of(new MimeMessage((Session) null), new MessagingException("not confirmed"))))
+                .when(mailSender).send(any(MimeMessage.class));
 
         var result = delivery.send(CLAIM);
 
         assertThat(result).isInstanceOf(DeliveryResult.RetryableFailure.class);
         assertThat(((DeliveryResult.RetryableFailure) result).detail().code()).isEqualTo("SMTP_DELIVERY_FAILED");
+    }
+
+    @Test
+    void mapsConnectionFailuresToARetryableFailure() {
+        doThrow(new MailSendException("Mail server connection failed", new MessagingException("refused"),
+                Map.of(new MimeMessage((Session) null), new MessagingException("refused"))))
+                .when(mailSender).send(any(MimeMessage.class));
+
+        var result = delivery.send(CLAIM);
+
+        assertThat(result).isInstanceOf(DeliveryResult.RetryableFailure.class);
+        assertThat(((DeliveryResult.RetryableFailure) result).detail().code()).isEqualTo("SMTP_DELIVERY_FAILED");
+    }
+
+    @Test
+    void treatsAFailedCloseAfterAcceptanceAsSent() {
+        doThrow(new MailSendException("Failed to close server connection after message sending",
+                new MessagingException("close failed"))).when(mailSender).send(any(MimeMessage.class));
+
+        var result = delivery.send(CLAIM);
+
+        assertThat(result).isInstanceOf(DeliveryResult.Sent.class);
     }
 
     @Test
@@ -113,6 +183,33 @@ class EmailDeliveryTest {
 
         assertThat(result).isInstanceOf(DeliveryResult.RetryableFailure.class);
         assertThat(((DeliveryResult.RetryableFailure) result).detail().code()).isEqualTo("DELIVERY_FAILED");
+    }
+
+    @Test
+    void logsTheCauseChainWhenDeliveryFails() {
+        var appender = new ListAppender<ILoggingEvent>();
+        appender.start();
+        var logger = (Logger) LoggerFactory.getLogger(EmailDelivery.class);
+        logger.addAppender(appender);
+        try {
+            doThrow(new MailSendException("Mail server connection failed", new MessagingException("refused"),
+                    Map.of(new MimeMessage((Session) null), new MessagingException("refused"))))
+                    .when(mailSender).send(any(MimeMessage.class));
+
+            delivery.send(CLAIM);
+        } finally {
+            logger.detachAppender(appender);
+        }
+
+        assertThat(appender.list)
+                .filteredOn(event -> event.getThrowableProxy() != null)
+                .singleElement()
+                .satisfies(event -> {
+                    assertThat(event.getFormattedMessage()).contains(CLAIM.messageId().toString());
+                    assertThat(event.getThrowableProxy().getClassName()).isEqualTo(MailSendException.class.getName());
+                    assertThat(event.getThrowableProxy().getCause().getClassName())
+                            .isEqualTo(MessagingException.class.getName());
+                });
     }
 
     private MimeMessage sent() throws Exception {

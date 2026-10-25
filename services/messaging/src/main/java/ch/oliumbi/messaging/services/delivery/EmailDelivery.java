@@ -7,10 +7,12 @@ import ch.oliumbi.messaging.domain.FailureDetail;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.validation.Validator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailParseException;
 import org.springframework.mail.MailPreparationException;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class EmailDelivery {
 
@@ -38,6 +41,7 @@ public class EmailDelivery {
             mailSender.send(prepare(claim));
             return new DeliveryResult.Sent();
         } catch (Exception exception) {
+            log.error("Delivery of message {} failed", claim.messageId(), exception);
             return failure(exception);
         }
     }
@@ -74,8 +78,15 @@ public class EmailDelivery {
 
     private DeliveryResult failure(Exception exception) {
         return switch (exception) {
+            // Authentication problems are operational (rotated credentials, transient outage),
+            // not content defects, so the retry budget bounds them instead of failing on sight.
             case MailAuthenticationException ignored ->
-                    rejected("SMTP_AUTHENTICATION_FAILED", "Check the SMTP credentials.");
+                    new DeliveryResult.RetryableFailure(new FailureDetail(
+                            "SMTP_AUTHENTICATION_FAILED", "The SMTP server rejected the configured credentials."));
+            // JavaMailSenderImpl only throws an empty failed-message map when transport.close()
+            // fails after SMTP accepted the message; retrying would duplicate the email.
+            case MailSendException sendException when sendException.getFailedMessages().isEmpty() ->
+                    new DeliveryResult.Sent();
             case MailParseException ignored ->
                     rejected("INVALID_MESSAGE", "The email could not be parsed.");
             case MailPreparationException ignored ->
