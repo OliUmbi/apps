@@ -51,9 +51,9 @@ only when that makes the whole system simpler or safer.
 | dyndns | systemd timer: keeps the Infomaniak A records on the dynamic IP, same API token as caddy | — |
 | sites (jublawoma, unclet, zelglihof) | Public SSR websites; own their routes, content tables and forms | their schema |
 | studio | Admin UI for all sites; one hostname so sessions survive | — |
-| identity | Accounts, sessions, permissions | account schema |
-| messaging | Email queue, delivery, SMTP outbox | communication schema |
-| assets | Image/document storage, size variants | media schema + `/media` volume |
+| identity | Accounts, sessions, permissions | `identity` schema |
+| messaging | Email queue, delivery, SMTP outbox | `messaging` schema |
+| assets | Image/document storage, size variants | `assets` schema + `/media` volume |
 | postgres | The one database; each app has its own role and schema | everything |
 | migrate | Flyway, runs before the apps on every deploy | `database/migrations` |
 
@@ -91,8 +91,9 @@ a role with only the permissions it needs and only the owning capability writes
 its tables (others use a contract or a reviewed view). A migration belongs to
 the unit that owns its model and runs before the code needing it; destructive
 changes use expand → backfill → verify → contract. `timestamptz` in UTC,
-exact numerics for money, constraints and deletion behavior as part of the
-domain model, seed data outside production migrations.
+money as display-only `text` prices and exact numerics once amounts are
+computed, constraints and deletion behavior as part of the domain model, seed
+data outside production migrations.
 
 ## Environments
 

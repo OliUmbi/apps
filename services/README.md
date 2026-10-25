@@ -36,8 +36,21 @@ The applications do not read that file themselves and do not implement
 `APP_ENV_FILE`.
 
 Import services/pom.xml as the Maven project in IntelliJ so all modules are linked.
-The reactor currently has no permanent automated tests; `mvn test` still verifies
-that every module compiles and packages its test classpath correctly.
+
+## Tests
+
+Every module carries permanent unit tests: shared covers the internal
+bearer-token verification, identity covers input normalization, passwords,
+tokens, sessions and permissions plus the controller/error contract, messaging
+covers domain, intake, delivery and worker, and assets covers processing and
+storage. The suites run without a database or SMTP server.
+
+Run them from services with `mvn test` (from the repository root:
+`mvn -f services/pom.xml test`). `mvn` is not necessarily on the PATH — install
+Maven locally or use the IDE's bundled Maven; the command stays the same.
+
+Remaining follow-ups: integration tests against a real PostgreSQL, Java style
+checks, and running the reactor's checks in CI alongside the web checks.
 
 ## Containers
 
@@ -54,3 +67,17 @@ The `shared` module provides the UTC clock, OpenAPI setup, API exception handlin
 and internal bearer-token verification. Each service owns its application and
 database configuration. Domain behavior remains in the service that owns it. Consumers
 import `shared` through the reactor rather than a separately installed artifact.
+
+## API contract
+
+API documentation is served at `/docs` (Swagger UI over the OpenAPI description
+from shared) only when the `dev` Spring profile is active; outside that profile
+springdoc is disabled and `/docs` does not exist. `/actuator/health` stays
+reachable without authentication for the compose health checks.
+
+Every error response is a problem response carrying `errorId`, a per-request
+correlation id that is also written to the service log. Request-validation
+failures additionally carry `errors`, a list of `{"field": …, "message": …}`
+entries. Status codes and `detail` texts are unchanged — including the reason
+texts of explicitly raised HTTP failures — so existing callers keep working;
+the envelope only adds fields.

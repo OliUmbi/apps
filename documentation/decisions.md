@@ -81,12 +81,71 @@ full decision record only when someone outside the project needs the context.
   passwords vs. an external provider, bootstrap/invitations, recovery,
   revocation, session duration, MFA need a decision and a short threat model.
   "External dependencies or simple self-built solutions could be realistic."
+  Proposed resolution (owner to confirm): local password accounts — identity
+  stores only BCrypt password hashes, session tokens are random 256-bit values
+  kept only as SHA-256 hashes, and services authenticate to each other with
+  internal bearer tokens from the environment. Fewer than ten users make an
+  external provider unnecessary; sessions expire after seven days and are
+  revoked server-side on password change or account disable. Recovery,
+  invitations and MFA stay out until public accounts exist.
 - **O-010 — schema and migration ownership.** No satisfactory approach found
   yet: schema-per-capability vs. domain split, migration tool and directory
   convention, locking, expand/contract procedure. Proposals wanted.
+  Proposed resolution (owner to confirm): Flyway owns the schema; migrations
+  live in `database/migrations`, one schema per capability as defined in V001
+  (`queue`, `identity`, `messaging`, `assets`, `studio` and the site schemas).
+  While the system is pre-launch, migration files are edited in place and the
+  database is recreated from scratch (the sanction in `database/README.md`);
+  once live data exists, destructive changes follow expand → backfill → verify
+  → contract. The one-shot migrate container runs before the apps on every
+  deploy, so no two migrators race.
 
 Also closed: the Zelglihof domain is `zelglihof-maegenwil.ch` (the application
 code had it right; documentation and infrastructure did not).
+
+## Adopted for the 2026-10 refactoring pass
+
+Adopted to unblock the refactoring pass
+([refactoring-plan.md](refactoring-plan.md) §1). These are adopted-by-refactor
+decisions, not long-term ratifications: review them here after the pass.
+
+- **D1 — Idempotent public submissions.** Each public form carries a
+  client-generated submission id (one UUID per form fill, hidden field). The
+  service checks it in the existing transaction via a unique index and returns
+  the original outcome on replay; references derive from the submission id and
+  stay stable across retries.
+- **D2 — Exact decimal quantities.** Quantities and steps stay `numeric` in
+  PostgreSQL, are read and written as decimal strings, and all arithmetic uses
+  BigInt-scaled integer math in TypeScript and `numeric`/`SUM` in SQL.
+  `float64` never touches a quantity.
+- **D3 — DB invariants.** CHECK constraints (status domains per workflow, stars
+  1–5, positive quantities and steps, stock ≥ 0, date ranges) go into the
+  owning migration files, edited in place under the pre-launch sanction.
+  Request validation stays for feedback; Drizzle enum hints are not the
+  enforcement mechanism.
+- **D4 — Per-workflow status models.** Inquiry, reservation, message, review
+  and campaign each own their allowed states. Shared spelling is not shared
+  meaning.
+- **D5 — Prices stay display-only text** for now. Display-only prices are
+  `text`; money must be exact numerics as soon as amounts are computed. No
+  schema change; the display wording is still an owner decision.
+- **D6 — One shared Alert.** The reserved-space `Alert` (the product rule
+  "state changes never move anything") is promoted to `@oliumbi/ui`;
+  `FormFeedback` is retired everywhere.
+- **D7 — Studio structure.** Search-param single-route navigation stays. The
+  collection machinery is rebuilt around explicit capabilities (read-only /
+  editable / creatable) with no component→route imports and one usage style for
+  inline and routed collections. No universal CMS config language; per-type
+  `*-view.tsx` files stay.
+- **D8 — CRUD consolidation.** One table-agnostic repository factory in
+  `@oliumbi/database` replaces the four copy-pasted templates. It must not
+  contain site table names; behavior-identical and gated by integration tests.
+- **D9 — Role passwords leave the migrations.** Roles are created `NOLOGIN`
+  without passwords; credentials are provisioned per environment (dev bootstrap
+  in `database/README.md`, production through the vault/Ansible flow).
+- **D10 — Unsubscribe tokens stay plaintext this pass.** Hashing is a contract
+  change with the zelglihof data package and is deferred; tracked in
+  [open-work.md](open-work.md).
 
 ## Layout rule: parts vs. subsystems
 
