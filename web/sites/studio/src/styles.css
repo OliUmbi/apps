@@ -1,82 +1,151 @@
 @import "tailwindcss";
+@import "./gradients.css";
 @source "../../../packages/ui/src";
 
 /*
- * Colour tokens mirrored exactly from the plain custom properties on `:root`
- * below so Tailwind utilities (bg-surface, text-muted, border-border-soft, ...)
- * can use the same values. Keep the two sets in sync.
+ * Design tokens.
+ *
+ * Flat, neutral, dark. Warm stone greys with no chromatic accent: colour is
+ * reserved for meaning, teal marks interaction (links, focus rings) and red
+ * marks failure, everything else is greyscale. Surfaces stack by fill and
+ * hairline rather than shadow, which is what keeps the UI calm and flat.
+ *
+ * Tokens name what a thing is for, not what it looks like:
+ *   canvas     the page itself
+ *   layer-N    stacked surfaces: panel, raised, overlay
+ *   field      editable controls
+ *   line       hairlines, from subtle to strong
+ *   fg         foreground text, muted to disabled
+ * Utilities follow the token, so `bg-canvas`, `bg-layer-1`, `border-line`,
+ * `text-fg-muted` all read the same way.
+ *
+ * Spacing stays on the 4px `--spacing` rhythm. No arbitrary spacing or type
+ * values in markup: if something needs a size the scale does not have, the
+ * scale is wrong, not the markup.
  */
 @theme {
-	--color-background: #0d0d0f;
-	--color-sidebar: #111113;
-	--color-surface: #151518;
-	--color-surface-raised: #1a1a1e;
-	--color-border: #29292e;
-	--color-border-soft: #222226;
-	--color-primary: #ececef;
-	--color-secondary: #b2b2b9;
-	--color-muted: #93939d;
-	--color-faint: #85858f;
-	--color-accent: #7c71df;
-	--color-danger: #e36e72;
+	/* Surfaces */
+	--color-canvas: #100f0e;
+	--color-layer-1: #181715;
+	--color-layer-2: #201e1b;
+	--color-layer-3: #292622;
+	--color-field: #1c1a18;
+
+	/* Hairlines */
+	--color-line-subtle: #282521;
+	--color-line: #3a3630;
+	--color-line-strong: #5c564e;
+
+	/* Foreground */
+	--color-fg: #f2f0ed;
+	--color-fg-muted: #b3aca3;
+	--color-fg-subtle: #8c847a;
+	--color-fg-disabled: #5c564e;
+
+	/* Interaction: links and focus rings only */
+	--color-interactive: #2dd4bf;
+
+	/* Status */
+	--color-danger: #f87171;
+	--color-success: #6ee7b7;
+	--color-warning: #fbbf24;
+
+	/* 4px rhythm: gaps, insets and heights are multiples of this. */
+	--spacing: 0.25rem;
+
+	--font-sans: Inter, "Segoe UI", system-ui, sans-serif;
+	--font-mono: "Cascadia Code", ui-monospace, Consolas, monospace;
+
+	/* Square by default; controls get 2px so they read as targets. */
+	--radius-control: 2px;
+	--radius-panel: 2px;
+
+	/* Overlays are the only thing that floats. */
+	--shadow-overlay: 0 24px 64px rgb(0 0 0 / 55%);
+
+	/*
+	 * Deprecated aliases. The pre-restyle class names still resolve through
+	 * these while the views are migrated; delete this block once the sweep
+	 * is complete.
+	 */
+	--color-background: var(--color-canvas);
+	--color-surface: var(--color-layer-1);
+	--color-surface-raised: var(--color-layer-2);
+	--color-sidebar: var(--color-layer-1);
+	--color-border: var(--color-line);
+	--color-border-soft: var(--color-line-subtle);
+	--color-primary: var(--color-fg);
+	--color-secondary: var(--color-fg-muted);
+	--color-muted: var(--color-fg-subtle);
+	--color-faint: var(--color-fg-disabled);
+	--color-accent: var(--color-interactive);
 }
 
 /* Base element styles: not expressible as utilities. */
 :root {
 	color-scheme: dark;
-	color: #e7e7e9;
-	background: #0d0d0f;
-	font-family: Inter, "Segoe UI", system-ui, sans-serif;
+	color: var(--color-fg);
+	background: var(--color-canvas);
+	font-family: var(--font-sans);
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
-	--background: #0d0d0f;
-	--sidebar: #111113;
-	--surface: #151518;
-	--surface-raised: #1a1a1e;
-	--border: #29292e;
-	--border-soft: #222226;
-	--primary: #ececef;
-	--secondary: #b2b2b9;
-	--muted: #93939d;
-	--faint: #85858f;
-	--accent: #7c71df;
-	--danger: #e36e72;
+
+	/* Deprecated aliases for the legacy rules further down. */
+	--background: var(--color-canvas);
+	--sidebar: var(--color-layer-1);
+	--surface: var(--color-layer-1);
+	--surface-raised: var(--color-layer-2);
+	--border: var(--color-line);
+	--border-soft: var(--color-line-subtle);
+	--primary: var(--color-fg);
+	--secondary: var(--color-fg-muted);
+	--muted: var(--color-fg-subtle);
+	--faint: var(--color-fg-disabled);
+	--accent: var(--color-interactive);
+	--danger: var(--color-danger);
 	--content-inset: 16px;
 }
 
-* {
-	box-sizing: border-box;
-}
+/*
+ * Base element styles. These sit in `@layer base` on purpose: unlayered rules
+ * outrank `@layer utilities` regardless of specificity, so leaving them out
+ * here silently made utilities like `text-canvas` lose to `button { color }`.
+ */
+@layer base {
+	* {
+		box-sizing: border-box;
+	}
 
-html,
-body {
-	min-height: 100%;
-	margin: 0;
-}
+	html,
+	body {
+		min-height: 100%;
+		margin: 0;
+	}
 
-body {
-	background: var(--background);
-}
+	body {
+		background: var(--color-canvas);
+	}
 
-button,
-input,
-select,
-textarea {
-	font: inherit;
-}
+	button,
+	input,
+	select,
+	textarea {
+		font: inherit;
+	}
 
-button {
-	color: inherit;
-	cursor: pointer;
-}
+	button {
+		color: inherit;
+		cursor: pointer;
+	}
 
-a {
-	color: inherit;
-	text-decoration: none;
-}
+	a {
+		color: inherit;
+		text-decoration: none;
+	}
 
-::selection {
-	background: rgb(124 113 223 / 40%);
+	::selection {
+		background: rgb(45 212 191 / 25%);
+	}
 }
 
 /*
@@ -249,53 +318,55 @@ a {
 	font-size: 0.68rem;
 }
 
+/*
+ * Legacy button styling, kept in step with `ui/button.tsx` so screens still
+ * using the class do not drift from the ones using the component. The class
+ * goes away once every call site is migrated.
+ */
 .button {
 	display: inline-flex;
-	min-height: 36px;
+	height: 40px;
 	align-items: center;
 	justify-content: center;
-	gap: 7px;
-	border: 1px solid var(--border);
-	border-radius: 5px;
-	padding: 0 12px;
-	color: var(--secondary);
-	background: var(--surface);
+	gap: 8px;
+	border: 1px solid var(--color-line);
+	border-radius: var(--radius-control);
+	padding: 0 16px;
+	color: var(--color-fg);
+	background: var(--color-layer-1);
 	font-size: 0.875rem;
 	font-weight: 500;
+	transition: background-color 120ms ease, border-color 120ms ease;
 }
 
 .button:hover {
-	border-color: #3b3b42;
-	color: var(--primary);
-	background: var(--surface-raised);
+	border-color: var(--color-line-strong);
+	background: var(--color-layer-2);
 }
 
 .button.primary {
 	border-color: transparent;
-	color: white;
-	background: var(--accent);
-	box-shadow: inset 0 1px rgb(255 255 255 / 14%);
+	color: var(--color-canvas);
+	background: var(--color-fg);
 }
 
 .button.primary:hover {
-	background: #897fe8;
+	background: #ffffff;
 }
 
 .button.danger {
-	border-color: rgb(227 110 114 / 35%);
-	color: #f09a9d;
-	background: rgb(227 110 114 / 8%);
+	border-color: rgb(248 113 113 / 40%);
+	color: var(--color-danger);
+	background: transparent;
 }
 
 .button.danger:hover {
-	border-color: rgb(227 110 114 / 55%);
-	color: #ffc2c4;
-	background: rgb(227 110 114 / 14%);
+	background: rgb(248 113 113 / 10%);
 }
 
 .button:disabled {
 	cursor: not-allowed;
-	opacity: 0.45;
+	opacity: 0.4;
 }
 
 .workspace-switch,
@@ -808,52 +879,6 @@ td {
 
 tbody tr:hover {
 	background: #18181b;
-}
-
-.login-page {
-	position: relative;
-	display: grid;
-	min-height: 100vh;
-	place-items: center;
-	overflow: hidden;
-	padding: 24px;
-	background: radial-gradient(
-		circle at 50% -20%,
-		#25233b 0,
-		#121216 36%,
-		#0d0d0f 70%
-	);
-}
-
-.login-page::before {
-	position: absolute;
-	inset: 0;
-	content: "";
-	opacity: 0.22;
-	background-image:
-		linear-gradient(rgb(255 255 255 / 3%) 1px, transparent 1px),
-		linear-gradient(90deg, rgb(255 255 255 / 3%) 1px, transparent 1px);
-	background-size: 48px 48px;
-	mask-image: linear-gradient(to bottom, black, transparent 75%);
-}
-
-/* biome-ignore lint/style/noDescendingSpecificity: The earlier not-found rule intentionally specializes this base style. */
-.login-body {
-	padding: 28px 28px 0;
-}
-
-.login-body h1 {
-	margin: 7px 0 0;
-	font-size: 1.625rem;
-	font-weight: 600;
-	letter-spacing: -0.035em;
-}
-
-.login-body > p:last-child {
-	margin: 10px 0 0;
-	color: var(--muted);
-	font-size: 0.875rem;
-	line-height: 1.6;
 }
 
 @media (max-width: 767px) {

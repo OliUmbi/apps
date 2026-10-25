@@ -1,4 +1,4 @@
-import { Button } from "@base-ui/react/button";
+import { Button } from "../ui/button";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import type { Subscriber } from "@oliumbi/zelglihof-data/content/subscriber";
@@ -42,7 +42,7 @@ export function SubscriberStatusActions({
 			<div className="mt-4 flex flex-wrap gap-2 border-t border-border-soft pt-4">
 				{subscriber.status === "active" && (
 					<Button
-						className="button"
+						variant="secondary"
 						disabled={action.isPending}
 						onClick={() => action.mutate("unsubscribe")}
 					>
@@ -51,7 +51,7 @@ export function SubscriberStatusActions({
 				)}
 				{subscriber.status === "pending" && (
 					<Button
-						className="button"
+						variant="secondary"
 						disabled={action.isPending}
 						onClick={() => action.mutate("confirm")}
 					>

@@ -1,4 +1,4 @@
-import { Button } from "@base-ui/react/button";
+import { Button } from "../ui/button";
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
@@ -45,7 +45,7 @@ export function SubscriberEmailForm({
 				/>
 				<Button
 					type="submit"
-					className="button"
+					variant="secondary"
 					disabled={correction.isPending}
 				>
 					{correction.isPending ? m.saving() : m.save()}

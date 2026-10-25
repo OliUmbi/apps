@@ -1,6 +1,6 @@
-import { Button } from "@base-ui/react/button";
-import { Checkbox } from "@base-ui/react/checkbox";
-import { Field } from "@base-ui/react/field";
+import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
+import { Panel } from "../ui/panel";
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
 import type { Account } from "@oliumbi/identity";
@@ -8,7 +8,8 @@ import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { Check, UserRound } from "lucide-react";
+import { UserRound } from "lucide-react";
+import { useState } from "react";
 import { updateAccountSchema } from "../../model/accounts";
 import { updateAccount } from "../../server/accounts.functions";
 import { InputField } from "../input-field";
@@ -17,6 +18,7 @@ export function AccountDetailsForm({ account }: { account: Account }) {
 	const cache = useQueryClient();
 	const router = useRouter();
 	const update = useServerFn(updateAccount);
+	const [enabled, setEnabled] = useState(account.enabled);
 	const save = useMutation({
 		mutationFn: async (form: FormData) =>
 			update({
@@ -35,14 +37,11 @@ export function AccountDetailsForm({ account }: { account: Account }) {
 		},
 	});
 	return (
-		<section className="settings-panel">
-			<header>
-				<UserRound size={19} />
-				<div>
-					<h2>{m.studio_profile_details()}</h2>
-					<p>{m.studio_account_identity_help()}</p>
-				</div>
-			</header>
+		<Panel
+			title={m.studio_profile_details()}
+			description={m.studio_account_identity_help()}
+			icon={UserRound}
+		>
 			<Form
 				className="grid gap-4"
 				onChange={() => {
@@ -69,23 +68,16 @@ export function AccountDetailsForm({ account }: { account: Account }) {
 					defaultValue={account.email}
 					required
 				/>
-				<Field.Root className="flex items-center gap-3">
-					<Checkbox.Root
-						disabled={save.isPending}
-						name="enabled"
-						defaultChecked={account.enabled}
-						className="grid size-5 place-items-center rounded border border-[#55545e] bg-[#0d0d0f] data-checked:border-accent data-checked:bg-accent"
-					>
-						<Checkbox.Indicator>
-							<Check size={13} aria-hidden="true" />
-						</Checkbox.Indicator>
-					</Checkbox.Root>
-					<Field.Label>{m.studio_account_enabled()}</Field.Label>
-				</Field.Root>
+				<Checkbox
+					name="enabled"
+					label={m.studio_account_enabled()}
+					checked={enabled}
+					onChange={setEnabled}
+				/>
 				<div className="flex justify-end gap-2 border-t border-border-soft pt-[18px]">
 					<Button
 						type="submit"
-						className="button primary"
+						variant="primary"
 						disabled={save.isPending}
 					>
 						{m.save()}
@@ -96,6 +88,6 @@ export function AccountDetailsForm({ account }: { account: Account }) {
 					success={save.isSuccess ? m.studio_profile_saved() : null}
 				/>
 			</Form>
-		</section>
+		</Panel>
 	);
 }

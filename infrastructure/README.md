@@ -9,14 +9,14 @@ deterministic and a rollback is deploying the previous tag.
 | path | purpose |
 |---|---|
 | `compose.dev.yaml` | the local development stack |
-| `.env.development` | checked-in development defaults (Vite, compose and IDE runs) |
+| `.env.dev` | template for the local `.env` at the repository root |
 | `compose.prod.yaml` | the app stack (caddy, postgres, migrate, services, sites) |
 | `compose.monitoring.yaml` | prometheus, node-exporter, cAdvisor, blackbox, alertmanager, grafana |
 | `compose.restore.yaml` | override for the local restore drill (see documentation/operations.md) |
 | `monitoring/` | prometheus config, alert rules, alertmanager, grafana provisioning |
 | `caddy/Caddyfile` | routing + TLS, baked into the caddy image |
 | `caddy/Dockerfile` | caddy + infomaniak DNS-01 plugin + Caddyfile |
-| `.env.example` | documented env template (real values: ansible vault, not git) |
+| `.env.prod` | template for the server's `/apps/.env` (real values: ansible vault, not git) |
 | `../database/Dockerfile` | flyway + baked migrations |
 
 There are no bind mounts: the server needs only `compose.prod.yaml` and

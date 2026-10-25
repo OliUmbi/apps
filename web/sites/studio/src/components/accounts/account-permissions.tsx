@@ -1,11 +1,11 @@
-import { Checkbox } from "@base-ui/react/checkbox";
-import { Field } from "@base-ui/react/field";
+import { Checkbox } from "../ui/checkbox";
+import { Panel } from "../ui/panel";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { Check, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { permissionSchema } from "../../model/accounts";
 import { studioSites } from "../../model/sites";
 import { getAccount, setPermission } from "../../server/accounts.functions";
@@ -27,40 +27,31 @@ export function AccountPermissions({ accountId }: { accountId: string }) {
 		},
 	});
 	return (
-		<section className="settings-panel">
-			<header>
-				<ShieldCheck size={19} />
-				<div>
-					<h2>{m.studio_permissions()}</h2>
-					<p>{m.studio_permissions_help()}</p>
-				</div>
-			</header>
+		<Panel
+			title={m.studio_permissions()}
+			description={m.studio_permissions_help()}
+			icon={ShieldCheck}
+		>
 			<div className="grid gap-px overflow-hidden rounded-[5px] border border-border-soft bg-border-soft">
 				{permissionSchema.options.map((value) => (
-					<Field.Root key={value} className="permission-row">
-						<Checkbox.Root
-							checked={
-								details.data?.permissions.some(
-									(item) => item.permission === value,
-								) ?? false
-							}
-							disabled={!details.data || changePermission.isPending}
-							onCheckedChange={(granted) =>
-								changePermission.mutate({
-									data: { id: accountId, permission: value, granted },
-								})
-							}
-							className="grid size-5 place-items-center rounded border border-[#55545e] bg-[#0d0d0f] data-checked:border-accent data-checked:bg-accent"
-						>
-							<Checkbox.Indicator>
-								<Check size={13} aria-hidden="true" />
-							</Checkbox.Indicator>
-						</Checkbox.Root>
-						<div>
-							<Field.Label>{permissionLabel(value)}</Field.Label>
+					<div key={value} className="permission-row">
+						<div className="grid">
+							<Checkbox
+								label={permissionLabel(value)}
+								checked={
+									details.data?.permissions.some(
+										(item) => item.permission === value,
+									) ?? false
+								}
+								onChange={(granted) =>
+									changePermission.mutate({
+										data: { id: accountId, permission: value, granted },
+									})
+								}
+							/>
 							<small>{value}</small>
 						</div>
-					</Field.Root>
+					</div>
 				))}
 			</div>
 			<FormFeedback
@@ -68,7 +59,7 @@ export function AccountPermissions({ accountId }: { accountId: string }) {
 					details.isError || changePermission.isError ? m.error_generic() : null
 				}
 			/>
-		</section>
+		</Panel>
 	);
 }
 

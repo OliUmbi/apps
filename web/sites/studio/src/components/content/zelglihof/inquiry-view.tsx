@@ -12,8 +12,9 @@ import {
 	listInquiries,
 	updateInquiry,
 } from "../../../server/content/zelglihof/inquiry.functions";
+import { RecordField, RecordFields } from "../../ui/record-fields";
 import type { EditorFieldsProps } from "../content-form";
-import { DetailItem, displayStatus } from "../display";
+import { displayStatus } from "../display";
 import { StatusField } from "../editor-controls";
 import { RoutedCollectionView } from "../routed-collection-view";
 
@@ -58,12 +59,12 @@ export function InquiriesView() {
 				},
 			]}
 			renderActions={(record) => (
-				<dl className="record-fields">
-					<DetailItem label={m.name()}>{record.name}</DetailItem>
-					<DetailItem label={m.phone()}>{record.phone}</DetailItem>
-					<DetailItem label={m.email()}>{record.email}</DetailItem>
-					<DetailItem label={m.message()}>{record.message}</DetailItem>
-				</dl>
+				<RecordFields>
+					<RecordField label={m.name()}>{record.name}</RecordField>
+					<RecordField label={m.phone()}>{record.phone}</RecordField>
+					<RecordField label={m.email()}>{record.email ?? "—"}</RecordField>
+					<RecordField label={m.message()}>{record.message}</RecordField>
+				</RecordFields>
 			)}
 		/>
 	);

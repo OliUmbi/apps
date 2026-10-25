@@ -1,4 +1,4 @@
-import { Button } from "@base-ui/react/button";
+import { Button } from "../ui/button";
 import { Form } from "@base-ui/react/form";
 import type { SiteId } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
@@ -59,7 +59,7 @@ export function AssetUploadForm({
 			<Button
 				type="submit"
 				disabled={creation.isPending}
-				className="button primary"
+				variant="primary"
 			>
 				{m.upload()}
 			</Button>

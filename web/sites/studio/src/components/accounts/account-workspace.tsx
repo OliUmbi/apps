@@ -1,4 +1,5 @@
-import { Button } from "@base-ui/react/button";
+import { Button } from "../ui/button";
+import { Title } from "../ui/text";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -44,11 +45,13 @@ export function AccountWorkspace({
 				/>
 			) : (
 				<div className="grid gap-[22px] w-full">
-					<Button className="workspace-back" onClick={onClose}>
+					<Button variant="ghost" onClick={onClose}>
 						<ArrowLeft size={16} aria-hidden="true" />{" "}
 						{m.studio_back_to_accounts()}
 					</Button>
-					<h1>{m.studio_accounts()}</h1>
+					<Title as="h1" size="lg">
+						{m.studio_accounts()}
+					</Title>
 					{query.isPending && <p role="status">{m.loading()}</p>}
 				</div>
 			)}

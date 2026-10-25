@@ -15,8 +15,9 @@ import {
 } from "../../../server/content/zelglihof/campaign.functions";
 import { CampaignSend } from "../../campaign-send";
 import { InputField } from "../../input-field";
+import { RecordField, RecordFields } from "../../ui/record-fields";
 import type { EditorFieldsProps } from "../content-form";
-import { DetailItem, displayStatus } from "../display";
+import { displayStatus } from "../display";
 import { RoutedCollectionView } from "../routed-collection-view";
 
 export function CampaignsView() {
@@ -52,13 +53,13 @@ export function CampaignsView() {
 				},
 			]}
 			renderDetails={(record) => (
-				<dl className="record-fields">
-					<DetailItem label={m.subject()}>{record.subject}</DetailItem>
-					<DetailItem label={m.body()}>{record.body}</DetailItem>
-					<DetailItem label={m.status()}>
+				<RecordFields>
+					<RecordField label={m.subject()}>{record.subject}</RecordField>
+					<RecordField label={m.body()}>{record.body}</RecordField>
+					<RecordField label={m.status()}>
 						{displayStatus(record.status)}
-					</DetailItem>
-				</dl>
+					</RecordField>
+				</RecordFields>
 			)}
 			renderActions={(record) =>
 				record.status === "draft" ? <CampaignSend id={record.id} /> : null

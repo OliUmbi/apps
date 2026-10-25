@@ -1,4 +1,4 @@
-import { Button } from "@base-ui/react/button";
+import { Button } from "../ui/button";
 import { limits, type Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
@@ -55,7 +55,7 @@ export function CollectionList<Row>({
 			) : null}
 			{query.hasNextPage && (
 				<Button
-					className="button"
+					variant="secondary"
 					disabled={query.isFetchingNextPage}
 					onClick={() => void query.fetchNextPage()}
 				>

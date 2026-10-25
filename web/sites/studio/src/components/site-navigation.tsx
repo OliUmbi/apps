@@ -1,4 +1,3 @@
-import { Button } from "@base-ui/react/button";
 import {
 	FileText,
 	Home,
@@ -6,8 +5,19 @@ import {
 	Mail,
 	ShoppingBasket,
 	Users,
+	type LucideIcon,
 } from "lucide-react";
 import type { StudioSite } from "../model/sites";
+import { Nav, NavItem, NavSection } from "./ui/nav";
+
+const icons: Record<StudioSite["sections"][number]["icon"], LucideIcon> = {
+	home: Home,
+	inbox: Inbox,
+	content: FileText,
+	people: Users,
+	commerce: ShoppingBasket,
+	newsletter: Mail,
+};
 
 export function SiteNavigation({
 	site,
@@ -19,37 +29,19 @@ export function SiteNavigation({
 	onSelect: (section: string) => void;
 }) {
 	return (
-		<nav aria-label={site.name} className="p-[9px] overflow-y-auto">
-			<p className="px-2 pt-2 pb-1.5 text-xs font-semibold tracking-[0.08em] uppercase text-muted">
-				{site.name}
-			</p>
-			{site.sections.map((item) => (
-				<Button
-					key={item.id}
-					className={item.id === section ? "nav-item is-active" : "nav-item"}
-					onClick={() => onSelect(item.id)}
-					aria-current={item.id === section ? "page" : undefined}
-				>
-					<NavigationIcon icon={item.icon} />
-					{item.label}
-				</Button>
-			))}
-		</nav>
+		<Nav label={site.name}>
+			<NavSection title={site.name}>
+				{site.sections.map((item) => (
+					<NavItem
+						key={item.id}
+						icon={icons[item.icon]}
+						active={item.id === section}
+						onClick={() => onSelect(item.id)}
+					>
+						{item.label}
+					</NavItem>
+				))}
+			</NavSection>
+		</Nav>
 	);
-}
-
-function NavigationIcon({
-	icon,
-}: {
-	icon: StudioSite["sections"][number]["icon"];
-}) {
-	const Icon = {
-		home: Home,
-		inbox: Inbox,
-		content: FileText,
-		people: Users,
-		commerce: ShoppingBasket,
-		newsletter: Mail,
-	}[icon];
-	return <Icon size={15} strokeWidth={1.7} aria-hidden="true" />;
 }

@@ -30,7 +30,7 @@ function RootDocument({ children }: { children: ReactNode }) {
 			<head>
 				<HeadContent />
 			</head>
-			<body className="min-h-full">
+			<body className="min-h-full h-dvh">
 				{children}
 				<Scripts />
 			</body>

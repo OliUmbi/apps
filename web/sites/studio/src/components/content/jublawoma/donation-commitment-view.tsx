@@ -5,7 +5,7 @@ import {
 	getDonationCommitment,
 	listDonationCommitments,
 } from "../../../server/content/jublawoma/donation-commitment.functions";
-import { DetailItem } from "../display";
+import { RecordField, RecordFields } from "../../ui/record-fields";
 import { InlineCollectionView } from "../inline-collection-view";
 
 export function DonationCommitmentsView({
@@ -52,32 +52,34 @@ export function DonationCommitmentsView({
 				},
 			]}
 			renderDetails={(record) => (
-				<dl className="record-fields">
-					<DetailItem label={m.studio_donation()}>
-						{record.donationId}
-					</DetailItem>
-					<DetailItem label={m.studio_donation_item()}>
-						{record.donationItemId}
-					</DetailItem>
-					<DetailItem label={m.studio_field_donation_title()}>
+				<RecordFields>
+					<RecordField label={m.studio_donation()}>
+						{record.donationId ?? "—"}
+					</RecordField>
+					<RecordField label={m.studio_donation_item()}>
+						{record.donationItemId ?? "—"}
+					</RecordField>
+					<RecordField label={m.studio_field_donation_title()}>
 						{record.donationTitle}
-					</DetailItem>
-					<DetailItem label={m.studio_field_item_name()}>
+					</RecordField>
+					<RecordField label={m.studio_field_item_name()}>
 						{record.itemName}
-					</DetailItem>
-					<DetailItem label={m.studio_field_item_detail()}>
-						{record.itemDetail}
-					</DetailItem>
-					<DetailItem label={m.studio_field_item_quantity()}>
+					</RecordField>
+					<RecordField label={m.studio_field_item_detail()}>
+						{record.itemDetail ?? "—"}
+					</RecordField>
+					<RecordField label={m.studio_field_item_quantity()}>
 						{record.itemQuantity}
-					</DetailItem>
-					<DetailItem label={m.studio_field_step()}>{record.step}</DetailItem>
-					<DetailItem label={m.unit()}>{record.unit}</DetailItem>
-					<DetailItem label={m.name()}>{record.name}</DetailItem>
-					<DetailItem label={m.phone()}>{record.phone}</DetailItem>
-					<DetailItem label={m.quantity()}>{record.quantity}</DetailItem>
-					<DetailItem label={m.studio_field_note()}>{record.note}</DetailItem>
-				</dl>
+					</RecordField>
+					<RecordField label={m.studio_field_step()}>{record.step}</RecordField>
+					<RecordField label={m.unit()}>{record.unit}</RecordField>
+					<RecordField label={m.name()}>{record.name}</RecordField>
+					<RecordField label={m.phone()}>{record.phone}</RecordField>
+					<RecordField label={m.quantity()}>{record.quantity}</RecordField>
+					<RecordField label={m.studio_field_note()}>
+						{record.note ?? "—"}
+					</RecordField>
+				</RecordFields>
 			)}
 		/>
 	);

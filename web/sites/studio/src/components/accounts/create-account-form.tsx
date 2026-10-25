@@ -1,4 +1,6 @@
-import { Button } from "@base-ui/react/button";
+import { Button } from "../ui/button";
+import { Panel } from "../ui/panel";
+import { PageHeader } from "../ui/page-header";
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
@@ -25,72 +27,66 @@ export function CreateAccountForm({
 	});
 	return (
 		<div className="grid gap-[22px] w-full">
-			<Button className="workspace-back" onClick={() => onClose()}>
+			<Button variant="ghost" onClick={() => onClose()}>
 				<ArrowLeft size={16} /> {m.studio_back_to_accounts()}
 			</Button>
-			<header className="page-heading">
-				<div>
-					<p className="page-kicker">{m.studio_account_workspace()}</p>
-					<h1>{m.studio_create_account()}</h1>
-					<p>{m.studio_create_account_help()}</p>
-				</div>
-			</header>
-			<section className="settings-panel max-w-[640px]">
-				<header>
-					<UserRound size={19} />
-					<div>
-						<h2>{m.studio_profile_details()}</h2>
-					</div>
-				</header>
-				<Form
-					className="grid gap-4"
-					onChange={() => {
-						if (creation.isSuccess || creation.isError) creation.reset();
-					}}
-					onSubmit={(event) => {
-						event.preventDefault();
-						if (creation.isPending) return;
-						creation.mutate(new FormData(event.currentTarget), {
-							onSuccess: onCreated,
-						});
-					}}
-				>
-					<InputField
-						disabled={creation.isPending}
-						name="name"
-						label={m.name()}
-						required
-					/>
-					<InputField
-						disabled={creation.isPending}
-						name="email"
-						type="email"
-						label={m.email()}
-						required
-					/>
-					<InputField
-						disabled={creation.isPending}
-						name="password"
-						type="password"
-						autoComplete="new-password"
-						label={m.studio_new_password()}
-						required
-					/>
-					<div className="flex justify-end gap-2 border-t border-border-soft pt-[18px]">
-						<Button type="button" className="button" onClick={() => onClose()}>
-							{m.cancel()}
-						</Button>
-						<Button
-							type="submit"
-							className="button primary"
+			<PageHeader
+				kicker={m.studio_account_workspace()}
+				title={m.studio_create_account()}
+				description={m.studio_create_account_help()}
+			/>
+			<div className="max-w-[640px]">
+				<Panel title={m.studio_profile_details()} icon={UserRound}>
+					<Form
+						className="grid gap-4"
+						onChange={() => {
+							if (creation.isSuccess || creation.isError) creation.reset();
+						}}
+						onSubmit={(event) => {
+							event.preventDefault();
+							if (creation.isPending) return;
+							creation.mutate(new FormData(event.currentTarget), {
+								onSuccess: onCreated,
+							});
+						}}
+					>
+						<InputField
 							disabled={creation.isPending}
-						>
-							{m.create()}
-						</Button>
-					</div>
-					<FormFeedback error={creation.isError ? m.error_generic() : null} />
-				</Form>
-			</section>
+							name="name"
+							label={m.name()}
+							required
+						/>
+						<InputField
+							disabled={creation.isPending}
+							name="email"
+							type="email"
+							label={m.email()}
+							required
+						/>
+						<InputField
+							disabled={creation.isPending}
+							name="password"
+							type="password"
+							autoComplete="new-password"
+							label={m.studio_new_password()}
+							required
+						/>
+						<div className="flex justify-end gap-2 border-t border-border-soft pt-[18px]">
+							<Button type="button" variant="secondary" onClick={() => onClose()}>
+								{m.cancel()}
+							</Button>
+							<Button
+								type="submit"
+								variant="primary"
+								disabled={creation.isPending}
+							>
+								{m.create()}
+							</Button>
+						</div>
+						<FormFeedback error={creation.isError ? m.error_generic() : null} />
+					</Form>
+				</Panel>
+			</div>
 		</div>
 	);
 }

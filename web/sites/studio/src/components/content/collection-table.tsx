@@ -1,4 +1,4 @@
-import { Button } from "@base-ui/react/button";
+import { Button } from "../ui/button";
 import { m } from "@oliumbi/i18n/messages";
 import type { ReactNode } from "react";
 
@@ -44,7 +44,7 @@ export function CollectionTable<Row>({
 							))}
 							<td>
 								<Button
-									className="button open-record"
+									variant="link"
 									onClick={() => onOpen(record)}
 								>
 									{m.studio_open_record()}

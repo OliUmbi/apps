@@ -1,4 +1,5 @@
-import { Button } from "@base-ui/react/button";
+import { Button } from "../ui/button";
+import { Panel } from "../ui/panel";
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
 import type { Account } from "@oliumbi/identity";
@@ -24,14 +25,11 @@ export function ProfileDetailsForm({ account }: { account: Account }) {
 		},
 	});
 	return (
-		<section className="settings-panel">
-			<header>
-				<UserRound size={19} />
-				<div>
-					<h2>{m.studio_profile_details()}</h2>
-					<p>{m.studio_profile_details_help()}</p>
-				</div>
-			</header>
+		<Panel
+			title={m.studio_profile_details()}
+			description={m.studio_profile_details_help()}
+			icon={UserRound}
+		>
 			<Form
 				className="grid gap-4"
 				onChange={() => {
@@ -60,7 +58,7 @@ export function ProfileDetailsForm({ account }: { account: Account }) {
 				/>
 				<div className="flex justify-end gap-2 border-t border-border-soft pt-[18px]">
 					<Button
-						className="button primary"
+						variant="primary"
 						type="submit"
 						disabled={saving.isPending}
 					>
@@ -72,6 +70,6 @@ export function ProfileDetailsForm({ account }: { account: Account }) {
 					success={saving.isSuccess ? m.studio_profile_saved() : null}
 				/>
 			</Form>
-		</section>
+		</Panel>
 	);
 }

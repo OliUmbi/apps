@@ -8,7 +8,8 @@ import {
 } from "../../../server/content/zelglihof/subscriber.functions";
 import { SubscriberActions } from "../../subscriber-actions";
 import { SubscriberInvite } from "../../subscriber-invite";
-import { DetailItem, displayStatus } from "../display";
+import { RecordField, RecordFields } from "../../ui/record-fields";
+import { displayStatus } from "../display";
 import { RoutedCollectionView } from "../routed-collection-view";
 
 export function SubscribersView() {
@@ -38,21 +39,21 @@ export function SubscribersView() {
 				},
 			]}
 			renderDetails={(record) => (
-				<dl className="record-fields">
-					<DetailItem label={m.email()}>{record.email}</DetailItem>
-					<DetailItem label={m.status()}>
+				<RecordFields>
+					<RecordField label={m.email()}>{record.email}</RecordField>
+					<RecordField label={m.status()}>
 						{displayStatus(record.status)}
-					</DetailItem>
-					<DetailItem label={m.studio_field_requested_at()}>
+					</RecordField>
+					<RecordField label={m.studio_field_requested_at()}>
 						{formatTimestamp(record.requestedAt)}
-					</DetailItem>
-					<DetailItem label={m.studio_field_confirmed_at()}>
+					</RecordField>
+					<RecordField label={m.studio_field_confirmed_at()}>
 						{formatTimestamp(record.confirmedAt)}
-					</DetailItem>
-					<DetailItem label={m.studio_field_unsubscribed_at()}>
+					</RecordField>
+					<RecordField label={m.studio_field_unsubscribed_at()}>
 						{formatTimestamp(record.unsubscribedAt)}
-					</DetailItem>
-				</dl>
+					</RecordField>
+				</RecordFields>
 			)}
 			introduction={<SubscriberInvite />}
 			renderActions={(record) => (

@@ -1,0 +1,139 @@
+/*
+ * Grain overlay and aurora gradient utilities.
+ *
+ * Self-contained on purpose: tokens in `@theme`, behaviour in `@utility`, no
+ * element or component selectors. Nothing here is studio specific, so the file
+ * can move to `web/packages/` once a second site wants the same effect
+ * (principles.md #3) by copying it and adding the `@import`.
+ *
+ * Both effects are pseudo elements so they compose with each other and with
+ * `bg-*` colours: `background-image` cannot stack from two utilities, the last
+ * one in the cascade wins, so `gradient-aurora noise` would silently drop a
+ * layer. `gradient-*` paints on `::before`, `noise` on `::after`.
+ *
+ * Grain and gradient stay separate utilities so a preset works with or without
+ * grain: `gradient-aurora noise`.
+ */
+
+@theme {
+	/*
+	 * Mesh pools for the gradient presets. Presets are data only: the layer
+	 * that paints them lives in `gradient-*` below, so a new preset is one
+	 * line here. Pools are large and soft because they are blurred; hard
+	 * edges are what made stacked radial gradients read as separate blobs.
+	 */
+	--gradient-aurora:
+		radial-gradient(44% 48% at 14% 12%, rgb(120 108 220 / 85%), transparent 78%),
+		radial-gradient(38% 42% at 86% 12%, rgb(70 138 222 / 70%), transparent 78%),
+		radial-gradient(48% 52% at 56% 92%, rgb(186 112 222 / 68%), transparent 78%),
+		radial-gradient(32% 38% at 94% 66%, rgb(84 152 228 / 50%), transparent 80%);
+	--gradient-dusk:
+		radial-gradient(44% 48% at 12% 14%, rgb(99 102 241 / 80%), transparent 78%),
+		radial-gradient(38% 42% at 84% 10%, rgb(217 113 180 / 65%), transparent 78%),
+		radial-gradient(48% 52% at 70% 92%, rgb(227 154 94 / 55%), transparent 78%),
+		radial-gradient(32% 38% at 30% 62%, rgb(140 110 230 / 45%), transparent 80%);
+	--gradient-tide:
+		radial-gradient(44% 48% at 16% 12%, rgb(52 160 184 / 75%), transparent 78%),
+		radial-gradient(38% 42% at 88% 18%, rgb(58 110 200 / 65%), transparent 78%),
+		radial-gradient(48% 52% at 52% 94%, rgb(96 200 186 / 55%), transparent 78%),
+		radial-gradient(32% 38% at 20% 70%, rgb(70 130 210 / 45%), transparent 80%);
+	--gradient-ember:
+		radial-gradient(44% 48% at 14% 12%, rgb(227 122 82 / 72%), transparent 78%),
+		radial-gradient(38% 42% at 86% 14%, rgb(227 110 114 / 62%), transparent 78%),
+		radial-gradient(48% 52% at 58% 92%, rgb(150 100 220 / 55%), transparent 78%),
+		radial-gradient(32% 38% at 26% 66%, rgb(220 140 90 / 45%), transparent 80%);
+
+	/*
+	 * The blur is what makes the pools read as one liquid field; without it
+	 * they are legible circles. Tuned so half the blur radius still fits
+	 * inside the 35% bleed of `gradient-*` below, otherwise the pools fade
+	 * out at the box edge. Override per surface with `--gradient-blur`.
+	 */
+	--gradient-blur: 90px;
+	--gradient-base: #0e0e14;
+
+	/*
+	 * Grain. feTurbulence renders near flat on its own, so feComponentTransfer
+	 * expands the contrast threefold around the 0.5 mean of `turbulence`, which
+	 * is what makes it a dither instead of a haze. alpha is forced to 1: the
+	 * turbulence alpha channel is noise too, and leaving it random halves the
+	 * amplitude and makes it uneven.
+	 */
+	--noise-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='turbulence' baseFrequency='.7' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='3' intercept='-1'/%3E%3CfeFuncG type='linear' slope='3' intercept='-1'/%3E%3CfeFuncB type='linear' slope='3' intercept='-1'/%3E%3CfeFuncA type='linear' slope='0' intercept='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+	--noise-size: 180px 180px;
+
+	/*
+	 * Grain strength. Named steps live in the theme so `noise-soft` and
+	 * `noise-strong` resolve through `--value(--noise-alpha-*)` below; the
+	 * default is the bare `--noise-alpha` that `noise` reads. At 0.03 the
+	 * grain covers about two output levels, enough to dither banding without
+	 * lifting the blacks.
+	 */
+	--noise-alpha: 0.03;
+	--noise-alpha-soft: 0.015;
+	--noise-alpha-strong: 0.05;
+	--noise-blend: normal;
+}
+
+/*
+ * Aurora presets. The pools are painted on a blurred `::before` rather than as
+ * a background so they can be blurred into each other; `overflow: hidden`
+ * contains the 35% bleed that keeps the blur from fading at the box edge, so a
+ * gradient surface clips its content by design.
+ */
+@utility gradient-* {
+	--gradient-pools: --value(--gradient-*);
+	position: relative;
+	isolation: isolate;
+	overflow: hidden;
+	background-color: var(--gradient-base);
+
+	&::before {
+		position: absolute;
+		inset: -35%;
+		z-index: -1;
+		filter: blur(var(--gradient-blur)) saturate(1.1);
+		content: "";
+		background-image: var(--gradient-pools);
+	}
+}
+
+@utility noise {
+	position: relative;
+
+	&::after {
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		pointer-events: none;
+		content: "";
+		opacity: var(--noise-alpha);
+		background-image: var(--noise-image);
+		background-size: var(--noise-size);
+		mix-blend-mode: var(--noise-blend);
+	}
+}
+
+/*
+ * Grain strength for a single element: `noise-soft`, `noise-strong`,
+ * `noise-3%` or `noise-[0.03]`. Standalone, so `noise-soft` already paints;
+ * the overlay is repeated rather than shared because a custom utility cannot
+ * extend another one. A bare `noise-0.03` is not a valid candidate, hence the
+ * percentage and bracketed forms.
+ */
+@utility noise-* {
+	--noise-alpha: --value(--noise-alpha-*, number, percentage, [number], [percentage]);
+	position: relative;
+
+	&::after {
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		pointer-events: none;
+		content: "";
+		opacity: var(--noise-alpha);
+		background-image: var(--noise-image);
+		background-size: var(--noise-size);
+		mix-blend-mode: var(--noise-blend);
+	}
+}

@@ -1,9 +1,5 @@
-import { Button } from "@base-ui/react/button";
-import { Field } from "@base-ui/react/field";
-import { Select } from "@base-ui/react/select";
 import type { SiteId } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import {
 	useInfiniteQuery,
 	useMutation,
@@ -11,6 +7,17 @@ import {
 } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { listAssets, uploadAsset } from "../../server/assets.functions";
+import { Alert } from "../ui/alert";
+import { Button } from "../ui/button";
+import { FieldLabel, FieldMessage, FieldRoot } from "../ui/field";
+import { FileInput } from "../ui/file-input";
+import {
+	SelectItem,
+	SelectPanel,
+	SelectRoot,
+	SelectTrigger,
+	SelectValue,
+} from "../ui/select";
 import { ImageThumbnail } from "./display";
 
 export function ImageField({
@@ -53,69 +60,53 @@ export function ImageField({
 			await cache.invalidateQueries({ queryKey: ["assets", site, "images"] });
 		},
 	});
+
 	return (
-		<Field.Root name="imageId" className="grid gap-2">
-			<Field.Label>{label}</Field.Label>
-			<Select.Root
+		<FieldRoot name="imageId">
+			<FieldLabel>{label}</FieldLabel>
+			<SelectRoot
 				value={value ?? ""}
-				onValueChange={(value) => onChange(value || null)}
+				onValueChange={(next) =>
+					onChange(typeof next === "string" && next.length > 0 ? next : null)
+				}
 				required={!nullable}
 			>
-				<Select.Trigger className="flex items-center gap-3 rounded-lg border border-white/20 p-3 text-left">
+				<SelectTrigger>
 					<ImageThumbnail site={site} id={value} />
-					<Select.Value>{value || m.studio_select_record()}</Select.Value>
-				</Select.Trigger>
-				<Select.Portal>
-					<Select.Positioner className="z-80">
-						<Select.Popup className="max-h-80 max-w-lg overflow-y-auto rounded-lg border border-white/20 bg-zinc-900 p-2 text-white">
-							{nullable && (
-								<Select.Item
-									value=""
-									className="rounded p-2 data-highlighted:bg-white/10"
-								>
-									<Select.ItemText>{m.studio_no_selection()}</Select.ItemText>
-								</Select.Item>
-							)}
-							{images.map((image) => (
-								<Select.Item
-									key={image.id}
-									value={image.id}
-									className="flex items-center gap-3 rounded p-2 data-highlighted:bg-white/10"
-								>
-									<ImageThumbnail site={site} id={image.id} />
-									<Select.ItemText>{image.id}</Select.ItemText>
-								</Select.Item>
-							))}
-							{query.isPending && <p role="status">{m.loading()}</p>}
-							<FormFeedback error={query.isError ? m.error_generic() : null} />
-							{query.hasNextPage && (
-								<Button
-									type="button"
-									className="button"
-									disabled={query.isFetchingNextPage}
-									onClick={() => void query.fetchNextPage()}
-								>
-									{m.load_more()}
-								</Button>
-							)}
-						</Select.Popup>
-					</Select.Positioner>
-				</Select.Portal>
-			</Select.Root>
-			<label className="image-upload-control">
-				<span>{m.studio_upload_image_here()}</span>
-				<input
-					type="file"
-					accept="image/jpeg,image/png"
-					disabled={creation.isPending}
-					onChange={(event) => {
-						const file = event.target.files?.[0];
-						if (file) creation.mutate(file);
-						event.target.value = "";
-					}}
-				/>
-			</label>
-			<FormFeedback error={creation.isError ? m.error_generic() : null} />
-		</Field.Root>
+					<SelectValue>{value || m.studio_select_record()}</SelectValue>
+				</SelectTrigger>
+				<SelectPanel>
+					{nullable && <SelectItem value="" label={m.studio_no_selection()} />}
+					{images.map((image) => (
+						<SelectItem
+							key={image.id}
+							value={image.id}
+							label={image.id}
+							prefix={<ImageThumbnail site={site} id={image.id} />}
+						/>
+					))}
+					{query.isPending && <p role="status">{m.loading()}</p>}
+					<Alert tone="error">{query.isError ? m.error_generic() : null}</Alert>
+					{query.hasNextPage && (
+						<Button
+							type="button"
+							size="sm"
+							disabled={query.isFetchingNextPage}
+							onClick={() => void query.fetchNextPage()}
+						>
+							{m.load_more()}
+						</Button>
+					)}
+				</SelectPanel>
+			</SelectRoot>
+			<FileInput
+				label={m.studio_upload_image_here()}
+				accept="image/jpeg,image/png"
+				disabled={creation.isPending}
+				onSelect={(file) => creation.mutate(file)}
+			/>
+			<Alert tone="error">{creation.isError ? m.error_generic() : null}</Alert>
+			<FieldMessage />
+		</FieldRoot>
 	);
 }

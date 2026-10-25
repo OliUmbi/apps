@@ -1,12 +1,15 @@
-import { Button } from "@base-ui/react/button";
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { loginToStudio } from "../server/session.functions";
-import { InputField } from "./input-field";
+import { Alert } from "./ui/alert";
+import { Button } from "./ui/button";
+import { GradientPanel } from "./ui/gradient-panel";
+import { Split } from "./ui/split";
+import { Title } from "./ui/text";
+import { TextField } from "./ui/text-field";
 
 export function LoginView() {
 	const router = useRouter();
@@ -16,54 +19,51 @@ export function LoginView() {
 		onSuccess: () => router.invalidate(),
 	});
 	return (
-		<main className="login-page">
-			<section className="relative w-[min(100%,390px)] rounded-xl border border-border bg-[rgb(21_21_24/92%)] shadow-[0_30px_90px_rgb(0_0_0/45%),inset_0_1px_rgb(255_255_255/4%)]">
-				<div className="flex items-center gap-2.5 border-b border-border-soft px-5 py-[17px] text-sm font-semibold">
-					<span className="brand-mark large">O</span>
-					{m.studio_brand()}
-				</div>
-				<div className="login-body">
-					<p className="page-kicker">{m.studio_login_eyebrow()}</p>
-					<h1>{m.studio_login_title()}</h1>
-					<p>{m.studio_login_description()}</p>
-				</div>
-				<Form
-					className="grid gap-5 px-7 pt-6 pb-7"
-					onSubmit={(event) => {
-						event.preventDefault();
-						if (mutation.isPending) return;
-						const form = new FormData(event.currentTarget);
-						mutation.mutate({
-							data: {
-								username: String(form.get("username")),
-								password: String(form.get("password")),
-							},
-						});
-					}}
-				>
-					<InputField
+		<Split
+			scenery={
+				<GradientPanel preset="tide">
+					<Title size="sm">{m.studio_brand()}</Title>
+				</GradientPanel>
+			}
+		>
+			<Form
+				className="flex w-full max-w-sm flex-col justify-between gap-8 px-4 py-8"
+				onSubmit={(event) => {
+					event.preventDefault();
+					if (mutation.isPending) return;
+					const form = new FormData(event.currentTarget);
+					mutation.mutate({
+						data: {
+							username: String(form.get("username")),
+							password: String(form.get("password")),
+						},
+					});
+				}}
+			>
+				<div className="flex flex-col gap-6">
+					<TextField
 						name="username"
 						label={m.username()}
 						autoComplete="username"
 						required
 					/>
-					<InputField
+					<TextField
 						name="password"
 						label={m.password()}
 						type="password"
 						autoComplete="current-password"
 						required
 					/>
-					<FormFeedback error={mutation.isError ? m.error_generic() : null} />
-					<Button
-						className="button primary"
-						type="submit"
-						disabled={mutation.isPending}
-					>
+				</div>
+				<div className="flex flex-col gap-4">
+					<Button variant="primary" type="submit" disabled={mutation.isPending}>
 						{mutation.isPending ? m.loading() : m.studio_login()}
 					</Button>
-				</Form>
-			</section>
-		</main>
+					<Alert tone="error">
+						{mutation.isError ? m.error_generic() : null}
+					</Alert>
+				</div>
+			</Form>
+		</Split>
 	);
 }

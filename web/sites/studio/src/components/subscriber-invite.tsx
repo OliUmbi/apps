@@ -1,4 +1,4 @@
-import { Button } from "@base-ui/react/button";
+import { Button } from "./ui/button";
 import { Form } from "@base-ui/react/form";
 import { emailSchema } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
@@ -43,7 +43,7 @@ export function SubscriberInvite() {
 			</p>
 			<Button
 				type="submit"
-				className="button primary"
+				variant="primary"
 				disabled={mutation.isPending}
 			>
 				{m.studio_subscriber_invite()}

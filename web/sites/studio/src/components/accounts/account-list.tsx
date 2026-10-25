@@ -1,4 +1,7 @@
-import { Button } from "@base-ui/react/button";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { PageHeader } from "../ui/page-header";
+import { Body, Title } from "../ui/text";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useQuery } from "@tanstack/react-query";
@@ -17,16 +20,16 @@ export function AccountList({
 	const query = useQuery({ queryKey: ["accounts"], queryFn: () => list() });
 	return (
 		<div className="grid gap-[22px]">
-			<header className="page-heading">
-				<div>
-					<p className="page-kicker">{m.studio_system()}</p>
-					<h1>{m.studio_accounts()}</h1>
-					<p>{m.studio_accounts_description()}</p>
-				</div>
-				<Button className="button primary" onClick={onCreate}>
-					<Plus size={16} /> {m.create()}
-				</Button>
-			</header>
+			<PageHeader
+				kicker={m.studio_system()}
+				title={m.studio_accounts()}
+				description={m.studio_accounts_description()}
+				actions={
+					<Button variant="primary" onClick={onCreate}>
+						<Plus size={16} /> {m.create()}
+					</Button>
+				}
+			/>
 			<FormFeedback error={query.isError ? m.error_generic() : null} />
 			{query.isPending && <p role="status">{m.loading()}</p>}
 			{query.isSuccess && query.data.length === 0 && <p>{m.empty()}</p>}
@@ -41,19 +44,17 @@ export function AccountList({
 						<div className="account-avatar">
 							{account.name.slice(0, 1).toUpperCase()}
 						</div>
-						<div className="account-body">
-							<h2>{account.name}</h2>
-							<p>{account.email}</p>
+						<div className="grid gap-1">
+							<Title as="h2" size="sm">
+								{account.name}
+							</Title>
+							<Body>{account.email}</Body>
 						</div>
-						<span
-							className={
-								account.enabled ? "status-pill" : "status-pill failure"
-							}
-						>
+						<Badge tone={account.enabled ? "neutral" : "danger"}>
 							{account.enabled
 								? m.studio_account_enabled()
 								: m.studio_account_disabled()}
-						</span>
+						</Badge>
 						<ArrowUpRight size={18} aria-hidden="true" />
 					</button>
 				))}

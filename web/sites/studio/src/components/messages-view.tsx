@@ -1,4 +1,5 @@
-import { Button } from "@base-ui/react/button";
+import { Button } from "./ui/button";
+import { PageHeader } from "./ui/page-header";
 import { limits } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
@@ -30,12 +31,7 @@ export function MessagesView() {
 	const messages = query.data?.pages.flatMap((page) => page.items) ?? [];
 	return (
 		<div className="grid gap-[22px]">
-			<header className="page-heading">
-				<div>
-					<p className="page-kicker">SYSTEM / DELIVERY</p>
-					<h1>{m.studio_messages()}</h1>
-				</div>
-			</header>
+			<PageHeader kicker="SYSTEM / DELIVERY" title={m.studio_messages()} />
 			<MessageFilters filter={filter} onChange={setFilter} />
 			<FormFeedback error={query.isError ? m.error_generic() : null} />
 			{query.isPending && <p>{m.loading()}</p>}
@@ -43,7 +39,7 @@ export function MessagesView() {
 			{messages.length === 0 && query.isSuccess && <p>{m.empty()}</p>}
 			{query.hasNextPage && (
 				<Button
-					className="button"
+					variant="secondary"
 					disabled={query.isFetchingNextPage}
 					onClick={() => void query.fetchNextPage()}
 				>

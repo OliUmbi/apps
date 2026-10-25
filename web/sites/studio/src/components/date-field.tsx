@@ -1,18 +1,17 @@
-import { Popover } from "@base-ui/react/popover";
 import { m } from "@oliumbi/i18n/messages";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { CalendarDays } from "lucide-react";
 import { useId } from "react";
-import { DayPicker } from "react-day-picker";
-import "react-day-picker/style.css";
-import { Field } from "@base-ui/react/field";
 import {
 	changeDateInputDay,
 	changeDateInputTime,
 	parseDateInput,
 } from "../model/date-input";
 import { studioTimeZone } from "../model/dates";
+import { Calendar } from "./ui/calendar";
+import { FieldInput, FieldLabel, FieldMessage, FieldRoot } from "./ui/field";
+import { PopoverPanel, PopoverRoot, PopoverTrigger } from "./ui/popover";
 
 export function DateField({
 	name,
@@ -30,6 +29,7 @@ export function DateField({
 	onChange: (value: string | null) => void;
 }) {
 	const controlId = useId();
+	const timeId = useId();
 	const selected = parseDateInput(value, includeTime);
 	const displayLabel = selected
 		? format(selected, includeTime ? "dd. MMMM yyyy, HH:mm" : "dd. MMMM yyyy", {
@@ -51,43 +51,42 @@ export function DateField({
 	};
 
 	return (
-		<Field.Root name={name} className="grid gap-2 text-sm">
-			<Field.Label htmlFor={controlId} className="font-medium">
-				{label}
-			</Field.Label>
-			<div className={includeTime ? "date-control has-time" : "date-control"}>
-				<Popover.Root>
-					<Popover.Trigger id={controlId} className="date-trigger">
-						<CalendarDays size={17} />
-						<span>{displayLabel}</span>
-					</Popover.Trigger>
-					<Popover.Portal>
-						<Popover.Positioner sideOffset={8} className="z-80">
-							<Popover.Popup className="calendar-popup">
-								<DayPicker
-									mode="single"
-									timeZone={studioTimeZone}
-									selected={selected}
-									defaultMonth={selected}
-									onSelect={selectDate}
-									locale={de}
-									showOutsideDays
-								/>
-							</Popover.Popup>
-						</Popover.Positioner>
-					</Popover.Portal>
-				</Popover.Root>
+		<FieldRoot name={name}>
+			<div className="flex items-start gap-4 max-md:flex-col">
+				<div className="grid flex-1 gap-1.5">
+					<FieldLabel htmlFor={controlId}>{label}</FieldLabel>
+					<PopoverRoot>
+						<PopoverTrigger id={controlId}>
+							<CalendarDays size={17} aria-hidden="true" />
+							<span className="truncate">{displayLabel}</span>
+						</PopoverTrigger>
+						<PopoverPanel>
+							<Calendar
+								mode="single"
+								timeZone={studioTimeZone}
+								selected={selected}
+								defaultMonth={selected}
+								onSelect={selectDate}
+								locale={de}
+								showOutsideDays
+							/>
+						</PopoverPanel>
+					</PopoverRoot>
+				</div>
 				{includeTime && (
-					<label className="time-control">
-						<span>{m.studio_time()}</span>
-						<input
+					<div className="grid flex-none gap-1.5">
+						<FieldLabel htmlFor={timeId}>{m.studio_time()}</FieldLabel>
+						<FieldInput
+							id={timeId}
 							type="time"
+							className="w-32"
 							value={selected ? format(selected, "HH:mm") : "09:00"}
 							onChange={(event) => selectTime(event.target.value)}
 						/>
-					</label>
+					</div>
 				)}
 			</div>
-		</Field.Root>
+			<FieldMessage />
+		</FieldRoot>
 	);
 }

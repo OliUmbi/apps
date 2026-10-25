@@ -1,4 +1,4 @@
-import { Button } from "@base-ui/react/button";
+import { Button } from "../ui/button";
 import type { AssetDocument, AssetImage } from "@oliumbi/assets";
 import type { SiteId } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
@@ -47,13 +47,13 @@ export function AssetCard({
 			</div>
 			<div className="flex gap-2">
 				<Button
-					className="button"
+					variant="secondary"
 					disabled={visibilityPending}
 					onClick={onToggleVisibility}
 				>
 					{asset.visible ? m.studio_asset_hide() : m.publish()}
 				</Button>
-				<Button className="button danger" onClick={onDelete}>
+				<Button variant="danger" onClick={onDelete}>
 					{m.delete_record()}
 				</Button>
 			</div>

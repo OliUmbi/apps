@@ -30,9 +30,9 @@ For local execution, build first and run the application's main class in the IDE
 or its packaged JAR, for example java -jar identity/target/identity-0.1.0.jar.
 Each service reads Spring configuration from `src/main/resources/application.yaml`.
 Supply the referenced environment variables through your shell or IDE run
-configuration. An IDE environment-file loader can use
-`infrastructure/.env.development`, which contains local-only defaults. The
-applications do not read that file themselves and do not implement
+configuration. An IDE environment-file loader can use the root `.env`
+(copied from `infrastructure/.env.dev`), which contains local-only defaults.
+The applications do not read that file themselves and do not implement
 `APP_ENV_FILE`.
 
 Import services/pom.xml as the Maven project in IntelliJ so all modules are linked.
@@ -41,7 +41,7 @@ that every module compiles and packages its test classpath correctly.
 
 ## Containers
 
-Run `docker compose -f infrastructure/compose.dev.yaml --env-file infrastructure/.env.development up -d --build identity messaging assets`
+Run `docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d --build identity messaging assets`
 from the repository root. Compose forwards the variables declared in each service's
 `environment` section; `--env-file` alone does not pass every variable to a container.
 All three Dockerfiles use services as their build context and build the selected

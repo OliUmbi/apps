@@ -1,11 +1,16 @@
 import { Button } from "@base-ui/react/button";
 import { m } from "@oliumbi/i18n/messages";
-import { ArrowLeft, Mail, Users } from "lucide-react";
+import { ArrowLeft, Mail, Users, type LucideIcon } from "lucide-react";
+import { Nav, NavItem } from "./ui/nav";
 
-const administrationSections = [
+const administrationSections: {
+	id: string;
+	label: () => string;
+	icon: LucideIcon;
+}[] = [
 	{ id: "accounts", label: m.studio_accounts, icon: Users },
 	{ id: "messages", label: m.studio_messages, icon: Mail },
-] as const;
+];
 
 export function AdministrationNavigation({
 	section,
@@ -18,31 +23,27 @@ export function AdministrationNavigation({
 }) {
 	return (
 		<>
-			<Button className="workspace-switch" onClick={onLeave}>
-				<ArrowLeft size={15} aria-hidden="true" />
-				{m.studio_websites()}
-			</Button>
-			<nav aria-label={m.studio_administration()} className="p-[9px]">
-				<p className="px-2 pt-2 pb-1.5 text-xs font-semibold tracking-[0.08em] uppercase text-muted">
-					{m.studio_administration()}
-				</p>
+			<div className="p-2">
+				<Button className="w-full justify-start" onClick={onLeave}>
+					<ArrowLeft size={15} aria-hidden="true" />
+					{m.studio_websites()}
+				</Button>
+			</div>
+			<Nav label={m.studio_administration()}>
 				{administrationSections.map((item) => {
 					const Icon = item.icon;
 					return (
-						<Button
+						<NavItem
 							key={item.id}
-							className={
-								item.id === section ? "nav-item is-active" : "nav-item"
-							}
+							icon={Icon}
+							active={item.id === section}
 							onClick={() => onSelect(item.id)}
-							aria-current={item.id === section ? "page" : undefined}
 						>
-							<Icon size={15} strokeWidth={1.7} aria-hidden="true" />
 							{item.label()}
-						</Button>
+						</NavItem>
 					);
 				})}
-			</nav>
+			</Nav>
 		</>
 	);
 }

@@ -1,4 +1,5 @@
-import { Button } from "@base-ui/react/button";
+import { Button } from "../ui/button";
+import { Panel } from "../ui/panel";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useQuery } from "@tanstack/react-query";
@@ -22,18 +23,19 @@ export function MessageDetail({
 	});
 	return (
 		<div className="grid gap-[22px] w-full">
-			<Button className="workspace-back" onClick={onClose}>
+			<Button variant="ghost" onClick={onClose}>
 				<ArrowLeft size={15} aria-hidden="true" />
 				{m.studio_messages()}
 			</Button>
-			<section className="overflow-hidden rounded-[7px] border border-border bg-surface">
-				<header className="editor-heading">
-					<div>
-						<p className="page-kicker">{m.studio_delivery_attempts()}</p>
-						<h2>{query.data?.message.subject ?? m.message()}</h2>
-					</div>
-					{query.data && <MessageStatus status={query.data.message.status} />}
-				</header>
+			<Panel
+				title={query.data?.message.subject ?? m.message()}
+				description={m.studio_delivery_attempts()}
+				aside={
+					query.data ? (
+						<MessageStatus status={query.data.message.status} />
+					) : null
+				}
+			>
 				{query.isPending && <p role="status">{m.loading()}</p>}
 				<FormFeedback error={query.isError ? m.error_generic() : null} />
 				<ol className="attempt-list">
@@ -52,7 +54,7 @@ export function MessageDetail({
 						</li>
 					))}
 				</ol>
-			</section>
+			</Panel>
 		</div>
 	);
 }

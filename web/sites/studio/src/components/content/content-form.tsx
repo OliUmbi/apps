@@ -1,9 +1,9 @@
-import { Button } from "@base-ui/react/button";
-import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { type ReactNode, useState } from "react";
 import type { z } from "zod";
+import { Alert } from "../ui/alert";
+import { Button } from "../ui/button";
+import { Form, FormActions, FormFields } from "../ui/form";
 
 export interface EditorFieldsProps<Input> {
 	values: Input;
@@ -39,15 +39,18 @@ export function ContentForm<Row, Input>({
 	);
 	const [validation, setValidation] = useState("");
 	const [edited, setEdited] = useState(false);
+
 	const onChange: EditorFieldsProps<Input>["onChange"] = (name, value) => {
 		setValues((previous) => ({ ...previous, [name]: value }));
 		setEdited(true);
 		setValidation("");
 	};
 
+	const failure = validation || (error ? m.error_generic() : null);
+	const message = failure || (saved && !edited ? m.studio_content_saved() : null);
+
 	return (
 		<Form
-			className="grid gap-6 px-4 py-[26px]"
 			onSubmit={(event) => {
 				event.preventDefault();
 				if (pending) return;
@@ -62,29 +65,18 @@ export function ContentForm<Row, Input>({
 				onSave(result.data);
 			}}
 		>
-			<fieldset
-				disabled={pending}
-				className="grid grid-cols-2 gap-[22px] max-[767px]:grid-cols-1"
-			>
+			<FormFields disabled={pending}>
 				{editor.renderFields({ values, onChange })}
-			</fieldset>
-			<FormFeedback
-				error={validation || (error ? m.error_generic() : null)}
-				success={saved && !edited ? m.studio_content_saved() : null}
-			/>
-			<footer className="flex justify-end gap-2.5 border-t border-border-soft pt-5">
-				<Button
-					type="button"
-					className="button"
-					disabled={pending}
-					onClick={onClose}
-				>
-					{m.cancel()}
-				</Button>
-				<Button type="submit" className="button primary" disabled={pending}>
+			</FormFields>
+			<FormActions>
+				<Alert tone={failure ? "error" : "success"}>{message}</Alert>
+				<Button type="submit" variant="primary" disabled={pending}>
 					{pending ? m.saving() : m.save()}
 				</Button>
-			</footer>
+				<Button type="button" disabled={pending} onClick={onClose}>
+					{m.cancel()}
+				</Button>
+			</FormActions>
 		</Form>
 	);
 }

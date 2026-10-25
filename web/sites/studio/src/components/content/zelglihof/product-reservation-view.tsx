@@ -12,8 +12,9 @@ import {
 	listProductReservations,
 	updateProductReservation,
 } from "../../../server/content/zelglihof/product-reservation.functions";
+import { RecordField, RecordFields } from "../../ui/record-fields";
 import type { EditorFieldsProps } from "../content-form";
-import { DetailItem, displayStatus } from "../display";
+import { displayStatus } from "../display";
 import { StatusField } from "../editor-controls";
 import { InlineCollectionView } from "../inline-collection-view";
 import { RoutedCollectionView } from "../routed-collection-view";
@@ -74,32 +75,36 @@ export function ProductReservationsView({
 				},
 			]}
 			renderActions={(record) => (
-				<dl className="record-fields">
-					<DetailItem label={m.product()}>{record.productId}</DetailItem>
-					<DetailItem label={m.product_variant()}>
-						{record.productVariantId}
-					</DetailItem>
-					<DetailItem label={m.studio_field_product_name()}>
+				<RecordFields>
+					<RecordField label={m.product()}>
+						{record.productId ?? "—"}
+					</RecordField>
+					<RecordField label={m.product_variant()}>
+						{record.productVariantId ?? "—"}
+					</RecordField>
+					<RecordField label={m.studio_field_product_name()}>
 						{record.productName}
-					</DetailItem>
-					<DetailItem label={m.studio_field_variant_name()}>
+					</RecordField>
+					<RecordField label={m.studio_field_variant_name()}>
 						{record.variantName}
-					</DetailItem>
-					<DetailItem label={m.studio_field_variant_description()}>
-						{record.variantDescription}
-					</DetailItem>
-					<DetailItem label={m.studio_field_variant_quantity()}>
-						{record.variantQuantity}
-					</DetailItem>
-					<DetailItem label={m.studio_field_variant_price()}>
+					</RecordField>
+					<RecordField label={m.studio_field_variant_description()}>
+						{record.variantDescription ?? "—"}
+					</RecordField>
+					<RecordField label={m.studio_field_variant_quantity()}>
+						{record.variantQuantity ?? "—"}
+					</RecordField>
+					<RecordField label={m.studio_field_variant_price()}>
 						{record.variantPrice}
-					</DetailItem>
-					<DetailItem label={m.name()}>{record.name}</DetailItem>
-					<DetailItem label={m.phone()}>{record.phone}</DetailItem>
-					<DetailItem label={m.email()}>{record.email}</DetailItem>
-					<DetailItem label={m.quantity()}>{record.quantity}</DetailItem>
-					<DetailItem label={m.studio_field_note()}>{record.note}</DetailItem>
-				</dl>
+					</RecordField>
+					<RecordField label={m.name()}>{record.name}</RecordField>
+					<RecordField label={m.phone()}>{record.phone}</RecordField>
+					<RecordField label={m.email()}>{record.email ?? "—"}</RecordField>
+					<RecordField label={m.quantity()}>{record.quantity}</RecordField>
+					<RecordField label={m.studio_field_note()}>
+						{record.note ?? "—"}
+					</RecordField>
+				</RecordFields>
 			)}
 		/>
 	);

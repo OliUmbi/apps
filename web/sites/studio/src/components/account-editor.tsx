@@ -1,4 +1,6 @@
-import { Button } from "@base-ui/react/button";
+import { Button } from "./ui/button";
+import { DangerZone } from "./ui/danger-zone";
+import { PageHeader } from "./ui/page-header";
 import { m } from "@oliumbi/i18n/messages";
 import type { Account } from "@oliumbi/identity";
 import { ArrowLeft } from "lucide-react";
@@ -17,30 +19,28 @@ export function AccountEditor({
 }) {
 	return (
 		<div className="grid gap-[22px] w-full">
-			<Button className="workspace-back" onClick={onClose}>
+			<Button variant="ghost" onClick={onClose}>
 				<ArrowLeft size={16} /> {m.studio_back_to_accounts()}
 			</Button>
-			<header className="page-heading">
-				<div>
-					<p className="page-kicker">{m.studio_account_workspace()}</p>
-					<h1>{account.name}</h1>
-					<p>{m.studio_account_settings()}</p>
-				</div>
-			</header>
+			<PageHeader
+				kicker={m.studio_account_workspace()}
+				title={account.name}
+				description={m.studio_account_settings()}
+			/>
 			<div className="grid grid-cols-2 gap-4 items-start max-[760px]:grid-cols-1">
 				<AccountDetailsForm account={account} />
 				<AccountPermissions accountId={account.id} />
 				<AccountPasswordForm accountId={account.id} />
 			</div>
-			<section className="record-danger-zone">
-				<div>
-					<strong>{m.delete_record()}</strong>
-					<p>{m.confirm_delete_description()}</p>
-				</div>
-				<Button className="button danger" onClick={onDelete}>
-					{m.delete_record()}
-				</Button>
-			</section>
+			<DangerZone
+				title={m.delete_record()}
+				description={m.confirm_delete_description()}
+				actions={
+					<Button variant="danger" onClick={onDelete}>
+						{m.delete_record()}
+					</Button>
+				}
+			/>
 		</div>
 	);
 }

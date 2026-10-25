@@ -1,3 +1,4 @@
+import { PageHeader } from "./ui/page-header";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useQuery } from "@tanstack/react-query";
@@ -11,13 +12,11 @@ export function ProfileView() {
 	const profile = useQuery({ queryKey: ["profile"], queryFn: () => get() });
 	return (
 		<div className="grid gap-[22px] w-full">
-			<header className="page-heading">
-				<div>
-					<p className="page-kicker">{m.studio_personal_workspace()}</p>
-					<h1>{m.studio_my_profile()}</h1>
-					<p>{m.studio_profile_description()}</p>
-				</div>
-			</header>
+			<PageHeader
+				kicker={m.studio_personal_workspace()}
+				title={m.studio_my_profile()}
+				description={m.studio_profile_description()}
+			/>
 			{profile.isPending ? <p>{m.loading()}</p> : null}
 			<FormFeedback error={profile.isError ? m.error_generic() : null} />
 			{profile.data ? (

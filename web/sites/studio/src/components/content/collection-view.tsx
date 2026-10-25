@@ -1,4 +1,6 @@
-import { Button } from "@base-ui/react/button";
+import { Button } from "../ui/button";
+import { PageHeader } from "../ui/page-header";
+import { Body, Title } from "../ui/text";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import type { ReactNode } from "react";
@@ -78,25 +80,30 @@ export function CollectionView<Row, Input = never>({
 	const editable =
 		editor &&
 		(creating ? Boolean(create) : record && update && canEdit(record));
+	const actions = inWorkspace ? (
+		<Button variant="secondary" disabled={save.isPending} onClick={close}>
+			{m.studio_back_to_collection()}
+		</Button>
+	) : (
+		create && (
+			<Button variant="primary" onClick={startCreate}>
+				{m.create()}
+			</Button>
+		)
+	);
 
 	return (
-		<section
-			className={inline ? "related-panel grid gap-[22px]" : "grid gap-[22px]"}
-		>
-			<header className="page-heading">
-				{inline ? <h3>{title}</h3> : <h1>{title}</h1>}
-				{inWorkspace ? (
-					<Button className="button" disabled={save.isPending} onClick={close}>
-						{m.studio_back_to_collection()}
-					</Button>
-				) : (
-					create && (
-						<Button className="button primary" onClick={startCreate}>
-							{m.create()}
-						</Button>
-					)
-				)}
-			</header>
+		<section className="grid gap-[22px]">
+			{inline ? (
+				<header className="flex items-center justify-between gap-4">
+					<Title as="h3" size="sm">
+						{title}
+					</Title>
+					<div className="flex flex-wrap gap-2">{actions}</div>
+				</header>
+			) : (
+				<PageHeader title={title} actions={actions} />
+			)}
 			{inWorkspace ? (
 				<>
 					{loadingRecord && <p role="status">{m.loading()}</p>}
@@ -124,10 +131,10 @@ export function CollectionView<Row, Input = never>({
 						<>
 							{renderActions?.(record)}
 							{renderRelated?.(record)}
-							<div className="record-danger-zone">
-								<p>{m.confirm_delete_description()}</p>
+							<div className="flex items-center justify-between gap-6 pt-5">
+								<Body>{m.confirm_delete_description()}</Body>
 								<Button
-									className="button danger"
+									variant="danger"
 									disabled={save.isPending}
 									onClick={() => requestDelete(record)}
 								>

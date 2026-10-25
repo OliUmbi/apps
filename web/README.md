@@ -61,21 +61,21 @@ Data packages use `<feature>.<role>.ts`, such as `donation.repository.ts` and `r
 
 Use the pinned pnpm version from `package.json`. Install from `web` with `pnpm install --frozen-lockfile`. Apply the repository's database migrations before running the applications. Supply `DATABASE_URL` without a username plus the site's `*_DATABASE_PASSWORD`, or supply that site's role and password in the URL. Never use the migrator's credentials for a web application.
 
-The checked-in `infrastructure/.env.development` contains development-only defaults. All four Vite development servers load it automatically, regardless of which site you start. Existing root `.env` values remain a fallback; `infrastructure/.env.development` overrides them. Site-local files override shared values, and shell/IDE environment variables override both. Only `VITE_` variables are exposed to browser code. Restart the dev process after changing environment files, and never reuse the development credentials in a deployed environment.
+Copy `infrastructure/.env.dev` to the repository root as `.env` (gitignored); it contains development-only defaults. All four Vite development servers load the root `.env` automatically, regardless of which site you start. Site-local files override root values, and shell/IDE environment variables override both. Only `VITE_` variables are exposed to browser code. Restart the dev process after changing environment files, and never reuse the development credentials in a deployed environment.
 
 To run a built Studio locally, execute this from `web/`:
 
 ```text
-node --env-file=../infrastructure/.env.development sites/studio/.output/server/index.mjs
+node --env-file=../.env sites/studio/.output/server/index.mjs
 ```
 
-Replace `studio` with another site name as needed. Node loads the shared development file, with shell variables taking precedence; Vite-specific site overrides do not apply. The regular `pnpm --filter studio start` command expects environment variables to be supplied externally. Production builds do not load `.env.development`.
+Replace `studio` with another site name as needed. Node loads the root `.env`, with shell variables taking precedence; Vite-specific site overrides do not apply. The regular `pnpm --filter studio start` command expects environment variables to be supplied externally. Production builds do not load `.env`.
 
-Java does not load `.env.development` automatically and does not implement `APP_ENV_FILE`. Supply variables through the shell or the IDE run configuration, including an IDE environment-file loader if available. See [Java development](../services/README.md#build) for the supported setup.
+Java does not load `.env` automatically and does not implement `APP_ENV_FILE`. Supply variables through the shell or the IDE run configuration, including an IDE environment-file loader if available. See [Java development](../services/README.md#build) for the supported setup.
 
-Use `docker compose -f infrastructure/compose.dev.yaml --env-file infrastructure/.env.development up -d --build` from the repository root to share these values with containers. Compose sets container-network hostnames separately. For native application development, start only infrastructure with `docker compose -f infrastructure/compose.dev.yaml --env-file infrastructure/.env.development up -d postgres flyway mailpit`, then launch Java and the desired web apps locally.
+Use `docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d --build` from the repository root to share these values with containers. Compose sets container-network hostnames separately. For native application development, start only infrastructure with `docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d postgres flyway mailpit`, then launch Java and the desired web apps locally.
 
-Local Java uses `SMTP_HOST=localhost` to reach Mailpit on port 1025. Compose uses `SMTP_CONTAINER_HOST=mailpit` inside its network. Database role passwords must match the migrated database; editing the environment file does not change existing PostgreSQL passwords.
+Local Java uses `MESSAGING_SMTP_HOST=localhost` to reach Mailpit on port 1025. Compose uses `MESSAGING_SMTP_CONTAINER_HOST=mailpit` inside its network. Database role passwords must match the migrated database; editing the environment file does not change existing PostgreSQL passwords.
 
 Run `pnpm dev:studio`, `pnpm dev:jublawoma`, `pnpm dev:unclet` or `pnpm dev:zelglihof`. The ports are 8000–8003 respectively.
 

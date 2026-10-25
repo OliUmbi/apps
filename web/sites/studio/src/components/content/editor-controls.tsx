@@ -1,7 +1,16 @@
 import { statusValues } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import type { ComponentProps } from "react";
-import { InputField } from "../input-field";
+import { Checkbox } from "../ui/checkbox";
+import { FieldLabel, FieldMessage, FieldRoot } from "../ui/field";
+import {
+	SelectItem,
+	SelectPanel,
+	SelectRoot,
+	SelectTrigger,
+	SelectValue,
+} from "../ui/select";
+import { TextField } from "../ui/text-field";
 import { displayStatus } from "./display";
 
 export function CheckboxField({
@@ -15,17 +24,7 @@ export function CheckboxField({
 	value: boolean;
 	onChange: (value: boolean) => void;
 }) {
-	return (
-		<label className="flex items-center gap-3">
-			<input
-				type="checkbox"
-				name={name}
-				checked={value}
-				onChange={(event) => onChange(event.target.checked)}
-			/>
-			<span>{label}</span>
-		</label>
-	);
+	return <Checkbox name={name} label={label} checked={value} onChange={onChange} />;
 }
 
 export function NumberField({
@@ -33,13 +32,13 @@ export function NumberField({
 	onChange,
 	nullable = false,
 	...props
-}: Omit<ComponentProps<typeof InputField>, "value" | "onChange" | "type"> & {
+}: Omit<ComponentProps<typeof TextField>, "value" | "onChange" | "type"> & {
 	value: number | null;
 	onChange: (value: number | null) => void;
 	nullable?: boolean;
 }) {
 	return (
-		<InputField
+		<TextField
 			{...props}
 			type="number"
 			value={value === null || Number.isNaN(value) ? "" : value}
@@ -59,25 +58,29 @@ export function StatusField({
 	onChange: (value: (typeof statusValues)[number]) => void;
 }) {
 	return (
-		<label className="grid gap-2">
-			<span>{m.status()}</span>
-			<select
-				name="status"
-				className="rounded-lg border border-white/20 bg-zinc-950 p-3"
+		<FieldRoot>
+			<FieldLabel>{m.status()}</FieldLabel>
+			<SelectRoot
 				value={value}
-				onChange={(event) => {
-					const status = statusValues.find(
-						(candidate) => candidate === event.target.value,
-					);
+				onValueChange={(next) => {
+					const status = statusValues.find((candidate) => candidate === next);
 					if (status) onChange(status);
 				}}
 			>
-				{statusValues.map((status) => (
-					<option key={status} value={status}>
-						{displayStatus(status)}
-					</option>
-				))}
-			</select>
-		</label>
+				<SelectTrigger>
+					<SelectValue>{displayStatus(value)}</SelectValue>
+				</SelectTrigger>
+				<SelectPanel>
+					{statusValues.map((status) => (
+						<SelectItem
+							key={status}
+							value={status}
+							label={displayStatus(status)}
+						/>
+					))}
+				</SelectPanel>
+			</SelectRoot>
+			<FieldMessage />
+		</FieldRoot>
 	);
 }

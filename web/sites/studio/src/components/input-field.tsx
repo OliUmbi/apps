@@ -1,22 +1,5 @@
-import { Field } from "@base-ui/react/field";
-import type { ComponentProps } from "react";
-
-export function InputField({
-	label,
-	name,
-	className,
-	...props
-}: ComponentProps<typeof Field.Control> & { label: string; name: string }) {
-	return (
-		<Field.Root name={name} className="grid gap-2 text-sm">
-			<Field.Label className="font-medium">{label}</Field.Label>
-			<Field.Control
-				{...props}
-				className={(state) =>
-					`w-full rounded-lg border border-white/20 bg-zinc-950 px-3 py-2 focus:outline-2 focus:outline-offset-2 disabled:opacity-50 ${(typeof className === "function" ? className(state) : className) ?? ""}`
-				}
-			/>
-			<Field.Error className="text-danger" />
-		</Field.Root>
-	);
-}
+/*
+ * Deprecated name kept so existing forms keep building while the views are
+ * migrated to `ui/text-field`. Delete this file once nothing imports it.
+ */
+export { TextField as InputField } from "./ui/text-field";

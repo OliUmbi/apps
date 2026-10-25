@@ -99,7 +99,7 @@ domain model, seed data outside production migrations.
 | | development | production |
 | --- | --- | --- |
 | compose | `infrastructure/compose.dev.yaml` | `infrastructure/compose.prod.yaml` |
-| config | `infrastructure/.env.development` (checked in) | `.env` (vault, never committed) |
+| config | root `.env` (gitignored; template `infrastructure/.env.dev`) | `/apps/.env` from the vault (template `infrastructure/.env.prod`) |
 | images | built locally | `ghcr.io/oliumbi/apps-*` pinned by `IMAGE_TAG` |
 | migrations | bind mount, edited in place | baked into `apps-migrate:<tag>` |
 | email | mailpit | real SMTP |

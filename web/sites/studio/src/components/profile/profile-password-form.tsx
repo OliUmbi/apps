@@ -1,4 +1,5 @@
-import { Button } from "@base-ui/react/button";
+import { Button } from "../ui/button";
+import { Panel } from "../ui/panel";
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
 import { FormFeedback } from "@oliumbi/ui/form-feedback";
@@ -33,14 +34,11 @@ export function ProfilePasswordForm() {
 		password.mutate({ data: result.data });
 	}
 	return (
-		<section className="settings-panel">
-			<header>
-				<KeyRound size={19} />
-				<div>
-					<h2>{m.password()}</h2>
-					<p>{m.studio_password_help()}</p>
-				</div>
-			</header>
+		<Panel
+			title={m.password()}
+			description={m.studio_password_help()}
+			icon={KeyRound}
+		>
 			<Form
 				className="grid gap-4"
 				onSubmit={submitPassword}
@@ -67,7 +65,7 @@ export function ProfilePasswordForm() {
 				/>
 				<div className="flex justify-end gap-2 border-t border-border-soft pt-[18px]">
 					<Button
-						className="button"
+						variant="secondary"
 						type="submit"
 						disabled={password.isPending}
 					>
@@ -78,6 +76,6 @@ export function ProfilePasswordForm() {
 					error={validation || (password.isError ? m.error_generic() : null)}
 				/>
 			</Form>
-		</section>
+		</Panel>
 	);
 }

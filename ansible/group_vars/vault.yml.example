@@ -35,11 +35,11 @@ vault_zelglihof_database_password: ""
 vault_studio_database_user: "studio"
 vault_studio_database_password: ""
 
-# ---- mail ----
-vault_smtp_host: ""
-vault_smtp_port: "587"
-vault_smtp_username: ""
-vault_smtp_password: ""
+# ---- mail (messaging only) ----
+vault_messaging_smtp_host: ""
+vault_messaging_smtp_port: "587"
+vault_messaging_smtp_username: ""
+vault_messaging_smtp_password: ""
 
 # ---- sites ----
 # requests: form notifications land here; it is the Reply-To for visitors

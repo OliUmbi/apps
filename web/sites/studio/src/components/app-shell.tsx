@@ -1,11 +1,18 @@
-import { Button } from "@base-ui/react/button";
-import { Dialog } from "@base-ui/react/dialog";
 import { m } from "@oliumbi/i18n/messages";
-import { MenuIcon, UserRound, X } from "lucide-react";
+import { MenuIcon, UserRound } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import type { StudioNavigation, StudioWorkspace } from "../model/navigation";
 import { WorkspaceNavigation } from "./workspace-navigation";
+import { Brand } from "./ui/brand";
+import { Button, IconButton } from "./ui/button";
+import { Drawer, DrawerClose } from "./ui/drawer";
+import { Sidebar, SidebarFooter, SidebarHeader } from "./ui/sidebar";
+import { TopBar } from "./ui/top-bar";
 
+/*
+ * The application frame: navigation rail on the left, context bar and content
+ * on the right. Structure only; every visual detail is a leaf in `ui/`.
+ */
 export function AppShell({
 	workspace,
 	navigation: actions,
@@ -23,72 +30,66 @@ export function AppShell({
 }) {
 	const [open, setOpen] = useState(false);
 	const context = workspaceContext(workspace);
+
 	const navigation = (
 		<>
-			<div className="flex h-14 items-center gap-2.5 border-b border-border-soft px-3.5 text-sm font-semibold">
-				<span className="brand-mark">O</span>
-				{m.studio_name()}
-			</div>
 			<WorkspaceNavigation
 				workspace={workspace}
 				navigation={actions}
 				onNavigate={() => setOpen(false)}
 			/>
-			<div className="account-card m-2 flex items-center gap-[9px] border-t border-border-soft pt-[13px] px-[5px] pb-[5px]">
-				<Button
-					className={`profile-entry ${workspace.area === "profile" ? "is-active" : ""}`}
-					onClick={() => {
-						actions.openProfile();
-						setOpen(false);
-					}}
-				>
-					<UserRound size={16} aria-hidden="true" />
-					<span className="truncate">{actor.displayName}</span>
-				</Button>
-				<Button className="button" onClick={onLogout} disabled={logoutPending}>
-					{m.studio_sign_out()}
-				</Button>
-			</div>
+			<SidebarFooter>
+				<div className="flex items-center gap-1">
+					<Button
+						variant="ghost"
+						className="flex-1 justify-start"
+						onClick={() => {
+							actions.openProfile();
+							setOpen(false);
+						}}
+					>
+						<UserRound size={16} aria-hidden="true" />
+						<span className="truncate">{actor.displayName}</span>
+					</Button>
+					<Button size="sm" onClick={onLogout} disabled={logoutPending}>
+						{m.studio_sign_out()}
+					</Button>
+				</div>
+			</SidebarFooter>
 		</>
 	);
+
 	return (
-		<div
-			className={`grid min-h-screen grid-cols-[244px_minmax(0,1fr)] max-[767px]:block ${workspace.area === "administration" ? "is-administration" : ""}`}
-		>
-			<aside className="sticky top-0 z-30 h-screen flex-col border-r border-border-soft bg-sidebar hidden md:flex">
+		<div className="flex min-h-dvh">
+			<Sidebar>
+				<SidebarHeader>
+					<Brand name={m.studio_name()} />
+				</SidebarHeader>
 				{navigation}
-			</aside>
-			<Dialog.Root open={open} onOpenChange={setOpen}>
-				<Dialog.Trigger
-					className="fixed left-3 top-3 z-40 rounded border border-white/15 bg-zinc-900 p-2 md:hidden"
-					aria-label={m.open_navigation()}
-				>
-					<MenuIcon size={18} aria-hidden="true" />
-				</Dialog.Trigger>
-				<Dialog.Portal>
-					<Dialog.Backdrop className="fixed inset-0 z-50 bg-black/60" />
-					<Dialog.Popup className="fixed inset-y-0 left-0 z-60 flex w-72 flex-col bg-zinc-900 text-white">
-						<Dialog.Title className="sr-only">{m.navigation()}</Dialog.Title>
-						<Dialog.Close
-							className="absolute right-3 top-3"
-							aria-label={m.close()}
+			</Sidebar>
+
+			<Drawer open={open} onOpenChange={setOpen} title={m.navigation()}>
+				<SidebarHeader action={<DrawerClose label={m.close()} />}>
+					<Brand name={m.studio_name()} />
+				</SidebarHeader>
+				{navigation}
+			</Drawer>
+
+			<div className="flex min-w-0 flex-1 flex-col">
+				<TopBar
+					leading={
+						<IconButton
+							label={m.open_navigation()}
+							className="md:hidden"
+							onClick={() => setOpen(true)}
 						>
-							<X size={18} aria-hidden="true" />
-						</Dialog.Close>
-						{navigation}
-					</Dialog.Popup>
-				</Dialog.Portal>
-			</Dialog.Root>
-			<div className="relative min-w-0">
-				<header className="studio-topbar">
-					<div className="workspace-context ml-12 md:ml-0">
-						<small>{context.label}</small>
-						<strong>{context.title}</strong>
-					</div>
-				</header>
-				<main className="mx-auto w-[min(100%_-_48px,1280px)] pt-[38px] pb-16 max-[767px]:w-[min(100%_-_28px,1280px)] max-[767px]:pt-[26px]">
-					{children}
-				</main>
+							<MenuIcon size={18} aria-hidden="true" />
+						</IconButton>
+					}
+					label={context.label}
+					title={context.title}
+				/>
+				<main className="mx-auto w-full max-w-7xl px-6 py-8">{children}</main>
 			</div>
 		</div>
 	);
