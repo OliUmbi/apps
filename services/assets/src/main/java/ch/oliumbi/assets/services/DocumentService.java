@@ -40,6 +40,10 @@ public class DocumentService {
     }
 
     public DocumentResponse create(String site, DocumentCreateRequest request, MultipartFile file) throws IOException {
+        // The multipart size is known before the copy; the streaming cap in storage stays as defense in depth.
+        if (file.getSize() > properties.documentMaxBytes()) {
+            throw new ResponseStatusException(HttpStatus.CONTENT_TOO_LARGE, "Upload exceeds the size limit");
+        }
         var id = UUID.randomUUID();
         try (var upload = storage.stage(id)) {
             var input = storage.upload(upload, file.getInputStream(), properties.documentMaxBytes());
@@ -89,10 +93,10 @@ public class DocumentService {
 
     public void delete(UUID id, String site) {
         deletion.delete(AssetKind.DOCUMENT, id, () -> {
-            var asset = documents.findLockedByIdAndSite(id, site);
-            if (asset.isEmpty()) return false;
-            documents.delete(asset.get());
-            return true;
+            // An unknown id and a row owned by another site both surface as 404, consistent with get().
+            var asset = documents.findLockedByIdAndSite(id, site)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            documents.delete(asset);
         });
     }
 }

@@ -1,6 +1,7 @@
 package ch.oliumbi.assets.services.storage;
 
 import ch.oliumbi.assets.domain.AssetKind;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -10,6 +11,7 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.UUID;
 
+@Slf4j
 final class StorageFiles {
     private final Path root;
 
@@ -60,8 +62,14 @@ final class StorageFiles {
 
         try (var paths = Files.walk(directory)) {
             for (var path : paths.sorted(Comparator.reverseOrder()).toList()) {
-                checkPath(path);
-                Files.deleteIfExists(path);
+                try {
+                    checkPath(path);
+                    Files.deleteIfExists(path);
+                } catch (IOException | RuntimeException exception) {
+                    // A stray symbolic link or an undeletable entry must not abort the rest of the cleanup
+                    // or mask a primary exception when this runs from upload close.
+                    log.warn("Storage cleanup skipped {} ({})", path, exception.getClass().getSimpleName());
+                }
             }
         } catch (IOException exception) {
             throw new UncheckedIOException(exception);

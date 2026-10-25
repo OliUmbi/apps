@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.UUID;
-import java.util.function.BooleanSupplier;
 
 @Slf4j
 @Service
@@ -21,11 +20,9 @@ class AssetDeletionService {
         this.transactions = transactions;
     }
 
-    void delete(AssetKind kind, UUID id, BooleanSupplier deleteMetadata) {
-        var deleted = Boolean.TRUE.equals(transactions.execute(status -> deleteMetadata.getAsBoolean()));
-        if (!deleted) {
-            return;
-        }
+    void delete(AssetKind kind, UUID id, Runnable deleteMetadata) {
+        // The metadata step reports "unknown id or wrong site" by throwing 404 before anything is removed.
+        transactions.executeWithoutResult(status -> deleteMetadata.run());
 
         try {
             storage.delete(kind, id);

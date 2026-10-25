@@ -33,6 +33,9 @@ final class ImageRenditions {
                 rendition = resize(pixels, width, height, size, format, directory);
                 byWidth.put(width, rendition);
             }
+            // Widths that clamp equal share the first size's file (e.g. xl and 2xl rows both point at
+            // xl.jpg for a 1280px image). The aliasing is intentional; regenerating one size later
+            // would need one file per size instead.
             results.add(new ImageRendition(size, format, rendition.width(), rendition.height(), rendition.file()));
         }
         return List.copyOf(results);

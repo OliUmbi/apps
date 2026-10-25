@@ -4,6 +4,7 @@ import ch.oliumbi.assets.domain.ImageFormat;
 import ch.oliumbi.assets.domain.ImageRendition;
 import ch.oliumbi.assets.domain.ImageSize;
 import ch.oliumbi.assets.services.storage.FileInspection;
+import lombok.extern.slf4j.Slf4j;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 
+@Slf4j
 final class ImageEncoder {
     private static final float[] MASTER_QUALITIES = {0.90f};
     private static final float[] VARIANT_QUALITIES = {0.82f, 0.76f, 0.70f};
@@ -24,7 +26,13 @@ final class ImageEncoder {
             encode(pixels, format, quality, path);
             if (format == ImageFormat.PNG || size == ImageSize.MASTER || Files.size(path) <= size.budgetBytes()) break;
         }
-        return new ImageRendition(size, format, pixels.getWidth(), pixels.getHeight(), FileInspection.inspect(path, format.contentType()));
+        var stored = FileInspection.inspect(path, format.contentType());
+        if (size == ImageSize.MASTER) {
+            // Logged so the ~2 MiB JPEG / ~8 MiB PNG master tuning targets can be validated on real uploads.
+            log.info("Image master {} {}x{} encoded to {} bytes", format.extension(),
+                    pixels.getWidth(), pixels.getHeight(), stored.bytes());
+        }
+        return new ImageRendition(size, format, pixels.getWidth(), pixels.getHeight(), stored);
     }
 
     private void encode(BufferedImage pixels, ImageFormat format, float quality, Path path) throws IOException {

@@ -134,7 +134,8 @@ public class LocalBlobStorage implements BlobStorage {
                 if (closed) return;
                 try {
                     files.remove(directory);
-                } catch (UncheckedIOException exception) {
+                } catch (RuntimeException exception) {
+                    // Cleanup must never mask the primary exception of a failed upload.
                     log.warn("Staging cleanup failed for {}", id, exception);
                 } finally {
                     closed = true;

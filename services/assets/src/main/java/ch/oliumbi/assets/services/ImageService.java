@@ -48,6 +48,10 @@ public class ImageService {
     }
 
     public ImageDetailResponse create(String site, ImageCreateRequest request, MultipartFile file) throws IOException {
+        // The multipart size is known before the copy; the streaming cap in storage stays as defense in depth.
+        if (file.getSize() > properties.maxBytes()) {
+            throw new ResponseStatusException(HttpStatus.CONTENT_TOO_LARGE, "Upload exceeds the size limit");
+        }
         var id = UUID.randomUUID();
         try (var upload = storage.stage(id)) {
             var input = storage.upload(upload, file.getInputStream(), properties.maxBytes());
@@ -77,7 +81,8 @@ public class ImageService {
         boolean internal = site != null;
         var image = (internal ? images.findByIdAndSite(id, site) : images.findByIdAndVisibleTrue(id))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        var variant = variants.findByImageIdAndSize(image.getId(), ImageSize.parse(size, internal)).orElseThrow();
+        var variant = variants.findByImageIdAndSize(image.getId(), ImageSize.parse(size, internal))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Variant is unavailable"));
         return new AssetContent(storage.file(AssetKind.IMAGE, id, variant.getFileKey()), variant.getFormat().contentType(),
                 variant.getByteCount(), variant.getChecksum(), null);
     }
@@ -93,10 +98,10 @@ public class ImageService {
 
     public void delete(UUID id, String site) {
         deletion.delete(AssetKind.IMAGE, id, () -> {
-            var asset = images.findLockedByIdAndSite(id, site);
-            if (asset.isEmpty()) return false;
-            images.delete(asset.get());
-            return true;
+            // An unknown id and a row owned by another site both surface as 404, consistent with get().
+            var asset = images.findLockedByIdAndSite(id, site)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            images.delete(asset);
         });
     }
 }
