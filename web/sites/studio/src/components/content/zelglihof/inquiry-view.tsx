@@ -28,7 +28,9 @@ export function InquiriesView() {
 			loadRecord={(id) => getInquiry({ data: { id } })}
 			remove={(record) => deleteInquiry({ data: { id: record.id } })}
 			update={(record, values) =>
-				updateInquiry({ data: { key: { id: record.id }, values } })
+				updateInquiry({
+					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
+				})
 			}
 			editor={{
 				schema: inquiryInputSchema,

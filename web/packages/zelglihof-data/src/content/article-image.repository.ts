@@ -4,7 +4,7 @@ import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { articleImage } from "../schema";
 import type { ArticleImageInput, ArticleImageKey } from "./article-image";
-import { RecordKeyMismatchError } from "./errors";
+import { RecordKeyMismatchError, updateMissError } from "./errors";
 
 export function createArticleImageRepository(db: DatabaseExecutor) {
 	return {
@@ -34,7 +34,11 @@ export function createArticleImageRepository(db: DatabaseExecutor) {
 			if (!record) throw new Error("Record was not created");
 			return record;
 		},
-		async update(key: ArticleImageKey, input: ArticleImageInput) {
+		async update(
+			key: ArticleImageKey,
+			input: ArticleImageInput,
+			expectedUpdatedAt: string,
+		) {
 			// The composite key is the row's identity: it is never written on update,
 			// and values that claim another identity are rejected instead of silently
 			// re-parenting or renaming the row.
@@ -50,10 +54,16 @@ export function createArticleImageRepository(db: DatabaseExecutor) {
 					and(
 						eq(articleImage.articleId, key.articleId),
 						eq(articleImage.imageId, key.imageId),
+						eq(articleImage.updatedAt, expectedUpdatedAt),
 					),
 				)
 				.returning();
-			if (!record) throw new Error("Record not found or no longer editable");
+			if (!record)
+				throw updateMissError(
+					"zelglihof.article_image",
+					await this.get(key),
+					expectedUpdatedAt,
+				);
 			return record;
 		},
 		async delete(key: ArticleImageKey): Promise<void> {

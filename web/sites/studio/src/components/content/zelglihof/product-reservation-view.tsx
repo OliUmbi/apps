@@ -39,7 +39,9 @@ export function ProductReservationsView({
 			loadRecord={(id) => getProductReservation({ data: { id } })}
 			remove={(record) => deleteProductReservation({ data: { id: record.id } })}
 			update={(record, values) =>
-				updateProductReservation({ data: { key: { id: record.id }, values } })
+				updateProductReservation({
+					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
+				})
 			}
 			editor={{
 				schema: productReservationInputSchema,

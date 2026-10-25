@@ -1,8 +1,9 @@
 import type { PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
-import { desc, eq, ilike } from "drizzle-orm";
+import { and, desc, eq, ilike } from "drizzle-orm";
 import { review } from "../schema";
+import { updateMissError } from "./errors";
 import type { ReviewInput, ReviewKey } from "./review";
 
 export function createReviewRepository(db: DatabaseExecutor) {
@@ -43,16 +44,27 @@ export function createReviewRepository(db: DatabaseExecutor) {
 			if (!record) throw new Error("Record was not created");
 			return record;
 		},
-		async update(key: ReviewKey, input: ReviewInput) {
+		async update(
+			key: ReviewKey,
+			input: ReviewInput,
+			expectedUpdatedAt: string,
+		) {
 			const [record] = await db
 				.update(review)
 				.set({
 					...input,
 					updatedAt: new Date().toISOString(),
 				})
-				.where(eq(review.id, key.id))
+				.where(
+					and(eq(review.id, key.id), eq(review.updatedAt, expectedUpdatedAt)),
+				)
 				.returning();
-			if (!record) throw new Error("Record not found or no longer editable");
+			if (!record)
+				throw updateMissError(
+					"unclet.review",
+					await this.get(key),
+					expectedUpdatedAt,
+				);
 			return record;
 		},
 		async delete(key: ReviewKey): Promise<void> {

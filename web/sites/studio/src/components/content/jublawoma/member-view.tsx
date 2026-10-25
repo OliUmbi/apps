@@ -31,7 +31,9 @@ export function MembersView() {
 			remove={(record) => deleteMember({ data: { id: record.id } })}
 			create={(values) => createMember({ data: values })}
 			update={(record, values) =>
-				updateMember({ data: { key: { id: record.id }, values } })
+				updateMember({
+					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
+				})
 			}
 			editor={{
 				schema: memberInputSchema,

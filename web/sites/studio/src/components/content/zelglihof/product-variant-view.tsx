@@ -34,7 +34,9 @@ export function ProductVariantsView({ productId }: { productId: string }) {
 			remove={(record) => deleteProductVariant({ data: { id: record.id } })}
 			create={(values) => createProductVariant({ data: values })}
 			update={(record, values) =>
-				updateProductVariant({ data: { key: { id: record.id }, values } })
+				updateProductVariant({
+					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
+				})
 			}
 			editor={{
 				schema: productVariantInputSchema,

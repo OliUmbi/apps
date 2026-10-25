@@ -31,7 +31,9 @@ export function CampaignsView() {
 			remove={(record) => deleteCampaign({ data: { id: record.id } })}
 			create={(values) => createCampaign({ data: values })}
 			update={(record, values) =>
-				updateCampaign({ data: { key: { id: record.id }, values } })
+				updateCampaign({
+					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
+				})
 			}
 			canEdit={(record) => record.status === "draft"}
 			editor={{

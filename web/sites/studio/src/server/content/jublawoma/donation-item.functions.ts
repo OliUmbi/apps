@@ -1,9 +1,14 @@
 import { idSchema, pageSchema } from "@oliumbi/contracts";
+import { timestampSchema } from "@oliumbi/contracts/content-validation";
 import {
 	donationItemInputSchema,
 	donationItemKeySchema,
 } from "@oliumbi/jublawoma-data/content/donation-item";
 import { createDonationItemRepository } from "@oliumbi/jublawoma-data/content/donation-item.repository";
+import {
+	concurrentUpdateMessage,
+	isConcurrentUpdateError,
+} from "@oliumbi/jublawoma-data/content/errors";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireActor } from "../../auth.server";
@@ -38,14 +43,22 @@ export const updateDonationItem = createServerFn({ method: "POST" })
 		z.strictObject({
 			key: donationItemKeySchema,
 			values: donationItemInputSchema,
+			updatedAt: timestampSchema,
 		}),
 	)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
-		return createDonationItemRepository(database.db).update(
-			data.key,
-			data.values,
-		);
+		try {
+			return await createDonationItemRepository(database.db).update(
+				data.key,
+				data.values,
+				data.updatedAt,
+			);
+		} catch (error) {
+			if (isConcurrentUpdateError(error))
+				throw new Error(concurrentUpdateMessage);
+			throw error;
+		}
 	});
 
 export const deleteDonationItem = createServerFn({ method: "POST" })

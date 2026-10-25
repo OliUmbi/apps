@@ -37,6 +37,7 @@ export function ArticleImagesView({ articleId }: { articleId: string }) {
 					data: {
 						key: { articleId: record.articleId, imageId: record.imageId },
 						values,
+						updatedAt: record.updatedAt,
 					},
 				})
 			}

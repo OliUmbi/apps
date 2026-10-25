@@ -34,7 +34,9 @@ export function ShowcasesView() {
 			remove={(record) => deleteShowcase({ data: { id: record.id } })}
 			create={(values) => createShowcase({ data: values })}
 			update={(record, values) =>
-				updateShowcase({ data: { key: { id: record.id }, values } })
+				updateShowcase({
+					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
+				})
 			}
 			editor={{
 				schema: showcaseInputSchema,

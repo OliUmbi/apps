@@ -59,6 +59,8 @@ export function CollectionView<Row, Input = never>({
 		creating,
 		save,
 		saveRecord,
+		conflict,
+		reload,
 		deletion,
 		deleting,
 		confirmDelete,
@@ -116,12 +118,14 @@ export function CollectionView<Row, Input = never>({
 							record={record}
 							pending={save.isPending}
 							error={save.isError}
+							conflict={conflict}
 							saved={
 								save.isSuccess &&
 								record !== null &&
 								rowKey(save.data) === rowKey(record)
 							}
 							onSave={saveRecord}
+							onReload={reload}
 							onClose={close}
 						/>
 					) : record ? (

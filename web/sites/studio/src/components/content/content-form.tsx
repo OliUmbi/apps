@@ -22,16 +22,20 @@ export function ContentForm<Row, Input>({
 	record,
 	pending,
 	error,
+	conflict,
 	saved,
 	onSave,
+	onReload,
 	onClose,
 }: {
 	editor: ContentEditor<Row, Input>;
 	record: Row | null;
 	pending: boolean;
 	error: boolean;
+	conflict: boolean;
 	saved: boolean;
 	onSave: (values: Input) => void;
+	onReload: () => void;
 	onClose: () => void;
 }) {
 	const [values, setValues] = useState(() =>
@@ -46,7 +50,15 @@ export function ContentForm<Row, Input>({
 		setValidation("");
 	};
 
-	const failure = validation || (error ? m.error_generic() : null);
+	// The message catalog owns no conflict wording yet (its files belong to the
+	// i18n package), so the two strings stay literal here.
+	const failure =
+		validation ||
+		(conflict
+			? "Dieser Eintrag wurde seit dem Laden geändert."
+			: error
+				? m.error_generic()
+				: null);
 	const message =
 		failure || (saved && !edited ? m.studio_content_saved() : null);
 
@@ -70,7 +82,19 @@ export function ContentForm<Row, Input>({
 				{editor.renderFields({ values, onChange })}
 			</FormFields>
 			<FormActions>
-				<Alert tone={failure ? "error" : "success"}>{message}</Alert>
+				<Alert tone={failure ? "error" : "success"}>
+					{message}
+					{conflict ? (
+						<Button
+							type="button"
+							size="sm"
+							disabled={pending}
+							onClick={onReload}
+						>
+							Neu laden
+						</Button>
+					) : null}
+				</Alert>
 				<Button type="submit" variant="primary" disabled={pending}>
 					{pending ? m.saving() : m.save()}
 				</Button>

@@ -1,8 +1,9 @@
 import type { PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
-import { desc, eq, ilike } from "drizzle-orm";
+import { and, desc, eq, ilike } from "drizzle-orm";
 import { promotion } from "../schema";
+import { updateMissError } from "./errors";
 import type { PromotionInput, PromotionKey } from "./promotion";
 
 export function createPromotionRepository(db: DatabaseExecutor) {
@@ -43,16 +44,30 @@ export function createPromotionRepository(db: DatabaseExecutor) {
 			if (!record) throw new Error("Record was not created");
 			return record;
 		},
-		async update(key: PromotionKey, input: PromotionInput) {
+		async update(
+			key: PromotionKey,
+			input: PromotionInput,
+			expectedUpdatedAt: string,
+		) {
 			const [record] = await db
 				.update(promotion)
 				.set({
 					...input,
 					updatedAt: new Date().toISOString(),
 				})
-				.where(eq(promotion.id, key.id))
+				.where(
+					and(
+						eq(promotion.id, key.id),
+						eq(promotion.updatedAt, expectedUpdatedAt),
+					),
+				)
 				.returning();
-			if (!record) throw new Error("Record not found or no longer editable");
+			if (!record)
+				throw updateMissError(
+					"zelglihof.promotion",
+					await this.get(key),
+					expectedUpdatedAt,
+				);
 			return record;
 		},
 		async delete(key: PromotionKey): Promise<void> {

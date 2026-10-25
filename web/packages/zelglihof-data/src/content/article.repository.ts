@@ -1,9 +1,10 @@
 import type { PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
-import { desc, eq, ilike } from "drizzle-orm";
+import { and, desc, eq, ilike } from "drizzle-orm";
 import { article } from "../schema";
 import type { ArticleInput, ArticleKey } from "./article";
+import { updateMissError } from "./errors";
 
 export function createArticleRepository(db: DatabaseExecutor) {
 	return {
@@ -43,16 +44,27 @@ export function createArticleRepository(db: DatabaseExecutor) {
 			if (!record) throw new Error("Record was not created");
 			return record;
 		},
-		async update(key: ArticleKey, input: ArticleInput) {
+		async update(
+			key: ArticleKey,
+			input: ArticleInput,
+			expectedUpdatedAt: string,
+		) {
 			const [record] = await db
 				.update(article)
 				.set({
 					...input,
 					updatedAt: new Date().toISOString(),
 				})
-				.where(eq(article.id, key.id))
+				.where(
+					and(eq(article.id, key.id), eq(article.updatedAt, expectedUpdatedAt)),
+				)
 				.returning();
-			if (!record) throw new Error("Record not found or no longer editable");
+			if (!record)
+				throw updateMissError(
+					"zelglihof.article",
+					await this.get(key),
+					expectedUpdatedAt,
+				);
 			return record;
 		},
 		async delete(key: ArticleKey): Promise<void> {

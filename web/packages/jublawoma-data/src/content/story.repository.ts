@@ -1,8 +1,9 @@
 import type { PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
-import { desc, eq, ilike } from "drizzle-orm";
+import { and, desc, eq, ilike } from "drizzle-orm";
 import { story } from "../schema";
+import { updateMissError } from "./errors";
 import type { StoryInput, StoryKey } from "./story";
 
 export function createStoryRepository(db: DatabaseExecutor) {
@@ -43,16 +44,23 @@ export function createStoryRepository(db: DatabaseExecutor) {
 			if (!record) throw new Error("Record was not created");
 			return record;
 		},
-		async update(key: StoryKey, input: StoryInput) {
+		async update(key: StoryKey, input: StoryInput, expectedUpdatedAt: string) {
 			const [record] = await db
 				.update(story)
 				.set({
 					...input,
 					updatedAt: new Date().toISOString(),
 				})
-				.where(eq(story.id, key.id))
+				.where(
+					and(eq(story.id, key.id), eq(story.updatedAt, expectedUpdatedAt)),
+				)
 				.returning();
-			if (!record) throw new Error("Record not found or no longer editable");
+			if (!record)
+				throw updateMissError(
+					"jublawoma.story",
+					await this.get(key),
+					expectedUpdatedAt,
+				);
 			return record;
 		},
 		async delete(key: StoryKey): Promise<void> {

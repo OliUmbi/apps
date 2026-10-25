@@ -1,9 +1,10 @@
 import type { PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
-import { desc, eq, ilike } from "drizzle-orm";
+import { and, desc, eq, ilike } from "drizzle-orm";
 import { donation } from "../schema";
 import type { DonationInput, DonationKey } from "./donation";
+import { updateMissError } from "./errors";
 
 export function createDonationRepository(db: DatabaseExecutor) {
 	return {
@@ -43,16 +44,30 @@ export function createDonationRepository(db: DatabaseExecutor) {
 			if (!record) throw new Error("Record was not created");
 			return record;
 		},
-		async update(key: DonationKey, input: DonationInput) {
+		async update(
+			key: DonationKey,
+			input: DonationInput,
+			expectedUpdatedAt: string,
+		) {
 			const [record] = await db
 				.update(donation)
 				.set({
 					...input,
 					updatedAt: new Date().toISOString(),
 				})
-				.where(eq(donation.id, key.id))
+				.where(
+					and(
+						eq(donation.id, key.id),
+						eq(donation.updatedAt, expectedUpdatedAt),
+					),
+				)
 				.returning();
-			if (!record) throw new Error("Record not found or no longer editable");
+			if (!record)
+				throw updateMissError(
+					"jublawoma.donation",
+					await this.get(key),
+					expectedUpdatedAt,
+				);
 			return record;
 		},
 		async delete(key: DonationKey): Promise<void> {

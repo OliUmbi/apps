@@ -31,7 +31,9 @@ export function DonationItemsView({ donationId }: { donationId: string }) {
 			remove={(record) => deleteDonationItem({ data: { id: record.id } })}
 			create={(values) => createDonationItem({ data: values })}
 			update={(record, values) =>
-				updateDonationItem({ data: { key: { id: record.id }, values } })
+				updateDonationItem({
+					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
+				})
 			}
 			editor={{
 				schema: donationItemInputSchema,

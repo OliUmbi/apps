@@ -33,7 +33,9 @@ export function DonationsView() {
 			remove={(record) => deleteDonation({ data: { id: record.id } })}
 			create={(values) => createDonation({ data: values })}
 			update={(record, values) =>
-				updateDonation({ data: { key: { id: record.id }, values } })
+				updateDonation({
+					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
+				})
 			}
 			editor={{
 				schema: donationInputSchema,

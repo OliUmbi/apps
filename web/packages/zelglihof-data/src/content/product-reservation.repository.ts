@@ -3,6 +3,7 @@ import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { productReservation } from "../schema";
+import { updateMissError } from "./errors";
 import type {
 	ProductReservationInput,
 	ProductReservationKey,
@@ -35,13 +36,27 @@ export function createProductReservationRepository(db: DatabaseExecutor) {
 				.limit(1);
 			return record ?? null;
 		},
-		async update(key: ProductReservationKey, input: ProductReservationInput) {
+		async update(
+			key: ProductReservationKey,
+			input: ProductReservationInput,
+			expectedUpdatedAt: string,
+		) {
 			const [record] = await db
 				.update(productReservation)
 				.set({ status: input.status, updatedAt: new Date().toISOString() })
-				.where(eq(productReservation.id, key.id))
+				.where(
+					and(
+						eq(productReservation.id, key.id),
+						eq(productReservation.updatedAt, expectedUpdatedAt),
+					),
+				)
 				.returning();
-			if (!record) throw new Error("Record not found or no longer editable");
+			if (!record)
+				throw updateMissError(
+					"zelglihof.product_reservation",
+					await this.get(key),
+					expectedUpdatedAt,
+				);
 			return record;
 		},
 		async delete(key: ProductReservationKey): Promise<void> {

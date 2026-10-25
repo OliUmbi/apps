@@ -39,6 +39,7 @@ export function ShowcaseImagesView({ showcaseId }: { showcaseId: string }) {
 					data: {
 						key: { showcaseId: record.showcaseId, imageId: record.imageId },
 						values,
+						updatedAt: record.updatedAt,
 					},
 				})
 			}

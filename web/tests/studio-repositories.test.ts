@@ -6,7 +6,10 @@ import { createDatabasePool } from "../packages/database/src";
 import { createDonationRepository as jublawomaDonationStore } from "../packages/jublawoma-data/src/content/donation.repository";
 import { createDonationCommitmentRepository as jublawomaDonationCommitmentStore } from "../packages/jublawoma-data/src/content/donation-commitment.repository";
 import { createDonationItemRepository as jublawomaDonationItemStore } from "../packages/jublawoma-data/src/content/donation-item.repository";
-import { RecordKeyMismatchError as JublawomaRecordKeyMismatchError } from "../packages/jublawoma-data/src/content/errors";
+import {
+	ConcurrentUpdateError as JublawomaConcurrentUpdateError,
+	RecordKeyMismatchError as JublawomaRecordKeyMismatchError,
+} from "../packages/jublawoma-data/src/content/errors";
 import { createEventRepository as jublawomaEventStore } from "../packages/jublawoma-data/src/content/event.repository";
 import { createMemberRepository as jublawomaMemberStore } from "../packages/jublawoma-data/src/content/member.repository";
 import { createPromotionRepository as jublawomaPromotionStore } from "../packages/jublawoma-data/src/content/promotion.repository";
@@ -23,7 +26,10 @@ import * as unclet from "../packages/unclet-data/src/schema";
 import { createArticleRepository as zelglihofArticleStore } from "../packages/zelglihof-data/src/content/article.repository";
 import { createArticleImageRepository as zelglihofArticleImageStore } from "../packages/zelglihof-data/src/content/article-image.repository";
 import { createCampaignRepository as zelglihofCampaignStore } from "../packages/zelglihof-data/src/content/campaign.repository";
-import { RecordKeyMismatchError as ZelglihofRecordKeyMismatchError } from "../packages/zelglihof-data/src/content/errors";
+import {
+	ConcurrentUpdateError as ZelglihofConcurrentUpdateError,
+	RecordKeyMismatchError as ZelglihofRecordKeyMismatchError,
+} from "../packages/zelglihof-data/src/content/errors";
 import { createInquiryRepository as zelglihofInquiryStore } from "../packages/zelglihof-data/src/content/inquiry.repository";
 import { createProductRepository as zelglihofProductStore } from "../packages/zelglihof-data/src/content/product.repository";
 import { createProductReservationRepository as zelglihofProductReservationStore } from "../packages/zelglihof-data/src/content/product-reservation.repository";
@@ -84,10 +90,14 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					const listed = await store.list(page);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("jublawoma.Promotion", record.id);
-					const updated = await store.update(key, {
-						...input,
-						title: "Updated",
-					});
+					const updated = await store.update(
+						key,
+						{
+							...input,
+							title: "Updated",
+						},
+						record.updatedAt,
+					);
 					assert.equal(updated.title, "Updated");
 				},
 			);
@@ -117,10 +127,14 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 						new Date(record.createdAt).toISOString(),
 					);
 					ids.set("jublawoma.Story", record.id);
-					const updated = await store.update(key, {
-						...input,
-						title: "Updated",
-					});
+					const updated = await store.update(
+						key,
+						{
+							...input,
+							title: "Updated",
+						},
+						record.updatedAt,
+					);
 					assert.equal(updated.title, "Updated");
 				},
 			);
@@ -145,15 +159,23 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 								row.imageId === record.imageId,
 						),
 					);
-					const updated = await store.update(key, {
-						...input,
-						description: "Updated",
-					});
+					const updated = await store.update(
+						key,
+						{
+							...input,
+							description: "Updated",
+						},
+						record.updatedAt,
+					);
 					assert.equal(updated.description, "Updated");
 					// A key/values mismatch cannot rename the key or re-parent the row.
 					const replacementId = replacementImageIds.jublawoma;
 					await assert.rejects(
-						store.update(key, { ...input, imageId: replacementId }),
+						store.update(
+							key,
+							{ ...input, imageId: replacementId },
+							record.updatedAt,
+						),
 						JublawomaRecordKeyMismatchError,
 					);
 					assert.notEqual(await store.get(key), null);
@@ -184,10 +206,14 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					const listed = await store.list(page);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("jublawoma.Event", record.id);
-					const updated = await store.update(key, {
-						...input,
-						name: "Updated",
-					});
+					const updated = await store.update(
+						key,
+						{
+							...input,
+							name: "Updated",
+						},
+						record.updatedAt,
+					);
 					assert.equal(updated.name, "Updated");
 				},
 			);
@@ -208,10 +234,14 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					const listed = await store.list(page);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("jublawoma.Member", record.id);
-					const updated = await store.update(key, {
-						...input,
-						name: "Updated",
-					});
+					const updated = await store.update(
+						key,
+						{
+							...input,
+							name: "Updated",
+						},
+						record.updatedAt,
+					);
 					assert.equal(updated.name, "Updated");
 				},
 			);
@@ -233,10 +263,14 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					const listed = await store.list(page);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("jublawoma.Donation", record.id);
-					const updated = await store.update(key, {
-						...input,
-						title: "Updated",
-					});
+					const updated = await store.update(
+						key,
+						{
+							...input,
+							title: "Updated",
+						},
+						record.updatedAt,
+					);
 					assert.equal(updated.title, "Updated");
 				},
 			);
@@ -262,14 +296,22 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("jublawoma.DonationItem", record.id);
-					const updated = await store.update(key, {
-						...input,
-						name: "Updated",
-					});
+					const updated = await store.update(
+						key,
+						{
+							...input,
+							name: "Updated",
+						},
+						record.updatedAt,
+					);
 					assert.equal(updated.name, "Updated");
 					// A mismatched parent cannot move the item to another donation.
 					await assert.rejects(
-						store.update(key, { ...input, donationId: randomUUID() }),
+						store.update(
+							key,
+							{ ...input, donationId: randomUUID() },
+							record.updatedAt,
+						),
 						JublawomaRecordKeyMismatchError,
 					);
 					assert.equal((await store.get(key))?.donationId, input.donationId);
@@ -334,10 +376,14 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					const listed = await store.list(page);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("unclet.Showcase", record.id);
-					const updated = await store.update(key, {
-						...input,
-						title: "Updated",
-					});
+					const updated = await store.update(
+						key,
+						{
+							...input,
+							title: "Updated",
+						},
+						record.updatedAt,
+					);
 					assert.equal(updated.title, "Updated");
 				},
 			);
@@ -368,15 +414,23 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 								row.imageId === record.imageId,
 						),
 					);
-					const updated = await store.update(key, {
-						...input,
-						description: "Updated",
-					});
+					const updated = await store.update(
+						key,
+						{
+							...input,
+							description: "Updated",
+						},
+						record.updatedAt,
+					);
 					assert.equal(updated.description, "Updated");
 					// A key/values mismatch cannot rename the key or re-parent the row.
 					const replacementId = replacementImageIds.unclet;
 					await assert.rejects(
-						store.update(key, { ...input, imageId: replacementId }),
+						store.update(
+							key,
+							{ ...input, imageId: replacementId },
+							record.updatedAt,
+						),
 						UncletRecordKeyMismatchError,
 					);
 					assert.notEqual(await store.get(key), null);
@@ -408,10 +462,14 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					const listed = await store.list(page);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("unclet.Review", record.id);
-					const updated = await store.update(key, {
-						...input,
-						name: "Updated",
-					});
+					const updated = await store.update(
+						key,
+						{
+							...input,
+							name: "Updated",
+						},
+						record.updatedAt,
+					);
 					assert.equal(updated.name, "Updated");
 				},
 			);
@@ -444,7 +502,11 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					const listed = await store.list(page);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("unclet.Inquiry", record.id);
-					const updated = await store.update(key, { status: "completed" });
+					const updated = await store.update(
+						key,
+						{ status: "completed" },
+						record.updatedAt,
+					);
 					assert.equal(updated.status, "completed");
 					assert.equal(updated.name, record.name);
 				},
@@ -468,10 +530,14 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					const listed = await store.list(page);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("zelglihof.Promotion", record.id);
-					const updated = await store.update(key, {
-						...input,
-						title: "Updated",
-					});
+					const updated = await store.update(
+						key,
+						{
+							...input,
+							title: "Updated",
+						},
+						record.updatedAt,
+					);
 					assert.equal(updated.title, "Updated");
 				},
 			);
@@ -495,10 +561,14 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					const listed = await store.list(page);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("zelglihof.Article", record.id);
-					const updated = await store.update(key, {
-						...input,
-						title: "Updated",
-					});
+					const updated = await store.update(
+						key,
+						{
+							...input,
+							title: "Updated",
+						},
+						record.updatedAt,
+					);
 					assert.equal(updated.title, "Updated");
 				},
 			);
@@ -526,15 +596,23 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 								row.imageId === record.imageId,
 						),
 					);
-					const updated = await store.update(key, {
-						...input,
-						description: "Updated",
-					});
+					const updated = await store.update(
+						key,
+						{
+							...input,
+							description: "Updated",
+						},
+						record.updatedAt,
+					);
 					assert.equal(updated.description, "Updated");
 					// A key/values mismatch cannot rename the key or re-parent the row.
 					const replacementId = replacementImageIds.zelglihof;
 					await assert.rejects(
-						store.update(key, { ...input, imageId: replacementId }),
+						store.update(
+							key,
+							{ ...input, imageId: replacementId },
+							record.updatedAt,
+						),
 						ZelglihofRecordKeyMismatchError,
 					);
 					assert.notEqual(await store.get(key), null);
@@ -570,12 +648,17 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					const listed = await store.list(page);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("zelglihof.Product", record.id);
-					const updated = await store.update(key, {
-						...input,
-						name: "Updated",
-					});
+					const updated = await store.update(
+						key,
+						{ ...input, name: "Updated" },
+						record.updatedAt,
+					);
 					assert.equal(updated.name, "Updated");
-					await store.update(key, { ...input, name: "100%_fresh" });
+					await store.update(
+						key,
+						{ ...input, name: "100%_fresh" },
+						updated.updatedAt,
+					);
 					assert.equal(
 						(await store.list({ ...page, search: "%_" })).items.length,
 						1,
@@ -609,14 +692,22 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("zelglihof.ProductVariant", record.id);
-					const updated = await store.update(key, {
-						...input,
-						name: "Updated",
-					});
+					const updated = await store.update(
+						key,
+						{
+							...input,
+							name: "Updated",
+						},
+						record.updatedAt,
+					);
 					assert.equal(updated.name, "Updated");
 					// A mismatched parent cannot move the variant to another product.
 					await assert.rejects(
-						store.update(key, { ...input, productId: randomUUID() }),
+						store.update(
+							key,
+							{ ...input, productId: randomUUID() },
+							record.updatedAt,
+						),
 						ZelglihofRecordKeyMismatchError,
 					);
 					assert.equal((await store.get(key))?.productId, input.productId);
@@ -659,7 +750,11 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("zelglihof.ProductReservation", record.id);
-					const updated = await store.update(key, { status: "completed" });
+					const updated = await store.update(
+						key,
+						{ status: "completed" },
+						record.updatedAt,
+					);
 					assert.equal(updated.status, "completed");
 					assert.equal(updated.name, record.name);
 				},
@@ -718,16 +813,23 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					const listed = await store.list(page);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("zelglihof.Campaign", record.id);
-					const updated = await store.update(key, {
-						...input,
-						subject: "Updated",
-					});
+					const updated = await store.update(
+						key,
+						{
+							...input,
+							subject: "Updated",
+						},
+						record.updatedAt,
+					);
 					assert.equal(updated.subject, "Updated");
 					await transaction
 						.update(zelglihof.campaign)
 						.set({ status: "queued" })
 						.where(eq(zelglihof.campaign.id, record.id));
-					await assert.rejects(store.update(key, input), /no longer editable/);
+					await assert.rejects(
+						store.update(key, input, updated.updatedAt),
+						/no longer editable/,
+					);
 					assert.equal((await store.get(key))?.status, "queued");
 				},
 			);
@@ -758,7 +860,11 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					const listed = await store.list(page);
 					assert.ok(listed.items.some((row) => row.id === record.id));
 					ids.set("zelglihof.Inquiry", record.id);
-					const updated = await store.update(key, { status: "completed" });
+					const updated = await store.update(
+						key,
+						{ status: "completed" },
+						record.updatedAt,
+					);
 					assert.equal(updated.status, "completed");
 					assert.equal(updated.name, record.name);
 				},
@@ -786,6 +892,86 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 						new Date(review.createdAt).toISOString(),
 					);
 					assert.deepEqual(review.updatedAt, review.createdAt);
+				},
+			);
+			await context.test(
+				"a stale update conflicts instead of overwriting a newer row",
+				async () => {
+					const store = jublawomaPromotionStore(transaction);
+					const input = {
+						title: "Review title",
+						description: "Review description",
+						link: "/latest",
+						imageId: imageIds.jublawoma,
+						startsAt: "2026-01-01T00:00:00Z",
+						endsAt: "2027-01-01T00:00:00Z",
+					};
+					const record = await store.create(input);
+					const key = { id: record.id };
+					// The other editor's save lands first and leaves a newer token.
+					const newer = new Date(Date.now() + 60_000).toISOString();
+					await transaction
+						.update(jublawoma.promotion)
+						.set({ updatedAt: newer })
+						.where(eq(jublawoma.promotion.id, record.id));
+					await assert.rejects(
+						store.update(
+							key,
+							{ ...input, title: "Stale write" },
+							record.updatedAt,
+						),
+						JublawomaConcurrentUpdateError,
+					);
+					assert.equal((await store.get(key))?.title, input.title);
+					const fresh = await store.update(
+						key,
+						{ ...input, title: "Fresh write" },
+						newer,
+					);
+					assert.equal(fresh.title, "Fresh write");
+					await store.delete(key);
+				},
+			);
+			await context.test(
+				"a stale identity-guarded update still refuses key mismatches",
+				async () => {
+					const store = zelglihofProductVariantStore(transaction);
+					const input = {
+						productId: ids.get("zelglihof.Product") ?? "",
+						name: "Review name",
+						description: null,
+						imageId: imageIds.zelglihof,
+						price: "Review price",
+						quantity: null,
+					};
+					const record = await store.create(input);
+					const key = { id: record.id };
+					const newer = new Date(Date.now() + 60_000).toISOString();
+					await transaction
+						.update(zelglihof.productVariant)
+						.set({ updatedAt: newer })
+						.where(eq(zelglihof.productVariant.id, record.id));
+					// A stale token with a matching identity is the conflict's verdict.
+					await assert.rejects(
+						store.update(
+							key,
+							{ ...input, name: "Stale write" },
+							record.updatedAt,
+						),
+						ZelglihofConcurrentUpdateError,
+					);
+					// A wrong identity stays the key guard's verdict.
+					await assert.rejects(
+						store.update(key, { ...input, productId: randomUUID() }, newer),
+						ZelglihofRecordKeyMismatchError,
+					);
+					assert.equal((await store.get(key))?.name, input.name);
+					const fresh = await store.update(
+						key,
+						{ ...input, name: "Fresh write" },
+						newer,
+					);
+					assert.equal(fresh.name, "Fresh write");
 				},
 			);
 			throw rollback;

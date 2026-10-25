@@ -35,7 +35,9 @@ export function ProductsView() {
 			remove={(record) => deleteProduct({ data: { id: record.id } })}
 			create={(values) => createProduct({ data: values })}
 			update={(record, values) =>
-				updateProduct({ data: { key: { id: record.id }, values } })
+				updateProduct({
+					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
+				})
 			}
 			editor={{
 				schema: productInputSchema,

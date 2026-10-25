@@ -1,9 +1,14 @@
 import { idSchema, pageSchema } from "@oliumbi/contracts";
+import { timestampSchema } from "@oliumbi/contracts/content-validation";
 import {
 	articleImageInputSchema,
 	articleImageKeySchema,
 } from "@oliumbi/zelglihof-data/content/article-image";
 import { createArticleImageRepository } from "@oliumbi/zelglihof-data/content/article-image.repository";
+import {
+	concurrentUpdateMessage,
+	isConcurrentUpdateError,
+} from "@oliumbi/zelglihof-data/content/errors";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { assets } from "../../assets.server";
@@ -40,16 +45,24 @@ export const updateArticleImage = createServerFn({ method: "POST" })
 		z.strictObject({
 			key: articleImageKeySchema,
 			values: articleImageInputSchema,
+			updatedAt: timestampSchema,
 		}),
 	)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
 		if (data.values.imageId)
 			await assets.images.get("zelglihof", data.values.imageId);
-		return createArticleImageRepository(database.db).update(
-			data.key,
-			data.values,
-		);
+		try {
+			return await createArticleImageRepository(database.db).update(
+				data.key,
+				data.values,
+				data.updatedAt,
+			);
+		} catch (error) {
+			if (isConcurrentUpdateError(error))
+				throw new Error(concurrentUpdateMessage);
+			throw error;
+		}
 	});
 
 export const deleteArticleImage = createServerFn({ method: "POST" })

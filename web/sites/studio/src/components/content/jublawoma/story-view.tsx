@@ -35,7 +35,9 @@ export function StoriesView() {
 			remove={(record) => deleteStory({ data: { id: record.id } })}
 			create={(values) => createStory({ data: values })}
 			update={(record, values) =>
-				updateStory({ data: { key: { id: record.id }, values } })
+				updateStory({
+					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
+				})
 			}
 			editor={{
 				schema: storyInputSchema,

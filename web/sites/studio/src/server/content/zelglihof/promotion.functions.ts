@@ -1,4 +1,9 @@
 import { pageSchema } from "@oliumbi/contracts";
+import { timestampSchema } from "@oliumbi/contracts/content-validation";
+import {
+	concurrentUpdateMessage,
+	isConcurrentUpdateError,
+} from "@oliumbi/zelglihof-data/content/errors";
 import {
 	promotionInputSchema,
 	promotionKeySchema,
@@ -34,13 +39,27 @@ export const createPromotion = createServerFn({ method: "POST" })
 
 export const updatePromotion = createServerFn({ method: "POST" })
 	.validator(
-		z.strictObject({ key: promotionKeySchema, values: promotionInputSchema }),
+		z.strictObject({
+			key: promotionKeySchema,
+			values: promotionInputSchema,
+			updatedAt: timestampSchema,
+		}),
 	)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
 		if (data.values.imageId)
 			await assets.images.get("zelglihof", data.values.imageId);
-		return createPromotionRepository(database.db).update(data.key, data.values);
+		try {
+			return await createPromotionRepository(database.db).update(
+				data.key,
+				data.values,
+				data.updatedAt,
+			);
+		} catch (error) {
+			if (isConcurrentUpdateError(error))
+				throw new Error(concurrentUpdateMessage);
+			throw error;
+		}
 	});
 
 export const deletePromotion = createServerFn({ method: "POST" })

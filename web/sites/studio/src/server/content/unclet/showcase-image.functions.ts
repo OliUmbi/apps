@@ -1,4 +1,9 @@
 import { idSchema, pageSchema } from "@oliumbi/contracts";
+import { timestampSchema } from "@oliumbi/contracts/content-validation";
+import {
+	concurrentUpdateMessage,
+	isConcurrentUpdateError,
+} from "@oliumbi/unclet-data/content/errors";
 import {
 	showcaseImageInputSchema,
 	showcaseImageKeySchema,
@@ -40,16 +45,24 @@ export const updateShowcaseImage = createServerFn({ method: "POST" })
 		z.strictObject({
 			key: showcaseImageKeySchema,
 			values: showcaseImageInputSchema,
+			updatedAt: timestampSchema,
 		}),
 	)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
 		if (data.values.imageId)
 			await assets.images.get("unclet", data.values.imageId);
-		return createShowcaseImageRepository(database.db).update(
-			data.key,
-			data.values,
-		);
+		try {
+			return await createShowcaseImageRepository(database.db).update(
+				data.key,
+				data.values,
+				data.updatedAt,
+			);
+		} catch (error) {
+			if (isConcurrentUpdateError(error))
+				throw new Error(concurrentUpdateMessage);
+			throw error;
+		}
 	});
 
 export const deleteShowcaseImage = createServerFn({ method: "POST" })

@@ -1,5 +1,9 @@
-import { limits } from "@oliumbi/contracts";
+import { limits, type Page } from "@oliumbi/contracts";
+import { isConcurrentUpdateError as isJublawomaUpdateConflict } from "@oliumbi/jublawoma-data/content/errors";
+import { isConcurrentUpdateError as isUncletUpdateConflict } from "@oliumbi/unclet-data/content/errors";
+import { isConcurrentUpdateError as isZelglihofUpdateConflict } from "@oliumbi/zelglihof-data/content/errors";
 import {
+	type InfiniteData,
 	useInfiniteQuery,
 	useMutation,
 	useQuery,
@@ -10,6 +14,17 @@ import type {
 	CollectionNavigation,
 	CollectionSource,
 } from "../model/collection";
+
+// Each data package owns its update-conflict contract; the editor recognises
+// all of them behind one reloadable conflict state. The server-function
+// boundary keeps only Error.message, so recognition is message-based.
+function isUpdateConflict(error: unknown): boolean {
+	return (
+		isJublawomaUpdateConflict(error) ||
+		isUncletUpdateConflict(error) ||
+		isZelglihofUpdateConflict(error)
+	);
+}
 
 export function useCollection<Row, Input>(
 	{
@@ -86,6 +101,33 @@ export function useCollection<Row, Input>(
 					},
 				},
 			),
+		conflict: save.isError && isUpdateConflict(save.error),
+		reload: async () => {
+			// Reload the record behind the editor and remount it, so the fields
+			// show the row that was actually saved instead of the stale copy.
+			save.reset();
+			if (recordId && loadRecord) {
+				await cache.fetchQuery({
+					queryKey: [...collectionKey, "detail", recordId],
+					queryFn: () => loadRecord(recordId),
+				});
+			} else if (recordId) {
+				// Without loadRecord the row snapshot lives in the selection;
+				// refresh it from the re-fetched list instead.
+				await cache.invalidateQueries({ queryKey: collectionKey });
+				const fresh = cache
+					.getQueryData<InfiniteData<Page<Row>>>([
+						...collectionKey,
+						"list",
+						scope,
+						search,
+					])
+					?.pages.flatMap((page) => page.items)
+					.find((row) => rowKey(row) === recordId);
+				if (fresh) navigation.showRecord(fresh);
+			}
+			setEditorVersion((version) => version + 1);
+		},
 		deletion,
 		deleting,
 		confirmDelete: () => {

@@ -1,9 +1,14 @@
 import { pageSchema } from "@oliumbi/contracts";
+import { timestampSchema } from "@oliumbi/contracts/content-validation";
 import {
 	articleInputSchema,
 	articleKeySchema,
 } from "@oliumbi/zelglihof-data/content/article";
 import { createArticleRepository } from "@oliumbi/zelglihof-data/content/article.repository";
+import {
+	concurrentUpdateMessage,
+	isConcurrentUpdateError,
+} from "@oliumbi/zelglihof-data/content/errors";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { assets } from "../../assets.server";
@@ -34,13 +39,27 @@ export const createArticle = createServerFn({ method: "POST" })
 
 export const updateArticle = createServerFn({ method: "POST" })
 	.validator(
-		z.strictObject({ key: articleKeySchema, values: articleInputSchema }),
+		z.strictObject({
+			key: articleKeySchema,
+			values: articleInputSchema,
+			updatedAt: timestampSchema,
+		}),
 	)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
 		if (data.values.imageId)
 			await assets.images.get("zelglihof", data.values.imageId);
-		return createArticleRepository(database.db).update(data.key, data.values);
+		try {
+			return await createArticleRepository(database.db).update(
+				data.key,
+				data.values,
+				data.updatedAt,
+			);
+		} catch (error) {
+			if (isConcurrentUpdateError(error))
+				throw new Error(concurrentUpdateMessage);
+			throw error;
+		}
 	});
 
 export const deleteArticle = createServerFn({ method: "POST" })

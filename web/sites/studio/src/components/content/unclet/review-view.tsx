@@ -29,7 +29,9 @@ export function ReviewsView() {
 			remove={(record) => deleteReview({ data: { id: record.id } })}
 			create={(values) => createReview({ data: values })}
 			update={(record, values) =>
-				updateReview({ data: { key: { id: record.id }, values } })
+				updateReview({
+					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
+				})
 			}
 			editor={{
 				schema: reviewInputSchema,

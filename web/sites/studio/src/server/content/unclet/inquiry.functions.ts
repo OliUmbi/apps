@@ -1,4 +1,9 @@
 import { pageSchema } from "@oliumbi/contracts";
+import { timestampSchema } from "@oliumbi/contracts/content-validation";
+import {
+	concurrentUpdateMessage,
+	isConcurrentUpdateError,
+} from "@oliumbi/unclet-data/content/errors";
 import {
 	inquiryInputSchema,
 	inquiryKeySchema,
@@ -25,11 +30,25 @@ export const getInquiry = createServerFn({ method: "GET" })
 
 export const updateInquiry = createServerFn({ method: "POST" })
 	.validator(
-		z.strictObject({ key: inquiryKeySchema, values: inquiryInputSchema }),
+		z.strictObject({
+			key: inquiryKeySchema,
+			values: inquiryInputSchema,
+			updatedAt: timestampSchema,
+		}),
 	)
 	.handler(async ({ data }) => {
 		await requireActor("unclet");
-		return createInquiryRepository(database.db).update(data.key, data.values);
+		try {
+			return await createInquiryRepository(database.db).update(
+				data.key,
+				data.values,
+				data.updatedAt,
+			);
+		} catch (error) {
+			if (isConcurrentUpdateError(error))
+				throw new Error(concurrentUpdateMessage);
+			throw error;
+		}
 	});
 
 export const deleteInquiry = createServerFn({ method: "POST" })

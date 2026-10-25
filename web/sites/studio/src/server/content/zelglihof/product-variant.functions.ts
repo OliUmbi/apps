@@ -1,4 +1,9 @@
 import { idSchema, pageSchema } from "@oliumbi/contracts";
+import { timestampSchema } from "@oliumbi/contracts/content-validation";
+import {
+	concurrentUpdateMessage,
+	isConcurrentUpdateError,
+} from "@oliumbi/zelglihof-data/content/errors";
 import {
 	productVariantInputSchema,
 	productVariantKeySchema,
@@ -40,16 +45,24 @@ export const updateProductVariant = createServerFn({ method: "POST" })
 		z.strictObject({
 			key: productVariantKeySchema,
 			values: productVariantInputSchema,
+			updatedAt: timestampSchema,
 		}),
 	)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
 		if (data.values.imageId)
 			await assets.images.get("zelglihof", data.values.imageId);
-		return createProductVariantRepository(database.db).update(
-			data.key,
-			data.values,
-		);
+		try {
+			return await createProductVariantRepository(database.db).update(
+				data.key,
+				data.values,
+				data.updatedAt,
+			);
+		} catch (error) {
+			if (isConcurrentUpdateError(error))
+				throw new Error(concurrentUpdateMessage);
+			throw error;
+		}
 	});
 
 export const deleteProductVariant = createServerFn({ method: "POST" })

@@ -1,8 +1,9 @@
 import type { PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
-import { desc, eq, ilike } from "drizzle-orm";
+import { and, desc, eq, ilike } from "drizzle-orm";
 import { member } from "../schema";
+import { updateMissError } from "./errors";
 import type { MemberInput, MemberKey } from "./member";
 
 export function createMemberRepository(db: DatabaseExecutor) {
@@ -43,16 +44,27 @@ export function createMemberRepository(db: DatabaseExecutor) {
 			if (!record) throw new Error("Record was not created");
 			return record;
 		},
-		async update(key: MemberKey, input: MemberInput) {
+		async update(
+			key: MemberKey,
+			input: MemberInput,
+			expectedUpdatedAt: string,
+		) {
 			const [record] = await db
 				.update(member)
 				.set({
 					...input,
 					updatedAt: new Date().toISOString(),
 				})
-				.where(eq(member.id, key.id))
+				.where(
+					and(eq(member.id, key.id), eq(member.updatedAt, expectedUpdatedAt)),
+				)
 				.returning();
-			if (!record) throw new Error("Record not found or no longer editable");
+			if (!record)
+				throw updateMissError(
+					"jublawoma.member",
+					await this.get(key),
+					expectedUpdatedAt,
+				);
 			return record;
 		},
 		async delete(key: MemberKey): Promise<void> {

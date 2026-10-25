@@ -4,6 +4,7 @@ import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { campaign } from "../schema";
 import type { CampaignInput, CampaignKey } from "./campaign";
+import { updateMissError } from "./errors";
 
 export function createCampaignRepository(db: DatabaseExecutor) {
 	return {
@@ -45,7 +46,11 @@ export function createCampaignRepository(db: DatabaseExecutor) {
 			if (!record) throw new Error("Record was not created");
 			return record;
 		},
-		async update(key: CampaignKey, input: CampaignInput) {
+		async update(
+			key: CampaignKey,
+			input: CampaignInput,
+			expectedUpdatedAt: string,
+		) {
 			const [record] = await db
 				.update(campaign)
 				.set({
@@ -54,9 +59,20 @@ export function createCampaignRepository(db: DatabaseExecutor) {
 					status: "draft",
 					updatedAt: new Date().toISOString(),
 				})
-				.where(and(eq(campaign.id, key.id), eq(campaign.status, "draft")))
+				.where(
+					and(
+						eq(campaign.id, key.id),
+						eq(campaign.status, "draft"),
+						eq(campaign.updatedAt, expectedUpdatedAt),
+					),
+				)
 				.returning();
-			if (!record) throw new Error("Record not found or no longer editable");
+			if (!record)
+				throw updateMissError(
+					"zelglihof.campaign",
+					await this.get(key),
+					expectedUpdatedAt,
+				);
 			return record;
 		},
 		async delete(key: CampaignKey): Promise<void> {

@@ -32,7 +32,9 @@ export function PromotionsView() {
 			remove={(record) => deletePromotion({ data: { id: record.id } })}
 			create={(values) => createPromotion({ data: values })}
 			update={(record, values) =>
-				updatePromotion({ data: { key: { id: record.id }, values } })
+				updatePromotion({
+					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
+				})
 			}
 			editor={{
 				schema: promotionInputSchema,

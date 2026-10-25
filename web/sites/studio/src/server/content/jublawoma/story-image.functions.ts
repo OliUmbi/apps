@@ -1,4 +1,9 @@
 import { idSchema, pageSchema } from "@oliumbi/contracts";
+import { timestampSchema } from "@oliumbi/contracts/content-validation";
+import {
+	concurrentUpdateMessage,
+	isConcurrentUpdateError,
+} from "@oliumbi/jublawoma-data/content/errors";
 import {
 	storyImageInputSchema,
 	storyImageKeySchema,
@@ -37,16 +42,27 @@ export const createStoryImage = createServerFn({ method: "POST" })
 
 export const updateStoryImage = createServerFn({ method: "POST" })
 	.validator(
-		z.strictObject({ key: storyImageKeySchema, values: storyImageInputSchema }),
+		z.strictObject({
+			key: storyImageKeySchema,
+			values: storyImageInputSchema,
+			updatedAt: timestampSchema,
+		}),
 	)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
 		if (data.values.imageId)
 			await assets.images.get("jublawoma", data.values.imageId);
-		return createStoryImageRepository(database.db).update(
-			data.key,
-			data.values,
-		);
+		try {
+			return await createStoryImageRepository(database.db).update(
+				data.key,
+				data.values,
+				data.updatedAt,
+			);
+		} catch (error) {
+			if (isConcurrentUpdateError(error))
+				throw new Error(concurrentUpdateMessage);
+			throw error;
+		}
 	});
 
 export const deleteStoryImage = createServerFn({ method: "POST" })

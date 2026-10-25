@@ -35,7 +35,9 @@ export function ArticlesView() {
 			remove={(record) => deleteArticle({ data: { id: record.id } })}
 			create={(values) => createArticle({ data: values })}
 			update={(record, values) =>
-				updateArticle({ data: { key: { id: record.id }, values } })
+				updateArticle({
+					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
+				})
 			}
 			editor={{
 				schema: articleInputSchema,

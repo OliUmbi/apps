@@ -1,4 +1,9 @@
 import { pageSchema } from "@oliumbi/contracts";
+import { timestampSchema } from "@oliumbi/contracts/content-validation";
+import {
+	concurrentUpdateMessage,
+	isConcurrentUpdateError,
+} from "@oliumbi/zelglihof-data/content/errors";
 import {
 	productInputSchema,
 	productKeySchema,
@@ -34,13 +39,27 @@ export const createProduct = createServerFn({ method: "POST" })
 
 export const updateProduct = createServerFn({ method: "POST" })
 	.validator(
-		z.strictObject({ key: productKeySchema, values: productInputSchema }),
+		z.strictObject({
+			key: productKeySchema,
+			values: productInputSchema,
+			updatedAt: timestampSchema,
+		}),
 	)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
 		if (data.values.imageId)
 			await assets.images.get("zelglihof", data.values.imageId);
-		return createProductRepository(database.db).update(data.key, data.values);
+		try {
+			return await createProductRepository(database.db).update(
+				data.key,
+				data.values,
+				data.updatedAt,
+			);
+		} catch (error) {
+			if (isConcurrentUpdateError(error))
+				throw new Error(concurrentUpdateMessage);
+			throw error;
+		}
 	});
 
 export const deleteProduct = createServerFn({ method: "POST" })

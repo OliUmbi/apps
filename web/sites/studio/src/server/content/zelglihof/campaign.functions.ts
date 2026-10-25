@@ -1,9 +1,14 @@
 import { pageSchema } from "@oliumbi/contracts";
+import { timestampSchema } from "@oliumbi/contracts/content-validation";
 import {
 	campaignInputSchema,
 	campaignKeySchema,
 } from "@oliumbi/zelglihof-data/content/campaign";
 import { createCampaignRepository } from "@oliumbi/zelglihof-data/content/campaign.repository";
+import {
+	concurrentUpdateMessage,
+	isConcurrentUpdateError,
+} from "@oliumbi/zelglihof-data/content/errors";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireActor } from "../../auth.server";
@@ -32,11 +37,25 @@ export const createCampaign = createServerFn({ method: "POST" })
 
 export const updateCampaign = createServerFn({ method: "POST" })
 	.validator(
-		z.strictObject({ key: campaignKeySchema, values: campaignInputSchema }),
+		z.strictObject({
+			key: campaignKeySchema,
+			values: campaignInputSchema,
+			updatedAt: timestampSchema,
+		}),
 	)
 	.handler(async ({ data }) => {
 		await requireActor("zelglihof");
-		return createCampaignRepository(database.db).update(data.key, data.values);
+		try {
+			return await createCampaignRepository(database.db).update(
+				data.key,
+				data.values,
+				data.updatedAt,
+			);
+		} catch (error) {
+			if (isConcurrentUpdateError(error))
+				throw new Error(concurrentUpdateMessage);
+			throw error;
+		}
 	});
 
 export const deleteCampaign = createServerFn({ method: "POST" })

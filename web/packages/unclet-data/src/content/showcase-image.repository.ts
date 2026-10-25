@@ -3,7 +3,7 @@ import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { showcaseImage } from "../schema";
-import { RecordKeyMismatchError } from "./errors";
+import { RecordKeyMismatchError, updateMissError } from "./errors";
 import type { ShowcaseImageInput, ShowcaseImageKey } from "./showcase-image";
 
 export function createShowcaseImageRepository(db: DatabaseExecutor) {
@@ -34,7 +34,11 @@ export function createShowcaseImageRepository(db: DatabaseExecutor) {
 			if (!record) throw new Error("Record was not created");
 			return record;
 		},
-		async update(key: ShowcaseImageKey, input: ShowcaseImageInput) {
+		async update(
+			key: ShowcaseImageKey,
+			input: ShowcaseImageInput,
+			expectedUpdatedAt: string,
+		) {
 			// The composite key is the row's identity: it is never written on update,
 			// and values that claim another identity are rejected instead of silently
 			// re-parenting or renaming the row.
@@ -50,10 +54,16 @@ export function createShowcaseImageRepository(db: DatabaseExecutor) {
 					and(
 						eq(showcaseImage.showcaseId, key.showcaseId),
 						eq(showcaseImage.imageId, key.imageId),
+						eq(showcaseImage.updatedAt, expectedUpdatedAt),
 					),
 				)
 				.returning();
-			if (!record) throw new Error("Record not found or no longer editable");
+			if (!record)
+				throw updateMissError(
+					"unclet.showcase_image",
+					await this.get(key),
+					expectedUpdatedAt,
+				);
 			return record;
 		},
 		async delete(key: ShowcaseImageKey): Promise<void> {

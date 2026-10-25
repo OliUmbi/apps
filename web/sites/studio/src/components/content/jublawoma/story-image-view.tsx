@@ -37,6 +37,7 @@ export function StoryImagesView({ storyId }: { storyId: string }) {
 					data: {
 						key: { storyId: record.storyId, imageId: record.imageId },
 						values,
+						updatedAt: record.updatedAt,
 					},
 				})
 			}

@@ -1,4 +1,9 @@
 import { pageSchema } from "@oliumbi/contracts";
+import { timestampSchema } from "@oliumbi/contracts/content-validation";
+import {
+	concurrentUpdateMessage,
+	isConcurrentUpdateError,
+} from "@oliumbi/jublawoma-data/content/errors";
 import {
 	eventInputSchema,
 	eventKeySchema,
@@ -33,12 +38,28 @@ export const createEvent = createServerFn({ method: "POST" })
 	});
 
 export const updateEvent = createServerFn({ method: "POST" })
-	.validator(z.strictObject({ key: eventKeySchema, values: eventInputSchema }))
+	.validator(
+		z.strictObject({
+			key: eventKeySchema,
+			values: eventInputSchema,
+			updatedAt: timestampSchema,
+		}),
+	)
 	.handler(async ({ data }) => {
 		await requireActor("jublawoma");
 		if (data.values.imageId)
 			await assets.images.get("jublawoma", data.values.imageId);
-		return createEventRepository(database.db).update(data.key, data.values);
+		try {
+			return await createEventRepository(database.db).update(
+				data.key,
+				data.values,
+				data.updatedAt,
+			);
+		} catch (error) {
+			if (isConcurrentUpdateError(error))
+				throw new Error(concurrentUpdateMessage);
+			throw error;
+		}
 	});
 
 export const deleteEvent = createServerFn({ method: "POST" })

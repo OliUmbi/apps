@@ -3,7 +3,7 @@ import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { storyImage } from "../schema";
-import { RecordKeyMismatchError } from "./errors";
+import { RecordKeyMismatchError, updateMissError } from "./errors";
 import type { StoryImageInput, StoryImageKey } from "./story-image";
 
 export function createStoryImageRepository(db: DatabaseExecutor) {
@@ -34,7 +34,11 @@ export function createStoryImageRepository(db: DatabaseExecutor) {
 			if (!record) throw new Error("Record was not created");
 			return record;
 		},
-		async update(key: StoryImageKey, input: StoryImageInput) {
+		async update(
+			key: StoryImageKey,
+			input: StoryImageInput,
+			expectedUpdatedAt: string,
+		) {
 			// The composite key is the row's identity: it is never written on update,
 			// and values that claim another identity are rejected instead of silently
 			// re-parenting or renaming the row.
@@ -50,10 +54,16 @@ export function createStoryImageRepository(db: DatabaseExecutor) {
 					and(
 						eq(storyImage.storyId, key.storyId),
 						eq(storyImage.imageId, key.imageId),
+						eq(storyImage.updatedAt, expectedUpdatedAt),
 					),
 				)
 				.returning();
-			if (!record) throw new Error("Record not found or no longer editable");
+			if (!record)
+				throw updateMissError(
+					"jublawoma.story_image",
+					await this.get(key),
+					expectedUpdatedAt,
+				);
 			return record;
 		},
 		async delete(key: StoryImageKey): Promise<void> {

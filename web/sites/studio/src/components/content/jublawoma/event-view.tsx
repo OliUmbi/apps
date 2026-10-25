@@ -32,7 +32,9 @@ export function EventsView() {
 			remove={(record) => deleteEvent({ data: { id: record.id } })}
 			create={(values) => createEvent({ data: values })}
 			update={(record, values) =>
-				updateEvent({ data: { key: { id: record.id }, values } })
+				updateEvent({
+					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
+				})
 			}
 			editor={{
 				schema: eventInputSchema,

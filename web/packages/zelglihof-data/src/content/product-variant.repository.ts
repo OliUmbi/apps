@@ -3,7 +3,7 @@ import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
 import { productVariant } from "../schema";
-import { RecordKeyMismatchError } from "./errors";
+import { updateMissError } from "./errors";
 import type { ProductVariantInput, ProductVariantKey } from "./product-variant";
 
 export function createProductVariantRepository(db: DatabaseExecutor) {
@@ -29,7 +29,11 @@ export function createProductVariantRepository(db: DatabaseExecutor) {
 			if (!record) throw new Error("Record was not created");
 			return record;
 		},
-		async update(key: ProductVariantKey, input: ProductVariantInput) {
+		async update(
+			key: ProductVariantKey,
+			input: ProductVariantInput,
+			expectedUpdatedAt: string,
+		) {
 			// The parent reference is an identity column: it is never written on
 			// update, so a variant cannot be moved to another product by a
 			// key/values mismatch.
@@ -47,13 +51,18 @@ export function createProductVariantRepository(db: DatabaseExecutor) {
 					and(
 						eq(productVariant.id, key.id),
 						eq(productVariant.productId, input.productId),
+						eq(productVariant.updatedAt, expectedUpdatedAt),
 					),
 				)
 				.returning();
 			if (record) return record;
-			if (await this.get(key))
-				throw new RecordKeyMismatchError("zelglihof.product_variant");
-			throw new Error("Record not found or no longer editable");
+			const current = await this.get(key);
+			throw updateMissError(
+				"zelglihof.product_variant",
+				current,
+				expectedUpdatedAt,
+				current?.productId === input.productId,
+			);
 		},
 		async delete(key: ProductVariantKey): Promise<void> {
 			await db.delete(productVariant).where(eq(productVariant.id, key.id));

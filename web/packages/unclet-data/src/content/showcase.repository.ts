@@ -1,8 +1,9 @@
 import type { PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
-import { desc, eq, ilike } from "drizzle-orm";
+import { and, desc, eq, ilike } from "drizzle-orm";
 import { showcase } from "../schema";
+import { updateMissError } from "./errors";
 import type { ShowcaseInput, ShowcaseKey } from "./showcase";
 
 export function createShowcaseRepository(db: DatabaseExecutor) {
@@ -43,16 +44,30 @@ export function createShowcaseRepository(db: DatabaseExecutor) {
 			if (!record) throw new Error("Record was not created");
 			return record;
 		},
-		async update(key: ShowcaseKey, input: ShowcaseInput) {
+		async update(
+			key: ShowcaseKey,
+			input: ShowcaseInput,
+			expectedUpdatedAt: string,
+		) {
 			const [record] = await db
 				.update(showcase)
 				.set({
 					...input,
 					updatedAt: new Date().toISOString(),
 				})
-				.where(eq(showcase.id, key.id))
+				.where(
+					and(
+						eq(showcase.id, key.id),
+						eq(showcase.updatedAt, expectedUpdatedAt),
+					),
+				)
 				.returning();
-			if (!record) throw new Error("Record not found or no longer editable");
+			if (!record)
+				throw updateMissError(
+					"unclet.showcase",
+					await this.get(key),
+					expectedUpdatedAt,
+				);
 			return record;
 		},
 		async delete(key: ShowcaseKey): Promise<void> {
