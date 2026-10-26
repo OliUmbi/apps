@@ -1,17 +1,15 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Sprout } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { UpdateSummary } from "../../model/content";
 import { AssetImage } from "../asset-image";
+import { UpdatesEmptyState } from "../updates-empty-state";
 export function LatestUpdates({ updates }: { updates: UpdateSummary[] }) {
 	return (
-		<section
-			id="aktuell"
-			className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] py-24 md:py-32"
-		>
+		<section id="aktuell" className="shell py-24 md:py-32">
 			<div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:items-end">
 				<div>
-					<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-clay">
+					<p className="eyebrow text-clay">
 						{m.zelglihof_home_updates_eyebrow()}
 					</p>
 					<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-5xl md:text-6xl">
@@ -33,19 +31,8 @@ export function LatestUpdates({ updates }: { updates: UpdateSummary[] }) {
 			</div>
 			<div className="mt-12 grid gap-5 md:grid-cols-3">
 				{updates.length === 0 ? (
-					<div className="updates-empty md:col-span-3">
-						<Sprout size={34} aria-hidden="true" />
-						<div>
-							<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-clay">
-								{m.zelglihof_updates_empty_eyebrow()}
-							</p>
-							<h3 className="mt-3 font-serif text-3xl font-bold">
-								{m.zelglihof_updates_empty_title()}
-							</h3>
-							<p className="mt-2 text-ink/60">
-								{m.zelglihof_updates_empty_body()}
-							</p>
-						</div>
+					<div className="md:col-span-3">
+						<UpdatesEmptyState size="sm" />
 					</div>
 				) : null}
 				{updates.map((update, index) => (
@@ -71,7 +58,8 @@ export function LatestUpdates({ updates }: { updates: UpdateSummary[] }) {
 						</div>
 						<div className="p-6">
 							<p className="text-xs font-bold uppercase tracking-[0.14em] text-clay">
-								{update.category} · {update.date}
+								{m.zelglihof_updates_category()} ·{" "}
+								<time dateTime={update.dateIso}>{update.date}</time>
 							</p>
 							<h3 className="mt-3 font-serif text-2xl font-bold leading-tight">
 								{update.title}

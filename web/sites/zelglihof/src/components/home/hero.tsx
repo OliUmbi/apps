@@ -8,14 +8,12 @@ export function Hero({
 	featuredProduct?: ProductSummary;
 }) {
 	return (
-		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-5 pt-5 lg:grid-cols-[1.05fr_0.95fr] lg:pt-8">
+		<section className="shell grid gap-5 pt-5 lg:grid-cols-[1.05fr_0.95fr] lg:pt-8">
 			<div className="relative flex min-h-[34rem] flex-col justify-between overflow-hidden rounded-[2rem] bg-forest p-7 text-cream md:p-11 lg:min-h-[42rem]">
 				<div className="absolute -right-24 -top-20 size-72 rounded-full border border-white/10" />
 				<div className="absolute -right-10 top-10 size-44 rounded-full border border-white/10" />
 				<div className="relative flex flex-wrap items-center gap-x-4 gap-y-2">
-					<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-sun">
-						{m.zelglihof_home_hero_eyebrow()}
-					</p>
+					<p className="eyebrow text-sun">{m.zelglihof_home_hero_eyebrow()}</p>
 					<p className="inline-flex items-center gap-2 rounded-full border border-sun/45 px-3.5 py-1.5 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-sun">
 						<span className="size-1.5 rounded-full bg-sun" aria-hidden="true" />
 						{m.zelglihof_home_hero_notice()}

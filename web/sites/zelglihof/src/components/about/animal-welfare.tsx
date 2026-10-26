@@ -3,10 +3,10 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Beef } from "lucide-react";
 export function AnimalWelfare() {
 	return (
-		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] py-24 md:py-32">
+		<section className="shell py-24 md:py-32">
 			<div className="grid gap-14 lg:grid-cols-2 lg:items-center">
 				<div>
-					<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-moss">
+					<p className="eyebrow text-moss">
 						{m.zelglihof_farm_animals_eyebrow()}
 					</p>
 					<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-5xl md:text-6xl">
@@ -21,10 +21,7 @@ export function AnimalWelfare() {
 					<p className="mt-4 text-ink/66 leading-[1.75]">
 						{m.zelglihof_farm_animals_feed_body()}
 					</p>
-					<Link
-						to="/products"
-						className="inline-flex min-h-12 items-center justify-center gap-[0.55rem] rounded-full border border-transparent bg-forest px-[1.15rem] py-3 text-[0.9rem] font-[720] leading-none text-cream transition hover:-translate-y-0.5 hover:bg-[#172f20] mt-8"
-					>
+					<Link to="/products" className="cta mt-8">
 						{m.zelglihof_farm_beef_action()}
 						<ArrowRight size={17} />
 					</Link>

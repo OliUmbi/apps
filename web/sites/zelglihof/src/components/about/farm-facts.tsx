@@ -1,6 +1,7 @@
 import { m } from "@oliumbi/i18n/messages";
 
-// Bestandszahlen sind Platzhalter und müssen vom Betrieb bestätigt werden.
+// Owner item "real farm facts and crop list": these counts are placeholder
+// content until the farm confirms the real numbers.
 const counts = [
 	{
 		value: "45",
@@ -26,7 +27,7 @@ const counts = [
 
 export function FarmFacts() {
 	return (
-		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-5 pb-24 lg:grid-cols-[1.15fr_0.85fr] lg:pb-32">
+		<section className="shell grid gap-5 pb-24 lg:grid-cols-[1.15fr_0.85fr] lg:pb-32">
 			<div className="relative min-h-[32rem] overflow-hidden rounded-[2rem] lg:min-h-[38rem]">
 				<img
 					src="/images/rinder-herde.jpg"
@@ -40,7 +41,7 @@ export function FarmFacts() {
 			</div>
 			<div className="flex flex-col justify-between gap-10 rounded-[2rem] bg-forest p-8 text-cream md:p-10">
 				<div>
-					<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-sun">
+					<p className="eyebrow text-sun">
 						{m.zelglihof_farm_counts_eyebrow()}
 					</p>
 					<p className="mt-5 max-w-xs text-sm leading-relaxed text-cream/65">

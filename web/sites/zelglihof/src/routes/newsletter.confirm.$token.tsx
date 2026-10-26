@@ -1,8 +1,8 @@
 import { Button } from "@base-ui/react/button";
 import { m } from "@oliumbi/i18n/messages";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
+import { Alert } from "@oliumbi/ui/alert";
 import { useMutation } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { confirmNewsletterSignup } from "../data/newsletter";
 
@@ -15,30 +15,42 @@ function NewsletterConfirmationPage() {
 	const mutation = useMutation({
 		mutationFn: () => submit({ data: { token } }),
 	});
-	const done =
-		mutation.data?.outcome === "confirmed" ||
-		mutation.data?.outcome === "already-confirmed";
-	let error: string | null = null;
-	if (mutation.isError) error = m.zelglihof_newsletter_confirm_retry();
-	else if (mutation.isSuccess && !done)
-		error = m.zelglihof_newsletter_confirm_invalid_link();
+	const outcome = mutation.data?.outcome;
+	const done = outcome === "confirmed" || outcome === "already-confirmed";
+	// Invalid and expired links are terminal: no action can still succeed on
+	// them, so they get their own copy and no retry. Only a transport failure
+	// (no outcome at all) is worth trying again.
+	const invalid = outcome === "invalid";
+	const expired = outcome === "expired";
 	return (
 		<section className="mx-auto max-w-xl px-4 py-24 text-center">
 			<h1 className="mb-8 font-serif text-4xl font-bold">
 				{m.zelglihof_newsletter_confirm_title()}
 			</h1>
-			<FormFeedback
-				success={done ? m.zelglihof_newsletter_confirm_success() : null}
-				error={error}
-			/>
-			{!done && (
+			<Alert tone={done ? "success" : "error"}>
+				{done
+					? m.zelglihof_newsletter_confirm_success()
+					: invalid
+						? m.zelglihof_newsletter_confirm_invalid_link()
+						: expired
+							? m.zelglihof_newsletter_confirm_expired()
+							: mutation.isError
+								? m.zelglihof_newsletter_confirm_retry()
+								: null}
+			</Alert>
+			{!done && !invalid && !expired && (
 				<Button
-					className="mt-8 rounded-lg bg-emerald-900 px-5 py-3 font-semibold text-white"
+					className="cta mt-8"
 					disabled={mutation.isPending}
 					onClick={() => mutation.mutate()}
 				>
 					{m.zelglihof_newsletter_confirm_submit()}
 				</Button>
+			)}
+			{expired && (
+				<Link to="/" hash="newsletter" className="cta mt-8">
+					{m.zelglihof_newsletter_confirm_resignup()}
+				</Link>
 			)}
 		</section>
 	);

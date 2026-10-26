@@ -1,16 +1,31 @@
 import { safeLinkHref } from "@oliumbi/contracts";
+import { m } from "@oliumbi/i18n/messages";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight } from "lucide-react";
 import { getPromotions } from "../data/promotions";
+import type { PublicPromotion } from "../model/content";
 
-export function Promotions() {
+// Seeded from the home loader so the strip is in the server-rendered page from
+// the start; a failed refresh reports instead of silently rendering nothing.
+export function Promotions({
+	initialPromotions,
+}: {
+	initialPromotions: PublicPromotion[];
+}) {
 	const query = useQuery({
 		queryKey: ["promotions"],
 		queryFn: () => getPromotions(),
+		initialData: initialPromotions,
 	});
+	if (query.isError)
+		return (
+			<p className="shell py-6 text-sm text-danger" role="alert">
+				{m.error_generic()}
+			</p>
+		);
 	if (!query.data?.length) return null;
 	return (
-		<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-4 py-6">
+		<div className="shell grid gap-4 py-6">
 			{query.data.map((promotion) => (
 				<a
 					key={promotion.id}

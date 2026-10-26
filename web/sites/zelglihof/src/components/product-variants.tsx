@@ -1,10 +1,11 @@
+import { stockLabel } from "../model/availability";
 import type { Product } from "../model/content";
 import { AssetImage } from "./asset-image";
 
 export function ProductVariants({ product }: { product: Product }) {
 	if (product.variants.length === 0) return null;
 	return (
-		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-6 py-8 md:grid-cols-2">
+		<section className="shell grid gap-6 py-8 md:grid-cols-2">
 			{product.variants.map((variant) => (
 				<article
 					key={variant.id}
@@ -23,6 +24,11 @@ export function ProductVariants({ product }: { product: Product }) {
 					<p className="mt-3 whitespace-pre-wrap text-ink/65">
 						{variant.description}
 					</p>
+					{stockLabel(variant.stock) && (
+						<p className="mt-3 text-sm font-semibold text-ink/60">
+							{stockLabel(variant.stock)}
+						</p>
+					)}
 				</article>
 			))}
 		</section>

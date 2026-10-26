@@ -14,6 +14,7 @@ import { NotFound } from "../components/not-found";
 import "../styles.css";
 
 export const Route = createRootRoute({
+	loader: () => ({ year: new Date().getFullYear() }),
 	head: () => ({
 		meta: [
 			{
@@ -54,6 +55,10 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+	// The shell renders outside the nearest-match context; the root route's
+	// bound hook addresses its match directly. The year comes from the root
+	// loader, so server and client render the same value at the year boundary.
+	const { year } = Route.useLoaderData();
 	return (
 		<html lang={getLocale()} className="h-full">
 			<head>
@@ -62,7 +67,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 			<body className="h-full">
 				<Header />
 				<main>{children}</main>
-				<Footer />
+				<Footer year={year} />
 				<Scripts />
 			</body>
 		</html>

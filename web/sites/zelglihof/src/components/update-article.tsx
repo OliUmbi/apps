@@ -8,7 +8,7 @@ import { AssetImage } from "./asset-image";
 export function UpdateArticle({ update }: { update: Update }) {
 	return (
 		<article>
-			<header className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] py-12 md:py-20">
+			<header className="shell py-12 md:py-20">
 				<Link
 					to="/latest"
 					className="inline-flex items-center gap-2 text-sm font-bold text-ink/55 hover:text-ink"
@@ -17,7 +17,8 @@ export function UpdateArticle({ update }: { update: Update }) {
 					{m.zelglihof_article_all_updates()}
 				</Link>
 				<p className="mt-12 text-xs font-bold uppercase tracking-[0.14em] text-clay">
-					{update.category} · {update.date}
+					{m.zelglihof_updates_category()} ·{" "}
+					<time dateTime={update.dateIso}>{update.date}</time>
 				</p>
 				<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 max-w-5xl text-6xl md:text-8xl">
 					{update.title}
@@ -26,16 +27,16 @@ export function UpdateArticle({ update }: { update: Update }) {
 					{update.description}
 				</p>
 			</header>
-			<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)]">
+			<div className="shell">
 				<AssetImage
 					src={update.image}
 					alt=""
 					className="max-h-[44rem] w-full rounded-[2rem] object-cover"
 				/>
 			</div>
-			<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-10 py-16 md:grid-cols-[0.7fr_1.3fr] md:py-24">
+			<div className="shell grid gap-10 py-16 md:grid-cols-[0.7fr_1.3fr] md:py-24">
 				<aside>
-					<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-moss">
+					<p className="eyebrow text-moss">
 						{m.zelglihof_article_newsletter_eyebrow()}
 					</p>
 				</aside>
@@ -49,7 +50,7 @@ export function UpdateArticle({ update }: { update: Update }) {
 				</div>
 			</div>
 			{update.images.length > 0 && (
-				<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-6 pb-20 md:grid-cols-2">
+				<div className="shell grid gap-6 pb-20 md:grid-cols-2">
 					{update.images.map((image) => (
 						<figure key={image.id}>
 							<AssetImage

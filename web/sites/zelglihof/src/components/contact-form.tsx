@@ -2,16 +2,15 @@ import { m } from "@oliumbi/i18n/messages";
 import { contactSchema } from "@oliumbi/zelglihof-data/forms";
 import { useServerFn } from "@tanstack/react-start";
 import { sendContactInquiry } from "../data/contact";
-import { SubmissionForm } from "./submission-form";
+import { SubmissionForm, useSubmissionId } from "./submission-form";
 
 export function ContactForm() {
 	const submit = useServerFn(sendContactInquiry);
+	const submissionId = useSubmissionId();
 	return (
 		<div className="contact-form-card">
 			<header>
-				<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-clay">
-					{m.zelglihof_contact_eyebrow()}
-				</p>
+				<p className="eyebrow text-clay">{m.zelglihof_contact_eyebrow()}</p>
 				<h2 className="mt-4 font-serif text-4xl font-bold">
 					{m.zelglihof_contact_title()}
 				</h2>
@@ -22,12 +21,19 @@ export function ContactForm() {
 			<SubmissionForm
 				className="two-column-form"
 				schema={contactSchema}
-				defaults={{ subject: "other" }}
+				defaults={{ subject: "other", submissionId }}
 				submit={(data) => submit({ data })}
 				submitLabel={m.zelglihof_contact_submit()}
+				success={(result) => (
+					<>
+						{m.sent()}{" "}
+						{m.zelglihof_submission_reference({ reference: result.reference })}
+					</>
+				)}
 				fields={[
 					{
 						name: "name",
+						kind: "text",
 						label: m.name(),
 						placeholder: m.zelglihof_contact_name_placeholder(),
 						autoComplete: "name",
@@ -35,23 +41,23 @@ export function ContactForm() {
 					},
 					{
 						name: "email",
+						kind: "email",
 						label: m.email(),
-						type: "email",
 						placeholder: "dein.name@beispiel.ch",
 						autoComplete: "email",
 					},
 					{
 						name: "phone",
+						kind: "tel",
 						label: m.phone(),
-						type: "tel",
 						placeholder: "079 123 45 67",
 						autoComplete: "tel",
 						required: true,
 					},
 					{
 						name: "message",
+						kind: "textarea",
 						label: m.message(),
-						type: "textarea",
 						placeholder: m.zelglihof_contact_message_placeholder(),
 						wide: true,
 						required: true,

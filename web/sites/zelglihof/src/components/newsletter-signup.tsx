@@ -9,7 +9,7 @@ export function NewsletterSignup() {
 	const submit = useServerFn(signupForNewsletter);
 	return (
 		<section id="newsletter" className="text-cream bg-forest py-20 md:py-28">
-			<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid items-center gap-[clamp(2rem,7vw,6rem)] md:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)]">
+			<div className="shell grid items-center gap-[clamp(2rem,7vw,6rem)] md:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)]">
 				<div className="newsletter-body">
 					<span
 						className="mb-8 grid size-[3.4rem] place-items-center rounded-full border border-cream/25 text-sun"
@@ -17,9 +17,7 @@ export function NewsletterSignup() {
 					>
 						<Mail size={24} />
 					</span>
-					<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-sun">
-						{m.zelglihof_newsletter_eyebrow()}
-					</p>
+					<p className="eyebrow text-sun">{m.zelglihof_newsletter_eyebrow()}</p>
 					<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-5xl md:text-6xl">
 						{m.zelglihof_newsletter_title()}
 					</h2>
@@ -43,13 +41,13 @@ export function NewsletterSignup() {
 						className="newsletter-form"
 						schema={newsletterSignupSchema}
 						submit={(data) => submit({ data })}
-						success={m.zelglihof_newsletter_signup_success()}
+						success={() => m.zelglihof_newsletter_signup_success()}
 						submitLabel={m.zelglihof_newsletter_submit()}
 						fields={[
 							{
 								name: "email",
+								kind: "email",
 								label: m.email(),
-								type: "email",
 								placeholder: "dein.name@beispiel.ch",
 								autoComplete: "email",
 								required: true,

@@ -5,6 +5,11 @@ import type { ReservationInput } from "./forms";
 import type { ReservableVariant } from "./reservation.types";
 import { product, productReservation, productVariant } from "./schema";
 
+// The one reservation-window predicate: both the public read model and the
+// reservation write path ask the database clock (`now()`) through this
+// fragment, so display and enforcement cannot disagree at a window edge.
+export const reservationWindowOpen = sql<boolean>`(${product.startsAt} IS NULL OR ${product.startsAt} <= now()) AND (${product.endsAt} IS NULL OR ${product.endsAt} >= now())`;
+
 // Submission workflow repository: the public reservation form's idempotent
 // write path, with the row locks it needs. Named for its role so it never
 // reads like the studio CRUD repository in content/product-reservation.ts.
@@ -20,7 +25,7 @@ export function createReservationRepository(transaction: Transaction) {
 					description: productVariant.description,
 					price: productVariant.price,
 					quantity: productVariant.quantity,
-					available: sql<boolean>`${product.visible} AND ${product.reservable} AND (${product.startsAt} IS NULL OR ${product.startsAt} <= now()) AND (${product.endsAt} IS NULL OR ${product.endsAt} >= now())`,
+					available: sql<boolean>`${product.visible} AND ${product.reservable} AND ${reservationWindowOpen}`,
 				})
 				.from(product)
 				.innerJoin(productVariant, eq(productVariant.productId, product.id))

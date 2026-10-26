@@ -6,8 +6,6 @@ import { createReservationService } from "@oliumbi/zelglihof-data/reservation.se
 import { createServerFn } from "@tanstack/react-start";
 import { database } from "../server/database.server";
 
-export { type ReservationInput, reservationSchema };
-
 export const createReservation = createServerFn({ method: "POST" })
 	.validator(reservationSchema)
 	.handler(({ data }) => reserveProduct(data));

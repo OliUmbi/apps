@@ -3,10 +3,10 @@ import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, MapPin, Sprout } from "lucide-react";
 import { farmMapLink } from "../model/location";
 
-export default function Footer() {
+export default function Footer({ year }: { year: number }) {
 	return (
 		<footer className="mt-24 bg-forest text-cream">
-			<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-14 py-14 md:grid-cols-[1.3fr_0.7fr_0.7fr] md:py-20">
+			<div className="shell grid gap-14 py-14 md:grid-cols-[1.3fr_0.7fr_0.7fr] md:py-20">
 				<div className="max-w-md">
 					<div className="flex items-center gap-3">
 						<span className="grid size-11 place-items-center rounded-full bg-sun text-ink">
@@ -21,7 +21,7 @@ export default function Footer() {
 					</p>
 				</div>
 				<div>
-					<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-sun">
+					<p className="eyebrow text-sun">
 						{m.zelglihof_footer_explore_title()}
 					</p>
 					<nav className="mt-6 grid gap-3 text-sm font-semibold">
@@ -40,7 +40,7 @@ export default function Footer() {
 					</nav>
 				</div>
 				<div>
-					<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-sun">
+					<p className="eyebrow text-sun">
 						{m.zelglihof_footer_address_title()}
 					</p>
 					<a
@@ -60,9 +60,9 @@ export default function Footer() {
 				</div>
 			</div>
 			<div className="border-t border-white/12">
-				<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] flex flex-col gap-4 py-6 text-xs text-cream/50 md:flex-row md:items-center md:justify-between">
+				<div className="shell flex flex-col gap-4 py-6 text-xs text-cream/50 md:flex-row md:items-center md:justify-between">
 					<p>
-						© {new Date().getFullYear()}
+						© {year}
 						{m.zelglihof_footer_ownership()}
 					</p>
 					<div className="flex flex-wrap gap-x-5 gap-y-2">

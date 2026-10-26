@@ -1,16 +1,17 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import { availabilityLabel } from "../../model/availability";
 import type { ProductSummary } from "../../model/content";
 import { AssetImage } from "../asset-image";
 import { ShopEmptyState } from "../shop-empty-state";
 export function FarmShop({ products }: { products: ProductSummary[] }) {
 	return (
 		<section className="bg-cream py-24 md:py-32">
-			<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)]">
+			<div className="shell">
 				<div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
 					<div>
-						<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-moss">
+						<p className="eyebrow text-moss">
 							{m.zelglihof_home_shop_eyebrow()}
 						</p>
 						<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 max-w-2xl text-5xl md:text-6xl">
@@ -46,7 +47,7 @@ export function FarmShop({ products }: { products: ProductSummary[] }) {
 									className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
 								/>
 								<span className="absolute left-4 top-4 rounded-full bg-cream/90 px-3 py-1.5 text-[0.68rem] font-bold uppercase tracking-wider backdrop-blur">
-									{product.availability}
+									{availabilityLabel(product.availability)}
 								</span>
 							</div>
 							<div className="flex items-start justify-between gap-3 pt-4">
@@ -54,7 +55,9 @@ export function FarmShop({ products }: { products: ProductSummary[] }) {
 									<h3 className="font-serif text-2xl font-bold">
 										{product.name}
 									</h3>
-									<p className="mt-1 text-sm text-ink/55">{product.eyebrow}</p>
+									<p className="mt-1 text-sm text-ink/55">
+										{m.zelglihof_shop_farm_direct()}
+									</p>
 								</div>
 								<ArrowRight
 									className="mt-1 transition-transform group-hover:translate-x-1"

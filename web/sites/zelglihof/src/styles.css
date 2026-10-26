@@ -8,19 +8,25 @@
 	--font-mono: "mono-geist", monospace;
 	--color-ink: #1d291f;
 	--color-forest: #24452f;
+	--color-forest-dark: #172f20;
 	--color-moss: #637a52;
 	--color-sage: #b9c3a8;
 	--color-oat: #f2ecdf;
 	--color-cream: #fbf8f1;
+	--color-cream-veil: rgb(251 248 241 / 72%);
+	--color-hairline: rgb(36 69 47 / 16%);
 	--color-clay: #b85f42;
 	--color-sun: #e7b852;
 	--color-danger: #b91c1c;
+	--color-success: #24452f;
+	--radius-card: 1.5rem;
+	--shadow-card: 0 24px 70px rgb(36 69 47 / 8%);
 }
 
 /* Base element styles: not expressible as utilities. */
 :root {
-	color: #1d291f;
-	background: #f2ecdf;
+	color: var(--color-ink);
+	background: var(--color-oat);
 	font-family: var(--font-sans);
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
@@ -36,8 +42,12 @@ html {
 body {
 	margin: 0;
 	background:
-		radial-gradient(circle at 10% 4%, rgb(231 184 82 / 12%), transparent 28rem),
-		#f2ecdf;
+		radial-gradient(
+			circle at 10% 4%,
+			color-mix(in srgb, var(--color-sun) 12%, transparent),
+			transparent 28rem
+		),
+		var(--color-oat);
 }
 
 body::before {
@@ -70,23 +80,36 @@ a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-	outline: 3px solid #e7b852;
+	outline: 3px solid var(--color-sun);
 	outline-offset: 3px;
 }
 ::selection {
-	color: #fbf8f1;
-	background: #24452f;
+	color: var(--color-cream);
+	background: var(--color-forest);
 }
 
 /*
- * The rules below stay in CSS deliberately:
+ * Why the classes below exist (plain CSS on purpose):
+ * - `.shell`, `.cta` and `.eyebrow` are the three repeated flat utility
+ *   strings this site pastes across its pages; defined once, the page
+ *   container, the primary button and the kicker line stay consistent.
  * - `.tile-media`, `.newsletter-benefits`, `.newsletter-form`,
  *   `.contact-form-card`, `.two-column-form` and `.updates-empty` anchor
  *   descendant/child selectors, so replacing the anchor with utilities would
  *   orphan the children.
- * - `.farm-markdown` styles HTML emitted by the markdown renderer, which cannot
- *   carry utility classes.
+ * - `.farm-markdown` styles HTML emitted by the markdown renderer, which
+ *   cannot carry utility classes.
  */
+.shell {
+	@apply mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)];
+}
+.cta {
+	@apply inline-flex min-h-12 items-center justify-center gap-[0.55rem] rounded-full border border-transparent bg-forest px-[1.15rem] py-3 text-[0.9rem] font-[720] leading-none text-cream transition hover:-translate-y-0.5 hover:bg-forest-dark disabled:opacity-50;
+}
+.eyebrow {
+	@apply inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''];
+}
+
 .tile-media {
 	position: relative;
 	display: flex;
@@ -94,7 +117,7 @@ select:focus-visible {
 	justify-content: flex-end;
 	aspect-ratio: 4 / 5;
 	overflow: hidden;
-	border-radius: 1.5rem;
+	border-radius: var(--radius-card);
 	padding: 1.35rem;
 	isolation: isolate;
 }
@@ -103,6 +126,7 @@ select:focus-visible {
 	inset: 0;
 	z-index: -1;
 	content: "";
+	/* Bespoke image-scrim tint, not one of the palette tokens. */
 	background: linear-gradient(180deg, transparent 38%, rgb(20 34 24 / 78%));
 }
 .tile-media > img {
@@ -123,7 +147,7 @@ select:focus-visible {
 	margin: 0 0 2rem;
 	padding: 0;
 	list-style: none;
-	color: rgb(251 248 241 / 72%);
+	color: var(--color-cream-veil);
 }
 .newsletter-benefits li {
 	display: flex;
@@ -131,7 +155,7 @@ select:focus-visible {
 	gap: 0.7rem;
 }
 .newsletter-benefits svg {
-	color: #e7b852;
+	color: var(--color-sun);
 }
 .newsletter-form {
 	display: grid;
@@ -139,17 +163,17 @@ select:focus-visible {
 }
 /* Submit button is rendered by SubmissionForm, so it cannot carry a variant class. */
 .newsletter-form button {
-	color: #1d291f;
-	background: #e7b852;
+	color: var(--color-ink);
+	background: var(--color-sun);
 }
 
 .contact-form-card {
 	position: relative;
-	border: 1px solid rgb(36 69 47 / 16%);
-	border-radius: 1.5rem;
+	border: 1px solid var(--color-hairline);
+	border-radius: var(--radius-card);
 	padding: clamp(1.5rem, 5vw, 3.5rem);
-	background: rgb(251 248 241 / 72%);
-	box-shadow: 0 24px 70px rgb(36 69 47 / 8%);
+	background: var(--color-cream-veil);
+	box-shadow: var(--shadow-card);
 }
 .contact-form-card > header {
 	margin-bottom: 2.5rem;
@@ -159,8 +183,10 @@ select:focus-visible {
 	display: grid;
 	gap: 1.25rem 1.5rem;
 }
+/* `Alert` reserves its slot with role="alert" (error) or role="status" (ok). */
 .two-column-form .form-control-wrap.is-wide,
 .two-column-form > [role="alert"],
+.two-column-form > [role="status"],
 .two-column-form > button {
 	grid-column: 1 / -1;
 }
@@ -169,11 +195,11 @@ select:focus-visible {
 	display: grid;
 	min-height: 18rem;
 	place-items: center;
-	border: 1px dashed rgb(36 69 47 / 25%);
-	border-radius: 1.5rem;
+	border: 1px dashed color-mix(in srgb, var(--color-forest) 25%, transparent);
+	border-radius: var(--radius-card);
 	padding: 3rem;
 	text-align: center;
-	background: rgb(251 248 241 / 45%);
+	background: color-mix(in srgb, var(--color-cream) 45%, transparent);
 }
 .updates-empty h3 {
 	margin: 0.8rem 0;
@@ -182,7 +208,7 @@ select:focus-visible {
 }
 
 .farm-markdown {
-	color: rgb(29 41 31 / 75%);
+	color: color-mix(in srgb, var(--color-ink) 75%, transparent);
 	font-size: 1.05rem;
 	line-height: 1.8;
 }
@@ -190,7 +216,7 @@ select:focus-visible {
 .farm-markdown h2,
 .farm-markdown h3 {
 	margin: 2.6rem 0 0.8rem;
-	color: #1d291f;
+	color: var(--color-ink);
 	font-family: var(--font-serif);
 	line-height: 1.1;
 }
@@ -207,7 +233,7 @@ select:focus-visible {
 	margin: 0 0 1.4rem;
 }
 .farm-markdown a {
-	color: #24452f;
+	color: var(--color-forest);
 	font-weight: 700;
 	text-decoration: underline;
 	text-underline-offset: 0.2em;
@@ -215,7 +241,7 @@ select:focus-visible {
 .farm-markdown hr {
 	margin: 2.7rem 0;
 	border: 0;
-	border-top: 1px solid rgb(36 69 47 / 22%);
+	border-top: 1px solid color-mix(in srgb, var(--color-forest) 22%, transparent);
 }
 
 @media (min-width: 768px) {

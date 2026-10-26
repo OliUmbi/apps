@@ -1,12 +1,16 @@
 import { m } from "@oliumbi/i18n/messages";
+import { availabilityLabel } from "../model/availability";
 import type { Product } from "../model/content";
 import { ReservationForm } from "./reservation-form";
 
 export function ProductReservation({ product }: { product: Product }) {
+	// A counter product is sold over the farm-shop counter: no reservation flow.
+	if (product.availability.state === "farm-shop") return null;
+	const soldOut = product.availability.state === "sold-out";
 	return (
-		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-12 py-20 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+		<section className="shell grid gap-12 py-20 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
 			<div>
-				<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-moss">
+				<p className="eyebrow text-moss">
 					{m.zelglihof_product_reservation_eyebrow()}
 				</p>
 				<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-5xl">
@@ -38,14 +42,14 @@ export function ProductReservation({ product }: { product: Product }) {
 			) : (
 				<div>
 					<div className="rounded-[1.5rem] bg-sun p-7 md:p-9">
-						<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-['']">
-							{m.zelglihof_product_out_of_season_eyebrow()}
-						</p>
+						<p className="eyebrow">{availabilityLabel(product.availability)}</p>
 						<h2 className="mt-5 font-serif text-4xl font-bold">
 							{m.zelglihof_product_out_of_season_title()}
 						</h2>
 						<p className="mt-4 leading-relaxed text-ink/65">
-							{m.zelglihof_product_out_of_season_body()}
+							{soldOut
+								? m.zelglihof_product_sold_out_body()
+								: m.zelglihof_product_out_of_season_body()}
 						</p>
 					</div>
 				</div>

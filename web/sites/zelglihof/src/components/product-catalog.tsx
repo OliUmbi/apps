@@ -1,12 +1,13 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import { availabilityLabel } from "../model/availability";
 import type { ProductSummary } from "../model/content";
 import { AssetImage } from "./asset-image";
 export function ProductCatalog({ products }: { products: ProductSummary[] }) {
 	if (products.length === 0) return null;
 	return (
-		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-6 pb-24 md:grid-cols-2">
+		<section className="shell grid gap-6 pb-24 md:grid-cols-2">
 			{products.map((product, index) => (
 				<Link
 					key={product.id}
@@ -24,13 +25,13 @@ export function ProductCatalog({ products }: { products: ProductSummary[] }) {
 							className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.035]"
 						/>
 						<span className="absolute left-5 top-5 rounded-full bg-cream/92 px-3 py-2 text-[0.68rem] font-bold uppercase tracking-wider backdrop-blur">
-							{product.availability}
+							{availabilityLabel(product.availability)}
 						</span>
 					</div>
 					<div className="flex flex-col justify-between p-6 md:p-9">
 						<div>
 							<p className="text-xs font-bold uppercase tracking-[0.14em] text-clay">
-								{product.eyebrow}
+								{m.zelglihof_shop_farm_direct()}
 							</p>
 							<h2 className="mt-3 font-serif text-4xl font-bold md:text-5xl">
 								{product.name}

@@ -8,72 +8,80 @@ type Crop = {
 	wide?: boolean;
 };
 
-const arable: Crop[] = [
-	{
-		name: m.zelglihof_crops_corn_name(),
-		body: m.zelglihof_crops_corn_body(),
-		image: "/images/zuckermais-beregnung-sprenger.jpg",
-		wide: true,
-	},
-	{
-		name: m.zelglihof_crops_rapeseed_name(),
-		body: m.zelglihof_crops_rapeseed_body(),
-		tone: "bg-sun text-ink",
-	},
-	{
-		name: m.zelglihof_crops_wheat_name(),
-		body: m.zelglihof_crops_wheat_body(),
-		tone: "bg-oat text-ink",
-	},
-	{
-		name: m.zelglihof_crops_spelt_name(),
-		body: m.zelglihof_crops_spelt_body(),
-		tone: "bg-sage text-ink",
-	},
-	{
-		name: m.zelglihof_crops_beets_name(),
-		body: m.zelglihof_crops_beets_body(),
-		tone: "bg-clay text-cream",
-	},
-];
+// Messages resolve at render time, never at module scope.
+function arableCrops(): Crop[] {
+	return [
+		{
+			name: m.zelglihof_crops_corn_name(),
+			body: m.zelglihof_crops_corn_body(),
+			image: "/images/zuckermais-beregnung-sprenger.jpg",
+			wide: true,
+		},
+		{
+			name: m.zelglihof_crops_rapeseed_name(),
+			body: m.zelglihof_crops_rapeseed_body(),
+			tone: "bg-sun text-ink",
+		},
+		{
+			name: m.zelglihof_crops_wheat_name(),
+			body: m.zelglihof_crops_wheat_body(),
+			tone: "bg-oat text-ink",
+		},
+		{
+			name: m.zelglihof_crops_spelt_name(),
+			body: m.zelglihof_crops_spelt_body(),
+			tone: "bg-sage text-ink",
+		},
+		{
+			name: m.zelglihof_crops_beets_name(),
+			body: m.zelglihof_crops_beets_body(),
+			tone: "bg-clay text-cream",
+		},
+	];
+}
 
-const special: Crop[] = [
-	{
-		name: m.zelglihof_crops_maize_name(),
-		body: m.zelglihof_crops_maize_body(),
-		image: "/images/zuckermais-beregnung-haspel.jpg",
-	},
-	{
-		name: m.zelglihof_crops_spinach_name(),
-		body: m.zelglihof_crops_spinach_body(),
-		image: "/images/spinat-feld.jpg",
-	},
-	{
-		name: m.zelglihof_crops_broccoli_name(),
-		body: m.zelglihof_crops_broccoli_body(),
-		image: "/images/broccoli-pflanze.jpg",
-	},
-	{
-		name: m.zelglihof_crops_beans_name(),
-		body: m.zelglihof_crops_beans_body(),
-		tone: "bg-moss text-cream",
-	},
-	{
-		name: m.zelglihof_crops_peas_name(),
-		body: m.zelglihof_crops_peas_body(),
-		tone: "bg-sage text-ink",
-	},
-	{
-		name: m.zelglihof_crops_pumpkin_name(),
-		body: m.zelglihof_crops_pumpkin_body(),
-		tone: "bg-sun text-ink",
-	},
-];
+function specialCrops(): Crop[] {
+	return [
+		{
+			name: m.zelglihof_crops_maize_name(),
+			body: m.zelglihof_crops_maize_body(),
+			image: "/images/zuckermais-beregnung-haspel.jpg",
+		},
+		{
+			name: m.zelglihof_crops_spinach_name(),
+			body: m.zelglihof_crops_spinach_body(),
+			image: "/images/spinat-feld.jpg",
+		},
+		{
+			name: m.zelglihof_crops_broccoli_name(),
+			body: m.zelglihof_crops_broccoli_body(),
+			image: "/images/broccoli-pflanze.jpg",
+		},
+		{
+			name: m.zelglihof_crops_beans_name(),
+			body: m.zelglihof_crops_beans_body(),
+			tone: "bg-moss text-cream",
+		},
+		{
+			name: m.zelglihof_crops_peas_name(),
+			body: m.zelglihof_crops_peas_body(),
+			tone: "bg-sage text-ink",
+		},
+		{
+			name: m.zelglihof_crops_pumpkin_name(),
+			body: m.zelglihof_crops_pumpkin_body(),
+			tone: "bg-sun text-ink",
+		},
+	];
+}
 
 export function CropMosaic() {
 	return (
-		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] pb-24 md:pb-32">
-			<CropGroup title={m.zelglihof_crops_group_arable()} crops={arable} />
+		<section className="shell pb-24 md:pb-32">
+			<CropGroup
+				title={m.zelglihof_crops_group_arable()}
+				crops={arableCrops()}
+			/>
 			<div className="my-16 overflow-hidden rounded-[2rem] md:my-24">
 				<img
 					src="/images/broccoli-ernte-kiste.jpg"
@@ -81,7 +89,10 @@ export function CropMosaic() {
 					className="aspect-[16/6] w-full object-cover"
 				/>
 			</div>
-			<CropGroup title={m.zelglihof_crops_group_special()} crops={special} />
+			<CropGroup
+				title={m.zelglihof_crops_group_special()}
+				crops={specialCrops()}
+			/>
 		</section>
 	);
 }

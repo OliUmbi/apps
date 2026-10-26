@@ -1,3 +1,8 @@
+import type {
+	ProductAvailability,
+	VariantStock,
+} from "@oliumbi/zelglihof-data/reservation.service";
+
 export interface PublicPromotion {
 	id: string;
 	title: string;
@@ -8,10 +13,11 @@ export interface PublicPromotion {
 export interface ProductSummary {
 	id: string;
 	name: string;
-	eyebrow: string;
 	description: string;
 	image: string;
-	availability: string;
+	// Decided once in `zelglihof-data` against the database clock: the state
+	// drives behavior, the label key names the string the component renders.
+	availability: ProductAvailability;
 	reservationOpen: boolean;
 }
 
@@ -23,17 +29,19 @@ export interface Product extends ProductSummary {
 		price: string;
 		description: string;
 		image: string;
-		quantity: number | null;
+		stock: VariantStock;
 	}[];
 }
+
 export interface UpdateSummary {
 	id: string;
 	slug: string;
 	title: string;
 	description: string;
 	image: string;
+	// Server-formatted display date and the machine-readable day behind it.
 	date: string;
-	category: string;
+	dateIso: string;
 }
 
 export interface Update extends UpdateSummary {

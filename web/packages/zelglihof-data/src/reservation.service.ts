@@ -8,6 +8,22 @@ import { reservationEmails } from "./reservation.email";
 import { createReservationRepository } from "./reservation.repository";
 import type { ReservationPlan, ReservationResult } from "./reservation.types";
 
+/*
+ * The availability model (state + catalog key) re-exports through this entry
+ * point because the package export map is deliberate and small: only its
+ * entries may cross the package boundary, and `reservation.types` is not one.
+ */
+export type {
+	AvailabilityLabelKey,
+	AvailableProduct,
+	AvailableVariant,
+	ProductAvailability,
+	ProductAvailabilityState,
+	VariantStock,
+	VariantStockLabelKey,
+	VariantStockState,
+} from "./reservation.types";
+
 // Pure decision point: a replayed submission reports the original outcome and writes nothing.
 export function decideReservation(input: {
 	replayed: boolean;

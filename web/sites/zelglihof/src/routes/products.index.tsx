@@ -1,3 +1,4 @@
+import { m } from "@oliumbi/i18n/messages";
 import { PaginatedList } from "@oliumbi/ui/paginated-list";
 import { createFileRoute } from "@tanstack/react-router";
 import { NewsletterSignup } from "../components/newsletter-signup";
@@ -8,6 +9,7 @@ import { ShopIntroduction } from "../components/shop-introduction";
 import { getProductPage } from "../data/products";
 
 export const Route = createFileRoute("/products/")({
+	head: () => ({ meta: [{ title: m.zelglihof_shop_page_title() }] }),
 	loader: () => getProductPage({ data: { page: 0 } }),
 	component: ProductsPage,
 });
@@ -20,8 +22,9 @@ function ProductsPage() {
 				queryKey={["products"]}
 				initialPage={initialPage}
 				load={(page) => getProductPage({ data: { page } })}
+				containerClassName="shell"
 				emptyState={
-					<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] pb-24">
+					<section className="shell pb-24">
 						<ShopEmptyState />
 					</section>
 				}

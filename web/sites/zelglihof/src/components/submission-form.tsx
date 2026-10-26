@@ -1,46 +1,52 @@
 import { Button } from "@base-ui/react/button";
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
+import { Alert } from "@oliumbi/ui/alert";
+import type { SubmissionFieldName } from "@oliumbi/ui/submission-types";
 import { useSubmissionForm } from "@oliumbi/ui/use-submission-form";
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import type { z } from "zod";
-import { SubmissionControl, type SubmissionField } from "./submission-control";
+import { type SiteField, SubmissionControl } from "./submission-control";
 
-export type { SubmissionField } from "./submission-control";
+// One submission id per form fill: a retry of the same fill replays the same
+// id, so the server reports the original outcome instead of committing twice.
+// The forms whose schema keys idempotency on `submissionId` pass it through
+// `defaults`; schemas keying it elsewhere (the newsletter keys on the address)
+// simply do not.
+export function useSubmissionId(): string {
+	return useState(() => crypto.randomUUID())[0];
+}
 
 export function SubmissionForm<Input, Result>({
 	schema,
 	fields,
 	submit,
 	getResultError,
-	defaults = {},
-	success = m.sent(),
+	defaults,
+	success = () => m.sent(),
 	className = "",
 	submitLabel = m.submit(),
 }: {
 	schema: z.ZodType<Input>;
-	fields: SubmissionField[];
+	fields: readonly SiteField<Input>[];
 	submit: (data: Input) => Promise<Result>;
 	getResultError?: (result: Result) => string | null;
-	defaults?: Record<string, unknown>;
-	success?: string;
+	defaults?: Partial<Record<SubmissionFieldName<Input>, unknown>>;
+	success?: (result: Result) => ReactNode;
 	className?: string;
 	submitLabel?: string;
 }) {
-	// One submission id per form fill: a retry of the same fill replays the same
-	// id, so the server reports the original outcome instead of committing twice.
-	const [submissionId] = useState(() => crypto.randomUUID());
 	const form = useSubmissionForm({
 		schema,
 		submit,
+		fields,
+		defaults,
 		getResultError,
-		defaults: { ...defaults, submissionId },
-		numberFields: fields
-			.filter((field) => field.type === "number")
-			.map((field) => field.name),
+		success,
 	});
-	if (form.succeeded) return <FormFeedback success={success} />;
+	// The receipt replaces the form; `Alert` reserves its slot, so swapping
+	// states never moves the elements around it.
+	if (form.succeeded) return <Alert tone="success">{form.success}</Alert>;
 	return (
 		<Form
 			className={`submission-form grid gap-5 ${className}`}
@@ -52,15 +58,15 @@ export function SubmissionForm<Input, Result>({
 					key={field.name}
 					className={`form-control-wrap ${field.wide ? "is-wide" : ""}`}
 				>
-					<SubmissionControl field={field} disabled={form.pending} />
+					<SubmissionControl
+						field={field}
+						disabled={form.pending}
+						error={form.errors[field.name]}
+					/>
 				</div>
 			))}
-			<FormFeedback error={form.error} />
-			<Button
-				type="submit"
-				className="inline-flex min-h-12 items-center justify-center gap-[0.55rem] rounded-full border border-transparent bg-forest px-[1.15rem] py-3 text-[0.9rem] font-[720] leading-none text-cream transition hover:-translate-y-0.5 hover:bg-[#172f20] disabled:opacity-50"
-				disabled={form.pending}
-			>
+			<Alert tone="error">{form.error}</Alert>
+			<Button type="submit" className="cta" disabled={form.pending}>
 				{form.pending ? m.saving() : submitLabel}
 			</Button>
 		</Form>

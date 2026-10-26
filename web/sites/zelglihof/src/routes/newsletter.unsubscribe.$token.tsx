@@ -1,6 +1,6 @@
 import { Button } from "@base-ui/react/button";
 import { m } from "@oliumbi/i18n/messages";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
+import { Alert } from "@oliumbi/ui/alert";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -15,25 +15,28 @@ function NewsletterUnsubscribePage() {
 	const mutation = useMutation({
 		mutationFn: () => submit({ data: { token } }),
 	});
-	const done =
-		mutation.data?.outcome === "unsubscribed" ||
-		mutation.data?.outcome === "already-unsubscribed";
-	let error: string | null = null;
-	if (mutation.isError) error = m.zelglihof_newsletter_unsubscribe_retry();
-	else if (mutation.isSuccess && !done)
-		error = m.zelglihof_newsletter_unsubscribe_invalid_link();
+	const outcome = mutation.data?.outcome;
+	const done = outcome === "unsubscribed" || outcome === "already-unsubscribed";
+	// An unknown link is terminal: no action can still succeed on it, so it
+	// gets its own copy and no retry. Only a transport failure is retryable.
+	const invalid = outcome === "invalid";
 	return (
 		<section className="mx-auto max-w-xl px-4 py-24 text-center">
 			<h1 className="mb-8 font-serif text-4xl font-bold">
 				{m.zelglihof_newsletter_unsubscribe_title()}
 			</h1>
-			<FormFeedback
-				success={done ? m.zelglihof_newsletter_unsubscribe_success() : null}
-				error={error}
-			/>
-			{!done && (
+			<Alert tone={done ? "success" : "error"}>
+				{done
+					? m.zelglihof_newsletter_unsubscribe_success()
+					: invalid
+						? m.zelglihof_newsletter_unsubscribe_invalid_link()
+						: mutation.isError
+							? m.zelglihof_newsletter_unsubscribe_retry()
+							: null}
+			</Alert>
+			{!done && !invalid && (
 				<Button
-					className="mt-8 rounded-lg bg-emerald-900 px-5 py-3 font-semibold text-white"
+					className="cta mt-8"
 					disabled={mutation.isPending}
 					onClick={() => mutation.mutate()}
 				>

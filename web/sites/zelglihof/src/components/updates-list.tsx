@@ -6,7 +6,7 @@ import { AssetImage } from "./asset-image";
 export function UpdatesList({ updates }: { updates: UpdateSummary[] }) {
 	if (updates.length === 0) return null;
 	return (
-		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)] grid gap-7 pb-24">
+		<section className="shell grid gap-7 pb-24">
 			{updates.map((update, index) => (
 				<article
 					key={update.slug}
@@ -27,7 +27,8 @@ export function UpdatesList({ updates }: { updates: UpdateSummary[] }) {
 					<div className="flex flex-col justify-between p-7 md:p-10">
 						<div>
 							<p className="text-xs font-bold uppercase tracking-[0.14em] text-clay">
-								{update.category} · {update.date}
+								{m.zelglihof_updates_category()} ·{" "}
+								<time dateTime={update.dateIso}>{update.date}</time>
 							</p>
 							<h2 className="mt-4 font-serif text-4xl font-bold leading-tight md:text-5xl">
 								<Link to="/latest/$slug" params={{ slug: update.slug }}>

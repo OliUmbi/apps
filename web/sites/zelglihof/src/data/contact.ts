@@ -6,8 +6,6 @@ import { createInquiryService } from "@oliumbi/zelglihof-data/inquiry.service";
 import { createServerFn } from "@tanstack/react-start";
 import { database } from "../server/database.server";
 
-export { type ContactInput, contactSchema };
-
 export const sendContactInquiry = createServerFn({ method: "POST" })
 	.validator(contactSchema)
 	.handler(({ data }) => saveContactInquiry(data));

@@ -2,29 +2,31 @@ import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Leaf, Sprout } from "lucide-react";
 
-const crops = [
-	"Zuckerrüben",
-	"Raps",
-	"Weizen",
-	"Dinkel",
-	"Futtermais",
-	"Kürbisse",
-	"Spinat",
-	"Erbsen",
-	"Bohnen",
-	"Zuckermais",
-	"Brokkoli",
-];
-
 const cropColors = ["bg-sun/55", "bg-sage/45", "bg-oat"];
 
 export function SeasonalCrops() {
+	// Owner item "real farm facts and crop list": the list itself is
+	// placeholder content until the farm confirms its crops. The names are
+	// catalog copy shared with the crops mosaic, resolved at render time.
+	const crops = [
+		m.zelglihof_crops_beets_name(),
+		m.zelglihof_crops_rapeseed_name(),
+		m.zelglihof_crops_wheat_name(),
+		m.zelglihof_crops_spelt_name(),
+		m.zelglihof_crops_corn_name(),
+		m.zelglihof_crops_pumpkin_name(),
+		m.zelglihof_crops_spinach_name(),
+		m.zelglihof_crops_peas_name(),
+		m.zelglihof_crops_beans_name(),
+		m.zelglihof_crops_maize_name(),
+		m.zelglihof_crops_broccoli_name(),
+	];
 	return (
 		<section className="bg-cream py-24 md:py-32">
-			<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[76rem] md:w-[calc(100%_-_4rem)]">
+			<div className="shell">
 				<div className="grid gap-10 md:grid-cols-[0.8fr_1.2fr]">
 					<div>
-						<p className="inline-flex items-center gap-[0.55rem] text-[0.72rem] font-bold uppercase leading-none tracking-[0.16em] before:h-px before:w-[1.8rem] before:bg-current before:content-[''] text-clay">
+						<p className="eyebrow text-clay">
 							{m.zelglihof_farm_crops_eyebrow()}
 						</p>
 						<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-5xl md:text-6xl">

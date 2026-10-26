@@ -1,33 +1,29 @@
 import { publicImageUrl } from "@oliumbi/assets/urls";
 import { idSchema, pageSchema } from "@oliumbi/contracts";
 import { createPublicRepository } from "@oliumbi/zelglihof-data";
-import type { Product as ProductRecord } from "@oliumbi/zelglihof-data/content/product";
-import type { ProductVariant } from "@oliumbi/zelglihof-data/content/product-variant";
+import type {
+	AvailableProduct,
+	AvailableVariant,
+} from "@oliumbi/zelglihof-data/reservation.service";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import type { Product, ProductSummary } from "../model/content";
 import { database } from "../server/database.server";
 
-function productSummaryFromRecord(record: ProductRecord): ProductSummary {
-	const now = Date.now();
-	const active =
-		(!record.startsAt || Date.parse(record.startsAt) <= now) &&
-		(!record.endsAt || Date.parse(record.endsAt) >= now);
+function productSummaryFromRecord(record: AvailableProduct): ProductSummary {
 	return {
 		id: record.id,
 		name: record.name,
-		eyebrow: "Direkt ab Hof",
 		description: record.description,
 		image: record.imageId ? publicImageUrl(record.imageId) : "",
-		availability:
-			record.reservable && active ? "Reservation offen" : "Im Hofladen",
-		reservationOpen: record.reservable && active,
+		availability: record.availability,
+		reservationOpen: record.availability.state === "reservation-open",
 	};
 }
 
 function productFromRecord(
-	record: ProductRecord,
-	variants: ProductVariant[],
+	record: AvailableProduct,
+	variants: AvailableVariant[],
 ): Product {
 	return {
 		...productSummaryFromRecord(record),
@@ -38,15 +34,22 @@ function productFromRecord(
 			price: variant.price,
 			description: variant.description ?? "",
 			image: variant.imageId ? publicImageUrl(variant.imageId) : "",
-			quantity: variant.quantity,
+			stock: variant.stock,
 		})),
 	};
 }
+
+const pageInput = z.object({
+	page: pageSchema.shape.page,
+	size: pageSchema.shape.size.optional(),
+});
+
 export const getProductPage = createServerFn({ method: "GET" })
-	.validator(z.object({ page: pageSchema.shape.page }))
+	.validator(pageInput)
 	.handler(async ({ data }) => {
 		const page = await createPublicRepository(database.db).listProducts(
 			data.page,
+			data.size,
 		);
 		return {
 			...page,
