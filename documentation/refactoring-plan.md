@@ -182,6 +182,13 @@ From the reports' "keep these" lists; every package must preserve them:
 
 ## 6. Execution log
 
+**Status: COMPLETE (2026-10-26).** 35 commits, all packages landed.
+Final verification: `pnpm check` / `pnpm typecheck` / `pnpm test` / `pnpm build`
+(all four sites) / `pnpm --filter studio build` / `services/mvnw -f
+services/pom.xml test` (168 Java tests) / `docker compose … config` — all green.
+What remains is owner work: the staging-verification items in `open-work.md`,
+the owner-decision items in §5 below, and the tracker-consolidation proposal.
+
 | Package | Status | Notes |
 | --- | --- | --- |
 | W0-1, W0-2 | done | baseline green; plan committed (a3f0cd2) |
@@ -197,9 +204,9 @@ From the reports' "keep these" lists; every package must preserve them:
 | W3-C | done | b3460ab: availability single-source (SQL clock), tokens, typed forms, terminal-state UX; 88 tests; combined tree re-verified green by orchestrator |
 | W3-D | done | 293c7b3: honeypots in all 6 schemas (zero side effects, idempotency-safe), unclet review.service, X-08 clean, 96 tests. Leftover smalls for W6-C: unclet footer rel attribute; ~45 decorative icons missing aria-hidden (unclet/zelglihof) |
 | W4-A | done | 6533d97 (Checkbox, list leaves) + ac7353f (filter-chip, attempt-row, form-footer, panel/badge passthrough, F12 guards, D6 decision) |
-| W4-B | part 1 done | 76af189. Part 2 re-dispatched (legacy CSS, shims, T-10) after usage-limit restart — no partial work existed |
-| W4-C | pending | last big item: collection machinery + page-type rework (R12/R13/D7) |
-| W6-C | part 1 done | 38dfa66: 58 icons aria-hidden + rel fix. Part 2 running (docs sync + tracker dispositions) |
+| W4-B | done | 76af189 (views) + c220569 (legacy CSS 905→200 lines, shims gone, one token system) |
+| W4-C | done | ffc66c7: capability discriminated union (R13), StudioSearchContext top-down nav (R12), PageCollection/RelatedCollection adapters, donation_commitment section; + 8e576b8 polish |
+| W6-C | done | 38dfa66 (icons/rel) + c975f38 (docs sync: 38 dispositions, open-work annotations, tracker proposal) |
 | W5-A | done | committed 5e5fa92; 90 Java tests green; MailSendException semantics verified against Spring 7.0.9 sources |
 | W5-B | done | committed 12a187f; 168 Java tests green; 401 contract + errorId envelope + identity hardening |
 | W5-C | done | committed 093ce71; 134 Java tests green; 44 hermetic processing-pipeline tests |
