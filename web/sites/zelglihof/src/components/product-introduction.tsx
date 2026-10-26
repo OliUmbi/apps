@@ -12,7 +12,7 @@ export function ProductIntroduction({ product }: { product: Product }) {
 				to="/products"
 				className="mb-5 inline-flex items-center gap-2 text-sm font-bold text-ink/60 hover:text-ink"
 			>
-				<ArrowLeft size={17} />
+				<ArrowLeft size={17} aria-hidden="true" />
 				{m.zelglihof_product_back_to_shop_link()}
 			</Link>
 			<div className="grid overflow-hidden rounded-[2rem] bg-cream lg:grid-cols-[1.1fr_0.9fr]">
@@ -41,15 +41,23 @@ export function ProductIntroduction({ product }: { product: Product }) {
 					</div>
 					<div className="mt-12 grid gap-4 border-t border-forest/12 pt-7 text-sm font-semibold sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
 						<span className="flex items-center gap-2">
-							<PackageCheck size={19} className="text-clay" />
+							<PackageCheck
+								size={19}
+								className="text-clay"
+								aria-hidden="true"
+							/>
 							{m.zelglihof_product_direct_sales()}
 						</span>
 						<span className="flex items-center gap-2">
-							<MapPin size={19} className="text-clay" />
+							<MapPin size={19} className="text-clay" aria-hidden="true" />
 							{m.zelglihof_product_farm_pickup()}
 						</span>
 						<span className="flex items-center gap-2">
-							<CalendarDays size={19} className="text-clay" />
+							<CalendarDays
+								size={19}
+								className="text-clay"
+								aria-hidden="true"
+							/>
 							{m.zelglihof_product_confirmation_required()}
 						</span>
 					</div>

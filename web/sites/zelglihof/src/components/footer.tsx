@@ -10,7 +10,7 @@ export default function Footer({ year }: { year: number }) {
 				<div className="max-w-md">
 					<div className="flex items-center gap-3">
 						<span className="grid size-11 place-items-center rounded-full bg-sun text-ink">
-							<Sprout size={21} />
+							<Sprout size={21} aria-hidden="true" />
 						</span>
 						<span className="font-serif text-3xl font-bold">
 							{m.zelglihof_brand()}
@@ -49,13 +49,17 @@ export default function Footer({ year }: { year: number }) {
 						rel="noopener noreferrer"
 						className="mt-6 flex items-start gap-2 text-sm leading-relaxed text-cream/75 hover:text-cream"
 					>
-						<MapPin className="mt-0.5 shrink-0" size={17} />
+						<MapPin className="mt-0.5 shrink-0" size={17} aria-hidden="true" />
 						<span>
 							{m.zelglihof_street()}
 							<br />
 							{m.zelglihof_postal_address()}
 						</span>
-						<ArrowUpRight className="mt-0.5 shrink-0" size={15} />
+						<ArrowUpRight
+							className="mt-0.5 shrink-0"
+							size={15}
+							aria-hidden="true"
+						/>
 					</a>
 				</div>
 			</div>

@@ -22,7 +22,7 @@ export function ContactDetails() {
 			<section className="shell grid gap-6 pb-24 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
 				<div className="grid gap-5">
 					<div className="rounded-[2rem] bg-forest p-7 text-cream md:p-9">
-						<MapPin className="text-sun" size={30} />
+						<MapPin className="text-sun" size={30} aria-hidden="true" />
 						<h2 className="mt-8 font-serif text-3xl font-bold">
 							{m.zelglihof_street()}
 							<br />
@@ -35,11 +35,11 @@ export function ContactDetails() {
 							className="inline-flex min-h-12 items-center justify-center gap-[0.55rem] rounded-full border border-transparent bg-cream px-[1.15rem] py-3 text-[0.9rem] font-[720] leading-none text-ink transition hover:-translate-y-0.5 hover:bg-sun mt-7"
 						>
 							{m.zelglihof_contact_directions()}
-							<ArrowUpRight size={17} />
+							<ArrowUpRight size={17} aria-hidden="true" />
 						</a>
 					</div>
 					<div className="rounded-[2rem] bg-sage/55 p-7 md:p-9">
-						<Clock3 size={28} />
+						<Clock3 size={28} aria-hidden="true" />
 						<h2 className="mt-7 font-serif text-3xl font-bold">
 							{m.zelglihof_shop()}
 						</h2>

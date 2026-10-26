@@ -47,6 +47,7 @@ export function ProductCatalog({ products }: { products: ProductSummary[] }) {
 							<ArrowRight
 								size={18}
 								className="transition-transform group-hover:translate-x-1"
+								aria-hidden="true"
 							/>
 						</span>
 					</div>

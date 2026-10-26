@@ -36,7 +36,7 @@ export function Hero({
 							className="inline-flex min-h-12 items-center justify-center gap-[0.55rem] rounded-full border border-transparent bg-cream px-[1.15rem] py-3 text-[0.9rem] font-[720] leading-none text-ink transition hover:-translate-y-0.5 hover:bg-sun"
 						>
 							{m.zelglihof_home_reserve()}
-							<ArrowRight size={17} />
+							<ArrowRight size={17} aria-hidden="true" />
 						</Link>
 						<Link
 							to="/about"
@@ -50,7 +50,7 @@ export function Hero({
 					href="#aktuell"
 					className="relative flex w-fit items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-cream/55 hover:text-cream"
 				>
-					<ArrowDown size={16} />
+					<ArrowDown size={16} aria-hidden="true" />
 					{m.zelglihof_home_latest_updates()}
 				</a>
 			</div>

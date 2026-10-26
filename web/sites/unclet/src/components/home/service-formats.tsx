@@ -55,7 +55,7 @@ export function ServiceFormats() {
 					className="mt-10 inline-flex items-center gap-2 text-sm font-bold tracking-widest uppercase hover:text-brass"
 				>
 					{m.unclet_home_planning_action()}
-					<ArrowRight size={16} />
+					<ArrowRight size={16} aria-hidden="true" />
 				</Link>
 			</div>
 		</section>

@@ -12,11 +12,15 @@ export function InquiryContact() {
 					href="mailto:info@uncle-t.ch"
 					className="flex items-center gap-3 hover:text-brass-light"
 				>
-					<Mail size={18} className="text-brass" />
+					<Mail size={18} className="text-brass" aria-hidden="true" />
 					{m.unclet_inquiry_email_link()}
 				</a>
 				<div className="flex items-start gap-3">
-					<MapPin size={18} className="mt-1 shrink-0 text-brass" />
+					<MapPin
+						size={18}
+						className="mt-1 shrink-0 text-brass"
+						aria-hidden="true"
+					/>
 					<p>
 						{m.unclet_company_name()}
 						<br />

@@ -28,7 +28,12 @@ export function CateringFormats() {
 							key={item}
 							className="flex items-center gap-3 bg-paper p-6 text-lg"
 						>
-							<Check size={18} className="shrink-0 text-brass" /> {item}
+							<Check
+								size={18}
+								className="shrink-0 text-brass"
+								aria-hidden="true"
+							/>{" "}
+							{item}
 						</div>
 					))}
 				</div>

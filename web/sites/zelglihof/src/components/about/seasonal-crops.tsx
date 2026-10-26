@@ -43,7 +43,11 @@ export function SeasonalCrops() {
 									key={crop}
 									className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold ${cropColors[index % cropColors.length]}`}
 								>
-									{index % 2 === 0 ? <Sprout size={15} /> : <Leaf size={15} />}
+									{index % 2 === 0 ? (
+										<Sprout size={15} aria-hidden="true" />
+									) : (
+										<Leaf size={15} aria-hidden="true" />
+									)}
 									{crop}
 								</span>
 							))}
@@ -53,7 +57,7 @@ export function SeasonalCrops() {
 							className="inline-flex min-h-12 items-center justify-center gap-[0.55rem] rounded-full border border-forest/35 bg-transparent px-[1.15rem] py-3 text-[0.9rem] font-[720] leading-none text-forest transition hover:border-forest hover:bg-white/35 mt-9"
 						>
 							{m.zelglihof_farm_crops_action()}
-							<ArrowRight size={17} />
+							<ArrowRight size={17} aria-hidden="true" />
 						</Link>
 					</div>
 				</div>

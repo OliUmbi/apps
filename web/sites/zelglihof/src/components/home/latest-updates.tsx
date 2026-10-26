@@ -25,7 +25,7 @@ export function LatestUpdates({ updates }: { updates: UpdateSummary[] }) {
 						className="mt-6 inline-flex items-center gap-2 border-b border-ink pb-1 text-sm font-bold"
 					>
 						{m.zelglihof_home_all_updates()}
-						<ArrowRight size={16} />
+						<ArrowRight size={16} aria-hidden="true" />
 					</Link>
 				</div>
 			</div>

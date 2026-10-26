@@ -17,11 +17,11 @@ export function ShopIntroduction() {
 				</p>
 				<div className="mt-7 flex flex-wrap gap-5 text-sm font-semibold">
 					<span className="flex items-center gap-2">
-						<ShoppingBag size={18} className="text-clay" />
+						<ShoppingBag size={18} className="text-clay" aria-hidden="true" />
 						{m.zelglihof_shop_farm_direct()}
 					</span>
 					<span className="flex items-center gap-2">
-						<Clock3 size={18} className="text-clay" />
+						<Clock3 size={18} className="text-clay" aria-hidden="true" />
 						{m.zelglihof_shop_while_stocks_last()}
 					</span>
 				</div>

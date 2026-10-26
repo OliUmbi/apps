@@ -68,7 +68,7 @@ function ShowcasesPage() {
 					</div>
 					<Link to="/inquiry" className="cta mt-8 md:mt-0">
 						{m.unclet_showcases_inquire()}
-						<ArrowRight size={17} />
+						<ArrowRight size={17} aria-hidden="true" />
 					</Link>
 				</div>
 			</section>

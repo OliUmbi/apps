@@ -34,7 +34,7 @@ export default function Header() {
 				<div className="hidden lg:block">
 					<Link to="/products" className="cta">
 						{m.zelglihof_navigation_reserve_meat()}
-						<ArrowUpRight size={17} />
+						<ArrowUpRight size={17} aria-hidden="true" />
 					</Link>
 				</div>
 				<MobileMenu />
@@ -51,7 +51,7 @@ function Brand() {
 			aria-label={m.zelglihof_navigation_home()}
 		>
 			<span className="grid size-10 place-items-center rounded-full bg-forest text-cream transition-transform group-hover:-rotate-6">
-				<Sprout size={20} strokeWidth={1.8} />
+				<Sprout size={20} strokeWidth={1.8} aria-hidden="true" />
 			</span>
 			<span className="leading-none">
 				<span className="block font-serif text-xl font-bold tracking-tight">
@@ -73,7 +73,7 @@ function MobileMenu() {
 				className="grid size-11 place-items-center rounded-full border border-forest/20 lg:hidden"
 				aria-label={m.open_navigation()}
 			>
-				<Menu size={21} />
+				<Menu size={21} aria-hidden="true" />
 			</Drawer.Trigger>
 			<Drawer.Portal>
 				<Drawer.Backdrop className="fixed inset-0 z-50 bg-ink/35 backdrop-blur-sm" />
@@ -88,7 +88,7 @@ function MobileMenu() {
 									className="grid size-11 place-items-center rounded-full border border-white/20"
 									aria-label={m.close_navigation()}
 								>
-									<X size={21} />
+									<X size={21} aria-hidden="true" />
 								</Drawer.Close>
 							</div>
 							<nav

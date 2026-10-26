@@ -27,19 +27,19 @@ export function FarmIntroduction() {
 				</div>
 				<div className="mt-12 grid grid-cols-3 gap-3 border-t border-ink/15 pt-6 text-center">
 					<div>
-						<Egg className="mx-auto" size={24} />
+						<Egg className="mx-auto" size={24} aria-hidden="true" />
 						<p className="mt-2 text-xs font-bold uppercase tracking-wider">
 							{m.zelglihof_home_fact_hens()}
 						</p>
 					</div>
 					<div>
-						<Wheat className="mx-auto" size={24} />
+						<Wheat className="mx-auto" size={24} aria-hidden="true" />
 						<p className="mt-2 text-xs font-bold uppercase tracking-wider">
 							{m.zelglihof_home_fact_crops()}
 						</p>
 					</div>
 					<div>
-						<Sprout className="mx-auto" size={24} />
+						<Sprout className="mx-auto" size={24} aria-hidden="true" />
 						<p className="mt-2 text-xs font-bold uppercase tracking-wider">
 							{m.zelglihof_home_fact_since()}
 						</p>
@@ -51,14 +51,14 @@ export function FarmIntroduction() {
 						className="inline-flex items-center gap-2 font-bold"
 					>
 						{m.zelglihof_home_about_farm()}
-						<ArrowRight size={17} />
+						<ArrowRight size={17} aria-hidden="true" />
 					</Link>
 					<Link
 						to="/crops"
 						className="inline-flex items-center gap-2 font-bold text-ink/65 hover:text-ink"
 					>
 						{m.zelglihof_farm_crops_action()}
-						<ArrowRight size={17} />
+						<ArrowRight size={17} aria-hidden="true" />
 					</Link>
 				</div>
 			</div>

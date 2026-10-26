@@ -34,7 +34,7 @@ export function ShowcasePreview() {
 			</div>
 			<Link to="/showcases" className="cta secondary mt-10">
 				{m.unclet_home_all_showcases()}
-				<ArrowRight size={16} />
+				<ArrowRight size={16} aria-hidden="true" />
 			</Link>
 		</section>
 	);

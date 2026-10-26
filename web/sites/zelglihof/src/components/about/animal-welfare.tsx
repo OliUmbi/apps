@@ -23,11 +23,16 @@ export function AnimalWelfare() {
 					</p>
 					<Link to="/products" className="cta mt-8">
 						{m.zelglihof_farm_beef_action()}
-						<ArrowRight size={17} />
+						<ArrowRight size={17} aria-hidden="true" />
 					</Link>
 				</div>
 				<div className="rounded-[2rem] bg-forest p-8 text-cream md:p-12">
-					<Beef size={58} strokeWidth={1.2} className="text-sun" />
+					<Beef
+						size={58}
+						strokeWidth={1.2}
+						className="text-sun"
+						aria-hidden="true"
+					/>
 					<p className="mt-14 font-serif text-4xl font-bold">
 						{m.zelglihof_farm_animal_welfare_title()}
 					</p>

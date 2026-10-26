@@ -13,7 +13,7 @@ export function UpdateArticle({ update }: { update: Update }) {
 					to="/latest"
 					className="inline-flex items-center gap-2 text-sm font-bold text-ink/55 hover:text-ink"
 				>
-					<ArrowLeft size={17} />
+					<ArrowLeft size={17} aria-hidden="true" />
 					{m.zelglihof_article_all_updates()}
 				</Link>
 				<p className="mt-12 text-xs font-bold uppercase tracking-[0.14em] text-clay">

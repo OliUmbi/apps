@@ -32,11 +32,11 @@ export default function Footer() {
 					<a
 						href="https://www.instagram.com/unclet_gmbh/"
 						target="_blank"
-						rel="noreferrer"
+						rel="noopener noreferrer"
 						className="flex items-center gap-2 hover:text-brass-light"
 					>
 						{m.unclet_footer_instagram()}
-						<ArrowUpRight size={14} />
+						<ArrowUpRight size={14} aria-hidden="true" />
 					</a>
 					<Link to="/legal" className="hover:text-brass-light">
 						{m.imprint()}

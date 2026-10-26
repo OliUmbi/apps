@@ -46,7 +46,7 @@ export function EventPlanning() {
 						</div>
 						<Link to="/inquiry" className="cta mt-8">
 							{m.unclet_services_discuss_event()}
-							<ArrowRight size={17} />
+							<ArrowRight size={17} aria-hidden="true" />
 						</Link>
 					</div>
 				</div>

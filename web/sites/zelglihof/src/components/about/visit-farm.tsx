@@ -13,7 +13,7 @@ export function VisitFarm() {
 				</div>
 				<Link to="/contact" className="cta mt-8 md:mt-0">
 					{m.zelglihof_farm_directions_contact()}
-					<ArrowRight size={17} />
+					<ArrowRight size={17} aria-hidden="true" />
 				</Link>
 			</div>
 		</section>

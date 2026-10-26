@@ -20,7 +20,7 @@ export function InquiryInvitation() {
 					</p>
 					<Link to="/inquiry" className="cta inverted mt-7">
 						{m.unclet_home_inquire()}
-						<ArrowRight size={16} />
+						<ArrowRight size={16} aria-hidden="true" />
 					</Link>
 				</div>
 			</div>

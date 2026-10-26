@@ -23,7 +23,7 @@ export function FarmShop({ products }: { products: ProductSummary[] }) {
 						className="inline-flex min-h-12 items-center justify-center gap-[0.55rem] rounded-full border border-forest/35 bg-transparent px-[1.15rem] py-3 text-[0.9rem] font-[720] leading-none text-forest transition hover:border-forest hover:bg-white/35"
 					>
 						{m.zelglihof_home_visit_shop()}
-						<ArrowRight size={17} />
+						<ArrowRight size={17} aria-hidden="true" />
 					</Link>
 				</div>
 				<div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -61,6 +61,7 @@ export function FarmShop({ products }: { products: ProductSummary[] }) {
 								</div>
 								<ArrowRight
 									className="mt-1 transition-transform group-hover:translate-x-1"
+									aria-hidden="true"
 									size={19}
 								/>
 							</div>

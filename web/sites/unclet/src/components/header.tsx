@@ -46,7 +46,7 @@ export default function Header() {
 							className="ml-2 inline-flex items-center gap-2 bg-brass px-5 py-3 text-[0.72rem] font-bold uppercase tracking-[0.13em] text-night transition-colors hover:bg-brass-light"
 						>
 							{m.unclet_inquire()}
-							<ArrowRight size={15} />
+							<ArrowRight size={15} aria-hidden="true" />
 						</Link>
 					</nav>
 					<Dialog.Trigger
@@ -59,7 +59,11 @@ export default function Header() {
 							{m.mobile_navigation()}
 						</span>
 						<span className="grid size-7 place-items-center rounded-full border border-bone/20">
-							{open ? <X size={14} /> : <Menu size={14} />}
+							{open ? (
+								<X size={14} aria-hidden="true" />
+							) : (
+								<Menu size={14} aria-hidden="true" />
+							)}
 						</span>
 					</Dialog.Trigger>
 				</div>
@@ -74,7 +78,7 @@ export default function Header() {
 								aria-label={m.close_menu()}
 								className="grid size-10 place-items-center rounded-full border border-bone/25 text-bone/80 transition-colors hover:border-brass hover:text-brass-light"
 							>
-								<X size={17} />
+								<X size={17} aria-hidden="true" />
 							</Dialog.Close>
 						</div>
 						<nav
@@ -97,6 +101,7 @@ export default function Header() {
 											</span>
 											<ArrowRight
 												size={17}
+												aria-hidden="true"
 												className="shrink-0 self-center text-brass/40 transition-colors group-hover:text-brass-light"
 											/>
 										</Link>
@@ -110,7 +115,7 @@ export default function Header() {
 									className="cta w-full"
 								>
 									{m.unclet_inquire()}
-									<ArrowRight size={15} />
+									<ArrowRight size={15} aria-hidden="true" />
 								</Link>
 								<p className="mt-5 text-xs leading-relaxed text-bone/45">
 									{m.unclet_footer_address()}

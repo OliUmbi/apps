@@ -29,7 +29,7 @@ export function Hero() {
 					<div className="mt-10 flex flex-wrap gap-3">
 						<Link to="/inquiry" className="cta">
 							{m.unclet_home_discuss_event()}
-							<ArrowRight size={17} />
+							<ArrowRight size={17} aria-hidden="true" />
 						</Link>
 						<Link to="/services" className="cta secondary">
 							{m.unclet_home_discover_services()}
@@ -42,7 +42,7 @@ export function Hero() {
 				className="absolute right-5 bottom-8 z-10 hidden items-center gap-3 text-xs tracking-widest text-bone/55 uppercase md:flex"
 			>
 				{m.unclet_home_explore_format()}
-				<ArrowDown size={16} />
+				<ArrowDown size={16} aria-hidden="true" />
 			</a>
 		</section>
 	);

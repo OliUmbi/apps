@@ -5,7 +5,7 @@ export function ProductNotifications() {
 		<section className="bg-sage/35 py-20">
 			<div className="shell grid gap-8 md:grid-cols-[auto_1fr_auto] md:items-center">
 				<span className="grid size-16 place-items-center rounded-full bg-forest text-cream">
-					<Bell />
+					<Bell aria-hidden="true" />
 				</span>
 				<div>
 					<h2 className="font-serif text-3xl font-bold">

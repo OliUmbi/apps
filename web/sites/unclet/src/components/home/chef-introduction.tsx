@@ -25,15 +25,15 @@ export function ChefIntroduction() {
 					</p>
 					<div className="mt-10 flex flex-wrap gap-x-8 gap-y-4 text-sm text-bone/65">
 						<span className="flex items-center gap-2">
-							<Award size={17} className="text-brass" />
+							<Award size={17} className="text-brass" aria-hidden="true" />
 							{m.unclet_home_gusto_award()}
 						</span>
 						<span className="flex items-center gap-2">
-							<MapPin size={17} className="text-brass" />
+							<MapPin size={17} className="text-brass" aria-hidden="true" />
 							{m.unclet_home_chef_location()}
 						</span>
 						<span className="flex items-center gap-2">
-							<Users size={17} className="text-brass" />
+							<Users size={17} className="text-brass" aria-hidden="true" />
 							{m.unclet_home_guest_capacity()}
 						</span>
 					</div>

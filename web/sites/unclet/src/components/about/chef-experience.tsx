@@ -72,7 +72,7 @@ export function ChefExperience() {
 				</p>
 				<Link to="/inquiry" className="cta">
 					{m.unclet_about_contact_action()}
-					<ArrowRight size={17} />
+					<ArrowRight size={17} aria-hidden="true" />
 				</Link>
 			</div>
 		</section>

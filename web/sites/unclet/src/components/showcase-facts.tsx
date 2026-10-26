@@ -23,7 +23,7 @@ export function ShowcaseFacts({ showcase }: { showcase: PublicShowcase }) {
 			{facts.map((fact) => (
 				<div className="bg-night p-4" key={fact.label}>
 					<dt className="flex items-center gap-2 font-mono text-[.65rem] tracking-[.14em] text-brass uppercase">
-						<fact.icon size={14} />
+						<fact.icon size={14} aria-hidden="true" />
 						{fact.label}
 					</dt>
 					<dd className="mt-2 text-lg text-bone">{String(fact.value)}</dd>

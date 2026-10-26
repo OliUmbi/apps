@@ -48,6 +48,7 @@ export function UpdatesList({ updates }: { updates: UpdateSummary[] }) {
 							<ArrowRight
 								size={18}
 								className="transition-transform group-hover:translate-x-1"
+								aria-hidden="true"
 							/>
 						</Link>
 					</div>
