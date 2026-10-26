@@ -58,11 +58,12 @@ pnpm --filter studio build   # REQUIRED after any web/packages/* change
 Java (from repo root):
 
 ```powershell
-& "C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2024.3.5\plugins\maven\lib\maven3\bin\mvn.cmd" -f services/pom.xml test
+services\mvnw.cmd -f services/pom.xml test
 ```
 
-`mvn` is not on PATH in this environment; use the IntelliJ-bundled Maven above.
-Compose validation after container/infra-adjacent changes:
+`services/mvnw` (pinned Maven 3.9.12) is the documented entry point and what CI
+uses; a locally installed `mvn` works too. Compose validation after
+container/infra-adjacent changes:
 `docker compose -f infrastructure/compose.dev.yaml config`.
 
 PowerShell note: piping native commands with `2>&1 |` marks the pipeline failed
