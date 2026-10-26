@@ -1,3 +1,4 @@
+import { guardRepository } from "@oliumbi/contracts";
 import type { Transaction } from "@oliumbi/database";
 import { and, eq, gt } from "drizzle-orm";
 import type { CampaignDispatch, CampaignRecipient } from "./campaign.types";
@@ -7,7 +8,7 @@ import { campaign, subscriber } from "./schema";
 // send run. Named for its role so it never reads like the studio CRUD
 // repository in content/campaign.repository.ts.
 export function createCampaignDispatchRepository(transaction: Transaction) {
-	return {
+	return guardRepository({
 		async lock(id: string): Promise<CampaignDispatch | undefined> {
 			const [record] = await transaction
 				.select({
@@ -48,5 +49,5 @@ export function createCampaignDispatchRepository(transaction: Transaction) {
 				.set({ status: "queued", updatedAt: now.toISOString() })
 				.where(eq(campaign.id, id));
 		},
-	};
+	});
 }

@@ -1,4 +1,10 @@
-import { emailSchema, idSchema } from "@oliumbi/contracts";
+import {
+	AppError,
+	constraintViolation,
+	emailSchema,
+	idSchema,
+	mapErrors,
+} from "@oliumbi/contracts";
 import type { DatabasePool } from "@oliumbi/database";
 import { createQueueClient } from "@oliumbi/queue";
 import { confirmationEmail } from "./newsletter.email";
@@ -35,10 +41,10 @@ export function decideCorrection(input: {
 }
 
 // A lost insert race can still surface as a unique violation; it is a conflict,
-// never a raw database error at the call boundary.
+// never a raw database error at the call boundary. The SQLSTATE classification
+// lives in the shared model so every package maps it the same way.
 function isUniqueViolation(error: unknown): boolean {
-	const failure = error as { code?: string; cause?: { code?: string } } | null;
-	return (failure?.code ?? failure?.cause?.code) === "23505";
+	return constraintViolation(error) === "conflict";
 }
 
 export function createSubscriberService(
@@ -47,52 +53,61 @@ export function createSubscriberService(
 ) {
 	return {
 		unsubscribe(id: string) {
-			idSchema.parse(id);
-			return database.transaction(async (transaction) => {
-				const repository = createNewsletterRepository(transaction);
-				const subscriber = await repository.byId(id);
-				if (!subscriber) throw new Error("Subscriber not found");
-				await repository.unsubscribe(id, new Date());
+			// One boundary: schema failures leave typed as validation verdicts and
+			// driver failures as classified conflict/not-found/internal errors.
+			return mapErrors(async () => {
+				idSchema.parse(id);
+				await database.transaction(async (transaction) => {
+					const repository = createNewsletterRepository(transaction);
+					const subscriber = await repository.byId(id);
+					if (!subscriber)
+						throw new AppError("not-found", "Subscriber not found");
+					await repository.unsubscribe(id, new Date());
+				});
 			});
 		},
 		correctEmail(id: string, email: string): Promise<CorrectionResult> {
-			idSchema.parse(id);
-			const normalized = emailSchema.parse(email);
-			return database
-				.transaction(async (transaction) => {
-					const repository = createNewsletterRepository(transaction);
-					// The advisory lock serializes every writer of this address, so
-					// the ownership check cannot race a concurrent signup.
-					await repository.lockEmail(normalized);
-					const subscriber = await repository.byId(id);
-					if (!subscriber) throw new Error("Subscriber not found");
-					const owner = await repository.byEmail(normalized);
-					const plan = decideCorrection({
-						conflict: Boolean(owner && owner.id !== id),
-						status: subscriber.status,
+			return mapErrors(async () => {
+				idSchema.parse(id);
+				const normalized = emailSchema.parse(email);
+				return database
+					.transaction(async (transaction) => {
+						const repository = createNewsletterRepository(transaction);
+						// The advisory lock serializes every writer of this address, so
+						// the ownership check cannot race a concurrent signup.
+						await repository.lockEmail(normalized);
+						const subscriber = await repository.byId(id);
+						if (!subscriber)
+							throw new AppError("not-found", "Subscriber not found");
+						const owner = await repository.byEmail(normalized);
+						const plan = decideCorrection({
+							conflict: Boolean(owner && owner.id !== id),
+							status: subscriber.status,
+						});
+						if (plan.outcome === "conflict") return { outcome: plan.outcome };
+						const now = new Date();
+						if (plan.restartConfirmation) {
+							const token = newToken();
+							await repository.restartConfirmation(
+								id,
+								normalized,
+								hashToken(token),
+								now,
+							);
+							await createQueueClient(transaction).enqueue(
+								confirmationEmail(options, normalized, token),
+							);
+						} else {
+							await repository.changeEmail(id, normalized, now);
+						}
+						return { outcome: plan.outcome };
+					})
+					.catch((error: unknown) => {
+						if (isUniqueViolation(error))
+							return { outcome: "conflict" as const };
+						throw error;
 					});
-					if (plan.outcome === "conflict") return { outcome: plan.outcome };
-					const now = new Date();
-					if (plan.restartConfirmation) {
-						const token = newToken();
-						await repository.restartConfirmation(
-							id,
-							normalized,
-							hashToken(token),
-							now,
-						);
-						await createQueueClient(transaction).enqueue(
-							confirmationEmail(options, normalized, token),
-						);
-					} else {
-						await repository.changeEmail(id, normalized, now);
-					}
-					return { outcome: plan.outcome };
-				})
-				.catch((error: unknown) => {
-					if (isUniqueViolation(error)) return { outcome: "conflict" as const };
-					throw error;
-				});
+			});
 		},
 	};
 }

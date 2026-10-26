@@ -1,4 +1,4 @@
-import { type Page, pageSchema } from "@oliumbi/contracts";
+import { guardRepository, type Page, pageSchema } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate } from "@oliumbi/database/pagination";
 import { and, desc, eq, gte, lte, sql } from "drizzle-orm";
@@ -31,7 +31,7 @@ export function createPublicRepository(db: DatabaseExecutor) {
 	// Events that have not ended: a single-day event counts as running on its
 	// day, so "upcoming" alone would be the wrong name for this predicate.
 	const runningOrUpcoming = gte(event.endsOn, sql`current_date`);
-	return {
+	return guardRepository({
 		listStories(page: number): Promise<Page<Story>> {
 			return paginate<Story>(
 				db
@@ -131,5 +131,5 @@ export function createPublicRepository(db: DatabaseExecutor) {
 					}
 				: null;
 		},
-	};
+	});
 }

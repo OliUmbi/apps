@@ -1,4 +1,4 @@
-import { type Page, pageSchema } from "@oliumbi/contracts";
+import { guardRepository, type Page, pageSchema } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate } from "@oliumbi/database/pagination";
 import { and, desc, eq, lte, sql } from "drizzle-orm";
@@ -12,7 +12,7 @@ export function createPublicRepository(db: DatabaseExecutor) {
 		eq(showcase.published, true),
 		lte(showcase.publishedOn, sql`current_date`),
 	);
-	return {
+	return guardRepository({
 		listShowcases(page: number): Promise<Page<Showcase>> {
 			return paginate<Showcase>(
 				db
@@ -53,5 +53,5 @@ export function createPublicRepository(db: DatabaseExecutor) {
 				pageSchema.parse({ page }),
 			);
 		},
-	};
+	});
 }

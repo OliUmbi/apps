@@ -1,3 +1,4 @@
+import { guardRepository } from "@oliumbi/contracts";
 import type { Transaction } from "@oliumbi/database";
 import { eq } from "drizzle-orm";
 import type { ContactInput } from "./forms";
@@ -7,7 +8,7 @@ import { inquiry } from "./schema";
 // path for one inquiry. Named for its role so it never reads like the studio
 // CRUD repository in content/inquiry.repository.ts.
 export function createInquirySubmissionRepository(transaction: Transaction) {
-	return {
+	return guardRepository({
 		async findBySubmissionId(submissionId: string) {
 			const [row] = await transaction
 				.select({ id: inquiry.id })
@@ -35,5 +36,5 @@ export function createInquirySubmissionRepository(transaction: Transaction) {
 				.returning({ id: inquiry.id });
 			return inserted.length > 0;
 		},
-	};
+	});
 }

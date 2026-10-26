@@ -26,7 +26,7 @@ test("capacity check adds 0.1 + 0.2 exactly at the boundary", () => {
 			quantity: "0.3",
 			committed: "0.1",
 		}),
-		{ outcome: "unavailable", insert: false },
+		{ outcome: "oversold", insert: false },
 	);
 });
 

@@ -1,4 +1,9 @@
-import type { Page, PageInput } from "@oliumbi/contracts";
+import {
+	guardRepository,
+	type Page,
+	type PageInput,
+	recordNotCreatedError,
+} from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
@@ -11,7 +16,7 @@ import type {
 } from "./showcase-image";
 
 export function createShowcaseImageRepository(db: DatabaseExecutor) {
-	return {
+	return guardRepository({
 		async get(key: ShowcaseImageKey): Promise<ShowcaseImage | null> {
 			const [record] = await db
 				.select()
@@ -35,7 +40,7 @@ export function createShowcaseImageRepository(db: DatabaseExecutor) {
 					updatedAt: now,
 				})
 				.returning();
-			if (!record) throw new Error("Record was not created");
+			if (!record) throw recordNotCreatedError();
 			return record;
 		},
 		async update(
@@ -105,5 +110,5 @@ export function createShowcaseImageRepository(db: DatabaseExecutor) {
 				input,
 			);
 		},
-	};
+	});
 }

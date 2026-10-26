@@ -1,4 +1,4 @@
-import type { Page, PageInput } from "@oliumbi/contracts";
+import { guardRepository, type Page, type PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
@@ -7,7 +7,7 @@ import { updateMissError } from "./errors";
 import type { Inquiry, InquiryInput, InquiryKey } from "./inquiry";
 
 export function createInquiryRepository(db: DatabaseExecutor) {
-	return {
+	return guardRepository({
 		list(input: PageInput): Promise<Page<Inquiry>> {
 			return paginate<Inquiry>(
 				db
@@ -54,5 +54,5 @@ export function createInquiryRepository(db: DatabaseExecutor) {
 		async delete(key: InquiryKey): Promise<void> {
 			await db.delete(inquiry).where(eq(inquiry.id, key.id));
 		},
-	};
+	});
 }

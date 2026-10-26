@@ -1,4 +1,4 @@
-import type { Page, PageInput } from "@oliumbi/contracts";
+import { guardRepository, type Page, type PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
@@ -11,7 +11,7 @@ import type {
 } from "./product-reservation";
 
 export function createProductReservationRepository(db: DatabaseExecutor) {
-	return {
+	return guardRepository({
 		// Orphaned reservations (deleted product) stay listed here with their
 		// stored snapshots; the scoped list only shows a product's own rows.
 		list(input: PageInput): Promise<Page<ProductReservation>> {
@@ -86,5 +86,5 @@ export function createProductReservationRepository(db: DatabaseExecutor) {
 				input,
 			);
 		},
-	};
+	});
 }

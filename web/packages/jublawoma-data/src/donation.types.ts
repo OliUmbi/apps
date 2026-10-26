@@ -25,12 +25,20 @@ export interface DonationItemAvailability {
 	remaining: string;
 }
 
+// The outcome causes are distinct on purpose: a missing item, an inactive (not
+// running) donation, an oversold item, and a wrong increment are different
+// verdicts to a caller. A surface that only needs the coarse "can't have it"
+// verdict folds them back together at its own boundary.
 export type CommitmentOutcome =
 	| "committed"
-	| "unavailable"
+	| "not-found"
+	| "inactive"
+	| "oversold"
 	| "invalid-increment";
 
 export type CommitmentResult =
 	| { outcome: "committed"; reference: string }
-	| { outcome: "unavailable" }
+	| { outcome: "not-found" }
+	| { outcome: "inactive" }
+	| { outcome: "oversold" }
 	| { outcome: "invalid-increment" };

@@ -1,4 +1,9 @@
-import type { Page, PageInput } from "@oliumbi/contracts";
+import {
+	guardRepository,
+	type Page,
+	type PageInput,
+	recordNotCreatedError,
+} from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
@@ -7,7 +12,7 @@ import { RecordKeyMismatchError, updateMissError } from "./errors";
 import type { StoryImage, StoryImageInput, StoryImageKey } from "./story-image";
 
 export function createStoryImageRepository(db: DatabaseExecutor) {
-	return {
+	return guardRepository({
 		async get(key: StoryImageKey): Promise<StoryImage | null> {
 			const [record] = await db
 				.select()
@@ -31,7 +36,7 @@ export function createStoryImageRepository(db: DatabaseExecutor) {
 					updatedAt: now,
 				})
 				.returning();
-			if (!record) throw new Error("Record was not created");
+			if (!record) throw recordNotCreatedError();
 			return record;
 		},
 		async update(
@@ -98,5 +103,5 @@ export function createStoryImageRepository(db: DatabaseExecutor) {
 				input,
 			);
 		},
-	};
+	});
 }

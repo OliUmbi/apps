@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { mapErrors } from "@oliumbi/contracts";
 import type { DatabasePool } from "@oliumbi/database";
 import { createQueueClient } from "@oliumbi/queue";
 import { referenceFor } from "@oliumbi/queue/email";
@@ -29,45 +30,50 @@ export function createReservationService(
 ) {
 	return {
 		async reserve(input: ReservationInput): Promise<ReservationResult> {
-			const values = reservationSchema.parse(input);
-			const reference = referenceFor(values.submissionId);
-			const reserved: ReservationResult = { outcome: "reserved", reference };
-			return database.transaction(async (transaction) => {
-				const repository = createReservationRepository(transaction);
-				// The variant lock serializes concurrent fills; after it, a retry
-				// sees the original row and reports its outcome unchanged.
-				const variant = await repository.lockVariant(values);
-				const plan = decideReservation({
-					replayed:
-						(await repository.findBySubmissionId(values.submissionId)) !== null,
-					available: variant?.available ?? false,
-					stock: variant?.quantity ?? null,
-					quantity: values.quantity,
+			// One boundary: schema failures leave typed as validation verdicts and
+			// driver failures as classified conflict/not-found/internal errors.
+			return mapErrors(async () => {
+				const values = reservationSchema.parse(input);
+				const reference = referenceFor(values.submissionId);
+				const reserved: ReservationResult = { outcome: "reserved", reference };
+				return database.transaction(async (transaction) => {
+					const repository = createReservationRepository(transaction);
+					// The variant lock serializes concurrent fills; after it, a retry
+					// sees the original row and reports its outcome unchanged.
+					const variant = await repository.lockVariant(values);
+					const plan = decideReservation({
+						replayed:
+							(await repository.findBySubmissionId(values.submissionId)) !==
+							null,
+						available: variant?.available ?? false,
+						stock: variant?.quantity ?? null,
+						quantity: values.quantity,
+					});
+					if (plan.outcome !== "reserved") return { outcome: plan.outcome };
+					// Insert before the stock decrement so a lost insert race (unique
+					// submission index) leaves no second decrement and no second emails.
+					const now = new Date();
+					if (
+						plan.insert &&
+						variant &&
+						(await repository.insert(randomUUID(), values, variant, now))
+					) {
+						await repository.decrementStock(
+							values.variantId,
+							values.quantity,
+							now,
+						);
+						const queue = createQueueClient(transaction);
+						for (const message of reservationEmails(
+							requestsEmail,
+							values,
+							variant,
+							reference,
+						))
+							await queue.enqueue(message);
+					}
+					return reserved;
 				});
-				if (plan.outcome !== "reserved") return { outcome: plan.outcome };
-				// Insert before the stock decrement so a lost insert race (unique
-				// submission index) leaves no second decrement and no second emails.
-				const now = new Date();
-				if (
-					plan.insert &&
-					variant &&
-					(await repository.insert(randomUUID(), values, variant, now))
-				) {
-					await repository.decrementStock(
-						values.variantId,
-						values.quantity,
-						now,
-					);
-					const queue = createQueueClient(transaction);
-					for (const message of reservationEmails(
-						requestsEmail,
-						values,
-						variant,
-						reference,
-					))
-						await queue.enqueue(message);
-				}
-				return reserved;
 			});
 		},
 	};

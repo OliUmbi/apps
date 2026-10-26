@@ -1,9 +1,10 @@
+import { guardRepository } from "@oliumbi/contracts";
 import type { Transaction } from "@oliumbi/database";
 import { eq, sql } from "drizzle-orm";
 import { subscriber } from "./schema";
 
 export function createNewsletterRepository(transaction: Transaction) {
-	return {
+	return guardRepository({
 		async byId(id: string) {
 			const [record] = await transaction
 				.select()
@@ -125,5 +126,5 @@ export function createNewsletterRepository(transaction: Transaction) {
 				})
 				.where(eq(subscriber.id, id));
 		},
-	};
+	});
 }

@@ -1,3 +1,4 @@
+import { guardRepository } from "@oliumbi/contracts";
 import type { Transaction } from "@oliumbi/database";
 import { and, eq, isNotNull, sql } from "drizzle-orm";
 import type { ReservationInput } from "./forms";
@@ -8,7 +9,7 @@ import { product, productReservation, productVariant } from "./schema";
 // write path, with the row locks it needs. Named for its role so it never
 // reads like the studio CRUD repository in content/product-reservation.ts.
 export function createReservationRepository(transaction: Transaction) {
-	return {
+	return guardRepository({
 		async lockVariant(
 			input: Pick<ReservationInput, "productId" | "variantId">,
 		): Promise<ReservableVariant | undefined> {
@@ -85,5 +86,5 @@ export function createReservationRepository(transaction: Transaction) {
 				.returning({ id: productReservation.id });
 			return inserted.length > 0;
 		},
-	};
+	});
 }

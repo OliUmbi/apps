@@ -1,3 +1,4 @@
+import { guardRepository } from "@oliumbi/contracts";
 import type { Transaction } from "@oliumbi/database";
 import { and, eq, sql } from "drizzle-orm";
 import type { CommitmentItem } from "./donation.types";
@@ -8,7 +9,7 @@ import { donation, donationCommitment, donationItem } from "./schema";
 // write path, with the row locks it needs. Named for its role so it never
 // reads like the studio CRUD repositories in content/.
 export function createCommitmentRepository(transaction: Transaction) {
-	return {
+	return guardRepository({
 		async lockItem(
 			input: CommitmentInput,
 		): Promise<CommitmentItem | undefined> {
@@ -75,5 +76,5 @@ export function createCommitmentRepository(transaction: Transaction) {
 				.returning({ id: donationCommitment.id });
 			return inserted.length > 0;
 		},
-	};
+	});
 }

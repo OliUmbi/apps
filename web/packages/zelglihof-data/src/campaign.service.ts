@@ -1,3 +1,4 @@
+import { AppError, mapErrors } from "@oliumbi/contracts";
 import type { DatabasePool, Transaction } from "@oliumbi/database";
 import { createQueueClient } from "@oliumbi/queue";
 import { campaignEmail } from "./campaign.email";
@@ -34,15 +35,20 @@ export function createCampaignService(
 ) {
 	return {
 		send(id: string) {
-			return database.transaction(async (transaction) => {
-				const repository = createCampaignDispatchRepository(transaction);
-				const campaign = await repository.lock(id);
-				if (!campaign) throw new Error("Campaign not found");
-				if (campaign.status !== "draft")
-					throw new Error("Only draft campaigns can be sent");
-				const count = await queueRecipients(transaction, campaign, options);
-				await repository.markQueued(id, new Date());
-				return { count };
+			// One boundary: driver failures leave as classified
+			// conflict/not-found/internal errors, never raw database errors.
+			return mapErrors(async () => {
+				return database.transaction(async (transaction) => {
+					const repository = createCampaignDispatchRepository(transaction);
+					const campaign = await repository.lock(id);
+					if (!campaign) throw new AppError("not-found", "Campaign not found");
+					// A state guard is a forbidden verdict, not a concurrency conflict.
+					if (campaign.status !== "draft")
+						throw new AppError("forbidden", "Only draft campaigns can be sent");
+					const count = await queueRecipients(transaction, campaign, options);
+					await repository.markQueued(id, new Date());
+					return { count };
+				});
 			});
 		},
 	};

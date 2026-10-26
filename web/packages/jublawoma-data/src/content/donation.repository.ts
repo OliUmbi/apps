@@ -1,4 +1,9 @@
-import type { Page, PageInput } from "@oliumbi/contracts";
+import {
+	guardRepository,
+	type Page,
+	type PageInput,
+	recordNotCreatedError,
+} from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
@@ -7,7 +12,7 @@ import type { Donation, DonationInput, DonationKey } from "./donation";
 import { updateMissError } from "./errors";
 
 export function createDonationRepository(db: DatabaseExecutor) {
-	return {
+	return guardRepository({
 		list(input: PageInput): Promise<Page<Donation>> {
 			return paginate<Donation>(
 				db
@@ -41,7 +46,7 @@ export function createDonationRepository(db: DatabaseExecutor) {
 					updatedAt: now,
 				})
 				.returning();
-			if (!record) throw new Error("Record was not created");
+			if (!record) throw recordNotCreatedError();
 			return record;
 		},
 		async update(
@@ -73,5 +78,5 @@ export function createDonationRepository(db: DatabaseExecutor) {
 		async delete(key: DonationKey): Promise<void> {
 			await db.delete(donation).where(eq(donation.id, key.id));
 		},
-	};
+	});
 }

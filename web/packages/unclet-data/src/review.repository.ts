@@ -1,3 +1,4 @@
+import { guardRepository } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { sql } from "drizzle-orm";
 import type { ReviewSubmissionInput } from "./forms";
@@ -7,7 +8,7 @@ import { review } from "./schema";
 // for its role so it never reads like the studio CRUD repository in
 // content/review.repository.ts.
 export function createReviewSubmissionRepository(db: DatabaseExecutor) {
-	return {
+	return guardRepository({
 		async submit(input: ReviewSubmissionInput): Promise<void> {
 			await db.insert(review).values({
 				stars: input.stars,
@@ -18,5 +19,5 @@ export function createReviewSubmissionRepository(db: DatabaseExecutor) {
 				updatedAt: sql`now()`,
 			});
 		},
-	};
+	});
 }

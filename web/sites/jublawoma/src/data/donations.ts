@@ -7,7 +7,16 @@ import { database } from "../server/database.server";
 
 export const submitCommitment = createServerFn({ method: "POST" })
 	.validator(commitmentSchema)
-	.handler(({ data }) => createDonationService(database).commit(data));
+	.handler(async ({ data }) => {
+		const result = await createDonationService(database).commit(data);
+		// The public form keeps its coarse "unavailable" bucket: a missing item,
+		// an inactive donation, and an oversold item all read the same to the
+		// donor. Callers that can act on the cause use the service union directly.
+		return result.outcome === "committed" ||
+			result.outcome === "invalid-increment"
+			? result
+			: { outcome: "unavailable" as const };
+	});
 export const getCurrentDonation = createServerFn({ method: "GET" }).handler(
 	async (): Promise<PublicDonationCampaign | null> => {
 		const campaign = await createPublicRepository(

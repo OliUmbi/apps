@@ -1,4 +1,4 @@
-import type { Page, PageInput } from "@oliumbi/contracts";
+import { guardRepository, type Page, type PageInput } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
@@ -9,7 +9,7 @@ import type {
 } from "./donation-commitment";
 
 export function createDonationCommitmentRepository(db: DatabaseExecutor) {
-	return {
+	return guardRepository({
 		// Orphaned commitments (deleted donation) stay listed here with their
 		// stored snapshots; the scoped list only shows a donation's own rows.
 		list(input: PageInput): Promise<Page<DonationCommitment>> {
@@ -61,5 +61,5 @@ export function createDonationCommitmentRepository(db: DatabaseExecutor) {
 				input,
 			);
 		},
-	};
+	});
 }

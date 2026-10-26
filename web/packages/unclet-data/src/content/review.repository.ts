@@ -1,4 +1,9 @@
-import type { Page, PageInput } from "@oliumbi/contracts";
+import {
+	guardRepository,
+	type Page,
+	type PageInput,
+	recordNotCreatedError,
+} from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate, searchPattern } from "@oliumbi/database/pagination";
 import { and, desc, eq, ilike } from "drizzle-orm";
@@ -7,7 +12,7 @@ import { updateMissError } from "./errors";
 import type { Review, ReviewInput, ReviewKey } from "./review";
 
 export function createReviewRepository(db: DatabaseExecutor) {
-	return {
+	return guardRepository({
 		list(input: PageInput): Promise<Page<Review>> {
 			return paginate<Review>(
 				db
@@ -41,7 +46,7 @@ export function createReviewRepository(db: DatabaseExecutor) {
 					updatedAt: now,
 				})
 				.returning();
-			if (!record) throw new Error("Record was not created");
+			if (!record) throw recordNotCreatedError();
 			return record;
 		},
 		async update(
@@ -70,5 +75,5 @@ export function createReviewRepository(db: DatabaseExecutor) {
 		async delete(key: ReviewKey): Promise<void> {
 			await db.delete(review).where(eq(review.id, key.id));
 		},
-	};
+	});
 }
