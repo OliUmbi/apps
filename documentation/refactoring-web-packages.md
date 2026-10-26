@@ -1,5 +1,7 @@
 # Refactoring handoff — web packages
 
+Executed in the 2026-10 refactoring pass; see `refactoring-plan.md` for outcomes. The registry below is historical.
+
 Working document for orchestrating a refactor of `web/packages/*`. Not a maintained
 human document; safe to merge with sibling reports and supersede. Produced
 2026-10-25 from a full read of all `web/packages/*/src` files, usage tracing across

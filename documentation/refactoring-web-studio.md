@@ -1,5 +1,7 @@
 # Refactoring handoff - studio (shared administration app)
 
+Executed in the 2026-10 refactoring pass; see `refactoring-plan.md` for outcomes. The registry below is historical.
+
 Companion to `refactoring-web-packages.md` and `refactoring-web-sites.md`. Read
 those two first for shared-package and public-site context; this document covers
 `web/sites/studio` and the visual system built for it.

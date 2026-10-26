@@ -2,7 +2,8 @@
 
 PostgreSQL schema for the whole stack. Flyway owns the schema and every
 constraint; the Drizzle schemas under `web/packages/*-data` only describe query
-types. Timestamps are `timestamptz` (UTC), money and quantity columns are exact
+types. Timestamps are `timestamptz` (UTC), prices are display-only `text` and exact numerics once
+amounts are computed (plan decision D5); quantity columns are exact
 `numeric` values that application code reads and writes as decimal strings
 (plan decision D2) — `float64` never computes a quantity.
 

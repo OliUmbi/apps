@@ -146,6 +146,12 @@ decisions, not long-term ratifications: review them here after the pass.
 - **D10 — Unsubscribe tokens stay plaintext this pass.** Hashing is a contract
   change with the zelglihof data package and is deferred; tracked in
   [open-work.md](open-work.md).
+- **Site token decisions (landed with the pass).** Jublawoma gold unified on
+  `honey #e3d4af`; footer muted text on `oat-soft #d5cbb9`; `clay` deleted
+  (unused). Uncle-T dropped `ash` and adopted `paper`.
+- **D6 outcome — Alert geometry.** One shared `Alert` behavior contract in
+  `@oliumbi/ui`; each site keeps its local geometry. Rationale in
+  `web/sites/studio/src/components/ui/README.md`.
 
 ## Layout rule: parts vs. subsystems
 

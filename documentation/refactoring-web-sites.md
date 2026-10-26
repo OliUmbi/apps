@@ -1,5 +1,7 @@
 # Refactoring handoff — public web sites (jublawoma, unclet, zelglihof)
 
+Executed in the 2026-10 refactoring pass; see `refactoring-plan.md` for outcomes. The registry below is historical.
+
 > Machine-oriented handoff document. Produced by a static review of the three public
 > sites and shared web packages (2026-10-25). Purpose: let an orchestrating agent
 > dispatch parallel subagents to execute the refactor without write collisions and
@@ -229,6 +231,8 @@ Footer muted text `#c8c8cb` → `text-bark-soft`-equivalent on dark (`bark` bg) 
 `--color-oat-soft: #c8c8cb` only if the cooler gray is intentional; otherwise use a
 warm tint of oat. Decide once in B1.
 
+Landed (2026-10): gold unified on `honey #e3d4af`; footer muted text uses `oat-soft #d5cbb9`; `clay` deleted (unused).
+
 **Uncle-T** — dark luxe (fonts already tokenized):
 ```css
 --color-night: #11110f;  --color-coal: #1a1a17;  --color-ash: #2a2925;
@@ -242,6 +246,8 @@ warm tint of oat. Decide once in B1.
 ```
 `ash` and `paper` are used ~once each: either apply consistently or drop (B2 decides,
 record the decision in the `styles.css` comment).
+
+Landed (2026-10): `ash` dropped, `paper` adopted.
 
 **Zelglihof** — warm earthy (same font trio as unclet; `fonts.css` is identical in
 both sites — may be shared later, not in this refactor):

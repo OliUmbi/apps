@@ -9,7 +9,8 @@ This Maven reactor sits alongside the pnpm workspace in ../web.
 
 ## Build
 
-Use JDK 25 and Maven 3.9.12. Run these commands from services:
+Use JDK 25 and Maven 3.9.12; the wrapper `./mvnw` pins Maven 3.9.12
+(`services/.mvn/wrapper`). Run these commands from services, with `mvn` or `./mvnw`:
 
 ```sh
 mvn clean package
@@ -27,7 +28,8 @@ it. Select a service with -pl and include its dependencies with -am. From the
 repository root, add -f services/pom.xml.
 
 For local execution, build first and run the application's main class in the IDE
-or its packaged JAR, for example java -jar identity/target/identity-0.1.0.jar.
+or its packaged JAR, for example java -jar identity/target/identity.jar (the
+build gives the Boot jar a stable name; the containers run it as /app/app.jar).
 Each service reads Spring configuration from `src/main/resources/application.yaml`.
 Supply the referenced environment variables through your shell or IDE run
 configuration. An IDE environment-file loader can use the root `.env`
@@ -45,12 +47,15 @@ tokens, sessions and permissions plus the controller/error contract, messaging
 covers domain, intake, delivery and worker, and assets covers processing and
 storage. The suites run without a database or SMTP server.
 
-Run them from services with `mvn test` (from the repository root:
-`mvn -f services/pom.xml test`). `mvn` is not necessarily on the PATH — install
-Maven locally or use the IDE's bundled Maven; the command stays the same.
+Run them from services with `mvn test` or `./mvnw test` (from the repository
+root: `mvn -f services/pom.xml test` or `services/mvnw -f services/pom.xml
+test`). `mvn` is not necessarily on the PATH — the wrapper `./mvnw` needs no
+local install; otherwise install Maven or use the IDE's bundled Maven. The
+command stays the same.
 
-Remaining follow-ups: integration tests against a real PostgreSQL, Java style
-checks, and running the reactor's checks in CI alongside the web checks.
+Remaining follow-ups: integration tests against a real PostgreSQL and Java
+style checks. The reactor's checks run in CI (`.github/workflows/ci.yml`, via
+`services/mvnw`) alongside the web checks.
 
 ## Containers
 

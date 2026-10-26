@@ -107,7 +107,8 @@ All endpoints require `Authorization: Bearer <MESSAGING_INTERNAL_AUTHORIZATION_T
 There is no separate attempts endpoint. List responses carry `sender` and `lockedAt` so operators
 can see the From actually used and debug leases, but omit attempt collections, avoiding unnecessary
 history loading for every row. Detail uses two bounded query shapes: one message and its history.
-API docs are at `/docs`.
+API docs are at `/docs` only when the `dev` Spring profile is active; outside
+that profile springdoc is disabled and `/docs` does not exist.
 
 ## Producer contract
 

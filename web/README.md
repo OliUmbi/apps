@@ -18,7 +18,7 @@ Each site owns its routes, page components, styling and public server functions.
 | `http-client` | Authentication, HTTP errors, response validation and pagination |
 | `query` | React Query provider and shared cache defaults |
 | `ui` | Shared rendering and form behavior, including images, Markdown and paginated lists |
-| `i18n` | Paraglide configuration, generated runtime and message catalog |
+| `i18n` | Paraglide configuration, generated runtime and message catalog; the `generate.mjs` entry owns generation (`pnpm generate`) |
 | `environment` | Shared Vite environment loading for local development and builds |
 
 Repositories perform database operations only. Domain services validate inputs, own transactions, and coordinate repositories and queue messages. Email composition and data types live separately. A reservation stores its product snapshot, adjusts stock and queues notifications atomically. Donation commitments lock the requested item and check remaining quantity. Campaign sending locks the campaign, reads confirmed subscribers in batches and queues each email individually.

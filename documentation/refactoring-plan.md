@@ -183,25 +183,25 @@ From the reports' "keep these" lists; every package must preserve them:
 
 | Package | Status | Notes |
 | --- | --- | --- |
-| W0-1, W0-2 | done | baseline green; plan committed |
-| W1-A | dispatched | |
-| W1-B | pending | |
-| W1-C | pending | |
-| W2-A | pending | |
-| W2-B | pending | |
-| W2-C | pending | |
-| W2-D | pending | |
-| W3-A | pending | |
-| W3-B | pending | |
-| W3-C | pending | |
-| W3-D | pending | |
-| W4-A | pending | |
-| W4-B | pending | |
-| W4-C | pending | |
-| W5-A | pending | |
-| W5-B | pending | |
-| W5-C | pending | |
-| W5-D | pending | |
-| W6-A | pending | |
-| W6-B | pending | |
-| W6-C | pending | |
+| W0-1, W0-2 | done | baseline green; plan committed (a3f0cd2) |
+| W1-A | done | committed b9bcb31; 24 web tests pass; submissionId idempotency, BigInt decimals, SHA-256 references |
+| W1-B | done | committed 844688e; runtime-verified on fresh PostgreSQL, 58/58 integration tests; roles NOLOGIN + compose roles service |
+| W1-C | done | committed 1021d46; 63/63 PG-gated tests on fresh DB; conflict = reload UX in reserved Alert slot |
+| W2-A | done | committed b36f607; typed fields + per-field errors + shared Alert + explicit pagination; 40 tests pass |
+| W2-B | done | agent cut off after writing; work verified complete by inspection + full builds and committed 47f1c4d |
+| W2-C | done | 12a7298 (packages typed errors) + 3b53ab4 (studio boundary, R04 saved-draft, outcome branches); 63 web tests pass |
+| W2-D | done | d6992c0: one table-agnostic CRUD factory; content trees 1,874→605 lines (net −1,510); PG-gated suites pass unchanged (36/36) |
+| W3-A | done | 7072581: tokens, trio adoption, dates, metadata, 404s, J-01…J-19 closed (J-10 abuse → W3-D). Decisions for D6 record: honey #e3d4af, oat-soft #d5cbb9, clay deleted |
+| W3-B | done | 41be025: tokens (ash dropped, paper adopted), .shell/.cta, U-01…U-20 closed, showcase excerpts, 43 catalog keys; isolated-DB verified incl. reference replay stability |
+| W3-C | done | b3460ab: availability single-source (SQL clock), tokens, typed forms, terminal-state UX; 88 tests; combined tree re-verified green by orchestrator |
+| W3-D | done | 293c7b3: honeypots in all 6 schemas (zero side effects, idempotency-safe), unclet review.service, X-08 clean, 96 tests. Leftover smalls for W6-C: unclet footer rel attribute; ~45 decorative icons missing aria-hidden (unclet/zelglihof) |
+| W4-A | done | 6533d97 (Checkbox, list leaves) + ac7353f (filter-chip, attempt-row, form-footer, panel/badge passthrough, F12 guards, D6 decision) |
+| W4-B | part 1 done | 76af189. Part 2 re-dispatched (legacy CSS, shims, T-10) after usage-limit restart — no partial work existed |
+| W4-C | pending | last big item: collection machinery + page-type rework (R12/R13/D7) |
+| W6-C | part 1 done | 38dfa66: 58 icons aria-hidden + rel fix. Part 2 running (docs sync + tracker dispositions) |
+| W5-A | done | committed 5e5fa92; 90 Java tests green; MailSendException semantics verified against Spring 7.0.9 sources |
+| W5-B | done | committed 12a187f; 168 Java tests green; 401 contract + errorId envelope + identity hardening |
+| W5-C | done | committed 093ce71; 134 Java tests green; 44 hermetic processing-pipeline tests |
+| W5-D | done | committed 09a716c; O-006/O-010 proposals drafted, D1–D10 recorded. W6-C follow-ups: open-work.md "66 tests"→current count; messaging README "/docs" line needs the dev-profile gate; database/README.md money wording (D5); RS-F5 tracker-consolidation proposal ready (owner decision) |
+| W6-A | done | part 1 71cf9c7 (containers + CI), part 2 c149870 (types aligned, pnpm generate owns i18n output with lock, Maven wrapper 3.9.12) |
+| W6-B | done | b3d52e1: 6 test files covering newsletter flows, subscriber, campaign dispatch, queue email, pagination, public read; 126 pass + PG 36/36 |

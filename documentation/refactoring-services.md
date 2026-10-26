@@ -1,5 +1,7 @@
 # Refactoring handoff — database & Java services
 
+Executed in the 2026-10 refactoring pass; see `refactoring-plan.md` for outcomes. The registry below is historical.
+
 > Agent-to-agent handoff document. Source: code review session over `../database`,
 > `services/` (identity, messaging, assets, shared) and the maintained
 > documentation, cross-checked against `web/packages/*` schemas. All findings
