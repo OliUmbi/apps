@@ -1,7 +1,7 @@
 import { pageSchema } from "@oliumbi/contracts";
 import { createPublicRepository } from "@oliumbi/unclet-data";
 import { reviewSchema } from "@oliumbi/unclet-data/forms";
-import { createReviewSubmissionRepository } from "@oliumbi/unclet-data/review.repository";
+import { createReviewService } from "@oliumbi/unclet-data/review.service";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import type { PublicReview } from "../model/content";
@@ -9,10 +9,7 @@ import { database } from "../server/database.server";
 
 export const sendReview = createServerFn({ method: "POST" })
 	.validator(reviewSchema)
-	.handler(async ({ data }) => {
-		await createReviewSubmissionRepository(database.db).submit(data);
-		return { outcome: "accepted" as const };
-	});
+	.handler(async ({ data }) => createReviewService(database.db).submit(data));
 
 export const getReviewPage = createServerFn({ method: "GET" })
 	.validator(z.object({ page: pageSchema.shape.page }))

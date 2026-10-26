@@ -8,6 +8,12 @@ import {
 } from "@oliumbi/contracts";
 import { z } from "zod";
 
+// Honeypot (X-04): `website` is a field humans never see and never fill. The
+// form renders it hidden; a filled value marks a scripted submit and the
+// service drops the fill silently. Optional on purpose: a request without the
+// field still parses like a human's fill.
+export const honeypotSchema = z.string().max(limits.text).optional();
+
 /*
  * Public submission contracts: one strict Zod schema per public form, shared by
  * client and server. The types are named for the submission workflow so they
@@ -40,6 +46,7 @@ export const inquirySchema = z.strictObject({
 	location: textSchema,
 	guests: z.number().int().positive().max(10_000),
 	note: textSchema,
+	website: honeypotSchema,
 });
 export type InquirySubmissionInput = z.infer<typeof inquirySchema>;
 
@@ -49,5 +56,6 @@ export const reviewSchema = z.strictObject({
 	stars: z.number().int().min(1).max(5),
 	name: nameSchema,
 	description: z.string().trim().min(5).max(limits.text),
+	website: honeypotSchema,
 });
 export type ReviewSubmissionInput = z.infer<typeof reviewSchema>;

@@ -9,7 +9,8 @@ export function createNewsletterService(
 	options: NewsletterOptions,
 ) {
 	return {
-		request: (email: string) => requestSubscription(database, options, email),
+		request: (email: string, website?: string) =>
+			requestSubscription(database, options, email, website),
 		confirm: (token: string) => confirmSubscription(database, options, token),
 		unsubscribe: (token: string) => unsubscribeByToken(database, token),
 	};

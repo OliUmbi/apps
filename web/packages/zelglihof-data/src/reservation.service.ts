@@ -52,6 +52,12 @@ export function createReservationService(
 				const values = reservationSchema.parse(input);
 				const reference = referenceFor(values.submissionId);
 				const reserved: ReservationResult = { outcome: "reserved", reference };
+				// Honeypot (X-04): a filled `website` marks a scripted submit; it is
+				// dropped silently - success-shaped answer, no row, no stock change,
+				// no queued email - so the bot learns nothing. Throttling beyond this
+				// stays the deliberate proxy rate-limit gap (see
+				// documentation/open-work.md technical debt).
+				if (values.website) return reserved;
 				return database.transaction(async (transaction) => {
 					const repository = createReservationRepository(transaction);
 					// The variant lock serializes concurrent fills; after it, a retry

@@ -28,6 +28,12 @@ export function createInquiryService(
 			return mapErrors(async () => {
 				const values = contactSchema.parse(input);
 				const reference = referenceFor(values.submissionId);
+				// Honeypot (X-04): a filled `website` marks a scripted submit; it is
+				// dropped silently - success-shaped answer, no row, no queued email -
+				// so the bot learns nothing. Throttling beyond this stays the
+				// deliberate proxy rate-limit gap (see documentation/open-work.md
+				// technical debt).
+				if (values.website) return { outcome: "accepted" as const, reference };
 				return database.transaction(async (transaction) => {
 					const repository = createInquirySubmissionRepository(transaction);
 					const plan = decideInquiry({

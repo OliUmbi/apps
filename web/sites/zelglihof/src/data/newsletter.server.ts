@@ -9,8 +9,8 @@ function newsletterService() {
 	});
 }
 
-export const requestNewsletter = (email: string) =>
-	newsletterService().request(email);
+export const requestNewsletter = (email: string, website?: string) =>
+	newsletterService().request(email, website);
 export const confirmNewsletter = (token: string) =>
 	newsletterService().confirm(token);
 export const unsubscribeNewsletter = (token: string) =>

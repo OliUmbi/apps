@@ -42,11 +42,17 @@ export async function requestSubscription(
 	database: DatabasePool,
 	options: NewsletterOptions,
 	email: string,
+	website?: string,
 ): Promise<SubscriptionResult> {
 	// One boundary: schema failures leave typed as validation verdicts and
 	// driver failures as classified conflict/not-found/internal errors.
 	return mapErrors(async () => {
 		const normalized = emailSchema.parse(email);
+		// Honeypot (X-04): a filled `website` marks a scripted submit; it is
+		// dropped silently - success-shaped answer, no row, no queued email - so
+		// the bot learns nothing. Throttling beyond this stays the deliberate
+		// proxy rate-limit gap (see documentation/open-work.md technical debt).
+		if (website) return { outcome: "confirmation-sent" };
 		const outcome = await database.transaction(async (transaction) => {
 			const repository = createNewsletterRepository(transaction);
 			const now = new Date();

@@ -7,6 +7,7 @@
     "./forms": "./src/forms.ts",
     "./inquiry.service": "./src/inquiry.service.ts",
     "./review.repository": "./src/review.repository.ts",
+    "./review.service": "./src/review.service.ts",
     "./statuses": "./src/statuses.ts",
     "./content/errors": "./src/content/errors.ts",
     "./content/inquiry": "./src/content/inquiry.ts",

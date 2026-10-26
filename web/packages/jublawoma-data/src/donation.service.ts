@@ -97,6 +97,12 @@ export function createDonationService(database: DatabasePool) {
 				const values = commitmentSchema.parse(input);
 				const reference = referenceFor(values.submissionId);
 				const committed: CommitmentResult = { outcome: "committed", reference };
+				// Honeypot (X-04): a filled `website` marks a scripted submit; it is
+				// dropped silently - success-shaped answer, no row, no stock movement,
+				// no queued email - so the bot learns nothing. Throttling beyond this
+				// stays the deliberate proxy rate-limit gap (see
+				// documentation/open-work.md technical debt).
+				if (values.website) return committed;
 				return database.transaction(async (transaction) => {
 					const repository = createCommitmentRepository(transaction);
 					// The item lock serializes concurrent fills; a retry sees the original row.

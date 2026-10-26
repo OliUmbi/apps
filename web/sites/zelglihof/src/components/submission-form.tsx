@@ -65,6 +65,17 @@ export function SubmissionForm<Input, Result>({
 					/>
 				</div>
 			))}
+			{/* Honeypot (X-04): a real-but-hidden input humans never see or fill;
+			    a filled value makes the server drop the submission silently. No
+			    visible text on purpose - a bot must not learn the field exists. */}
+			<input
+				type="text"
+				name="website"
+				className="sr-only"
+				tabIndex={-1}
+				aria-hidden="true"
+				autoComplete="off"
+			/>
 			<Alert tone="error">{form.error}</Alert>
 			<Button type="submit" className="cta" disabled={form.pending}>
 				{form.pending ? m.saving() : submitLabel}

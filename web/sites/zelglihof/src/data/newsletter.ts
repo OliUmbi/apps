@@ -12,7 +12,7 @@ import {
 
 export const signupForNewsletter = createServerFn({ method: "POST" })
 	.validator(newsletterSignupSchema)
-	.handler(({ data }) => requestNewsletter(data.email));
+	.handler(({ data }) => requestNewsletter(data.email, data.website));
 
 const tokenInput = z.object({ token: newsletterTokenSchema });
 
