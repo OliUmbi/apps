@@ -43,6 +43,7 @@ export function AccountPermissions({ accountId }: { accountId: string }) {
 										(item) => item.permission === value,
 									) ?? false
 								}
+								disabled={!details.data || changePermission.isPending}
 								onChange={(granted) =>
 									changePermission.mutate({
 										data: { id: accountId, permission: value, granted },

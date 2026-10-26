@@ -73,6 +73,7 @@ export function AccountDetailsForm({ account }: { account: Account }) {
 					label={m.studio_account_enabled()}
 					checked={enabled}
 					onChange={setEnabled}
+					disabled={save.isPending}
 				/>
 				<div className="flex justify-end gap-2 border-t border-border-soft pt-[18px]">
 					<Button type="submit" variant="primary" disabled={save.isPending}>

@@ -28,25 +28,32 @@ it looks. The leaves are flat on purpose: there is no nesting to learn.
 | `text.tsx` | The type scale: `Title`, `Kicker`, `Body`. |
 | `field.tsx` | Label, control and message slot. `controlClass` is the shared control shape. |
 | `text-field.tsx` | Single and multi-line text entry. |
-| `checkbox.tsx` | The only checkbox. |
+| `checkbox.tsx` | The only checkbox. `disabled` and `description` slots. |
 | `select.tsx` | Dropdown with selection. |
 | `popover.tsx` | Anchored panel; `calendar.tsx` is the picker that sits in it. |
 | `file-input.tsx` | File picker. |
 | `button.tsx` | `Button` and `IconButton`. |
-| `alert.tsx` | Feedback that reserves its space, so nothing shifts. |
-| `panel.tsx` | A titled group of fields. |
-| `form.tsx` | `Form` and `FormActions`. |
+| `filter-chip.tsx` | Filter toggle: `selected` plus `tone` (`danger` marks the failure filter). |
+| `alert.tsx` | Feedback that reserves its space, so nothing shifts. Studio-local by design — see below. |
+| `panel.tsx` | A titled group of fields: `kicker`, title, description, `aside`. `className` carries layout placement. |
+| `form.tsx` | `Form`, `FormFields` and `FormActions`. |
+| `form-footer.tsx` | The divider row that closes a form and holds its buttons. |
 | `record-fields.tsx` | Read-only detail: `RecordFields`, `RecordField`. |
 | `dialog.tsx` | `ConfirmDialog` for destructive actions. |
-| `badge.tsx` | Small status marker. |
+| `badge.tsx` | Small status marker. `className` carries layout placement. |
+| `list.tsx` | List chrome: `ListShell`, `ListRow`, `ListMeta`, `Avatar`. |
+| `attempt-row.tsx` | Delivery timeline row: mono index, outcome line, error `pre`. |
 | `nav.tsx` | `Nav`, `NavSection`, `NavItem`. |
 | `sidebar.tsx` | `Sidebar`, `SidebarHeader`, `SidebarFooter`. |
 | `drawer.tsx` | Off-canvas navigation for small screens. |
 | `top-bar.tsx` | Workspace context bar. |
 | `menu.tsx` | The only dropdown menu. |
 | `brand.tsx` | The identity mark. |
+| `page-header.tsx` | The top of every screen: kicker, screen name, supporting copy. |
 | `split.tsx` | Page-level split: scenery panel + content panel. |
 | `gradient-panel.tsx` | Decorative aurora surface under a grain overlay. |
+| `message-screen.tsx` | Centred card for empty and failed screens. |
+| `danger-zone.tsx` | The destructive end of a record, behind a red hairline. |
 
 Add a leaf when the same look appears twice. Do not add a leaf to abstract a
 single one-off — a view can carry a layout utility instead.
@@ -63,3 +70,21 @@ single one-off — a view can carry a layout utility instead.
 - State changes never move anything. Active markers, error lines and alerts
   reserve their space up front (`border-l-2 border-transparent`, the error slot
   in `text-field`, the slot in `alert`).
+
+## Shared `@oliumbi/ui`
+
+`@oliumbi/ui` is the leaf layer for the public sites. Studio uses its
+behaviour helpers (`FormFeedback` today — those consumers move to `Alert` in a
+later package, not here) but does not re-export its styled leaves.
+
+**Why `alert.tsx` stays studio-local.** The shared `@oliumbi/ui/alert` already
+carries the same contract — a reserved 40px slot, `role="alert"`/`status`, and
+identical error/success tone classes — so behaviour is converged. The look is
+not: the shared component pins its own geometry (a `rounded-lg` box whose
+inner slot grows with wrapped text), which matches neither studio's token
+vocabulary (2px radii, a fixed 40px slot) nor can be overridden from outside.
+Re-exporting it would move studio's visual detail out of this folder — the one
+rule this layer exists to enforce — and a wrapped error message would then
+shift the form beneath it. The two implementations can converge when
+`FormFeedback` is retired and the shared primitive takes its geometry from its
+site; until then both reserve 40px and render the same tones.

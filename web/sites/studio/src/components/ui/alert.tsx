@@ -3,6 +3,11 @@ import type { ReactNode } from "react";
 /*
  * Form and screen feedback. The slot is always rendered at its full height so
  * showing or clearing a message never moves the controls around it.
+ *
+ * Studio-local by design: `@oliumbi/ui/alert` is the reserved-slot alert for
+ * the public sites, but it pins its own geometry (a rounded-lg box that grows
+ * with wrapped text) which is not studio's token vocabulary and would move the
+ * slot. See `README.md` ("Shared `@oliumbi/ui`") for the full rationale.
  */
 
 const tones = {
