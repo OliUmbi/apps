@@ -1,5 +1,7 @@
 import {
+	AppError,
 	idSchema,
+	mapErrors,
 	pageSchema,
 	siteSchema,
 	slugSchema,
@@ -39,17 +41,22 @@ export const deleteAsset = createServerFn({ method: "POST" })
 	});
 export const uploadAsset = createServerFn({ method: "POST" })
 	.validator((input: FormData) => input)
-	.handler(async ({ data }) => {
-		const input = assetInput.parse(Object.fromEntries(data));
-		await requireActor(input.site);
-		const file = data.get("file");
-		if (!(file instanceof File)) throw new Error("File required");
-		const slug =
-			input.kind === "documents"
-				? slugSchema.parse(data.get("slug"))
-				: undefined;
-		return assets[input.kind].upload(input.site, file, {
-			visible: data.get("visible") === "true",
-			slug,
-		});
-	});
+	.handler(async ({ data }) =>
+		// One boundary: the handler-level schema reads leave typed as validation
+		// verdicts, never as raw ZodErrors across the server-function boundary.
+		mapErrors(async () => {
+			const input = assetInput.parse(Object.fromEntries(data));
+			await requireActor(input.site);
+			const file = data.get("file");
+			if (!(file instanceof File))
+				throw new AppError("validation", "File required");
+			const slug =
+				input.kind === "documents"
+					? slugSchema.parse(data.get("slug"))
+					: undefined;
+			return assets[input.kind].upload(input.site, file, {
+				visible: data.get("visible") === "true",
+				slug,
+			});
+		}),
+	);

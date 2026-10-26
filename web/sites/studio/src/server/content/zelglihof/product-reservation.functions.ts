@@ -1,4 +1,9 @@
-import { idSchema, pageSchema, timestampSchema } from "@oliumbi/contracts";
+import {
+	idSchema,
+	pageSchema,
+	timestampSchema,
+	toAppError,
+} from "@oliumbi/contracts";
 import {
 	concurrentUpdateMessage,
 	isConcurrentUpdateError,
@@ -49,7 +54,7 @@ export const updateProductReservation = createServerFn({ method: "POST" })
 		} catch (error) {
 			if (isConcurrentUpdateError(error))
 				throw new Error(concurrentUpdateMessage);
-			throw error;
+			throw toAppError(error);
 		}
 	});
 

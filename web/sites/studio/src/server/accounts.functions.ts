@@ -1,4 +1,4 @@
-import { idSchema } from "@oliumbi/contracts";
+import { AppError, idSchema } from "@oliumbi/contracts";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import {
@@ -33,14 +33,15 @@ export const updateAccount = createServerFn({ method: "POST" })
 	.handler(async ({ data }) => {
 		const actor = await requireActor();
 		if (data.id === actor.id && !data.enabled)
-			throw new Error("Cannot disable your own account");
+			throw new AppError("forbidden", "Cannot disable your own account");
 		return identity.updateAccount(data.id, data);
 	});
 export const deleteAccount = createServerFn({ method: "POST" })
 	.validator(idSchema)
 	.handler(async ({ data }) => {
 		const actor = await requireActor();
-		if (data === actor.id) throw new Error("Cannot delete your own account");
+		if (data === actor.id)
+			throw new AppError("forbidden", "Cannot delete your own account");
 		await identity.deleteAccount(data);
 	});
 export const changePassword = createServerFn({ method: "POST" })
@@ -64,7 +65,10 @@ export const setPermission = createServerFn({ method: "POST" })
 			data.permission === "studio.admin" &&
 			!data.granted
 		)
-			throw new Error("Cannot remove your own administrator permission");
+			throw new AppError(
+				"forbidden",
+				"Cannot remove your own administrator permission",
+			);
 		if (data.granted) await identity.grantPermission(data.id, data.permission);
 		else await identity.revokePermission(data.id, data.permission);
 	});

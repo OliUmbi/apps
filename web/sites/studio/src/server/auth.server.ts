@@ -1,4 +1,4 @@
-import type { SiteId } from "@oliumbi/contracts";
+import { AppError, type SiteId, toAppError } from "@oliumbi/contracts";
 import { ServiceError } from "@oliumbi/http-client";
 import {
 	getRequestHeader,
@@ -60,7 +60,8 @@ export async function currentActor() {
 			clearSessionCookie();
 			return null;
 		}
-		throw error;
+		// One boundary: a failure leaves typed, never as a raw driver/HTTP error.
+		throw toAppError(error);
 	}
 }
 
@@ -69,13 +70,13 @@ export async function requireActor(site?: SiteId) {
 	const allowed = actor.permissions.some(
 		(value) => value === "studio.admin" || (site && value === `${site}.manage`),
 	);
-	if (!allowed) throw new Error("Not authorized");
+	if (!allowed) throw new AppError("forbidden", "Not authorized");
 	return actor;
 }
 
 export async function requireAuthenticatedActor() {
 	const actor = await currentActor();
-	if (!actor) throw new Error("Not authenticated");
+	if (!actor) throw new AppError("unauthorized", "Not authenticated");
 	return actor;
 }
 
@@ -85,7 +86,7 @@ export async function logout() {
 		if (token) await identity.revokeSession(token);
 	} catch (error) {
 		if (!(error instanceof ServiceError && [401, 404].includes(error.status)))
-			throw error;
+			throw toAppError(error);
 	} finally {
 		clearSessionCookie();
 	}

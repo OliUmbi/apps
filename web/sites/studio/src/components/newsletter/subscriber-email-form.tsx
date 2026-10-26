@@ -5,6 +5,7 @@ import type { Subscriber } from "@oliumbi/zelglihof-data/content/subscriber";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { correctSubscriberEmail } from "../../server/newsletter.functions";
+import { correctionFeedback } from "../../server/outcomes";
 import { InputField } from "../input-field";
 import { Button } from "../ui/button";
 
@@ -18,10 +19,20 @@ export function SubscriberEmailForm({
 	const correction = useMutation({
 		mutationFn: (email: string) =>
 			correctEmail({ data: { id: subscriber.id, email } }),
-		onSuccess: () =>
-			cache.invalidateQueries({
-				queryKey: ["content", "zelglihof.subscriber"],
-			}),
+		onSuccess: (result) =>
+			// A conflict corrected nothing: only the corrected outcome changes the
+			// stored record and earns a refetch.
+			result.outcome === "corrected"
+				? cache.invalidateQueries({
+						queryKey: ["content", "zelglihof.subscriber"],
+					})
+				: undefined,
+	});
+	// A resolved correction is not automatically a success: the typed outcome
+	// decides, and "conflict" is a refusal ("address already subscribed").
+	const feedback = correctionFeedback({
+		failed: correction.isError,
+		result: correction.data,
 	});
 	return (
 		<>
@@ -52,9 +63,15 @@ export function SubscriberEmailForm({
 				</Button>
 			</Form>
 			<FormFeedback
-				error={correction.isError ? m.studio_subscriber_action_error() : null}
+				error={
+					feedback === "failed"
+						? m.studio_subscriber_action_error()
+						: feedback === "conflict"
+							? m.studio_subscriber_email_conflict()
+							: null
+				}
 				success={
-					correction.isSuccess ? m.studio_subscriber_email_changed() : null
+					feedback === "corrected" ? m.studio_subscriber_email_changed() : null
 				}
 			/>
 		</>

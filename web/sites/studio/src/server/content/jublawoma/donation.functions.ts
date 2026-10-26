@@ -1,4 +1,4 @@
-import { pageSchema, timestampSchema } from "@oliumbi/contracts";
+import { pageSchema, timestampSchema, toAppError } from "@oliumbi/contracts";
 import {
 	donationInputSchema,
 	donationKeySchema,
@@ -53,7 +53,7 @@ export const updateDonation = createServerFn({ method: "POST" })
 		} catch (error) {
 			if (isConcurrentUpdateError(error))
 				throw new Error(concurrentUpdateMessage);
-			throw error;
+			throw toAppError(error);
 		}
 	});
 
