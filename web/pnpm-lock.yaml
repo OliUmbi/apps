@@ -329,6 +329,9 @@ importers:
       '@oliumbi/database':
         specifier: workspace:*
         version: link:../database
+      '@oliumbi/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@oliumbi/queue':
         specifier: workspace:*
         version: link:../queue

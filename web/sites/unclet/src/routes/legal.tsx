@@ -1,10 +1,15 @@
 import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute } from "@tanstack/react-router";
 import { LegalPage } from "../components/legal-page";
+import { pageHead } from "../model/metadata";
 
 export const Route = createFileRoute("/legal")({
-	head: () => ({ meta: [{ title: m.unclet_legal_page_title() }] }),
-	component: () => (
+	head: () => pageHead({ title: m.unclet_legal_page_title() }),
+	component: LegalPageContent,
+});
+
+function LegalPageContent() {
+	return (
 		<LegalPage title={m.imprint()}>
 			<section>
 				<h2>{m.responsible_party()}</h2>
@@ -31,5 +36,5 @@ export const Route = createFileRoute("/legal")({
 				<p>{m.unclet_legal_copyright_body()}</p>
 			</section>
 		</LegalPage>
-	),
-});
+	);
+}

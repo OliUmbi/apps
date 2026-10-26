@@ -3,17 +3,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { InquiryContact } from "../components/inquiry-contact";
 import { InquiryForm } from "../components/inquiry-form";
 import { PageHero } from "../components/page-hero";
+import { pageHead } from "../model/metadata";
 
 export const Route = createFileRoute("/inquiry")({
-	head: () => ({
-		meta: [
-			{ title: m.unclet_inquiry_page_title() },
-			{
-				name: "description",
-				content: m.unclet_inquiry_page_description(),
-			},
-		],
-	}),
+	head: () =>
+		pageHead({
+			title: m.unclet_inquiry_page_title(),
+			description: m.unclet_inquiry_page_description(),
+		}),
 	component: InquiryPage,
 });
 
@@ -33,7 +30,7 @@ function InquiryPage() {
 				}
 				description={m.unclet_inquiry_description()}
 			/>
-			<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[90rem] md:w-[calc(100%_-_5rem)] grid gap-16 py-20 md:py-28 lg:grid-cols-[.65fr_1.35fr]">
+			<section className="shell grid gap-16 py-20 md:py-28 lg:grid-cols-[.65fr_1.35fr]">
 				<div className="lg:col-start-2 lg:row-start-1">
 					<InquiryForm />
 				</div>

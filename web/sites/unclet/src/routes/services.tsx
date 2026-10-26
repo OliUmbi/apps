@@ -3,17 +3,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "../components/page-hero";
 import { CateringFormats } from "../components/services/catering-formats";
 import { EventPlanning } from "../components/services/event-planning";
+import { pageHead } from "../model/metadata";
 
 export const Route = createFileRoute("/services")({
-	head: () => ({
-		meta: [
-			{ title: m.unclet_services_page_title() },
-			{
-				name: "description",
-				content: m.unclet_services_page_description(),
-			},
-		],
-	}),
+	head: () =>
+		pageHead({
+			title: m.unclet_services_page_title(),
+			description: m.unclet_services_page_description(),
+		}),
 	component: ServicesPage,
 });
 

@@ -3,36 +3,37 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 
 export function ChefExperience() {
+	// Messages resolve per render; module scope would bake one locale in (U-20).
 	const experience = [
 		{
-			period: "2013",
+			period: m.unclet_about_period_gusto(),
 			title: m.unclet_about_gusto_title(),
 			body: m.unclet_about_gusto_body(),
 		},
 		{
-			period: "Danach",
+			period: m.unclet_about_period_gstaad(),
 			title: m.unclet_about_gstaad_title(),
 			body: m.unclet_about_gstaad_body(),
 		},
 		{
-			period: "International",
+			period: m.unclet_about_period_private_chef(),
 			title: m.unclet_about_private_chef_title(),
 			body: m.unclet_about_private_chef_body(),
 		},
 		{
-			period: "Aargau",
+			period: m.unclet_about_period_catering(),
 			title: m.unclet_about_catering_title(),
 			body: m.unclet_about_catering_body(),
 		},
 		{
-			period: "Seit 2024",
+			period: m.unclet_about_period_founding(),
 			title: m.unclet_about_founding_title(),
 			body: m.unclet_about_founding_body(),
 		},
 	];
 
 	return (
-		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[90rem] md:w-[calc(100%_-_5rem)] py-24 md:py-32">
+		<section className="shell py-24 md:py-32">
 			<div className="grid gap-16 lg:grid-cols-[.7fr_1.3fr]">
 				<div>
 					<p className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-brass">
@@ -69,10 +70,7 @@ export function ChefExperience() {
 				<p className="max-w-xl text-lg text-bone/55">
 					{m.unclet_about_contact_description()}
 				</p>
-				<Link
-					to="/inquiry"
-					className="inline-flex min-h-[3.25rem] items-center justify-center gap-[0.65rem] border border-transparent bg-brass px-[1.6rem] py-[0.9rem] text-[0.78rem] font-bold uppercase tracking-[0.11em] text-night transition-colors hover:bg-brass-light"
-				>
+				<Link to="/inquiry" className="cta">
 					{m.unclet_about_contact_action()}
 					<ArrowRight size={17} />
 				</Link>

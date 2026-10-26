@@ -11,7 +11,19 @@ export interface PublicReview {
 	stars: number;
 }
 
+// Teaser card payload: the excerpt is plain text produced with the list query,
+// never the markdown body (D4).
 export interface ShowcaseSummary {
+	id: string;
+	slug: string;
+	title: string;
+	excerpt: string;
+	location: string;
+	guestCount: number;
+	image: ContentImage | null;
+}
+
+export interface PublicShowcase {
 	id: string;
 	slug: string;
 	title: string;
@@ -19,9 +31,6 @@ export interface ShowcaseSummary {
 	location: string;
 	guestCount: number;
 	image: ContentImage | null;
-}
-
-export interface PublicShowcase extends ShowcaseSummary {
 	publishedOn: string | null;
 	gallery: ContentImage[];
 }

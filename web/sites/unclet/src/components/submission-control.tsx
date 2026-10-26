@@ -1,37 +1,42 @@
 import { Field } from "@base-ui/react/field";
 import { Select } from "@base-ui/react/select";
 import { m } from "@oliumbi/i18n/messages";
+import type {
+	SubmissionErrorReason,
+	SubmissionField,
+	SubmissionFieldKind,
+} from "@oliumbi/ui/submission-types";
+import { validationMessage } from "@oliumbi/ui/use-submission-form";
+import { todayDateInput } from "@oliumbi/unclet-data/forms";
 import { ChevronDown } from "lucide-react";
 import { InputField } from "./input-field";
 import { RatingControl } from "./rating-control";
 
-export interface SubmissionField {
-	name: string;
-	label: string;
-	type?: "text" | "email" | "tel" | "date" | "number" | "textarea" | "rating";
-	required?: boolean;
-	min?: number;
-	step?: number;
-	max?: number;
-	placeholder?: string;
-	autoComplete?: string;
-	wide?: boolean;
-	options?: { value: string; label: string }[];
-}
-
-export function SubmissionControl({
+export function SubmissionControl<Input>({
 	field,
+	error,
 	disabled,
 }: {
-	field: SubmissionField;
+	field: SubmissionField<Input>;
+	error?: SubmissionErrorReason;
 	disabled: boolean;
 }) {
 	const label = field.required
 		? field.label
 		: `${field.label} (${m.optional()})`;
-	if (field.type === "rating")
-		return <RatingControl field={{ ...field, label }} disabled={disabled} />;
-	if (field.options)
+	const numeric =
+		field.kind === "number" || field.kind === "decimal-string" ? field : null;
+	const textarea = field.kind === "textarea" ? field : null;
+	if (field.kind === "rating")
+		return (
+			<RatingControl
+				field={field}
+				label={label}
+				error={error}
+				disabled={disabled}
+			/>
+		);
+	if (field.kind === "select")
 		return (
 			<Field.Root name={field.name} className="grid gap-2">
 				<Field.Label>{label}</Field.Label>
@@ -62,6 +67,9 @@ export function SubmissionControl({
 						</Select.Positioner>
 					</Select.Portal>
 				</Select.Root>
+				<Field.Error match={error !== undefined} className="text-danger">
+					{error ? validationMessage(error) : null}
+				</Field.Error>
 			</Field.Root>
 		);
 	return (
@@ -69,15 +77,38 @@ export function SubmissionControl({
 			disabled={disabled}
 			name={field.name}
 			label={label}
-			type={field.type === "textarea" ? undefined : (field.type ?? "text")}
-			render={field.type === "textarea" ? <textarea rows={5} /> : undefined}
+			error={error}
+			type={textarea ? undefined : inputType(field.kind)}
+			render={textarea ? <textarea rows={textarea.rows ?? 5} /> : undefined}
 			required={field.required}
-			min={field.min}
-			max={field.max}
-			step={field.step}
+			min={
+				numeric?.min ?? (field.kind === "date" ? todayDateInput() : undefined)
+			}
+			max={numeric?.max}
+			step={numeric?.step}
 			placeholder={field.placeholder}
 			autoComplete={field.autoComplete}
-			defaultValue={field.type === "number" ? (field.min ?? 1) : undefined}
+			defaultValue={numeric ? (numeric.min ?? 1) : undefined}
 		/>
 	);
+}
+
+function inputType(
+	kind: SubmissionFieldKind,
+): "text" | "email" | "tel" | "url" | "date" | "time" | "number" {
+	switch (kind) {
+		case "email":
+		case "tel":
+		case "url":
+		case "date":
+		case "time":
+		case "number":
+			return kind;
+		case "decimal-string":
+			// Numeric control, decimal-string payload: float64 must never touch a
+			// quantity (D2).
+			return "number";
+		default:
+			return "text";
+	}
 }

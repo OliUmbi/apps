@@ -1,3 +1,4 @@
+import { m } from "@oliumbi/i18n/messages";
 import { emailMessage } from "@oliumbi/queue/email";
 import type { InquirySubmissionInput } from "./forms";
 
@@ -21,7 +22,7 @@ export function inquiryEmails(
 			"unclet",
 			requestsEmail,
 			requestsEmail,
-			"Neue Anfrage",
+			m.unclet_inquiry_email_admin_subject(),
 			details,
 			input.email || undefined,
 		),
@@ -29,8 +30,8 @@ export function inquiryEmails(
 			"unclet",
 			requestsEmail,
 			input.email,
-			"Deine Anfrage bei Uncle-T",
-			`Danke für deine Anfrage. Wir melden uns persönlich bei dir. Referenz: ${reference}`,
+			m.unclet_inquiry_email_customer_subject(),
+			m.unclet_inquiry_email_customer_body({ reference }),
 			requestsEmail,
 		),
 	];

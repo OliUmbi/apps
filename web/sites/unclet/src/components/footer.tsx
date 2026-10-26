@@ -5,7 +5,7 @@ import { ArrowUpRight } from "lucide-react";
 export default function Footer() {
 	return (
 		<footer className="border-t border-bone/10 bg-night py-14">
-			<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[90rem] md:w-[calc(100%_-_5rem)] grid gap-12 md:grid-cols-[1.5fr_1fr_1fr]">
+			<div className="shell grid gap-12 md:grid-cols-[1.5fr_1fr_1fr]">
 				<div>
 					<p className="font-serif text-4xl">{m.unclet_brand()}</p>
 					<p className="mt-4 max-w-sm text-sm leading-relaxed text-bone/55">

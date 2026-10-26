@@ -3,7 +3,7 @@ import { m } from "@oliumbi/i18n/messages";
 export function CookingPhilosophy() {
 	return (
 		<section className="bg-paper py-24 text-night md:py-32">
-			<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[57.5rem] md:w-[calc(100%_-_5rem)]">
+			<div className="shell max-w-[57.5rem]">
 				<p className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-brass">
 					{m.unclet_about_philosophy_eyebrow()}
 				</p>

@@ -9,7 +9,7 @@ export function ShowcaseDescription({
 	showcase: PublicShowcase;
 }) {
 	return (
-		<div className="showcase-body lg:sticky lg:top-28 lg:self-start">
+		<div className="lg:sticky lg:top-28 lg:self-start">
 			<p className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-brass">
 				{m.unclet_showcase_event()}
 			</p>

@@ -1,17 +1,21 @@
+import { m } from "@oliumbi/i18n/messages";
+import { getLocale } from "@oliumbi/i18n/runtime";
 import { CalendarDays, MapPin, UsersRound } from "lucide-react";
 import type { PublicShowcase } from "../model/content";
+import { formatMonthYear } from "../model/dates";
 
 export function ShowcaseFacts({ showcase }: { showcase: PublicShowcase }) {
 	const publishedOn = showcase.publishedOn
-		? new Intl.DateTimeFormat("de-CH", {
-				month: "long",
-				year: "numeric",
-			}).format(new Date(`${showcase.publishedOn}T12:00:00`))
+		? formatMonthYear(showcase.publishedOn, getLocale())
 		: null;
 	const facts = [
-		{ icon: UsersRound, label: "Gäste", value: showcase.guestCount },
-		{ icon: MapPin, label: "Ort", value: showcase.location },
-		{ icon: CalendarDays, label: "Einblick", value: publishedOn },
+		{ icon: UsersRound, label: m.guests(), value: showcase.guestCount },
+		{ icon: MapPin, label: m.location(), value: showcase.location },
+		{
+			icon: CalendarDays,
+			label: m.unclet_showcase_insight(),
+			value: publishedOn,
+		},
 	].filter((fact) => fact.value);
 
 	return (

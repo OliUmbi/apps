@@ -1,25 +1,34 @@
 import { Field } from "@base-ui/react/field";
 import { m } from "@oliumbi/i18n/messages";
+import type {
+	SubmissionErrorReason,
+	SubmissionField,
+} from "@oliumbi/ui/submission-types";
+import { validationMessage } from "@oliumbi/ui/use-submission-form";
 import { Star } from "lucide-react";
 import { useState } from "react";
-import type { SubmissionField } from "./submission-control";
 
-export function RatingControl({
+export function RatingControl<Input>({
 	field,
+	label,
+	error,
 	disabled,
 }: {
-	field: SubmissionField;
+	field: Extract<SubmissionField<Input>, { kind: "rating" }>;
+	label: string;
+	error?: SubmissionErrorReason;
 	disabled: boolean;
 }) {
 	const maximum = field.max ?? 5;
 	const [rating, setRating] = useState<number | null>(null);
 	return (
 		<Field.Root name={field.name} className="grid gap-3">
-			<Field.Label className="font-medium">{field.label}</Field.Label>
+			<Field.Label className="font-medium">{label}</Field.Label>
 			<div
 				className="rating-control"
 				role="radiogroup"
-				aria-label={field.label}
+				aria-label={label}
+				aria-invalid={error ? true : undefined}
 			>
 				{Array.from({ length: maximum }, (_, index) => index + 1).map(
 					(value) => (
@@ -44,6 +53,9 @@ export function RatingControl({
 					),
 				)}
 			</div>
+			<Field.Error match={error !== undefined} className="text-danger">
+				{error ? validationMessage(error) : null}
+			</Field.Error>
 		</Field.Root>
 	);
 }

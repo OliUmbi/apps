@@ -11,7 +11,7 @@ export function ShowcaseGallery({
 	title: string;
 }) {
 	return (
-		<div className="showcase-gallery">
+		<div>
 			<AssetImage
 				src={cover?.src}
 				alt={cover?.alt ?? title}

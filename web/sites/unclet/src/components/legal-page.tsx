@@ -6,7 +6,7 @@ export function LegalPage({
 	children,
 }: Readonly<{ title: string; children: ReactNode }>) {
 	return (
-		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[57.5rem] md:w-[calc(100%_-_5rem)] min-h-[70vh] pt-40 pb-24">
+		<section className="shell max-w-[57.5rem] min-h-[70vh] pt-40 pb-24">
 			<p className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-brass">
 				{m.unclet_company_name()}
 			</p>

@@ -1,10 +1,15 @@
 import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute } from "@tanstack/react-router";
 import { LegalPage } from "../components/legal-page";
+import { pageHead } from "../model/metadata";
 
 export const Route = createFileRoute("/privacy")({
-	head: () => ({ meta: [{ title: m.unclet_privacy_page_title() }] }),
-	component: () => (
+	head: () => pageHead({ title: m.unclet_privacy_page_title() }),
+	component: PrivacyPage,
+});
+
+function PrivacyPage() {
+	return (
 		<LegalPage title={m.privacy()}>
 			<section>
 				<h2>{m.unclet_privacy_controller_title()}</h2>
@@ -15,6 +20,10 @@ export const Route = createFileRoute("/privacy")({
 				<p>{m.unclet_privacy_inquiries_body()}</p>
 			</section>
 			<section>
+				<h2>{m.unclet_privacy_reviews_title()}</h2>
+				<p>{m.unclet_privacy_reviews_body()}</p>
+			</section>
+			<section>
 				<h2>{m.unclet_privacy_technical_data_title()}</h2>
 				<p>{m.unclet_privacy_technical_data_body()}</p>
 			</section>
@@ -23,5 +32,5 @@ export const Route = createFileRoute("/privacy")({
 				<p>{m.unclet_privacy_rights_body()}</p>
 			</section>
 		</LegalPage>
-	),
-});
+	);
+}

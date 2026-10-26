@@ -1,6 +1,7 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+
 export function ServiceFormats() {
 	const formats = [
 		{
@@ -22,7 +23,7 @@ export function ServiceFormats() {
 
 	return (
 		<section id="angebot" className="bg-paper py-24 text-night md:py-36">
-			<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[90rem] md:w-[calc(100%_-_5rem)]">
+			<div className="shell">
 				<div className="grid gap-12 md:grid-cols-[.8fr_1.2fr] md:items-end">
 					<p className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-brass">
 						{m.unclet_home_services_eyebrow()}

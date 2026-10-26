@@ -1,6 +1,7 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { Award, MapPin, Users } from "lucide-react";
+
 export function ChefIntroduction() {
 	return (
 		<section className="grid lg:grid-cols-2">
@@ -36,10 +37,7 @@ export function ChefIntroduction() {
 							{m.unclet_home_guest_capacity()}
 						</span>
 					</div>
-					<Link
-						to="/about"
-						className="inline-flex min-h-[3.25rem] items-center justify-center gap-[0.65rem] border border-bone/28 bg-night/35 px-[1.6rem] py-[0.9rem] text-[0.78rem] font-bold uppercase tracking-[0.11em] text-bone transition-colors hover:border-brass hover:text-brass-light mt-10"
-					>
+					<Link to="/about" className="cta secondary mt-10">
 						{m.unclet_home_meet_chef()}
 					</Link>
 				</div>

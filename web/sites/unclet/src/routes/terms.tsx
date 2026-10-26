@@ -1,40 +1,28 @@
 import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute } from "@tanstack/react-router";
 import { LegalPage } from "../components/legal-page";
+import { pageHead } from "../model/metadata";
 
-const terms = [
-	[
-		"Preise",
-		"Preise in Offerten sind Richtwerte, sofern nicht ausdrücklich ein Pauschalpreis vereinbart wurde. Verrechnet wird gemäss Vereinbarung beziehungsweise effektivem Aufwand.",
-	],
-	[
-		"Personenzahl",
-		"Änderungen der Personenzahl müssen spätestens vier Arbeitstage vor dem Anlass schriftlich mitgeteilt werden. Spätere Änderungen können nicht garantiert werden.",
-	],
-	[
-		"Annullierung",
-		"Bei einer Annullierung können abhängig vom Zeitpunkt bereits entstandene Aufwände und vereinbarte Leistungen verrechnet werden.",
-	],
-	[
-		"Infrastruktur",
-		"Erforderliche Räume sowie Wasser und Strom werden, sofern nicht anders vereinbart, durch den Kunden in geeignetem Zustand bereitgestellt.",
-	],
-	[
-		"Material",
-		"Zur Verfügung gestelltes Material ist vollständig und unversehrt zurückzugeben. Verluste und Beschädigungen können verrechnet werden.",
-	],
-	[
-		"Zahlung",
-		"Rechnungen sind, sofern nicht anders vereinbart, innerhalb von 14 Tagen ab Rechnungsdatum zahlbar.",
-	],
-	[
-		"Recht",
-		"Es gilt schweizerisches Recht. Gerichtsstand ist der Kanton Aargau, soweit gesetzlich zulässig.",
-	],
-] as const;
 export const Route = createFileRoute("/terms")({
-	head: () => ({ meta: [{ title: m.unclet_terms_page_title() }] }),
-	component: () => (
+	head: () => pageHead({ title: m.unclet_terms_page_title() }),
+	component: TermsPage,
+});
+
+function TermsPage() {
+	// Messages resolve per render; module scope would bake one locale in (U-20).
+	const terms = [
+		[m.unclet_terms_prices_title(), m.unclet_terms_prices_body()],
+		[m.unclet_terms_guests_title(), m.unclet_terms_guests_body()],
+		[m.unclet_terms_cancellation_title(), m.unclet_terms_cancellation_body()],
+		[
+			m.unclet_terms_infrastructure_title(),
+			m.unclet_terms_infrastructure_body(),
+		],
+		[m.unclet_terms_material_title(), m.unclet_terms_material_body()],
+		[m.unclet_terms_payment_title(), m.unclet_terms_payment_body()],
+		[m.unclet_terms_law_title(), m.unclet_terms_law_body()],
+	] as const;
+	return (
 		<LegalPage title={m.unclet_terms_title()}>
 			<p>{m.unclet_terms_body()}</p>
 			{terms.map(([title, text], index) => (
@@ -46,5 +34,5 @@ export const Route = createFileRoute("/terms")({
 				</section>
 			))}
 		</LegalPage>
-	),
-});
+	);
+}

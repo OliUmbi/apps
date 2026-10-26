@@ -2,6 +2,8 @@ import { m } from "@oliumbi/i18n/messages";
 import { Quote, Star } from "lucide-react";
 import type { PublicReview } from "../model/content";
 
+const starSlots = 5;
+
 export function ReviewCard({ review }: { review: PublicReview }) {
 	return (
 		<blockquote className="review-card">
@@ -9,13 +11,19 @@ export function ReviewCard({ review }: { review: PublicReview }) {
 				<p
 					role="img"
 					className="flex gap-1 text-brass"
-					aria-label={m.star_rating({ rating: review.stars, maximum: 5 })}
+					aria-label={m.star_rating({
+						rating: review.stars,
+						maximum: starSlots,
+					})}
 				>
-					{Array.from({ length: review.stars }, (_, index) => (
+					{/* All five slots always render: filled ones solid, the rest as
+					    outlines, so a partial rating never reads ambiguously (U-19). */}
+					{Array.from({ length: starSlots }, (_, index) => (
 						<Star
 							key={index}
 							size={16}
-							fill="currentColor"
+							fill={index < review.stars ? "currentColor" : "none"}
+							className={index < review.stars ? undefined : "text-brass/35"}
 							aria-hidden="true"
 						/>
 					))}

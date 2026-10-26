@@ -7,11 +7,6 @@ import { z } from "zod";
 import type { PublicReview } from "../model/content";
 import { database } from "../server/database.server";
 
-export {
-	type ReviewSubmissionInput,
-	reviewSchema,
-} from "@oliumbi/unclet-data/forms";
-
 export const sendReview = createServerFn({ method: "POST" })
 	.validator(reviewSchema)
 	.handler(async ({ data }) => {

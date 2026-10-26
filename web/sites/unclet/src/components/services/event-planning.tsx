@@ -3,27 +3,22 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 
 export function EventPlanning() {
+	// Messages resolve per render; module scope would bake one locale in (U-20).
 	const steps = [
+		[m.unclet_services_step_meet_title(), m.unclet_services_step_meet_body()],
 		[
-			"Kennenlernen",
-			"Sie erzählen von Anlass, Gästen, Ort und dem Gefühl, das entstehen soll.",
+			m.unclet_services_step_concept_title(),
+			m.unclet_services_step_concept_body(),
 		],
 		[
-			"Konzept",
-			"Thomas entwickelt Menü, Service und Ablauf als verständliches Gesamtangebot.",
+			m.unclet_services_step_prepare_title(),
+			m.unclet_services_step_prepare_body(),
 		],
-		[
-			"Vorbereitung",
-			"Einkauf, Organisation und Abstimmung laufen persönlich und zuverlässig.",
-		],
-		[
-			"Gastgeben",
-			"Am Anlass dürfen Sie Gastgeber sein. Küche und Ablauf liegen in sicheren Händen.",
-		],
-	];
+		[m.unclet_services_step_host_title(), m.unclet_services_step_host_body()],
+	] as const;
 
 	return (
-		<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[90rem] md:w-[calc(100%_-_5rem)] py-24 md:py-32">
+		<section className="shell py-24 md:py-32">
 			<div className="grid gap-12 lg:grid-cols-2">
 				<div className="image-treatment min-h-[520px]">
 					<img src="/images/buffet.jpg" alt={m.unclet_services_buffet_alt()} />
@@ -49,10 +44,7 @@ export function EventPlanning() {
 								</div>
 							))}
 						</div>
-						<Link
-							to="/inquiry"
-							className="inline-flex min-h-[3.25rem] items-center justify-center gap-[0.65rem] border border-transparent bg-brass px-[1.6rem] py-[0.9rem] text-[0.78rem] font-bold uppercase tracking-[0.11em] text-night transition-colors hover:bg-brass-light mt-8"
-						>
+						<Link to="/inquiry" className="cta mt-8">
 							{m.unclet_services_discuss_event()}
 							<ArrowRight size={17} />
 						</Link>

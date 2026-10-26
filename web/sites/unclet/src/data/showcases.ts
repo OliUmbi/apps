@@ -12,16 +12,24 @@ import type {
 } from "../model/content";
 import { database } from "../server/database.server";
 
+// The list query's own summary row (excerpt included): derived from the
+// repository's return type because the payload type is package-internal.
+type ShowcaseListRecord = Awaited<
+	ReturnType<ReturnType<typeof createPublicRepository>["listShowcases"]>
+>["items"][number];
+
 function imageFromId(id: string, alt: string): ContentImage {
 	return { id, src: publicImageUrl(id), alt };
 }
 
-function showcaseSummaryFromRecord(record: Showcase): ShowcaseSummary {
+function showcaseSummaryFromRecord(
+	record: ShowcaseListRecord,
+): ShowcaseSummary {
 	return {
 		id: record.id,
 		slug: record.slug,
 		title: record.title,
-		body: record.body ?? "",
+		excerpt: record.excerpt,
 		location: record.location,
 		guestCount: record.guestCount,
 		image: record.imageId ? imageFromId(record.imageId, record.title) : null,
@@ -33,7 +41,13 @@ function showcaseFromRecord(
 	images: ShowcaseImage[],
 ): PublicShowcase {
 	return {
-		...showcaseSummaryFromRecord(record),
+		id: record.id,
+		slug: record.slug,
+		title: record.title,
+		body: record.body ?? "",
+		location: record.location,
+		guestCount: record.guestCount,
+		image: record.imageId ? imageFromId(record.imageId, record.title) : null,
 		publishedOn: record.publishedOn,
 		gallery: images
 			.filter((image) => image.imageId !== record.imageId)

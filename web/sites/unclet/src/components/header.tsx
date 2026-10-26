@@ -4,18 +4,19 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { useState } from "react";
 
-const links = [
-	{ label: m.unclet_navigation_services, to: "/services" },
-	{ label: m.unclet_navigation_showcases, to: "/showcases" },
-	{ label: m.unclet_navigation_about, to: "/about" },
-] as const;
-
 export default function Header() {
 	const [open, setOpen] = useState(false);
+	// Messages are resolved per render: module scope would bake one locale in
+	// before the request locale is known (U-20).
+	const links = [
+		{ label: m.unclet_navigation_services(), to: "/services" },
+		{ label: m.unclet_navigation_showcases(), to: "/showcases" },
+		{ label: m.unclet_navigation_about(), to: "/about" },
+	] as const;
 	return (
 		<Dialog.Root open={open} onOpenChange={setOpen}>
 			<header className="fixed inset-x-0 top-0 z-40 border-b border-bone/10 bg-night/85 backdrop-blur-xl">
-				<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[90rem] md:w-[calc(100%_-_5rem)] flex h-20 items-center justify-between">
+				<div className="shell flex h-20 items-center justify-between">
 					<Link
 						to="/"
 						className="flex items-center gap-3"
@@ -37,7 +38,7 @@ export default function Header() {
 								to={link.to}
 								className="relative py-[0.45rem] font-mono text-[0.72rem] font-semibold uppercase leading-none tracking-[0.18em] text-bone/60 transition-colors after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-brass after:opacity-0 after:transition-opacity after:content-['] hover:text-brass-light data-[status=active]:text-bone data-[status=active]:after:opacity-100"
 							>
-								{link.label()}
+								{link.label}
 							</Link>
 						))}
 						<Link
@@ -92,7 +93,7 @@ export default function Header() {
 												{String(index + 1).padStart(2, "0")}
 											</span>
 											<span className="flex-1 font-serif text-[1.75rem] leading-tight tracking-[-0.02em] transition-colors group-hover:text-brass-light">
-												{link.label()}
+												{link.label}
 											</span>
 											<ArrowRight
 												size={17}
@@ -106,7 +107,7 @@ export default function Header() {
 								<Link
 									to="/inquiry"
 									onClick={() => setOpen(false)}
-									className="inline-flex min-h-[3.25rem] items-center justify-center gap-[0.65rem] border border-transparent bg-brass px-[1.6rem] py-[0.9rem] text-[0.78rem] font-bold uppercase tracking-[0.11em] text-night transition-colors hover:bg-brass-light w-full"
+									className="cta w-full"
 								>
 									{m.unclet_inquire()}
 									<ArrowRight size={15} />

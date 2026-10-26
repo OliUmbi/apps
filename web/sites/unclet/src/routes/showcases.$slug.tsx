@@ -1,24 +1,38 @@
+import { slugSchema } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { ShowcaseDescription } from "../components/showcase-description";
 import { ShowcaseGallery } from "../components/showcase-gallery";
 import { getShowcase } from "../data/showcases";
+import { pageHead } from "../model/metadata";
 
 export const Route = createFileRoute("/showcases/$slug")({
 	loader: async ({ params }) => {
+		// A malformed slug must render the branded 404: the server function's
+		// validator would reject it before any lookup could return not-found (X-07).
+		const slug = slugSchema.safeParse(params.slug);
+		if (!slug.success) throw notFound();
 		const result = await getShowcase({
-			data: { slug: params.slug },
+			data: { slug: slug.data },
 		});
 		if (!result) throw notFound();
 		return result;
 	},
+	head: ({ loaderData }) =>
+		loaderData
+			? pageHead({
+					title: `${loaderData.title} · ${m.unclet_brand()}`,
+					image: loaderData.image?.src ?? null,
+				})
+			: pageHead({ title: m.unclet_showcases_page_title() }),
 	component: ShowcasePage,
 });
+
 function ShowcasePage() {
 	const showcase = Route.useLoaderData();
 	return (
-		<article className="showcase-detail mx-auto w-[calc(100%_-_2rem)] max-w-[90rem] md:w-[calc(100%_-_5rem)] pb-24 pt-32 md:pb-32 md:pt-36">
+		<article className="shell pb-24 pt-32 md:pb-32 md:pt-36">
 			<Link
 				to="/showcases"
 				className="mb-12 inline-flex min-h-11 items-center gap-3 border border-brass/45 px-5 text-sm font-semibold text-brass-light transition hover:bg-brass hover:text-night"

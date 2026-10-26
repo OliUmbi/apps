@@ -13,12 +13,30 @@ import { z } from "zod";
  * client and server. The types are named for the submission workflow so they
  * never read like the studio record inputs in content/*.
  */
+
+// Local calendar day as "yyyy-mm-dd": the shared boundary for the event-date
+// refine and the `min` attribute the site renders on the date input.
+export function todayDateInput(): string {
+	return localDateInput(new Date());
+}
+
+function localDateInput(date: Date): string {
+	const pad = (part: number) => String(part).padStart(2, "0");
+	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+// An event date is empty or a day that has not passed yet. The boundary is read
+// per parse (not per module load), so a long-lived server cannot freeze it (U-10).
+export function isFutureOrEmptyDate(value: string): boolean {
+	return value === "" || value >= todayDateInput();
+}
+
 export const inquirySchema = z.strictObject({
 	submissionId: idSchema,
 	name: nameSchema,
 	email: emailSchema,
 	phone: phoneSchema,
-	date: z.union([z.literal(""), z.iso.date()]),
+	date: z.union([z.literal(""), z.iso.date()]).refine(isFutureOrEmptyDate),
 	location: textSchema,
 	guests: z.number().int().positive().max(10_000),
 	note: textSchema,

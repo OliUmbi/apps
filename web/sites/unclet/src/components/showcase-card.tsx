@@ -33,9 +33,9 @@ export function ShowcaseCard({
 					<h2 className="mt-6 font-serif text-4xl leading-tight md:text-6xl">
 						{showcase.title}
 					</h2>
-					{showcase.body ? (
+					{showcase.excerpt ? (
 						<p className="mt-6 line-clamp-5 text-base leading-relaxed text-bone/55">
-							{showcase.body}
+							{showcase.excerpt}
 						</p>
 					) : null}
 				</div>

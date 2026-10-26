@@ -2,26 +2,49 @@
 @import "./fonts.css";
 @source "../../../packages/ui/src";
 
+/*
+ * Token state after the unclet styling pass (§5 of the refactor notes):
+ * - `paper` is kept and adopted: it is the light-section surface used by the
+ *   home formats block, the philosophy block and the catering formats block.
+ * - `ash` is dropped: no selector or component ever used it.
+ * - `smoke` is kept and adopted as the muted text color: it replaces the
+ *   `rgb(242 238 229 / 68%)` body color in `.unclet-markdown` (same rendered
+ *   value over `night`).
+ * - `hairline`, `veil` and `gradient-card` replace the border/surface/gradient
+ *   values that were repeated as raw rgb() strings in CSS and as arbitrary
+ *   background utilities in TSX.
+ * - `success` exists for the reserved feedback slot in `@oliumbi/ui/alert`.
+ */
 @theme {
 	--font-sans: "sans-geist", sans-serif;
 	--font-serif: "serif-playfair", serif;
 	--font-mono: "mono-geist", monospace;
 	--color-night: #11110f;
 	--color-coal: #1a1a17;
-	--color-ash: #2a2925;
 	--color-bone: #f2eee5;
 	--color-paper: #faf7f0;
 	--color-brass: #b99a5b;
 	--color-brass-light: #dbc38f;
 	--color-smoke: #aaa69d;
 	--color-danger: #f87171;
+	--color-success: #b99a5b;
+	--color-hairline: rgb(242 238 229 / 12%);
+	--color-veil: rgb(242 238 229 / 2%);
+	--gradient-card: linear-gradient(
+		135deg,
+		rgb(185 154 91 / 10%),
+		transparent 46%
+	);
+	/* Tailwind resolves `bg-gradient-card` from the --background-image namespace;
+	   the gradient itself stays the `gradient-card` token referenced in CSS. */
+	--background-image-gradient-card: var(--gradient-card);
 }
 
 /* Base element styles: not expressible as utilities. */
 :root {
 	color-scheme: dark;
-	color: #f2eee5;
-	background: #11110f;
+	color: var(--color-bone);
+	background: var(--color-night);
 	font-family: var(--font-sans);
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
@@ -34,7 +57,7 @@ html {
 }
 body {
 	margin: 0;
-	background: #11110f;
+	background: var(--color-night);
 }
 body::before {
 	position: fixed;
@@ -60,12 +83,20 @@ img {
 	max-width: 100%;
 }
 ::selection {
-	color: #11110f;
-	background: #b99a5b;
+	color: var(--color-night);
+	background: var(--color-brass);
 }
 
 /*
  * The rules below stay in CSS deliberately:
+ * - `.shell` is the page container (the `calc(100% - …)` measure capped at
+ *   90rem) that was pasted as one utility string at 17 call sites; the legal
+ *   pages cap it lower with `max-w-[57.5rem]`, which works because `.shell`
+ *   sets `width`, not `max-width`. `.cta` is the brass CTA button repeated at
+ *   13 call sites; `.cta.secondary` is the outline-on-dark variant and
+ *   `.cta.inverted` the dark-on-brass one. Utility classes appended at the call
+ *   sites (margins, `w-full`, `disabled:opacity-50`) touch different
+ *   properties and keep working alongside these classes.
  * - `.image-treatment`, `.rating-control` and `.two-column-form` anchor
  *   descendant/child selectors, so replacing the anchor with utilities would
  *   orphan the children.
@@ -74,17 +105,72 @@ img {
  * - `.unclet-markdown` styles HTML emitted by the markdown renderer, which
  *   cannot carry utility classes.
  */
+.shell {
+	margin-inline: auto;
+	width: min(100% - 2rem, 90rem);
+}
+@media (min-width: 768px) {
+	.shell {
+		width: min(100% - 5rem, 90rem);
+	}
+}
+
+.cta {
+	display: inline-flex;
+	min-height: 3.25rem;
+	align-items: center;
+	justify-content: center;
+	gap: 0.65rem;
+	border: 1px solid transparent;
+	background: var(--color-brass);
+	padding: 0.9rem 1.6rem;
+	color: var(--color-night);
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.11em;
+	text-transform: uppercase;
+	transition-property: color, background-color, border-color, fill, stroke;
+	transition-duration: 150ms;
+	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.cta:hover {
+	background: var(--color-brass-light);
+}
+.cta.secondary {
+	border-color: color-mix(in srgb, var(--color-bone) 28%, transparent);
+	background: color-mix(in srgb, var(--color-night) 35%, transparent);
+	color: var(--color-bone);
+}
+.cta.secondary:hover {
+	border-color: var(--color-brass);
+	color: var(--color-brass-light);
+}
+.cta.inverted {
+	border-color: var(--color-night);
+	background: var(--color-night);
+	padding: 0.75rem 1.25rem;
+	color: var(--color-bone);
+}
+.cta.inverted:hover {
+	background: var(--color-brass-light);
+	color: var(--color-night);
+}
+
 .image-treatment {
 	position: relative;
 	overflow: hidden;
-	background: #1a1a17;
+	background: var(--color-coal);
 }
 .image-treatment::after {
 	position: absolute;
 	inset: 0;
 	pointer-events: none;
 	content: "";
-	background: linear-gradient(180deg, transparent 55%, rgb(17 17 15 / 45%));
+	background: linear-gradient(
+		180deg,
+		transparent 55%,
+		color-mix(in srgb, var(--color-night) 45%, transparent)
+	);
 }
 .image-treatment img {
 	width: 100%;
@@ -110,7 +196,7 @@ img {
 .rating-control label {
 	position: relative;
 	padding: 0.2rem;
-	color: rgb(242 238 229 / 25%);
+	color: color-mix(in srgb, var(--color-bone) 25%, transparent);
 	cursor: pointer;
 }
 .rating-control input {
@@ -122,27 +208,27 @@ img {
 }
 .rating-control label:hover,
 .rating-control label.is-active {
-	color: #dbc38f;
+	color: var(--color-brass-light);
 }
 .rating-control label:has(input:focus-visible) {
-	outline: 2px solid #dbc38f;
+	outline: 2px solid var(--color-brass-light);
 	outline-offset: 3px;
 }
 
 .review-card {
 	grid-column: span 4;
 	min-height: 18rem;
-	border: 1px solid rgb(242 238 229 / 12%);
+	border: 1px solid var(--color-hairline);
 	padding: 1.75rem;
-	background: rgb(242 238 229 / 2%);
+	background: var(--color-veil);
 }
 .review-card:first-child {
 	grid-column: span 8;
-	background: linear-gradient(135deg, rgb(185 154 91 / 10%), transparent);
+	background-image: var(--gradient-card);
 }
 
 .unclet-markdown {
-	color: rgb(242 238 229 / 68%);
+	color: var(--color-smoke);
 	font-size: 1.02rem;
 	line-height: 1.8;
 }
@@ -150,7 +236,7 @@ img {
 .unclet-markdown h2,
 .unclet-markdown h3 {
 	margin: 2.4rem 0 0.8rem;
-	color: #f2eee5;
+	color: var(--color-bone);
 	font-family: var(--font-serif);
 	line-height: 1.1;
 }
@@ -167,14 +253,14 @@ img {
 	margin: 0 0 1.3rem;
 }
 .unclet-markdown a {
-	color: #dbc38f;
+	color: var(--color-brass-light);
 	text-decoration: underline;
 	text-underline-offset: 0.2em;
 }
 .unclet-markdown hr {
 	margin: 2.5rem 0;
 	border: 0;
-	border-top: 1px solid rgb(242 238 229 / 15%);
+	border-top: 1px solid color-mix(in srgb, var(--color-bone) 15%, transparent);
 }
 
 @media (max-width: 900px) {
@@ -198,5 +284,7 @@ img {
 	*::after {
 		scroll-behavior: auto;
 		transition-duration: 0.01ms;
+		animation-duration: 0.01ms;
+		animation-iteration-count: 1;
 	}
 }

@@ -23,7 +23,7 @@ export function PageHero({
 					<div className="absolute inset-0 bg-gradient-to-r from-night via-night/90 to-night/35" />
 				</>
 			) : null}
-			<div className="mx-auto w-[calc(100%_-_2rem)] max-w-[90rem] md:w-[calc(100%_-_5rem)] relative z-10 flex min-h-[62svh] items-end py-16 md:py-24">
+			<div className="shell relative z-10 flex min-h-[62svh] items-end py-16 md:py-24">
 				<div className="max-w-5xl">
 					<p className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-brass">
 						{eyebrow}

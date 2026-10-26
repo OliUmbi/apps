@@ -5,12 +5,18 @@ import { ArrowRight } from "lucide-react";
 import { PageHero } from "../components/page-hero";
 import { ShowcaseCard } from "../components/showcase-card";
 import { getShowcasePage } from "../data/showcases";
+import { pageHead } from "../model/metadata";
 
 export const Route = createFileRoute("/showcases/")({
-	head: () => ({ meta: [{ title: m.unclet_showcases_page_title() }] }),
 	loader: () =>
 		getShowcasePage({
 			data: { page: 0 },
+		}),
+	head: ({ loaderData }) =>
+		pageHead({
+			title: m.unclet_showcases_page_title(),
+			description: m.unclet_showcases_description(),
+			image: loaderData?.items[0]?.image?.src ?? null,
 		}),
 	component: ShowcasesPage,
 });
@@ -31,7 +37,7 @@ function ShowcasesPage() {
 				}
 				description={m.unclet_showcases_description()}
 			/>
-			<section className="mx-auto w-[calc(100%_-_2rem)] max-w-[90rem] md:w-[calc(100%_-_5rem)] py-20 md:py-28">
+			<section className="shell py-20 md:py-28">
 				<div className="grid gap-16 md:gap-24">
 					<PaginatedList
 						queryKey={["showcases"]}
@@ -60,10 +66,7 @@ function ShowcasesPage() {
 							{m.unclet_showcases_inquiry_title()}
 						</h2>
 					</div>
-					<Link
-						to="/inquiry"
-						className="inline-flex min-h-[3.25rem] items-center justify-center gap-[0.65rem] border border-transparent bg-brass px-[1.6rem] py-[0.9rem] text-[0.78rem] font-bold uppercase tracking-[0.11em] text-night transition-colors hover:bg-brass-light mt-8 md:mt-0"
-					>
+					<Link to="/inquiry" className="cta mt-8 md:mt-0">
 						{m.unclet_showcases_inquire()}
 						<ArrowRight size={17} />
 					</Link>
