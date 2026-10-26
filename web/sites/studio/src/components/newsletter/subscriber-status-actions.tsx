@@ -39,7 +39,7 @@ export function SubscriberStatusActions({
 	}
 	return (
 		<>
-			<div className="mt-4 flex flex-wrap gap-2 border-t border-border-soft pt-4">
+			<div className="mt-4 flex flex-wrap gap-2 border-t border-line-subtle pt-4">
 				{subscriber.status === "active" && (
 					<Button
 						variant="secondary"

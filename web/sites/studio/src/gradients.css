@@ -63,15 +63,11 @@
 	--noise-size: 180px 180px;
 
 	/*
-	 * Grain strength. Named steps live in the theme so `noise-soft` and
-	 * `noise-strong` resolve through `--value(--noise-alpha-*)` below; the
-	 * default is the bare `--noise-alpha` that `noise` reads. At 0.03 the
+	 * Grain strength. `noise` reads the bare `--noise-alpha`. At 0.03 the
 	 * grain covers about two output levels, enough to dither banding without
 	 * lifting the blacks.
 	 */
 	--noise-alpha: 0.03;
-	--noise-alpha-soft: 0.015;
-	--noise-alpha-strong: 0.05;
 	--noise-blend: normal;
 }
 
@@ -99,36 +95,6 @@
 }
 
 @utility noise {
-	position: relative;
-
-	&::after {
-		position: absolute;
-		inset: 0;
-		border-radius: inherit;
-		pointer-events: none;
-		content: "";
-		opacity: var(--noise-alpha);
-		background-image: var(--noise-image);
-		background-size: var(--noise-size);
-		mix-blend-mode: var(--noise-blend);
-	}
-}
-
-/*
- * Grain strength for a single element: `noise-soft`, `noise-strong`,
- * `noise-3%` or `noise-[0.03]`. Standalone, so `noise-soft` already paints;
- * the overlay is repeated rather than shared because a custom utility cannot
- * extend another one. A bare `noise-0.03` is not a valid candidate, hence the
- * percentage and bracketed forms.
- */
-@utility noise-* {
-	--noise-alpha: --value(
-		--noise-alpha-*,
-		number,
-		percentage,
-		[number],
-		[percentage]
-	);
 	position: relative;
 
 	&::after {

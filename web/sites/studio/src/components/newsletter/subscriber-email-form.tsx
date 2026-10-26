@@ -5,9 +5,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { correctSubscriberEmail } from "../../server/newsletter.functions";
 import { correctionFeedback } from "../../server/outcomes";
-import { InputField } from "../input-field";
 import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
+import { TextField } from "../ui/text-field";
 
 export function SubscriberEmailForm({
 	subscriber,
@@ -46,7 +46,7 @@ export function SubscriberEmailForm({
 				}}
 			>
 				<div className="grow">
-					<InputField
+					<TextField
 						key={subscriber.email}
 						name="email"
 						label={m.email()}

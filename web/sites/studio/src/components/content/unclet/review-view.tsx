@@ -13,7 +13,7 @@ import {
 	listReviews,
 	updateReview,
 } from "../../../server/content/unclet/review.functions";
-import { InputField } from "../../input-field";
+import { TextField } from "../../ui/text-field";
 import type { EditorFieldsProps } from "../content-form";
 import { CheckboxField, NumberField } from "../editor-controls";
 import { RoutedCollectionView } from "../routed-collection-view";
@@ -73,14 +73,14 @@ function ReviewFields({ values, onChange }: EditorFieldsProps<ReviewInput>) {
 				required
 				onChange={(value) => onChange("stars", value ?? Number.NaN)}
 			/>
-			<InputField
+			<TextField
 				name="name"
 				label={m.name()}
 				value={values.name}
 				required
 				onChange={(event) => onChange("name", event.target.value)}
 			/>
-			<InputField
+			<TextField
 				name="description"
 				label={m.description()}
 				value={values.description}

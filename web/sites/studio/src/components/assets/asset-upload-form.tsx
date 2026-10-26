@@ -4,10 +4,10 @@ import { m } from "@oliumbi/i18n/messages";
 import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { uploadAsset } from "../../server/assets.functions";
-import { InputField } from "../input-field";
 import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
 import { Body } from "../ui/text";
+import { TextField } from "../ui/text-field";
 
 export function AssetUploadForm({
 	site,
@@ -22,7 +22,7 @@ export function AssetUploadForm({
 	const creation = useMutation({ mutationFn: upload, onSuccess: onUploaded });
 	return (
 		<Form
-			className="overflow-hidden rounded-md border border-border-soft bg-surface grid gap-4 p-6"
+			className="overflow-hidden rounded-md border border-line-subtle bg-layer-1 grid gap-4 p-6"
 			onChange={() => {
 				if (creation.isSuccess || creation.isError) creation.reset();
 			}}
@@ -37,7 +37,7 @@ export function AssetUploadForm({
 				creation.mutate({ data }, { onSuccess: () => form.reset() });
 			}}
 		>
-			<InputField
+			<TextField
 				disabled={creation.isPending}
 				name="file"
 				label={m.file()}
@@ -46,7 +46,7 @@ export function AssetUploadForm({
 				required
 			/>
 			{kind === "documents" && (
-				<InputField
+				<TextField
 					disabled={creation.isPending}
 					name="slug"
 					label={m.studio_assets_document_slug()}

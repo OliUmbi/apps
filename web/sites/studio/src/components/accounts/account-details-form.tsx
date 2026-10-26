@@ -8,12 +8,12 @@ import { UserRound } from "lucide-react";
 import { useState } from "react";
 import { updateAccountSchema } from "../../model/accounts";
 import { updateAccount } from "../../server/accounts.functions";
-import { InputField } from "../input-field";
 import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import { FormFooter } from "../ui/form-footer";
 import { Panel } from "../ui/panel";
+import { TextField } from "../ui/text-field";
 
 export function AccountDetailsForm({ account }: { account: Account }) {
 	const cache = useQueryClient();
@@ -54,14 +54,14 @@ export function AccountDetailsForm({ account }: { account: Account }) {
 					save.mutate(new FormData(event.currentTarget));
 				}}
 			>
-				<InputField
+				<TextField
 					disabled={save.isPending}
 					name="name"
 					label={m.name()}
 					defaultValue={account.name}
 					required
 				/>
-				<InputField
+				<TextField
 					disabled={save.isPending}
 					name="email"
 					type="email"

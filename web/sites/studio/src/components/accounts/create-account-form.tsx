@@ -5,12 +5,12 @@ import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, UserRound } from "lucide-react";
 import { newAccountSchema } from "../../model/accounts";
 import { createAccount } from "../../server/accounts.functions";
-import { InputField } from "../input-field";
 import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
 import { FormFooter } from "../ui/form-footer";
 import { PageHeader } from "../ui/page-header";
 import { Panel } from "../ui/panel";
+import { TextField } from "../ui/text-field";
 
 export function CreateAccountForm({
 	onClose,
@@ -51,20 +51,20 @@ export function CreateAccountForm({
 							});
 						}}
 					>
-						<InputField
+						<TextField
 							disabled={creation.isPending}
 							name="name"
 							label={m.name()}
 							required
 						/>
-						<InputField
+						<TextField
 							disabled={creation.isPending}
 							name="email"
 							type="email"
 							label={m.email()}
 							required
 						/>
-						<InputField
+						<TextField
 							disabled={creation.isPending}
 							name="password"
 							type="password"

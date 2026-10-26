@@ -13,8 +13,8 @@ import {
 	listShowcases,
 	updateShowcase,
 } from "../../../server/content/unclet/showcase.functions";
-import { DateField } from "../../date-field";
-import { InputField } from "../../input-field";
+import { DateField } from "../../ui/date-field";
+import { TextField } from "../../ui/text-field";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { CheckboxField, NumberField } from "../editor-controls";
@@ -97,7 +97,7 @@ function ShowcaseFields({
 				onTitleChange={(value) => onChange("title", value)}
 				onSlugChange={(value) => onChange("slug", value)}
 			/>
-			<InputField
+			<TextField
 				name="location"
 				label={m.location()}
 				value={values.location}
@@ -132,7 +132,7 @@ function ShowcaseFields({
 				nullable
 				onChange={(value) => onChange("publishedOn", value)}
 			/>
-			<InputField
+			<TextField
 				name="body"
 				label={m.body()}
 				value={values.body ?? ""}

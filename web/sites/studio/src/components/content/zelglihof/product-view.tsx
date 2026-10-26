@@ -14,8 +14,8 @@ import {
 	listProducts,
 	updateProduct,
 } from "../../../server/content/zelglihof/product.functions";
-import { DateField } from "../../date-field";
-import { InputField } from "../../input-field";
+import { DateField } from "../../ui/date-field";
+import { TextField } from "../../ui/text-field";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { CheckboxField } from "../editor-controls";
@@ -93,14 +93,14 @@ export function ProductsView() {
 function ProductFields({ values, onChange }: EditorFieldsProps<ProductInput>) {
 	return (
 		<>
-			<InputField
+			<TextField
 				name="name"
 				label={m.name()}
 				value={values.name}
 				required
 				onChange={(event) => onChange("name", event.target.value)}
 			/>
-			<InputField
+			<TextField
 				name="description"
 				label={m.description()}
 				value={values.description}
@@ -108,7 +108,7 @@ function ProductFields({ values, onChange }: EditorFieldsProps<ProductInput>) {
 				render={<textarea rows={4} />}
 				onChange={(event) => onChange("description", event.target.value)}
 			/>
-			<InputField
+			<TextField
 				name="body"
 				label={m.body()}
 				value={values.body}

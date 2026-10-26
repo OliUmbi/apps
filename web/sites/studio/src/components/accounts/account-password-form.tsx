@@ -5,10 +5,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { KeyRound } from "lucide-react";
 import { passwordSchema } from "../../model/accounts";
 import { changePassword } from "../../server/accounts.functions";
-import { InputField } from "../input-field";
 import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
 import { Panel } from "../ui/panel";
+import { TextField } from "../ui/text-field";
 
 export function AccountPasswordForm({ accountId }: { accountId: string }) {
 	const changeAccountPassword = useServerFn(changePassword);
@@ -44,7 +44,7 @@ export function AccountPasswordForm({ accountId }: { accountId: string }) {
 				}}
 			>
 				<div className="grow">
-					<InputField
+					<TextField
 						disabled={resetPassword.isPending}
 						name="password"
 						type="password"

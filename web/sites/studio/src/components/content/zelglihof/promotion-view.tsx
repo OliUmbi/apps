@@ -14,8 +14,8 @@ import {
 	listPromotions,
 	updatePromotion,
 } from "../../../server/content/zelglihof/promotion.functions";
-import { DateField } from "../../date-field";
-import { InputField } from "../../input-field";
+import { DateField } from "../../ui/date-field";
+import { TextField } from "../../ui/text-field";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { ImageField } from "../image-field";
@@ -81,14 +81,14 @@ function PromotionFields({
 }: EditorFieldsProps<PromotionInput>) {
 	return (
 		<>
-			<InputField
+			<TextField
 				name="title"
 				label={m.title()}
 				value={values.title}
 				required
 				onChange={(event) => onChange("title", event.target.value)}
 			/>
-			<InputField
+			<TextField
 				name="description"
 				label={m.description()}
 				value={values.description}
@@ -96,7 +96,7 @@ function PromotionFields({
 				render={<textarea rows={4} />}
 				onChange={(event) => onChange("description", event.target.value)}
 			/>
-			<InputField
+			<TextField
 				name="link"
 				label={m.link()}
 				value={values.link}

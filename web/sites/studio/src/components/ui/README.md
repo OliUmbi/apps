@@ -28,6 +28,7 @@ it looks. The leaves are flat on purpose: there is no nesting to learn.
 | `text.tsx` | The type scale: `Title`, `Kicker`, `Body`. |
 | `field.tsx` | Label, control and message slot. `controlClass` is the shared control shape. |
 | `text-field.tsx` | Single and multi-line text entry. |
+| `date-field.tsx` | Date and optional time entry: popover trigger plus the `calendar.tsx` picker. |
 | `checkbox.tsx` | The only checkbox. `disabled` and `description` slots. |
 | `select.tsx` | Dropdown with selection. |
 | `popover.tsx` | Anchored panel; `calendar.tsx` is the picker that sits in it. |

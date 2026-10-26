@@ -21,8 +21,10 @@ export function SiteOverview({
 		<div className="grid gap-8">
 			<header className="overview-heading">
 				<div>
-					{/* `page-kicker` must stay: `.overview-heading p:not(.page-kicker)`
-					    below it in styles.css restyles any other paragraph. */}
+					{/* Hero and cards are the documented plain-CSS exception (see the
+					    dashboard-hero comment in styles.css). `page-kicker` must stay:
+					    `.overview-heading p:not(.page-kicker)` restyles any other
+					    paragraph. */}
 					<p className="page-kicker">{site.domain}</p>
 					<h1>{site.name}</h1>
 					<p>{m.studio_dashboard_workspaces_title()}</p>
@@ -47,14 +49,14 @@ export function SiteOverview({
 								{String(index + 1).padStart(2, "0")}
 							</span>
 							<OverviewIcon icon={item.icon} />
-							<span className="col-span-full self-end text-primary text-base font-semibold">
+							<span className="col-span-full self-end text-fg text-base font-semibold">
 								{item.label}
 							</span>
-							<span className="col-span-2 text-muted text-xs leading-relaxed">
+							<span className="col-span-2 text-fg-subtle text-xs leading-relaxed">
 								{item.description()}
 							</span>
 							<ArrowUpRight
-								className="self-end justify-self-end text-faint"
+								className="self-end justify-self-end text-fg-disabled"
 								size={17}
 							/>
 						</Button>

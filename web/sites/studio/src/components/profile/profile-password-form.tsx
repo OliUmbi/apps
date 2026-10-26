@@ -7,11 +7,11 @@ import { KeyRound } from "lucide-react";
 import { type FormEvent, useState } from "react";
 import { profilePasswordSchema } from "../../model/profile";
 import { changeProfilePassword } from "../../server/profile.functions";
-import { InputField } from "../input-field";
 import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
 import { FormFooter } from "../ui/form-footer";
 import { Panel } from "../ui/panel";
+import { TextField } from "../ui/text-field";
 
 export function ProfilePasswordForm() {
 	const router = useRouter();
@@ -48,7 +48,7 @@ export function ProfilePasswordForm() {
 					if (password.isSuccess || password.isError) password.reset();
 				}}
 			>
-				<InputField
+				<TextField
 					disabled={password.isPending}
 					name="password"
 					type="password"
@@ -56,7 +56,7 @@ export function ProfilePasswordForm() {
 					label={m.studio_new_password()}
 					required
 				/>
-				<InputField
+				<TextField
 					disabled={password.isPending}
 					name="confirmation"
 					type="password"

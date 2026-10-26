@@ -13,7 +13,7 @@ import {
 	listProductVariants,
 	updateProductVariant,
 } from "../../../server/content/zelglihof/product-variant.functions";
-import { InputField } from "../../input-field";
+import { TextField } from "../../ui/text-field";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { NumberField } from "../editor-controls";
@@ -78,14 +78,14 @@ function ProductVariantFields({
 }: EditorFieldsProps<ProductVariantInput>) {
 	return (
 		<>
-			<InputField
+			<TextField
 				name="name"
 				label={m.name()}
 				value={values.name}
 				required
 				onChange={(event) => onChange("name", event.target.value)}
 			/>
-			<InputField
+			<TextField
 				name="description"
 				label={m.description()}
 				value={values.description ?? ""}
@@ -100,7 +100,7 @@ function ProductVariantFields({
 				nullable
 				onChange={(value) => onChange("imageId", value)}
 			/>
-			<InputField
+			<TextField
 				name="price"
 				label={m.price()}
 				value={values.price}

@@ -14,8 +14,8 @@ import {
 	listStories,
 	updateStory,
 } from "../../../server/content/jublawoma/story.functions";
-import { DateField } from "../../date-field";
-import { InputField } from "../../input-field";
+import { DateField } from "../../ui/date-field";
+import { TextField } from "../../ui/text-field";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { CheckboxField } from "../editor-controls";
@@ -95,7 +95,7 @@ function StoryFields({ values, onChange }: EditorFieldsProps<StoryInput>) {
 				onTitleChange={(value) => onChange("title", value)}
 				onSlugChange={(value) => onChange("slug", value)}
 			/>
-			<InputField
+			<TextField
 				name="description"
 				label={m.description()}
 				value={values.description}
@@ -103,7 +103,7 @@ function StoryFields({ values, onChange }: EditorFieldsProps<StoryInput>) {
 				render={<textarea rows={4} />}
 				onChange={(event) => onChange("description", event.target.value)}
 			/>
-			<InputField
+			<TextField
 				name="author"
 				label={m.author()}
 				value={values.author}
@@ -116,7 +116,7 @@ function StoryFields({ values, onChange }: EditorFieldsProps<StoryInput>) {
 				nullable
 				onChange={(value) => onChange("imageId", value)}
 			/>
-			<InputField
+			<TextField
 				name="body"
 				label={m.body()}
 				value={values.body}

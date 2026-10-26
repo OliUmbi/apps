@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { slugify } from "../../model/content/slug";
-import { InputField } from "../input-field";
+import { TextField } from "../ui/text-field";
 
 export function SlugField({
 	title,
@@ -16,7 +16,7 @@ export function SlugField({
 	const [automatic, setAutomatic] = useState(!slug);
 	return (
 		<>
-			<InputField
+			<TextField
 				name="title"
 				label="Titel"
 				required
@@ -27,7 +27,7 @@ export function SlugField({
 					if (automatic) onSlugChange(slugify(title));
 				}}
 			/>
-			<InputField
+			<TextField
 				name="slug"
 				label="URL-Kürzel"
 				required

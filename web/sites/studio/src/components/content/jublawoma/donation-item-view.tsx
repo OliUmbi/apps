@@ -13,7 +13,7 @@ import {
 	listDonationItems,
 	updateDonationItem,
 } from "../../../server/content/jublawoma/donation-item.functions";
-import { InputField } from "../../input-field";
+import { TextField } from "../../ui/text-field";
 import type { EditorFieldsProps } from "../content-form";
 import { InlineCollectionView } from "../inline-collection-view";
 
@@ -78,34 +78,34 @@ function DonationItemFields({
 }: EditorFieldsProps<DonationItemInput>) {
 	return (
 		<>
-			<InputField
+			<TextField
 				name="name"
 				label={m.name()}
 				value={values.name}
 				required
 				onChange={(event) => onChange("name", event.target.value)}
 			/>
-			<InputField
+			<TextField
 				name="detail"
 				label={m.studio_field_detail()}
 				value={values.detail ?? ""}
 				onChange={(event) => onChange("detail", event.target.value || null)}
 			/>
-			<InputField
+			<TextField
 				name="quantity"
 				label={m.quantity()}
 				value={values.quantity}
 				required
 				onChange={(event) => onChange("quantity", event.target.value)}
 			/>
-			<InputField
+			<TextField
 				name="step"
 				label={m.studio_field_step()}
 				value={values.step}
 				required
 				onChange={(event) => onChange("step", event.target.value)}
 			/>
-			<InputField
+			<TextField
 				name="unit"
 				label={m.unit()}
 				value={values.unit}

@@ -13,7 +13,7 @@ import {
 	listMembers,
 	updateMember,
 } from "../../../server/content/jublawoma/member.functions";
-import { InputField } from "../../input-field";
+import { TextField } from "../../ui/text-field";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { CheckboxField } from "../editor-controls";
@@ -72,7 +72,7 @@ export function MembersView() {
 function MemberFields({ values, onChange }: EditorFieldsProps<MemberInput>) {
 	return (
 		<>
-			<InputField
+			<TextField
 				name="name"
 				label={m.name()}
 				value={values.name}
@@ -85,7 +85,7 @@ function MemberFields({ values, onChange }: EditorFieldsProps<MemberInput>) {
 				nullable
 				onChange={(value) => onChange("imageId", value)}
 			/>
-			<InputField
+			<TextField
 				name="groupName"
 				label={m.studio_field_group_name()}
 				value={values.groupName}

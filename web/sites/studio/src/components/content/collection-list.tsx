@@ -5,9 +5,9 @@ import type {
 	UseInfiniteQueryResult,
 } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import { InputField } from "../input-field";
 import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
+import { TextField } from "../ui/text-field";
 import { CollectionTable, type ContentColumn } from "./collection-table";
 
 export function CollectionList<Row>({
@@ -32,7 +32,7 @@ export function CollectionList<Row>({
 		<>
 			{children}
 			<div className="max-w-sm">
-				<InputField
+				<TextField
 					name="search"
 					label={m.search()}
 					value={search}

@@ -7,11 +7,11 @@ import {
 	changeDateInputDay,
 	changeDateInputTime,
 	parseDateInput,
-} from "../model/date-input";
-import { studioTimeZone } from "../model/dates";
-import { Calendar } from "./ui/calendar";
-import { FieldInput, FieldLabel, FieldMessage, FieldRoot } from "./ui/field";
-import { PopoverPanel, PopoverRoot, PopoverTrigger } from "./ui/popover";
+} from "../../model/date-input";
+import { studioTimeZone } from "../../model/dates";
+import { Calendar } from "./calendar";
+import { FieldInput, FieldLabel, FieldMessage, FieldRoot } from "./field";
+import { PopoverPanel, PopoverRoot, PopoverTrigger } from "./popover";
 
 export function DateField({
 	name,

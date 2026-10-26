@@ -25,7 +25,7 @@ export function CollectionTable<Row>({
 	onOpen: (record: Row) => void;
 }) {
 	return (
-		<div className="overflow-x-auto rounded-md border border-border-soft">
+		<div className="overflow-x-auto rounded-md border border-line-subtle">
 			<table className="w-full min-w-3xl border-collapse text-left text-sm">
 				<thead>
 					<tr>

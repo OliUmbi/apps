@@ -2,8 +2,9 @@ import type { ElementType, ReactNode } from "react";
 
 /*
  * The type scale. Everything readable in the app goes through one of these, so
- * typography is never spelled out in a view and the `.page-kicker` /
- * `page-heading h1` CSS rules can be retired.
+ * typography is never spelled out in a view — the one exception is the
+ * dashboard hero in `site-overview`, documented in `styles.css` because its
+ * display clamp is off-scale.
  */
 
 const titles = {

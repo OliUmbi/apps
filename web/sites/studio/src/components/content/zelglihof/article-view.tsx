@@ -14,8 +14,8 @@ import {
 	listArticles,
 	updateArticle,
 } from "../../../server/content/zelglihof/article.functions";
-import { DateField } from "../../date-field";
-import { InputField } from "../../input-field";
+import { DateField } from "../../ui/date-field";
+import { TextField } from "../../ui/text-field";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { CheckboxField } from "../editor-controls";
@@ -90,7 +90,7 @@ function ArticleFields({ values, onChange }: EditorFieldsProps<ArticleInput>) {
 				onTitleChange={(value) => onChange("title", value)}
 				onSlugChange={(value) => onChange("slug", value)}
 			/>
-			<InputField
+			<TextField
 				name="description"
 				label={m.description()}
 				value={values.description}
@@ -104,7 +104,7 @@ function ArticleFields({ values, onChange }: EditorFieldsProps<ArticleInput>) {
 				nullable
 				onChange={(value) => onChange("imageId", value)}
 			/>
-			<InputField
+			<TextField
 				name="body"
 				label={m.body()}
 				value={values.body}

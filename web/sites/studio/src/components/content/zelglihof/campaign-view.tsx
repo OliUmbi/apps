@@ -14,8 +14,8 @@ import {
 	updateCampaign,
 } from "../../../server/content/zelglihof/campaign.functions";
 import { CampaignSend } from "../../campaign-send";
-import { InputField } from "../../input-field";
 import { RecordField, RecordFields } from "../../ui/record-fields";
+import { TextField } from "../../ui/text-field";
 import type { EditorFieldsProps } from "../content-form";
 import { displayStatus } from "../display";
 import { RoutedCollectionView } from "../routed-collection-view";
@@ -76,14 +76,14 @@ function CampaignFields({
 }: EditorFieldsProps<CampaignInput>) {
 	return (
 		<>
-			<InputField
+			<TextField
 				name="subject"
 				label={m.subject()}
 				value={values.subject}
 				required
 				onChange={(event) => onChange("subject", event.target.value)}
 			/>
-			<InputField
+			<TextField
 				name="body"
 				label={m.body()}
 				value={values.body}

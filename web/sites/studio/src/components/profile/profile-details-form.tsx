@@ -7,11 +7,11 @@ import { useServerFn } from "@tanstack/react-start";
 import { UserRound } from "lucide-react";
 import { profileSchema } from "../../model/profile";
 import { updateProfile } from "../../server/profile.functions";
-import { InputField } from "../input-field";
 import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
 import { FormFooter } from "../ui/form-footer";
 import { Panel } from "../ui/panel";
+import { TextField } from "../ui/text-field";
 
 export function ProfileDetailsForm({ account }: { account: Account }) {
 	const cache = useQueryClient();
@@ -42,14 +42,14 @@ export function ProfileDetailsForm({ account }: { account: Account }) {
 					saving.mutate(new FormData(event.currentTarget));
 				}}
 			>
-				<InputField
+				<TextField
 					disabled={saving.isPending}
 					name="name"
 					label={m.name()}
 					defaultValue={account.name}
 					required
 				/>
-				<InputField
+				<TextField
 					disabled={saving.isPending}
 					name="email"
 					type="email"

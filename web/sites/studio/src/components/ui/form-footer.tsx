@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 
 /*
- * The divider row that closes a form and holds its buttons. Every form drew
- * this by hand as `border-t border-border-soft pt-[18px]`; one leaf keeps the
- * divider on the 4px rhythm and the same distance everywhere.
+ * The divider row that closes a form and holds its buttons. One leaf keeps the
+ * hairline and its distance above the buttons the same everywhere; every form
+ * used to draw the divider by hand.
  */
 export function FormFooter({ children }: { children: ReactNode }) {
 	return (

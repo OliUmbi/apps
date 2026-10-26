@@ -12,7 +12,7 @@ import {
 	listStoryImages,
 	updateStoryImage,
 } from "../../../server/content/jublawoma/story-image.functions";
-import { InputField } from "../../input-field";
+import { TextField } from "../../ui/text-field";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { ImageField } from "../image-field";
@@ -76,7 +76,7 @@ function StoryImageFields({
 				value={values.imageId}
 				onChange={(value) => onChange("imageId", value ?? "")}
 			/>
-			<InputField
+			<TextField
 				name="description"
 				label={m.description()}
 				value={values.description}
