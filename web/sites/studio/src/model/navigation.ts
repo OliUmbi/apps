@@ -36,7 +36,9 @@ export const studioSearchSchema = z.object({
 	// the section cannot be a plain enum.
 	section: z.custom<StudioSectionId>(isStudioSectionId).catch("overview"),
 	mode: z.enum(["list", "create", "detail"]).catch("list"),
-	record: z.uuid().optional(),
+	/* A malformed record id must degrade to "no selection" (list view), not a
+	 * thrown parse error on a user-typed URL. */
+	record: z.uuid().optional().catch(undefined),
 });
 
 export type StudioSearch = z.infer<typeof studioSearchSchema>;
