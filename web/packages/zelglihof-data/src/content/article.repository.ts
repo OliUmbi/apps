@@ -1,79 +1,23 @@
-import {
-	guardRepository,
-	type Page,
-	type PageInput,
-	recordNotCreatedError,
-} from "@oliumbi/contracts";
+import { guardRepository } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
-import { paginate, searchPattern } from "@oliumbi/database/pagination";
-import { and, desc, eq, ilike } from "drizzle-orm";
+import { createContentRepository } from "@oliumbi/database/content-repository";
 import { article } from "../schema";
 import type { Article, ArticleInput, ArticleKey } from "./article";
-import { updateMissError } from "./errors";
 
 export function createArticleRepository(db: DatabaseExecutor) {
+	const store = createContentRepository<Article, ArticleKey, ArticleInput>(db, {
+		table: article,
+		name: "zelglihof.article",
+		key: { id: article.id },
+		search: article.title,
+		createdAt: article.createdAt,
+		updatedAt: article.updatedAt,
+	});
 	return guardRepository({
-		list(input: PageInput): Promise<Page<Article>> {
-			return paginate<Article>(
-				db
-					.select()
-					.from(article)
-					.where(
-						input.search
-							? ilike(article.title, searchPattern(input.search))
-							: undefined,
-					)
-					.orderBy(desc(article.createdAt), article.id)
-					.$dynamic(),
-				input,
-			);
-		},
-		async get(key: ArticleKey): Promise<Article | null> {
-			const [record] = await db
-				.select()
-				.from(article)
-				.where(eq(article.id, key.id))
-				.limit(1);
-			return record ?? null;
-		},
-		async create(input: ArticleInput): Promise<Article> {
-			const now = new Date().toISOString();
-			const [record] = await db
-				.insert(article)
-				.values({
-					...input,
-					createdAt: now,
-					updatedAt: now,
-				})
-				.returning();
-			if (!record) throw recordNotCreatedError();
-			return record;
-		},
-		async update(
-			key: ArticleKey,
-			input: ArticleInput,
-			expectedUpdatedAt: string,
-		): Promise<Article> {
-			const [record] = await db
-				.update(article)
-				.set({
-					...input,
-					updatedAt: new Date().toISOString(),
-				})
-				.where(
-					and(eq(article.id, key.id), eq(article.updatedAt, expectedUpdatedAt)),
-				)
-				.returning();
-			if (!record)
-				throw updateMissError(
-					"zelglihof.article",
-					await this.get(key),
-					expectedUpdatedAt,
-				);
-			return record;
-		},
-		async delete(key: ArticleKey): Promise<void> {
-			await db.delete(article).where(eq(article.id, key.id));
-		},
+		list: store.list,
+		get: store.get,
+		create: store.create,
+		update: store.update,
+		delete: store.delete,
 	});
 }

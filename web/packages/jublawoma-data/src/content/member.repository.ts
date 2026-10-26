@@ -1,79 +1,23 @@
-import {
-	guardRepository,
-	type Page,
-	type PageInput,
-	recordNotCreatedError,
-} from "@oliumbi/contracts";
+import { guardRepository } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
-import { paginate, searchPattern } from "@oliumbi/database/pagination";
-import { and, desc, eq, ilike } from "drizzle-orm";
+import { createContentRepository } from "@oliumbi/database/content-repository";
 import { member } from "../schema";
-import { updateMissError } from "./errors";
 import type { Member, MemberInput, MemberKey } from "./member";
 
 export function createMemberRepository(db: DatabaseExecutor) {
+	const store = createContentRepository<Member, MemberKey, MemberInput>(db, {
+		table: member,
+		name: "jublawoma.member",
+		key: { id: member.id },
+		search: member.name,
+		createdAt: member.createdAt,
+		updatedAt: member.updatedAt,
+	});
 	return guardRepository({
-		list(input: PageInput): Promise<Page<Member>> {
-			return paginate<Member>(
-				db
-					.select()
-					.from(member)
-					.where(
-						input.search
-							? ilike(member.name, searchPattern(input.search))
-							: undefined,
-					)
-					.orderBy(desc(member.createdAt), member.id)
-					.$dynamic(),
-				input,
-			);
-		},
-		async get(key: MemberKey): Promise<Member | null> {
-			const [record] = await db
-				.select()
-				.from(member)
-				.where(eq(member.id, key.id))
-				.limit(1);
-			return record ?? null;
-		},
-		async create(input: MemberInput): Promise<Member> {
-			const now = new Date().toISOString();
-			const [record] = await db
-				.insert(member)
-				.values({
-					...input,
-					createdAt: now,
-					updatedAt: now,
-				})
-				.returning();
-			if (!record) throw recordNotCreatedError();
-			return record;
-		},
-		async update(
-			key: MemberKey,
-			input: MemberInput,
-			expectedUpdatedAt: string,
-		): Promise<Member> {
-			const [record] = await db
-				.update(member)
-				.set({
-					...input,
-					updatedAt: new Date().toISOString(),
-				})
-				.where(
-					and(eq(member.id, key.id), eq(member.updatedAt, expectedUpdatedAt)),
-				)
-				.returning();
-			if (!record)
-				throw updateMissError(
-					"jublawoma.member",
-					await this.get(key),
-					expectedUpdatedAt,
-				);
-			return record;
-		},
-		async delete(key: MemberKey): Promise<void> {
-			await db.delete(member).where(eq(member.id, key.id));
-		},
+		list: store.list,
+		get: store.get,
+		create: store.create,
+		update: store.update,
+		delete: store.delete,
 	});
 }

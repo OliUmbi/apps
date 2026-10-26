@@ -1,58 +1,24 @@
-import { guardRepository, type Page, type PageInput } from "@oliumbi/contracts";
+import { guardRepository } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
-import { paginate, searchPattern } from "@oliumbi/database/pagination";
-import { and, desc, eq, ilike } from "drizzle-orm";
+import { createContentRepository } from "@oliumbi/database/content-repository";
 import { inquiry } from "../schema";
-import { updateMissError } from "./errors";
 import type { Inquiry, InquiryInput, InquiryKey } from "./inquiry";
 
 export function createInquiryRepository(db: DatabaseExecutor) {
+	// No create: inquiry rows are written by the submission workflow and only
+	// managed (status) from here.
+	const store = createContentRepository<Inquiry, InquiryKey, InquiryInput>(db, {
+		table: inquiry,
+		name: "zelglihof.inquiry",
+		key: { id: inquiry.id },
+		search: inquiry.name,
+		createdAt: inquiry.createdAt,
+		updatedAt: inquiry.updatedAt,
+	});
 	return guardRepository({
-		list(input: PageInput): Promise<Page<Inquiry>> {
-			return paginate<Inquiry>(
-				db
-					.select()
-					.from(inquiry)
-					.where(
-						input.search
-							? ilike(inquiry.name, searchPattern(input.search))
-							: undefined,
-					)
-					.orderBy(desc(inquiry.createdAt), inquiry.id)
-					.$dynamic(),
-				input,
-			);
-		},
-		async get(key: InquiryKey): Promise<Inquiry | null> {
-			const [record] = await db
-				.select()
-				.from(inquiry)
-				.where(eq(inquiry.id, key.id))
-				.limit(1);
-			return record ?? null;
-		},
-		async update(
-			key: InquiryKey,
-			input: InquiryInput,
-			expectedUpdatedAt: string,
-		): Promise<Inquiry> {
-			const [record] = await db
-				.update(inquiry)
-				.set({ status: input.status, updatedAt: new Date().toISOString() })
-				.where(
-					and(eq(inquiry.id, key.id), eq(inquiry.updatedAt, expectedUpdatedAt)),
-				)
-				.returning();
-			if (!record)
-				throw updateMissError(
-					"zelglihof.inquiry",
-					await this.get(key),
-					expectedUpdatedAt,
-				);
-			return record;
-		},
-		async delete(key: InquiryKey): Promise<void> {
-			await db.delete(inquiry).where(eq(inquiry.id, key.id));
-		},
+		list: store.list,
+		get: store.get,
+		update: store.update,
+		delete: store.delete,
 	});
 }

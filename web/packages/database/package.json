@@ -5,6 +5,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./columns": "./src/columns.ts",
+    "./content-errors": "./src/content-errors.ts",
+    "./content-repository": "./src/content-repository.ts",
     "./pagination": "./src/pagination.ts"
   },
   "scripts": {
