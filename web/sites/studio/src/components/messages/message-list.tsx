@@ -1,8 +1,9 @@
-import { Button } from "@base-ui/react/button";
 import { m } from "@oliumbi/i18n/messages";
 import type { Message } from "@oliumbi/messaging";
 import { ArrowRight } from "lucide-react";
 import { formatTimestamp } from "../../model/dates";
+import { ListMeta, ListRow, ListShell } from "../ui/list";
+import { Body, Title } from "../ui/text";
 import { MessageStatus } from "./message-status";
 
 export function MessageList({
@@ -13,27 +14,29 @@ export function MessageList({
 	onOpen: (id: string) => void;
 }) {
 	return (
-		<div className="grid gap-px overflow-hidden rounded-md border border-border-soft bg-border-soft">
+		<ListShell>
 			{messages.map((message) => (
-				<Button
+				<ListRow
 					key={message.id}
-					className="message-row"
+					leading={<MessageStatus status={message.status} />}
+					trailing={
+						<>
+							<ListMeta detail={formatTimestamp(message.requestedAt)}>
+								{message.attemptCount} {m.studio_attempts()}
+							</ListMeta>
+							<ArrowRight size={15} aria-hidden="true" />
+						</>
+					}
 					onClick={() => onOpen(message.id)}
 				>
-					<MessageStatus status={message.status} />
-					<span className="message-body">
-						<strong>{message.subject}</strong>
-						<small>
-							{message.recipient} · {message.site}
-						</small>
-					</span>
-					<span className="message-meta">
-						{message.attemptCount} {m.studio_attempts()}
-						<small>{formatTimestamp(message.requestedAt)}</small>
-					</span>
-					<ArrowRight size={15} aria-hidden="true" />
-				</Button>
+					<Title as="h2" size="sm">
+						{message.subject}
+					</Title>
+					<Body>
+						{message.recipient} · {message.site}
+					</Body>
+				</ListRow>
 			))}
-		</div>
+		</ListShell>
 	);
 }

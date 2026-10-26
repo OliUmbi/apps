@@ -1,12 +1,12 @@
 import { limits, type Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import type {
 	InfiniteData,
 	UseInfiniteQueryResult,
 } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { InputField } from "../input-field";
+import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
 import { CollectionTable, type ContentColumn } from "./collection-table";
 
@@ -40,7 +40,7 @@ export function CollectionList<Row>({
 					onChange={(event) => onSearchChange(event.target.value)}
 				/>
 			</div>
-			<FormFeedback error={query.isError ? m.error_generic() : null} />
+			<Alert>{query.isError ? m.error_generic() : null}</Alert>
 			{query.isPending ? (
 				<p role="status">{m.loading()}</p>
 			) : rows.length ? (

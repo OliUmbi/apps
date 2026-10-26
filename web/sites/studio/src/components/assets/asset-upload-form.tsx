@@ -1,12 +1,13 @@
 import { Form } from "@base-ui/react/form";
 import type { SiteId } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { uploadAsset } from "../../server/assets.functions";
 import { InputField } from "../input-field";
+import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
+import { Body } from "../ui/text";
 
 export function AssetUploadForm({
 	site,
@@ -53,16 +54,17 @@ export function AssetUploadForm({
 					pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
 				/>
 			)}
-			<p className="text-sm text-zinc-400">
-				{m.studio_assets_upload_privacy_description()}
-			</p>
+			<Body>{m.studio_assets_upload_privacy_description()}</Body>
 			<Button type="submit" disabled={creation.isPending} variant="primary">
 				{m.upload()}
 			</Button>
-			<FormFeedback
-				error={creation.isError ? m.error_generic() : null}
-				success={creation.isSuccess ? m.studio_assets_upload_success() : null}
-			/>
+			<Alert tone={creation.isError ? "error" : "success"}>
+				{creation.isError
+					? m.error_generic()
+					: creation.isSuccess
+						? m.studio_assets_upload_success()
+						: null}
+			</Alert>
 		</Form>
 	);
 }

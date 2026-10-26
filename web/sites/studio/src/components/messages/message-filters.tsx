@@ -1,6 +1,6 @@
-import { Button } from "@base-ui/react/button";
 import { m } from "@oliumbi/i18n/messages";
 import type { MessageFilter } from "../../model/messages";
+import { FilterChip } from "../ui/filter-chip";
 
 export function MessageFilters({
 	filter,
@@ -10,27 +10,21 @@ export function MessageFilters({
 	onChange: (filter: MessageFilter) => void;
 }) {
 	return (
-		<div className="grid grid-cols-[repeat(2,minmax(0,220px))] gap-3 max-[767px]:grid-cols-2">
-			<Button
-				className={
-					filter === "all" ? "message-filter is-active" : "message-filter"
-				}
-				onClick={() => onChange("all")}
-				aria-pressed={filter === "all"}
-			>
-				{m.studio_messages_filter_all()}
-			</Button>
-			<Button
-				className={
-					filter === "failed"
-						? "message-filter failure is-active"
-						: "message-filter failure"
-				}
-				onClick={() => onChange("failed")}
-				aria-pressed={filter === "failed"}
-			>
-				{m.studio_messages_filter_failed()}
-			</Button>
+		<div className="grid grid-cols-2 gap-3">
+			<div className="w-full max-w-55">
+				<FilterChip selected={filter === "all"} onClick={() => onChange("all")}>
+					{m.studio_messages_filter_all()}
+				</FilterChip>
+			</div>
+			<div className="w-full max-w-55">
+				<FilterChip
+					tone="danger"
+					selected={filter === "failed"}
+					onClick={() => onChange("failed")}
+				>
+					{m.studio_messages_filter_failed()}
+				</FilterChip>
+			</div>
 		</div>
 	);
 }

@@ -1,11 +1,12 @@
 import { m } from "@oliumbi/i18n/messages";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowUpRight, Plus } from "lucide-react";
 import { listAccounts } from "../../server/accounts.functions";
+import { Alert } from "../ui/alert";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { Avatar, ListRow, ListShell } from "../ui/list";
 import { PageHeader } from "../ui/page-header";
 import { Body, Title } from "../ui/text";
 
@@ -19,7 +20,7 @@ export function AccountList({
 	const list = useServerFn(listAccounts);
 	const query = useQuery({ queryKey: ["accounts"], queryFn: () => list() });
 	return (
-		<div className="grid gap-[22px]">
+		<div className="grid gap-6">
 			<PageHeader
 				kicker={m.studio_system()}
 				title={m.studio_accounts()}
@@ -30,35 +31,33 @@ export function AccountList({
 					</Button>
 				}
 			/>
-			<FormFeedback error={query.isError ? m.error_generic() : null} />
+			<Alert>{query.isError ? m.error_generic() : null}</Alert>
 			{query.isPending && <p role="status">{m.loading()}</p>}
 			{query.isSuccess && query.data.length === 0 && <p>{m.empty()}</p>}
-			<div className="grid gap-px overflow-hidden rounded-[7px] border border-border-soft bg-border-soft">
+			<ListShell>
 				{query.data?.map((account) => (
-					<button
-						type="button"
+					<ListRow
 						key={account.id}
-						className="account-row cursor-pointer"
+						leading={<Avatar>{account.name.slice(0, 1).toUpperCase()}</Avatar>}
+						trailing={
+							<>
+								<Badge tone={account.enabled ? "neutral" : "danger"}>
+									{account.enabled
+										? m.studio_account_enabled()
+										: m.studio_account_disabled()}
+								</Badge>
+								<ArrowUpRight size={18} aria-hidden="true" />
+							</>
+						}
 						onClick={() => onOpen(account.id)}
 					>
-						<div className="account-avatar">
-							{account.name.slice(0, 1).toUpperCase()}
-						</div>
-						<div className="grid gap-1">
-							<Title as="h2" size="sm">
-								{account.name}
-							</Title>
-							<Body>{account.email}</Body>
-						</div>
-						<Badge tone={account.enabled ? "neutral" : "danger"}>
-							{account.enabled
-								? m.studio_account_enabled()
-								: m.studio_account_disabled()}
-						</Badge>
-						<ArrowUpRight size={18} aria-hidden="true" />
-					</button>
+						<Title as="h2" size="sm">
+							{account.name}
+						</Title>
+						<Body>{account.email}</Body>
+					</ListRow>
 				))}
-			</div>
+			</ListShell>
 		</div>
 	);
 }

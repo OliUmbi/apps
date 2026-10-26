@@ -1,5 +1,4 @@
 import { m } from "@oliumbi/i18n/messages";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useSignOut } from "../hooks/use-sign-out";
 import { useStudioNavigation } from "../hooks/use-studio-navigation";
 import { isContentSection } from "../model/content-sections";
@@ -15,6 +14,7 @@ import { ContentView } from "./content/content-view";
 import { MessagesView } from "./messages-view";
 import { ProfileView } from "./profile-view";
 import { SiteOverview } from "./site-overview";
+import { Alert } from "./ui/alert";
 
 export function DashboardView({
 	actor,
@@ -35,7 +35,7 @@ export function DashboardView({
 			onLogout={() => signOut.mutate({})}
 			logoutPending={signOut.isPending}
 		>
-			<FormFeedback error={signOut.isError ? m.error_generic() : null} />
+			<Alert>{signOut.isError ? m.error_generic() : null}</Alert>
 			<WorkspaceContent
 				workspace={workspace}
 				onSelectSection={navigation.selectSection}

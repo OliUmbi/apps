@@ -8,6 +8,11 @@ export interface ContentColumn<Row> {
 	render: (record: Row) => ReactNode;
 }
 
+const headClass =
+	"h-9 bg-layer-1 px-4 text-left text-xs font-semibold uppercase tracking-wider text-fg-disabled";
+const cellClass =
+	"border-t border-line-subtle px-4 py-3 text-fg-muted align-middle";
+
 export function CollectionTable<Row>({
 	rows,
 	columns,
@@ -21,28 +26,34 @@ export function CollectionTable<Row>({
 }) {
 	return (
 		<div className="overflow-x-auto rounded-md border border-border-soft">
-			<table className="w-full text-left text-sm">
+			<table className="w-full min-w-3xl border-collapse text-left text-sm">
 				<thead>
 					<tr>
 						{columns.map((column) => (
-							<th key={column.id} scope="col">
+							<th key={column.id} scope="col" className={headClass}>
 								{column.heading}
 							</th>
 						))}
-						<th scope="col">
+						<th scope="col" className={headClass}>
 							<span className="sr-only">{m.studio_record_actions()}</span>
 						</th>
 					</tr>
 				</thead>
 				<tbody>
 					{rows.map((record) => (
-						<tr key={rowKey(record)} className="border-t border-white/10">
+						<tr
+							key={rowKey(record)}
+							className="border-t border-line-subtle hover:bg-layer-1"
+						>
 							{columns.map((column) => (
-								<td key={column.id} className="max-w-sm whitespace-normal">
+								<td
+									key={column.id}
+									className={`${cellClass} max-w-sm whitespace-normal`}
+								>
 									{column.render(record)}
 								</td>
 							))}
-							<td>
+							<td className={cellClass}>
 								<Button variant="link" onClick={() => onOpen(record)}>
 									{m.studio_open_record()}
 								</Button>

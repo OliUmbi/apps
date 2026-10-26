@@ -1,6 +1,5 @@
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -9,7 +8,9 @@ import { type FormEvent, useState } from "react";
 import { profilePasswordSchema } from "../../model/profile";
 import { changeProfilePassword } from "../../server/profile.functions";
 import { InputField } from "../input-field";
+import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
+import { FormFooter } from "../ui/form-footer";
 import { Panel } from "../ui/panel";
 
 export function ProfilePasswordForm() {
@@ -63,7 +64,7 @@ export function ProfilePasswordForm() {
 					label={m.studio_password_confirmation()}
 					required
 				/>
-				<div className="flex justify-end gap-2 border-t border-border-soft pt-[18px]">
+				<FormFooter>
 					<Button
 						variant="secondary"
 						type="submit"
@@ -71,10 +72,10 @@ export function ProfilePasswordForm() {
 					>
 						{m.studio_change_password()}
 					</Button>
-				</div>
-				<FormFeedback
-					error={validation || (password.isError ? m.error_generic() : null)}
-				/>
+				</FormFooter>
+				<Alert>
+					{validation || (password.isError ? m.error_generic() : null)}
+				</Alert>
 			</Form>
 		</Panel>
 	);

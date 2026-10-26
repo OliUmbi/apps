@@ -4,7 +4,6 @@
   "type": "module",
   "exports": {
     "./alert": "./src/alert.tsx",
-    "./form-feedback": "./src/form-feedback.tsx",
     "./paginated-list": "./src/paginated-list.tsx",
     "./responsive-image": "./src/responsive-image.tsx",
     "./simple-markdown": "./src/simple-markdown.tsx",

@@ -1,6 +1,5 @@
 import { limits } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
@@ -9,6 +8,7 @@ import { listMessages } from "../server/messages.functions";
 import { MessageDetail } from "./messages/message-detail";
 import { MessageFilters } from "./messages/message-filters";
 import { MessageList } from "./messages/message-list";
+import { Alert } from "./ui/alert";
 import { Button } from "./ui/button";
 import { PageHeader } from "./ui/page-header";
 
@@ -30,10 +30,10 @@ export function MessagesView() {
 
 	const messages = query.data?.pages.flatMap((page) => page.items) ?? [];
 	return (
-		<div className="grid gap-[22px]">
+		<div className="grid gap-6">
 			<PageHeader kicker="SYSTEM / DELIVERY" title={m.studio_messages()} />
 			<MessageFilters filter={filter} onChange={setFilter} />
-			<FormFeedback error={query.isError ? m.error_generic() : null} />
+			<Alert>{query.isError ? m.error_generic() : null}</Alert>
 			{query.isPending && <p>{m.loading()}</p>}
 			<MessageList messages={messages} onOpen={setSelected} />
 			{messages.length === 0 && query.isSuccess && <p>{m.empty()}</p>}

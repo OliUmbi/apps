@@ -1,7 +1,6 @@
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
 import type { Account } from "@oliumbi/identity";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -9,7 +8,9 @@ import { UserRound } from "lucide-react";
 import { profileSchema } from "../../model/profile";
 import { updateProfile } from "../../server/profile.functions";
 import { InputField } from "../input-field";
+import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
+import { FormFooter } from "../ui/form-footer";
 import { Panel } from "../ui/panel";
 
 export function ProfileDetailsForm({ account }: { account: Account }) {
@@ -56,15 +57,18 @@ export function ProfileDetailsForm({ account }: { account: Account }) {
 					defaultValue={account.email}
 					required
 				/>
-				<div className="flex justify-end gap-2 border-t border-border-soft pt-[18px]">
+				<FormFooter>
 					<Button variant="primary" type="submit" disabled={saving.isPending}>
 						{m.save()}
 					</Button>
-				</div>
-				<FormFeedback
-					error={saving.isError ? m.error_generic() : null}
-					success={saving.isSuccess ? m.studio_profile_saved() : null}
-				/>
+				</FormFooter>
+				<Alert tone={saving.isError ? "error" : "success"}>
+					{saving.isError
+						? m.error_generic()
+						: saving.isSuccess
+							? m.studio_profile_saved()
+							: null}
+				</Alert>
 			</Form>
 		</Panel>
 	);

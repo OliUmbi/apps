@@ -1,5 +1,4 @@
 import { m } from "@oliumbi/i18n/messages";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import type { ReactNode } from "react";
 import { useCollection } from "../../hooks/use-collection";
 import type {
@@ -7,6 +6,7 @@ import type {
 	CollectionSource,
 } from "../../model/collection";
 import { DeleteConfirmation } from "../delete-confirmation";
+import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
 import { PageHeader } from "../ui/page-header";
 import { Body, Title } from "../ui/text";
@@ -95,7 +95,7 @@ export function CollectionView<Row, Input = never>({
 	);
 
 	return (
-		<section className="grid gap-[22px]">
+		<section className="grid gap-6">
 			{inline ? (
 				<header className="flex items-center justify-between gap-4">
 					<Title as="h3" size="sm">
@@ -109,7 +109,7 @@ export function CollectionView<Row, Input = never>({
 			{inWorkspace ? (
 				<>
 					{loadingRecord && <p role="status">{m.loading()}</p>}
-					<FormFeedback error={recordError ? m.error_generic() : null} />
+					<Alert>{recordError ? m.error_generic() : null}</Alert>
 					{recordMissing && <p>{m.empty()}</p>}
 					{editable && editor ? (
 						<ContentForm

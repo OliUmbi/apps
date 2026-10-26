@@ -1,6 +1,5 @@
 import type { SiteId } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import {
 	useInfiniteQuery,
 	useMutation,
@@ -16,7 +15,9 @@ import {
 import { AssetCard } from "./assets/asset-card";
 import { AssetUploadForm } from "./assets/asset-upload-form";
 import { DeleteConfirmation } from "./delete-confirmation";
+import { Alert } from "./ui/alert";
 import { Button } from "./ui/button";
+import { PageHeader } from "./ui/page-header";
 
 export function AssetsView({
 	site,
@@ -48,14 +49,12 @@ export function AssetsView({
 		},
 	});
 	return (
-		<div className="grid gap-[22px]">
-			<header className="page-heading">
-				<h1>{kind === "images" ? "Bilder" : "Dokumente"}</h1>
-			</header>
+		<div className="grid gap-6">
+			<PageHeader title={kind === "images" ? "Bilder" : "Dokumente"} />
 			<AssetUploadForm site={site} kind={kind} onUploaded={refresh} />
-			<FormFeedback
-				error={query.isError || toggle.isError ? m.error_generic() : null}
-			/>
+			<Alert>
+				{query.isError || toggle.isError ? m.error_generic() : null}
+			</Alert>
 			{query.isPending ? <p>{m.loading()}</p> : null}
 			<div className="grid gap-3">
 				{query.data?.pages

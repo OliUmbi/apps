@@ -1,12 +1,13 @@
 import { Form } from "@base-ui/react/form";
 import { emailSchema } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { requestSubscriberConfirmation } from "../server/newsletter.functions";
 import { InputField } from "./input-field";
+import { Alert } from "./ui/alert";
 import { Button } from "./ui/button";
+import { Body } from "./ui/text";
 
 export function SubscriberInvite() {
 	const request = useServerFn(requestSubscriberConfirmation);
@@ -38,16 +39,17 @@ export function SubscriberInvite() {
 				label={m.email()}
 				required
 			/>
-			<p className="text-sm text-zinc-400">
-				{m.studio_subscriber_invite_help()}
-			</p>
+			<Body>{m.studio_subscriber_invite_help()}</Body>
 			<Button type="submit" variant="primary" disabled={mutation.isPending}>
 				{m.studio_subscriber_invite()}
 			</Button>
-			<FormFeedback
-				error={mutation.isError ? m.error_generic() : null}
-				success={mutation.isSuccess ? m.sent() : null}
-			/>
+			<Alert tone={mutation.isError ? "error" : "success"}>
+				{mutation.isError
+					? m.error_generic()
+					: mutation.isSuccess
+						? m.sent()
+						: null}
+			</Alert>
 		</Form>
 	);
 }

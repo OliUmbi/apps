@@ -2,6 +2,7 @@ import type { AssetDocument, AssetImage } from "@oliumbi/assets";
 import type { SiteId } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { Button } from "../ui/button";
+import { Body } from "../ui/text";
 
 export function AssetCard({
 	asset,
@@ -41,9 +42,9 @@ export function AssetCard({
 				) : (
 					<p>{asset.id}</p>
 				)}
-				<p className="text-sm text-zinc-400">
+				<Body>
 					{asset.visible ? m.visibility_public() : m.studio_asset_private()}
-				</p>
+				</Body>
 			</div>
 			<div className="flex gap-2">
 				<Button

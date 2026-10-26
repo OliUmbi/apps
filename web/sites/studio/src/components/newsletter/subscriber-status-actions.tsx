@@ -1,5 +1,4 @@
 import { m } from "@oliumbi/i18n/messages";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import type { Subscriber } from "@oliumbi/zelglihof-data/content/subscriber";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -7,6 +6,7 @@ import {
 	requestSubscriberConfirmation,
 	unsubscribeSubscriber,
 } from "../../server/newsletter.functions";
+import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
 
 export function SubscriberStatusActions({
@@ -59,10 +59,9 @@ export function SubscriberStatusActions({
 					</Button>
 				)}
 			</div>
-			<FormFeedback
-				error={action.isError ? m.studio_subscriber_action_error() : null}
-				success={success}
-			/>
+			<Alert tone={action.isError ? "error" : "success"}>
+				{action.isError ? m.studio_subscriber_action_error() : success}
+			</Alert>
 		</>
 	);
 }

@@ -1,7 +1,6 @@
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
 import type { Account } from "@oliumbi/identity";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -10,8 +9,10 @@ import { useState } from "react";
 import { updateAccountSchema } from "../../model/accounts";
 import { updateAccount } from "../../server/accounts.functions";
 import { InputField } from "../input-field";
+import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
+import { FormFooter } from "../ui/form-footer";
 import { Panel } from "../ui/panel";
 
 export function AccountDetailsForm({ account }: { account: Account }) {
@@ -75,15 +76,18 @@ export function AccountDetailsForm({ account }: { account: Account }) {
 					onChange={setEnabled}
 					disabled={save.isPending}
 				/>
-				<div className="flex justify-end gap-2 border-t border-border-soft pt-[18px]">
+				<FormFooter>
 					<Button type="submit" variant="primary" disabled={save.isPending}>
 						{m.save()}
 					</Button>
-				</div>
-				<FormFeedback
-					error={save.isError ? m.error_generic() : null}
-					success={save.isSuccess ? m.studio_profile_saved() : null}
-				/>
+				</FormFooter>
+				<Alert tone={save.isError ? "error" : "success"}>
+					{save.isError
+						? m.error_generic()
+						: save.isSuccess
+							? m.studio_profile_saved()
+							: null}
+				</Alert>
 			</Form>
 		</Panel>
 	);

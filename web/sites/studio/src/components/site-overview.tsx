@@ -18,9 +18,11 @@ export function SiteOverview({
 	onSelectSection: (section: string) => void;
 }) {
 	return (
-		<div className="grid gap-[30px]">
+		<div className="grid gap-8">
 			<header className="overview-heading">
 				<div>
+					{/* `page-kicker` must stay: `.overview-heading p:not(.page-kicker)`
+					    below it in styles.css restyles any other paragraph. */}
 					<p className="page-kicker">{site.domain}</p>
 					<h1>{site.name}</h1>
 					<p>{m.studio_dashboard_workspaces_title()}</p>
@@ -32,7 +34,7 @@ export function SiteOverview({
 					{site.short}
 				</div>
 			</header>
-			<div className="grid grid-cols-3 gap-3 max-[760px]:grid-cols-1">
+			<div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
 				{site.sections
 					.filter((item) => item.id !== "overview")
 					.map((item, index) => (
@@ -48,7 +50,7 @@ export function SiteOverview({
 							<span className="col-span-full self-end text-primary text-base font-semibold">
 								{item.label}
 							</span>
-							<span className="col-[1/3] text-muted text-[0.77rem] leading-[1.5]">
+							<span className="col-span-2 text-muted text-xs leading-relaxed">
 								{item.description()}
 							</span>
 							<ArrowUpRight
@@ -77,7 +79,7 @@ function OverviewIcon({
 	}[icon];
 	return (
 		<Icon
-			className="col-start-3 text-[#a79ff4]"
+			className="col-start-3 text-interactive"
 			size={19}
 			strokeWidth={1.6}
 			aria-hidden="true"

@@ -1,5 +1,4 @@
 import { m } from "@oliumbi/i18n/messages";
-import type { ReactNode } from "react";
 
 export function displayStatus(value: string) {
 	const labels: Record<string, () => string> = {
@@ -16,21 +15,6 @@ export function displayStatus(value: string) {
 	return labels[value]?.() ?? value;
 }
 
-export function DetailItem({
-	label,
-	children,
-}: {
-	label: string;
-	children: ReactNode;
-}) {
-	return (
-		<div>
-			<dt>{label}</dt>
-			<dd>{children ?? "—"}</dd>
-		</div>
-	);
-}
-
 export function ImageThumbnail({
 	site,
 	id,
@@ -43,7 +27,7 @@ export function ImageThumbnail({
 			src={`/api/assets/${encodeURIComponent(id)}?site=${encodeURIComponent(site)}&size=xs`}
 			alt=""
 			loading="lazy"
-			className="block h-[46px] w-[68px] rounded-md object-cover"
+			className="block h-11 w-16 rounded-md object-cover"
 		/>
 	) : null;
 }

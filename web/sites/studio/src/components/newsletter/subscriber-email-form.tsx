@@ -1,12 +1,12 @@
 import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
-import { FormFeedback } from "@oliumbi/ui/form-feedback";
 import type { Subscriber } from "@oliumbi/zelglihof-data/content/subscriber";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { correctSubscriberEmail } from "../../server/newsletter.functions";
 import { correctionFeedback } from "../../server/outcomes";
 import { InputField } from "../input-field";
+import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
 
 export function SubscriberEmailForm({
@@ -37,7 +37,7 @@ export function SubscriberEmailForm({
 	return (
 		<>
 			<Form
-				className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 max-[760px]:grid-cols-1"
+				className="flex items-end gap-3 max-md:flex-col"
 				onSubmit={(event) => {
 					event.preventDefault();
 					if (correction.isPending) return;
@@ -45,15 +45,17 @@ export function SubscriberEmailForm({
 					correction.mutate(email);
 				}}
 			>
-				<InputField
-					key={subscriber.email}
-					name="email"
-					label={m.email()}
-					type="email"
-					defaultValue={subscriber.email}
-					disabled={correction.isPending}
-					required
-				/>
+				<div className="grow">
+					<InputField
+						key={subscriber.email}
+						name="email"
+						label={m.email()}
+						type="email"
+						defaultValue={subscriber.email}
+						disabled={correction.isPending}
+						required
+					/>
+				</div>
 				<Button
 					type="submit"
 					variant="secondary"
@@ -62,18 +64,15 @@ export function SubscriberEmailForm({
 					{correction.isPending ? m.saving() : m.save()}
 				</Button>
 			</Form>
-			<FormFeedback
-				error={
-					feedback === "failed"
-						? m.studio_subscriber_action_error()
-						: feedback === "conflict"
-							? m.studio_subscriber_email_conflict()
-							: null
-				}
-				success={
-					feedback === "corrected" ? m.studio_subscriber_email_changed() : null
-				}
-			/>
+			<Alert tone={feedback === "corrected" ? "success" : "error"}>
+				{feedback === "failed"
+					? m.studio_subscriber_action_error()
+					: feedback === "conflict"
+						? m.studio_subscriber_email_conflict()
+						: feedback === "corrected"
+							? m.studio_subscriber_email_changed()
+							: null}
+			</Alert>
 		</>
 	);
 }
