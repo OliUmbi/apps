@@ -3,25 +3,28 @@
 
 @theme {
 	--color-bark: #343d30;
+	--color-bark-soft: #686b5d;
 	--color-moss: #65734f;
-	--color-oat: #f5f0e6;
-	--color-clay: #a46f51;
+	--color-honey: #e3d4af;
 	--color-sage: #d0d8c3;
+	--color-oat: #f5f0e6;
+	--color-oat-soft: #d5cbb9;
+	--color-sand: #e6ded2;
+	--color-line: #d9d1c5;
 	--color-danger: #b91c1c;
+	--color-success: #65734f;
+	--font-sans: Inter, "Segoe UI", sans-serif;
+	--font-serif: Georgia, serif;
+	--radius-pill: 999px;
+	--shadow-hover: 0 24px 70px rgb(52 61 48 / 12%);
 }
 
 /* Base element styles: not expressible as utilities. */
 :root {
-	color: #343d30;
-	background: #f5f0e6;
-	font-family: Inter, "Segoe UI", sans-serif;
+	color: var(--color-bark);
+	background: var(--color-oat);
+	font-family: var(--font-sans);
 	font-synthesis: none;
-	--wine: #65734f;
-	--dark: #343d30;
-	--paper: #f5f0e6;
-	--yellow: #d1bf92;
-	--blue: #d0d8c3;
-	--line: #d9d1c5;
 }
 * {
 	box-sizing: border-box;
@@ -46,17 +49,22 @@ img {
 }
 ::selection {
 	color: white;
-	background: var(--wine);
+	background: var(--color-moss);
 }
 
 /*
  * The rules below stay in CSS deliberately:
- * - `.shell` is used on 29 wrappers; inlining it would bloat every layout
- *   container for two utilities.
+ * - `.shell` is the shared page container (the 1240px measure): the 29 wrappers
+ *   that used to inline `mx-auto w-[min(100%_-_2rem,1240px)]`, the promotion
+ *   error state, and the `PaginatedList` containers on /events and /stories.
+ *   `.button-row` lays out the CTA pair inside the contact card, and `.cta` is
+ *   the underlined text-CTA repeated at three call sites.
  * - `.kicker`, `.button` and `.nav-cta` are referenced by sibling/descendant
  *   selectors below (`p:not(.kicker)`, `.page-hero .button`,
  *   `a:not(.nav-cta)`); dropping the class names would leak those rules onto
- *   the wrong elements, and they are used 24/11/2 times.
+ *   the wrong elements. Their modifier states (`.button.light`, `.kicker.light`,
+ *   `.stories-page.compact`, `.donation-item.is-selected`, `img.photo`) stay
+ *   with them and preserve the unlayered precedence over utilities.
  * - `.brand`, `.site-nav`, `.page-hero`, `.stories-page`, `.split-body`,
  *   `.contact-card`, `.event-list`, `.steps`, `.status-page`, `.footer-grid`,
  *   `.story-art`, `.story-grid`, `.content-image-fallback`,
@@ -65,10 +73,7 @@ img {
  *   `.donation-items-heading`, `.donation-item`, `.donation-item-body`,
  *   `.donation-progress`, `.donation-remaining`, `.donation-action`,
  *   `.donation-form` and `.legal` anchor descendant/child rules; converting
- *   the anchor would orphan its children. Their `:hover`/modifier states
- *   (`.button.light`, `.kicker.light`, `.stories-page.compact`,
- *   `.donation-item.is-selected`, `img.photo`) stay with them for the same
- *   reason and to preserve the unlayered precedence over utilities.
+ *   the anchor would orphan its children.
  * - `.markdown-content` styles HTML emitted by the markdown renderer, which
  *   cannot carry utility classes.
  * - `.site-header` and `.promotion-card` would each become ~12-utility
@@ -79,16 +84,20 @@ img {
  *   850px rule for event images), safer as ordered CSS than as competing
  *   `max-[...]` variants.
  */
+.shell {
+	margin-inline: auto;
+	width: min(100% - 2rem, 1240px);
+}
 .kicker {
 	margin: 0;
-	color: var(--wine);
+	color: var(--color-moss);
 	font-size: 0.72rem;
 	font-weight: 800;
 	letter-spacing: 0.14em;
 	text-transform: uppercase;
 }
 .kicker.light {
-	color: #e3d4af;
+	color: var(--color-honey);
 }
 .site-header {
 	@apply border-b border-bark/15 bg-oat text-bark;
@@ -145,7 +154,7 @@ img {
 	height: 2px;
 	content: "";
 	transform: scaleX(0);
-	background: #e3d4af;
+	background: var(--color-honey);
 	transition: transform 0.18s;
 }
 .site-nav > a:hover::after,
@@ -153,10 +162,10 @@ img {
 	transform: scaleX(1);
 }
 .nav-cta {
-	border-radius: 999px;
+	border-radius: var(--radius-pill);
 	padding: 0.72rem 1rem;
-	color: #343d30;
-	background: #e3d4af;
+	color: var(--color-bark);
+	background: var(--color-honey);
 }
 .page-hero h1,
 .stories-page h1 {
@@ -174,18 +183,27 @@ img {
 	justify-content: center;
 	gap: 0.65rem;
 	border: 2px solid transparent;
-	border-radius: 999px;
+	border-radius: var(--radius-pill);
 	padding: 0.7rem 1.25rem;
 	font-size: 0.78rem;
 	font-weight: 800;
 }
 .button.light {
-	color: #343d30;
+	color: var(--color-bark);
 	background: white;
 }
 .button.dark {
 	color: white;
-	background: var(--dark);
+	background: var(--color-bark);
+}
+.button-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 1.5rem;
+}
+.cta {
+	@apply inline-flex items-center gap-2 border-b-2 border-current py-[0.45rem] text-[0.78rem] font-extrabold;
 }
 .split-body h2,
 .contact-card h2 {
@@ -196,7 +214,7 @@ img {
 }
 .contact-card {
 	color: white;
-	background: var(--wine);
+	background: var(--color-moss);
 }
 .page-hero {
 	display: grid;
@@ -208,7 +226,7 @@ img {
 }
 .page-hero > div > p:not(.kicker) {
 	max-width: 620px;
-	color: #68645f;
+	color: var(--color-bark-soft);
 	font-size: 1.05rem;
 	line-height: 1.7;
 }
@@ -233,10 +251,10 @@ img {
 	grid-template-columns: 60px 260px 1fr 40px;
 	align-items: center;
 	gap: 3rem;
-	border-top: 1px solid var(--line);
+	border-top: 1px solid var(--color-line);
 }
 .event-list article:last-child {
-	border-bottom: 1px solid var(--line);
+	border-bottom: 1px solid var(--color-line);
 }
 .event-image {
 	width: 100%;
@@ -252,20 +270,20 @@ img {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
-	color: #706b67;
+	color: var(--color-bark-soft);
 }
 .split-body {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	gap: 6rem;
 	padding-block: 7rem;
-	border-top: 1px solid var(--line);
+	border-top: 1px solid var(--color-line);
 }
 .split-body h2 {
 	font-size: 4.5rem;
 }
 .split-body p {
-	color: #68645f;
+	color: var(--color-bark-soft);
 	font-size: 1.05rem;
 	line-height: 1.75;
 }
@@ -274,8 +292,8 @@ img {
 	grid-template-columns: repeat(3, 1fr);
 	gap: 1px;
 	margin-bottom: 7rem;
-	border: 1px solid var(--line);
-	background: var(--line);
+	border: 1px solid var(--color-line);
+	background: var(--color-line);
 }
 .steps article {
 	min-height: 290px;
@@ -289,7 +307,7 @@ img {
 	place-items: center;
 	border-radius: 50%;
 	color: white;
-	background: var(--wine);
+	background: var(--color-moss);
 	font-weight: 900;
 }
 .steps h2 {
@@ -297,7 +315,7 @@ img {
 	font-size: 2rem;
 }
 .steps p {
-	color: #6d6964;
+	color: var(--color-bark-soft);
 	line-height: 1.65;
 }
 .contact-card {
@@ -326,7 +344,7 @@ img {
 }
 .stories-page > div > p:not(.kicker) {
 	max-width: 600px;
-	color: #686b5d;
+	color: var(--color-bark-soft);
 	line-height: 1.75;
 }
 .story-art {
@@ -349,7 +367,7 @@ img {
 	place-items: center;
 	border-radius: 50%;
 	color: white;
-	background: var(--wine);
+	background: var(--color-moss);
 	font-size: 0.72rem;
 	font-weight: 900;
 	line-height: 1.4;
@@ -370,11 +388,11 @@ img {
 	margin: 3rem 0 1rem;
 }
 .legal p {
-	color: #5f5b57;
+	color: var(--color-bark-soft);
 	line-height: 1.8;
 }
 .legal a:not(.button) {
-	color: var(--wine);
+	color: var(--color-moss);
 	text-decoration: underline;
 }
 .status-page {
@@ -517,7 +535,7 @@ img {
 	display: grid;
 	overflow: hidden;
 	place-items: center;
-	background: #e6ded2;
+	background: var(--color-sand);
 }
 .content-image-fallback > img {
 	width: 82%;
@@ -532,10 +550,10 @@ img {
 	display: inline-flex;
 	align-items: center;
 	gap: 5px;
-	border-radius: 999px;
+	border-radius: var(--radius-pill);
 	padding: 7px 10px;
 	color: white;
-	background: rgb(32 33 38 / 82%);
+	background: color-mix(in srgb, var(--color-bark) 82%, transparent);
 	font-size: 0.62rem;
 	font-weight: 800;
 	letter-spacing: 0.06em;
@@ -549,7 +567,7 @@ img {
 }
 .story-grid > a {
 	display: block;
-	border-top: 1px solid var(--line);
+	border-top: 1px solid var(--color-line);
 	padding-top: 2.5rem;
 }
 .story-grid article {
@@ -573,12 +591,12 @@ img {
 	letter-spacing: -0.04em;
 }
 .story-grid article > p:last-child {
-	color: #686b5d;
+	color: var(--color-bark-soft);
 	line-height: 1.6;
 }
 .honest-empty {
 	margin-bottom: 8rem;
-	border: 1px solid var(--line);
+	border: 1px solid var(--color-line);
 	padding: 4rem;
 	background: white;
 }
@@ -589,7 +607,7 @@ img {
 }
 /* biome-ignore lint/style/noDescendingSpecificity: This selector is unrelated to the earlier event-list rule. */
 .honest-empty p:last-child {
-	color: #686b5d;
+	color: var(--color-bark-soft);
 }
 .story-detail-header h1 {
 	margin: 1rem 0;
@@ -606,7 +624,7 @@ img {
 .story-detail-header > p:last-child {
 	max-width: 700px;
 	margin: 1.5rem auto 0;
-	color: #686b5d;
+	color: var(--color-bark-soft);
 	font-size: 1.1rem;
 	line-height: 1.7;
 }
@@ -621,7 +639,7 @@ img {
 	object-fit: cover;
 }
 .markdown-content {
-	color: #403d39;
+	color: var(--color-bark);
 	font-size: 1.05rem;
 	line-height: 1.8;
 }
@@ -637,7 +655,7 @@ img {
 .markdown-content hr {
 	margin: 3rem 0;
 	border: 0;
-	border-top: 1px solid var(--line);
+	border-top: 1px solid var(--color-line);
 }
 .markdown-content ul,
 .markdown-content ol {
@@ -648,15 +666,15 @@ img {
 }
 .markdown-content blockquote {
 	margin: 2rem 0;
-	border-left: 3px solid var(--wine);
+	border-left: 3px solid var(--color-moss);
 	padding-left: 1.5rem;
-	font-family: Georgia, serif;
+	font-family: var(--font-serif);
 	font-size: 1.25rem;
 }
 .markdown-content code {
 	border-radius: 0.25rem;
 	padding: 0.15rem 0.35rem;
-	background: #e6ded2;
+	background: var(--color-sand);
 }
 .media-gallery {
 	display: grid;
@@ -693,7 +711,7 @@ img {
 	display: grid;
 	overflow: hidden;
 	grid-template-columns: minmax(17rem, 0.75fr) minmax(0, 1.25fr);
-	border: 1px solid var(--line);
+	border: 1px solid var(--color-line);
 	border-radius: 2rem;
 	background: white;
 	transition:
@@ -702,7 +720,7 @@ img {
 }
 .promotion-card:hover {
 	transform: translateY(-4px);
-	box-shadow: 0 24px 70px rgb(52 61 48 / 12%);
+	box-shadow: var(--shadow-hover);
 }
 .promotion-body {
 	display: flex;
@@ -726,7 +744,7 @@ img {
 	gap: 3rem;
 	align-items: end;
 	grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 0.65fr);
-	border-bottom: 1px solid var(--line);
+	border-bottom: 1px solid var(--color-line);
 	padding-bottom: 4rem;
 }
 .donation-focus h1 {
@@ -739,7 +757,7 @@ img {
 .donation-meta {
 	display: grid;
 	gap: 1rem;
-	border-left: 1px solid var(--line);
+	border-left: 1px solid var(--color-line);
 	padding-left: 2rem;
 }
 .donation-meta span {
@@ -748,7 +766,7 @@ img {
 	gap: 0.7rem;
 }
 .donation-meta svg {
-	color: var(--wine);
+	color: var(--color-moss);
 }
 .donation-items-heading {
 	display: flex;
@@ -762,7 +780,7 @@ img {
 	border-radius: 50%;
 	padding: 0.8rem;
 	color: white;
-	background: var(--wine);
+	background: var(--color-moss);
 }
 .donation-items-heading h2 {
 	margin: 0.4rem 0 0;
@@ -774,14 +792,14 @@ img {
 	grid-template-columns: minmax(0, 1fr) auto;
 	align-items: center;
 	gap: clamp(1.5rem, 4vw, 4rem);
-	border-top: 1px solid var(--line);
+	border-top: 1px solid var(--color-line);
 	padding-block: 2rem;
 }
 .donation-item.is-selected {
-	border-color: var(--wine);
+	border-color: var(--color-moss);
 }
 .donation-item:last-child {
-	border-bottom: 1px solid var(--line);
+	border-bottom: 1px solid var(--color-line);
 }
 .donation-item h3 {
 	margin: 0;
@@ -789,30 +807,30 @@ img {
 	letter-spacing: -0.05em;
 }
 .donation-item-body > p {
-	color: #686b5d;
+	color: var(--color-bark-soft);
 	line-height: 1.65;
 }
 .donation-progress {
 	height: 0.55rem;
 	margin-top: 2rem;
 	overflow: hidden;
-	border-radius: 999px;
-	background: #dfd9ce;
+	border-radius: var(--radius-pill);
+	background: var(--color-line);
 }
 .donation-progress span {
 	display: block;
 	height: 100%;
 	border-radius: inherit;
-	background: var(--wine);
+	background: var(--color-moss);
 }
 .donation-remaining strong {
-	color: var(--dark);
+	color: var(--color-bark);
 	font-size: 1.35rem;
 }
 .donation-action {
 	max-width: 46rem;
 	margin: 3rem auto 0;
-	border-top: 2px solid var(--wine);
+	border-top: 2px solid var(--color-moss);
 	padding-top: 2rem;
 }
 .donation-action h3 {

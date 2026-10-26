@@ -6,7 +6,7 @@ import { MediaImage } from "./media-image";
 export function StoryIntroduction({ story }: { story: PublicStory }) {
 	return (
 		<>
-			<header className="mx-auto w-[min(100%_-_2rem,1240px)] story-detail-header">
+			<header className="shell story-detail-header">
 				<p className="kicker">
 					{story.publishedOn ? formatDate(story.publishedOn) : m.story()}
 				</p>
@@ -14,7 +14,7 @@ export function StoryIntroduction({ story }: { story: PublicStory }) {
 				<h1>{story.title}</h1>
 				{story.description ? <p>{story.description}</p> : null}
 			</header>
-			<div className="mx-auto w-[min(100%_-_2rem,1240px)] story-cover">
+			<div className="shell story-cover">
 				<MediaImage
 					src={story.image?.src}
 					alt={story.image?.alt || story.title}

@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 
 export function TeamSection() {
 	return (
-		<section className="mx-auto w-[min(100%_-_2rem,1240px)] grid items-center gap-12 pb-24 lg:grid-cols-[1.3fr_.7fr] lg:pb-36">
+		<section className="shell grid items-center gap-12 pb-24 lg:grid-cols-[1.3fr_.7fr] lg:pb-36">
 			<img
 				className="aspect-[4/3] w-full rounded-3xl object-cover"
 				src="/assets/images/people/leiter.jpg"
@@ -18,12 +18,9 @@ export function TeamSection() {
 				<p className="leading-relaxed text-bark/65">
 					{m.jublawoma_home_team_body()}
 				</p>
-				<Link
-					to="/about"
-					className="mt-5 inline-flex items-center gap-2 border-b-2 border-current py-[0.45rem] text-[0.78rem] font-extrabold"
-				>
+				<Link to="/about" className="cta mt-5">
 					{m.jublawoma_home_team_action()}
-					<ArrowRight size={16} />
+					<ArrowRight size={16} aria-hidden="true" />
 				</Link>
 			</div>
 		</section>

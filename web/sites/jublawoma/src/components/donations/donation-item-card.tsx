@@ -22,8 +22,11 @@ export function DonationItemCard({
 					<span style={{ width: `${Math.min(100, progress)}%` }} />
 				</div>
 				<p className="donation-remaining">
-					<strong>{remaining}</strong> von {quantity} {item.unit}{" "}
-					{m.jublawoma_donation_remaining()}
+					<strong>{remaining}</strong>{" "}
+					{m.jublawoma_donation_remaining({
+						quantity: String(quantity),
+						unit: item.unit,
+					})}
 				</p>
 			</div>
 			{remaining > 0 ? (

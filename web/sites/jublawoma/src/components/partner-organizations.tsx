@@ -32,7 +32,7 @@ const partners = [
 export function PartnerOrganizations() {
 	return (
 		<section className="bg-moss text-oat py-20">
-			<div className="mx-auto w-[min(100%_-_2rem,1240px)]">
+			<div className="shell">
 				<p className="kicker light">{m.jublawoma_about_partners_title()}</p>
 				<div className="mt-8 grid gap-px overflow-hidden rounded-3xl bg-white/20 sm:grid-cols-2 lg:grid-cols-3">
 					{partners.map((partner) => (
@@ -40,7 +40,7 @@ export function PartnerOrganizations() {
 							className="group flex min-h-52 flex-col justify-between bg-moss p-6"
 							href={partner.href}
 							target="_blank"
-							rel="noreferrer"
+							rel="noopener noreferrer"
 							key={partner.name}
 						>
 							<img
@@ -53,6 +53,7 @@ export function PartnerOrganizations() {
 								<ExternalLink
 									className="transition group-hover:translate-x-1"
 									size={18}
+									aria-hidden="true"
 								/>
 							</strong>
 						</a>

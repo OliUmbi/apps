@@ -23,7 +23,6 @@ export interface PublicMember {
 export interface PublicEvent {
 	id: string;
 	title: string;
-	description: string;
 	startsOn: string;
 	endsOn: string;
 	location: string;

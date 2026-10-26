@@ -1,9 +1,10 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Download } from "lucide-react";
+import { calendarPdf } from "../model/links";
 
 export function EventsIntroduction() {
 	return (
-		<section className="page-hero mx-auto w-[min(100%_-_2rem,1240px)]">
+		<section className="page-hero shell">
 			<div>
 				<p className="kicker">{m.jublawoma_events_eyebrow()}</p>
 				<h1>
@@ -14,11 +15,11 @@ export function EventsIntroduction() {
 				<p>{m.jublawoma_events_description()}</p>
 				<a
 					className="button dark"
-					href="/assets/documents/Jahreskalender-Jubla-Woma.pdf"
+					href={calendarPdf}
 					target="_blank"
-					rel="noopener"
+					rel="noopener noreferrer"
 				>
-					<Download size={17} />
+					<Download size={17} aria-hidden="true" />
 					{m.jublawoma_events_download_calendar()}
 				</a>
 			</div>

@@ -1,26 +1,35 @@
 import { Button } from "@base-ui/react/button";
+import type { Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { getLeadership, getMemberPage } from "../data/members";
+import { PaginatedList } from "@oliumbi/ui/paginated-list";
+import { getMemberPage } from "../data/members";
 import type { PublicMember } from "../model/content";
-import { AssetImage } from "./asset-image";
+import { MediaImage } from "./media-image";
 
-export function PublicMembers() {
+export function PublicMembers({
+	leadership,
+	memberPage,
+}: {
+	leadership: PublicMember[] | null;
+	memberPage: Page<PublicMember>;
+}) {
 	return (
-		<section className="mx-auto w-[min(100%_-_2rem,1240px)] pb-20">
-			<Leadership />
-			<MemberList />
+		<section className="shell pb-20">
+			<Leadership members={leadership} />
+			<MemberList initialPage={memberPage} />
 		</section>
 	);
 }
 
-function Leadership() {
-	const query = useQuery({
-		queryKey: ["leadership"],
-		queryFn: () => getLeadership(),
-	});
-	if (query.isError) return <p role="alert">{m.error_generic()}</p>;
-	if (!query.data?.length) return null;
+function Leadership({ members }: { members: PublicMember[] | null }) {
+	// The route loader seeds this list; `null` marks a failed load (J-07).
+	if (members === null)
+		return (
+			<p role="alert" className="mb-16">
+				{m.error_generic()}
+			</p>
+		);
+	if (!members.length) return null;
 
 	return (
 		<div className="mb-16 border-y border-bark/15 py-10 md:grid md:grid-cols-[1fr_2fr] md:gap-10">
@@ -31,7 +40,7 @@ function Leadership() {
 				</h2>
 			</div>
 			<div className="mt-6 grid gap-3 text-2xl font-semibold md:mt-0">
-				{query.data.map((member) => (
+				{members.map((member) => (
 					<p className="m-0" key={member.id}>
 						{member.name}
 					</p>
@@ -41,55 +50,59 @@ function Leadership() {
 	);
 }
 
-function MemberList() {
-	const query = useInfiniteQuery({
-		queryKey: ["members"],
-		initialPageParam: 0,
-		queryFn: ({ pageParam }) =>
-			getMemberPage({
-				data: { page: pageParam },
-			}),
-		getNextPageParam: (page) => page.nextPage,
-	});
-	const members = query.data?.pages.flatMap((page) => page.items) ?? [];
-	if (query.isSuccess && members.length === 0) return null;
-
+function MemberList({ initialPage }: { initialPage: Page<PublicMember> }) {
 	return (
-		<>
-			<h2 className="mb-8 text-4xl font-bold">{m.jublawoma_team_title()}</h2>
-			{query.isPending ? <p role="status">{m.loading()}</p> : null}
-			{query.isError ? <p role="alert">{m.error_generic()}</p> : null}
-			<div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-				{members.map((member) => (
-					<MemberCard key={member.id} member={member} />
-				))}
-			</div>
-			{query.hasNextPage ? (
+		<PaginatedList
+			queryKey={["members"]}
+			initialPage={initialPage}
+			load={(page) => getMemberPage({ data: { page } })}
+			emptyState={null}
+			footer={({ loadMore, isFetchingNextPage }) => (
 				<Button
 					className="button dark mt-8"
-					disabled={query.isFetchingNextPage}
-					onClick={() => void query.fetchNextPage()}
+					disabled={isFetchingNextPage}
+					onClick={loadMore}
 				>
 					{m.load_more()}
 				</Button>
-			) : null}
-		</>
+			)}
+		>
+			{(members) =>
+				members.length === 0 ? null : (
+					<>
+						<h2 className="mb-8 text-4xl font-bold">
+							{m.jublawoma_team_title()}
+						</h2>
+						<div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+							{members.map((member) => (
+								<MemberCard key={member.id} member={member} />
+							))}
+						</div>
+					</>
+				)
+			}
+		</PaginatedList>
 	);
 }
 
 function MemberCard({ member }: { member: PublicMember }) {
 	return (
 		<article>
-			<AssetImage
+			<MediaImage
 				src={member.image?.src}
 				alt={member.image?.alt || member.name}
+				seed={member.id}
 				className="aspect-square rounded-3xl object-cover"
 				sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
 			/>
 			<h3 className="mt-4 text-xl font-bold">{member.name}</h3>
 			<p>
-				{member.groupName}
-				{member.leadership ? ` · ${m.jublawoma_leadership_title()}` : ""}
+				{member.leadership
+					? m.jublawoma_member_line({
+							group: member.groupName,
+							role: m.jublawoma_leadership_title(),
+						})
+					: member.groupName}
 			</p>
 		</article>
 	);

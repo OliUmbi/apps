@@ -11,7 +11,6 @@ function eventFromRecord(record: Event): PublicEvent {
 	return {
 		id: record.id,
 		title: record.name,
-		description: record.description ?? "",
 		startsOn: record.startsOn,
 		endsOn: record.endsOn,
 		location: record.location,

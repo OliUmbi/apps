@@ -1,15 +1,18 @@
 import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute } from "@tanstack/react-router";
 import { getLeadership } from "../data/members";
+import { contactMailto } from "../model/links";
+import { pageHead } from "../model/metadata";
 
 export const Route = createFileRoute("/legal")({
 	loader: () => getLeadership(),
+	head: () => pageHead({ title: m.imprint() }),
 	component: Imprint,
 });
 function Imprint() {
 	const leadership = Route.useLoaderData();
 	return (
-		<section className="mx-auto w-[min(100%_-_2rem,1240px)] legal">
+		<section className="shell legal">
 			<p className="kicker">{m.legal()}</p>
 			<h1>{m.imprint()}</h1>
 			<h2>{m.contact()}</h2>
@@ -21,7 +24,7 @@ function Imprint() {
 				{m.jublawoma_legal_postal_address()}
 			</p>
 			<p>
-				<a href="mailto:scharleitung@jublawoma.ch">{m.jublawoma_email()}</a>
+				<a href={contactMailto}>{m.jublawoma_email()}</a>
 			</p>
 			<h2>{m.jublawoma_legal_leadership_title()}</h2>
 			<p>

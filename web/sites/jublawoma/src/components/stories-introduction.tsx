@@ -1,9 +1,10 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Camera } from "lucide-react";
+import { instagramUrl } from "../model/links";
 
 export function StoriesIntroduction() {
 	return (
-		<section className="mx-auto w-[min(100%_-_2rem,1240px)] stories-page compact">
+		<section className="shell stories-page compact">
 			<div>
 				<p className="kicker">{m.jublawoma_stories_eyebrow()}</p>
 				<h1>
@@ -14,11 +15,11 @@ export function StoriesIntroduction() {
 				<p>{m.jublawoma_stories_description()}</p>
 				<a
 					className="button dark"
-					href="https://www.instagram.com/jubla_woma/"
+					href={instagramUrl}
 					target="_blank"
-					rel="noreferrer"
+					rel="noopener noreferrer"
 				>
-					<Camera size={17} />
+					<Camera size={17} aria-hidden="true" />
 					{m.jublawoma_stories_instagram_updates()}
 				</a>
 			</div>

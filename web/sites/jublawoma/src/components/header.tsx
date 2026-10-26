@@ -3,6 +3,7 @@ import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { registrationFormPdf } from "../model/links";
 
 const links = [
 	{ to: "/donations", label: m.jublawoma_navigation_help },
@@ -30,7 +31,7 @@ export function Header() {
 					aria-expanded={open}
 					aria-label={open ? m.close_menu() : m.open_menu()}
 				>
-					{open ? <X /> : <Menu />}
+					{open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
 				</Dialog.Trigger>
 				<Dialog.Portal>
 					<Dialog.Backdrop className="fixed inset-0 z-50 bg-bark/35" />
@@ -38,7 +39,7 @@ export function Header() {
 						<div className="flex items-center justify-between">
 							<Dialog.Title>{m.menu()}</Dialog.Title>
 							<Dialog.Close aria-label={m.close_menu()} className="p-3">
-								<X />
+								<X aria-hidden="true" />
 							</Dialog.Close>
 						</div>
 						<nav className="grid gap-3 py-4" aria-label={m.mobile_navigation()}>
@@ -54,9 +55,9 @@ export function Header() {
 							))}
 							<a
 								className="nav-cta"
-								href="/assets/documents/Anmeldung-Jubla-Woma.pdf"
+								href={registrationFormPdf}
 								target="_blank"
-								rel="noopener"
+								rel="noopener noreferrer"
 							>
 								{m.jublawoma_navigation_register()}
 							</a>
@@ -76,9 +77,9 @@ export function Header() {
 				))}
 				<a
 					className="nav-cta"
-					href="/assets/documents/Anmeldung-Jubla-Woma.pdf"
+					href={registrationFormPdf}
 					target="_blank"
-					rel="noopener"
+					rel="noopener noreferrer"
 				>
 					{m.jublawoma_navigation_register()}
 				</a>

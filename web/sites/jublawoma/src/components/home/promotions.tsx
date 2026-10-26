@@ -1,28 +1,36 @@
 import { safeLinkHref } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight } from "lucide-react";
-import { getPromotions } from "../../data/promotions";
-import { AssetImage } from "../asset-image";
+import type { PublicPromotion } from "../../model/content";
+import { MediaImage } from "../media-image";
 
-export function Promotions() {
-	const query = useQuery({
-		queryKey: ["promotions"],
-		queryFn: () => getPromotions(),
-	});
-	if (!query.data?.length) return null;
+export function Promotions({
+	promotions,
+}: {
+	promotions: PublicPromotion[] | null;
+}) {
+	// The route loader seeds this list; `null` marks a failed load so the page
+	// degrades to an honest error instead of silently showing nothing (J-07).
+	if (promotions === null)
+		return (
+			<p className="shell pt-8 pb-20 text-center text-bark-soft" role="alert">
+				{m.error_generic()}
+			</p>
+		);
+	if (!promotions.length) return null;
 	return (
-		<div className="mx-auto w-[min(100%_-_2rem,1240px)] pt-8 pb-20">
-			{query.data.map((promotion) => (
+		<div className="shell pt-8 pb-20">
+			{promotions.map((promotion) => (
 				<a
 					key={promotion.id}
 					href={safeLinkHref(promotion.link)}
 					className="promotion-card group"
 				>
 					<div className="min-h-[18rem] bg-sage max-[850px]:min-h-[14rem]">
-						<AssetImage
+						<MediaImage
 							src={promotion.image?.src}
 							alt={promotion.image?.alt || promotion.title}
+							seed={promotion.id}
 							sizes="(min-width: 850px) 38vw, 100vw"
 							className="h-full w-full object-cover"
 						/>

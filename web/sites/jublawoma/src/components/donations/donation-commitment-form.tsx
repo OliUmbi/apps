@@ -46,24 +46,25 @@ export function DonationCommitmentForm({
 								})
 							: null
 				}
-				success={m.jublawoma_donation_success()}
+				success={() => m.jublawoma_donation_success()}
 				submitLabel={m.jublawoma_donation_submit()}
 				fields={[
 					{
 						name: "name",
 						label: m.name(),
+						kind: "text",
 						required: true,
 					},
 					{
 						name: "phone",
 						label: m.phone(),
-						type: "tel",
+						kind: "tel",
 						required: true,
 					},
 					{
 						name: "quantity",
 						label: m.jublawoma_donation_quantity_label({ unit: item.unit }),
-						type: "decimal",
+						kind: "decimal-string",
 						min: step,
 						max: remaining,
 						step,
@@ -72,7 +73,7 @@ export function DonationCommitmentForm({
 					{
 						name: "note",
 						label: m.note(),
-						type: "textarea",
+						kind: "textarea",
 						rows: 2,
 					},
 				]}

@@ -32,7 +32,7 @@ export const Route = createRootRoute({
 				content: m.jublawoma_site_description(),
 			},
 			{ property: "og:type", content: "website" },
-			{ name: "theme-color", content: "#a63848" },
+			{ name: "theme-color", content: "#343d30" },
 		],
 		links: [{ rel: "icon", href: "/assets/images/logos/favicon.ico" }],
 	}),

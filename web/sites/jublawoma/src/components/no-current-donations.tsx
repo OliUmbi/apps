@@ -2,7 +2,7 @@ import { m } from "@oliumbi/i18n/messages";
 
 export function NoCurrentDonations() {
 	return (
-		<header className="mx-auto w-[min(100%_-_2rem,1240px)] page-hero">
+		<header className="shell page-hero">
 			<div>
 				<p className="kicker">{m.jublawoma_donations_eyebrow()}</p>
 				<h1>

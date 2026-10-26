@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 export function JoinSection() {
 	return (
 		<section className="border-y border-bark/15 bg-sage/40 text-bark">
-			<div className="mx-auto w-[min(100%_-_2rem,1240px)] grid min-h-[560px] items-center gap-10 py-16 md:grid-cols-[.8fr_1.2fr]">
+			<div className="shell grid min-h-[560px] items-center gap-10 py-16 md:grid-cols-[.8fr_1.2fr]">
 				<img
 					className="max-h-[460px] w-full object-contain"
 					src="/assets/images/doodles/loving.svg"
@@ -21,7 +21,7 @@ export function JoinSection() {
 					</p>
 					<Link to="/join" className="button dark mt-6">
 						{m.jublawoma_home_join_action()}
-						<ArrowRight size={18} />
+						<ArrowRight size={18} aria-hidden="true" />
 					</Link>
 				</div>
 			</div>

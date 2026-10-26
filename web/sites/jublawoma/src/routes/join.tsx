@@ -1,18 +1,27 @@
 import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute } from "@tanstack/react-router";
 import { Download, Mail } from "lucide-react";
+import { contactMailto, registrationFormPdf } from "../model/links";
+import { pageHead } from "../model/metadata";
 
-export const Route = createFileRoute("/join")({ component: Join });
+export const Route = createFileRoute("/join")({
+	head: () =>
+		pageHead({
+			title: m.jublawoma_navigation_join(),
+			description: m.jublawoma_join_description(),
+		}),
+	component: Join,
+});
 function Join() {
 	return (
 		<>
-			<section className="page-hero mx-auto w-[min(100%_-_2rem,1240px)] join-hero">
+			<section className="page-hero shell">
 				<div>
 					<p className="kicker">{m.jublawoma_join_eyebrow()}</p>
 					<h1>
 						{m.jublawoma_join_title_discover()}
 						<br />
-						<span className="font-[Georgia,serif] font-normal italic text-moss">
+						<span className="font-serif font-normal italic text-moss">
 							{m.jublawoma_join_title_participate()}
 						</span>
 						<br />
@@ -22,7 +31,7 @@ function Join() {
 				</div>
 				<img src="/assets/images/doodles/dog.svg" alt="" />
 			</section>
-			<section className="mx-auto w-[min(100%_-_2rem,1240px)] steps">
+			<section className="shell steps">
 				<article>
 					<span>1</span>
 					<h2>{m.jublawoma_join_contact_title()}</h2>
@@ -39,23 +48,23 @@ function Join() {
 					<p>{m.jublawoma_join_register_body()}</p>
 				</article>
 			</section>
-			<section className="contact-card mx-auto w-[min(100%_-_2rem,1240px)]">
+			<section className="contact-card shell">
 				<img src="/assets/images/doodles/groovy-sitting.svg" alt="" />
 				<div>
 					<p className="kicker light">{m.jublawoma_join_questions_eyebrow()}</p>
 					<h2>{m.jublawoma_join_questions_title()}</h2>
 					<div className="button-row">
-						<a className="button light" href="mailto:scharleitung@jublawoma.ch">
-							<Mail size={17} />
+						<a className="button light" href={contactMailto}>
+							<Mail size={17} aria-hidden="true" />
 							{m.jublawoma_join_contact_leadership()}
 						</a>
 						<a
-							className="inline-flex items-center gap-2 border-b-2 border-current py-[0.45rem] text-[0.78rem] font-extrabold text-white"
-							href="/assets/documents/Anmeldung-Jubla-Woma.pdf"
+							className="cta"
+							href={registrationFormPdf}
 							target="_blank"
-							rel="noopener"
+							rel="noopener noreferrer"
 						>
-							<Download size={16} />
+							<Download size={16} aria-hidden="true" />
 							{m.jublawoma_join_open_registration()}
 						</a>
 					</div>

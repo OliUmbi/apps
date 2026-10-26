@@ -51,7 +51,7 @@ export function MediaImage({
 		>
 			<img src={`/assets/images/doodles/${doodles[index]}`} alt="" />
 			<span>
-				<ImageOff size={14} />
+				<ImageOff size={14} aria-hidden="true" />
 				{m.jublawoma_image_placeholder()}
 			</span>
 		</div>

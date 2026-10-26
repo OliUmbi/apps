@@ -4,7 +4,7 @@ import type { Story } from "@oliumbi/jublawoma-data/content/story";
 import type { StoryImage } from "@oliumbi/jublawoma-data/content/story-image";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import type { PublicStory, StorySummary } from "../model/content";
+import type { ContentImage, PublicStory, StorySummary } from "../model/content";
 import { database } from "../server/database.server";
 import { imageFromId } from "./images";
 
@@ -20,9 +20,15 @@ function storySummaryFromRecord(record: Story): StorySummary {
 }
 function storyFromRecord(record: Story, images: StoryImage[]): PublicStory {
 	const summary = storySummaryFromRecord(record);
-	const gallery = images.map((image) =>
-		imageFromId(image.imageId, image.description),
-	);
+	// One gallery entry per image: an image attached twice would otherwise yield
+	// duplicate React keys and two identical tiles (J-18).
+	const attached = new Set<string>();
+	const gallery: ContentImage[] = [];
+	for (const image of images) {
+		if (attached.has(image.imageId)) continue;
+		attached.add(image.imageId);
+		gallery.push(imageFromId(image.imageId, image.description));
+	}
 	const cover = summary.image ?? gallery[0] ?? null;
 	return {
 		...summary,

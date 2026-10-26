@@ -35,7 +35,7 @@ const values = [
 
 export function ValuesSection() {
 	return (
-		<section className="mx-auto w-[min(100%_-_2rem,1240px)] py-24 lg:py-36">
+		<section className="shell py-24 lg:py-36">
 			<div className="grid items-end gap-4 md:grid-cols-[1fr_2fr]">
 				<p className="kicker">{m.jublawoma_home_values_eyebrow()}</p>
 				<h2 className="m-0 text-[clamp(2.6rem,5vw,5.3rem)] leading-[.95] tracking-[-.06em]">
