@@ -1,10 +1,11 @@
 import type { SiteId } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { contentSections } from "./content-sections";
+import type { StudioSectionId } from "./navigation";
 
 export { type SiteId, siteIds } from "@oliumbi/contracts";
 export interface StudioSection {
-	id: string;
+	id: StudioSectionId;
 	label: string;
 	description: () => string;
 	icon: "home" | "inbox" | "content" | "people" | "commerce" | "newsletter";

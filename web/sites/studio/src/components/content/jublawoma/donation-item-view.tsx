@@ -14,62 +14,69 @@ import {
 	updateDonationItem,
 } from "../../../server/content/jublawoma/donation-item.functions";
 import { TextField } from "../../ui/text-field";
+import type { CollectionProps } from "../collection";
 import type { EditorFieldsProps } from "../content-form";
-import { InlineCollectionView } from "../inline-collection-view";
+import { RelatedCollection } from "../related-collection";
 
-export function DonationItemsView({ donationId }: { donationId: string }) {
-	return (
-		<InlineCollectionView<DonationItem, DonationItemInput>
-			collection="jublawoma.donation_item"
-			title="Spendenbedarf"
-			scope={donationId}
-			rowKey={(record) => record.id}
-			loadPage={(input) =>
-				listDonationItems({ data: { ...input, donationId } })
-			}
-			loadRecord={(id) => getDonationItem({ data: { id } })}
-			remove={(record) => deleteDonationItem({ data: { id: record.id } })}
-			create={(values) => createDonationItem({ data: values })}
-			update={(record, values) =>
-				updateDonationItem({
-					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
-				})
-			}
-			editor={{
+// The needed items of one donation, scoped to it: a related panel inside the
+// donation detail page.
+function donationItemCollection(
+	donationId: string,
+): CollectionProps<DonationItem, DonationItemInput> {
+	return {
+		collection: "jublawoma.donation_item",
+		scope: donationId,
+		title: "Spendenbedarf",
+		rowKey: (record) => record.id,
+		loadPage: (input) => listDonationItems({ data: { ...input, donationId } }),
+		loadRecord: (id) => getDonationItem({ data: { id } }),
+		remove: (record) => deleteDonationItem({ data: { id: record.id } }),
+		capability: {
+			mode: "creatable",
+			editor: {
 				schema: donationItemInputSchema,
 				initialValues: () => newDonationItemInput(donationId),
 				valuesFromRecord: donationItemInputFromRecord,
 				renderFields: (props) => <DonationItemFields {...props} />,
-			}}
-			columns={[
-				{
-					id: "name",
-					heading: m.name(),
-					render: (record) => record.name,
-				},
-				{
-					id: "detail",
-					heading: m.studio_field_detail(),
-					render: (record) => record.detail,
-				},
-				{
-					id: "quantity",
-					heading: m.quantity(),
-					render: (record) => record.quantity,
-				},
-				{
-					id: "step",
-					heading: m.studio_field_step(),
-					render: (record) => record.step,
-				},
-				{
-					id: "unit",
-					heading: m.unit(),
-					render: (record) => record.unit,
-				},
-			]}
-		/>
-	);
+			},
+			create: (values) => createDonationItem({ data: values }),
+			update: (record, values) =>
+				updateDonationItem({
+					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
+				}),
+		},
+		columns: [
+			{
+				id: "name",
+				heading: m.name(),
+				render: (record) => record.name,
+			},
+			{
+				id: "detail",
+				heading: m.studio_field_detail(),
+				render: (record) => record.detail,
+			},
+			{
+				id: "quantity",
+				heading: m.quantity(),
+				render: (record) => record.quantity,
+			},
+			{
+				id: "step",
+				heading: m.studio_field_step(),
+				render: (record) => record.step,
+			},
+			{
+				id: "unit",
+				heading: m.unit(),
+				render: (record) => record.unit,
+			},
+		],
+	};
+}
+
+export function DonationItemsRelated({ donationId }: { donationId: string }) {
+	return <RelatedCollection {...donationItemCollection(donationId)} />;
 }
 
 function DonationItemFields({

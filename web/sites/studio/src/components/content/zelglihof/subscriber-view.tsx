@@ -10,17 +10,37 @@ import { SubscriberActions } from "../../subscriber-actions";
 import { SubscriberInvite } from "../../subscriber-invite";
 import { RecordField, RecordFields } from "../../ui/record-fields";
 import { displayStatus } from "../display";
-import { RoutedCollectionView } from "../routed-collection-view";
+import { PageCollection } from "../page-collection";
 
 export function SubscribersView() {
 	return (
-		<RoutedCollectionView<Subscriber>
+		<PageCollection<Subscriber>
 			collection="zelglihof.subscriber"
 			title="Abonnenten"
 			rowKey={(record) => record.id}
 			loadPage={(input) => listSubscribers({ data: input })}
 			loadRecord={(id) => getSubscriber({ data: { id } })}
 			remove={(record) => deleteSubscriber({ data: { id: record.id } })}
+			capability={{
+				mode: "read-only",
+				renderDetails: (record) => (
+					<RecordFields>
+						<RecordField label={m.email()}>{record.email}</RecordField>
+						<RecordField label={m.status()}>
+							{displayStatus(record.status)}
+						</RecordField>
+						<RecordField label={m.studio_field_requested_at()}>
+							{formatTimestamp(record.requestedAt)}
+						</RecordField>
+						<RecordField label={m.studio_field_confirmed_at()}>
+							{formatTimestamp(record.confirmedAt)}
+						</RecordField>
+						<RecordField label={m.studio_field_unsubscribed_at()}>
+							{formatTimestamp(record.unsubscribedAt)}
+						</RecordField>
+					</RecordFields>
+				),
+			}}
 			columns={[
 				{
 					id: "email",
@@ -38,23 +58,6 @@ export function SubscribersView() {
 					render: (record) => formatTimestamp(record.confirmedAt),
 				},
 			]}
-			renderDetails={(record) => (
-				<RecordFields>
-					<RecordField label={m.email()}>{record.email}</RecordField>
-					<RecordField label={m.status()}>
-						{displayStatus(record.status)}
-					</RecordField>
-					<RecordField label={m.studio_field_requested_at()}>
-						{formatTimestamp(record.requestedAt)}
-					</RecordField>
-					<RecordField label={m.studio_field_confirmed_at()}>
-						{formatTimestamp(record.confirmedAt)}
-					</RecordField>
-					<RecordField label={m.studio_field_unsubscribed_at()}>
-						{formatTimestamp(record.unsubscribedAt)}
-					</RecordField>
-				</RecordFields>
-			)}
 			introduction={<SubscriberInvite />}
 			renderActions={(record) => (
 				<SubscriberActions key={record.id} subscriber={record} />

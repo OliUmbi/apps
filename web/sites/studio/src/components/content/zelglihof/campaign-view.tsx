@@ -18,29 +18,46 @@ import { RecordField, RecordFields } from "../../ui/record-fields";
 import { TextField } from "../../ui/text-field";
 import type { EditorFieldsProps } from "../content-form";
 import { displayStatus } from "../display";
-import { RoutedCollectionView } from "../routed-collection-view";
+import { PageCollection } from "../page-collection";
 
 export function CampaignsView() {
 	return (
-		<RoutedCollectionView<Campaign, CampaignInput>
+		<PageCollection<Campaign, CampaignInput>
 			collection="zelglihof.campaign"
 			title="Kampagnen"
 			rowKey={(record) => record.id}
 			loadPage={(input) => listCampaigns({ data: input })}
 			loadRecord={(id) => getCampaign({ data: { id } })}
 			remove={(record) => deleteCampaign({ data: { id: record.id } })}
-			create={(values) => createCampaign({ data: values })}
-			update={(record, values) =>
-				updateCampaign({
-					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
-				})
-			}
-			canEdit={(record) => record.status === "draft"}
-			editor={{
-				schema: campaignInputSchema,
-				initialValues: newCampaignInput,
-				valuesFromRecord: campaignInputFromRecord,
-				renderFields: (props) => <CampaignFields {...props} />,
+			capability={{
+				mode: "creatable",
+				editor: {
+					schema: campaignInputSchema,
+					initialValues: newCampaignInput,
+					valuesFromRecord: campaignInputFromRecord,
+					renderFields: (props) => <CampaignFields {...props} />,
+				},
+				create: (values) => createCampaign({ data: values }),
+				update: (record, values) =>
+					updateCampaign({
+						data: {
+							key: { id: record.id },
+							values,
+							updatedAt: record.updatedAt,
+						},
+					}),
+				fallback: {
+					canEdit: (record) => record.status === "draft",
+					renderDetails: (record) => (
+						<RecordFields>
+							<RecordField label={m.subject()}>{record.subject}</RecordField>
+							<RecordField label={m.body()}>{record.body}</RecordField>
+							<RecordField label={m.status()}>
+								{displayStatus(record.status)}
+							</RecordField>
+						</RecordFields>
+					),
+				},
 			}}
 			columns={[
 				{
@@ -54,15 +71,6 @@ export function CampaignsView() {
 					render: (record) => displayStatus(record.status),
 				},
 			]}
-			renderDetails={(record) => (
-				<RecordFields>
-					<RecordField label={m.subject()}>{record.subject}</RecordField>
-					<RecordField label={m.body()}>{record.body}</RecordField>
-					<RecordField label={m.status()}>
-						{displayStatus(record.status)}
-					</RecordField>
-				</RecordFields>
-			)}
 			renderActions={(record) =>
 				record.status === "draft" ? <CampaignSend id={record.id} /> : null
 			}

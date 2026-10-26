@@ -18,30 +18,36 @@ import { DateField } from "../../ui/date-field";
 import { TextField } from "../../ui/text-field";
 import type { EditorFieldsProps } from "../content-form";
 
-import { RoutedCollectionView } from "../routed-collection-view";
-import { DonationCommitmentsView } from "./donation-commitment-view";
-import { DonationItemsView } from "./donation-item-view";
+import { PageCollection } from "../page-collection";
+import { DonationCommitmentsRelated } from "./donation-commitment-view";
+import { DonationItemsRelated } from "./donation-item-view";
 
 export function DonationsView() {
 	return (
-		<RoutedCollectionView<Donation, DonationInput>
+		<PageCollection<Donation, DonationInput>
 			collection="jublawoma.donation"
 			title="Spendenaktionen"
 			rowKey={(record) => record.id}
 			loadPage={(input) => listDonations({ data: input })}
 			loadRecord={(id) => getDonation({ data: { id } })}
 			remove={(record) => deleteDonation({ data: { id: record.id } })}
-			create={(values) => createDonation({ data: values })}
-			update={(record, values) =>
-				updateDonation({
-					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
-				})
-			}
-			editor={{
-				schema: donationInputSchema,
-				initialValues: newDonationInput,
-				valuesFromRecord: donationInputFromRecord,
-				renderFields: (props) => <DonationFields {...props} />,
+			capability={{
+				mode: "creatable",
+				editor: {
+					schema: donationInputSchema,
+					initialValues: newDonationInput,
+					valuesFromRecord: donationInputFromRecord,
+					renderFields: (props) => <DonationFields {...props} />,
+				},
+				create: (values) => createDonation({ data: values }),
+				update: (record, values) =>
+					updateDonation({
+						data: {
+							key: { id: record.id },
+							values,
+							updatedAt: record.updatedAt,
+						},
+					}),
 			}}
 			columns={[
 				{
@@ -67,11 +73,11 @@ export function DonationsView() {
 			]}
 			renderRelated={(record) => (
 				<div className="grid gap-4">
-					<DonationItemsView
+					<DonationItemsRelated
 						key={`donation_item:${record.id}`}
 						donationId={record.id}
 					/>
-					<DonationCommitmentsView
+					<DonationCommitmentsRelated
 						key={`donation_commitment:${record.id}`}
 						donationId={record.id}
 					/>

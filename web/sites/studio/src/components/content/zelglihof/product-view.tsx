@@ -20,30 +20,36 @@ import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { CheckboxField } from "../editor-controls";
 import { ImageField } from "../image-field";
-import { RoutedCollectionView } from "../routed-collection-view";
-import { ProductReservationsView } from "./product-reservation-view";
-import { ProductVariantsView } from "./product-variant-view";
+import { PageCollection } from "../page-collection";
+import { ProductReservationsRelated } from "./product-reservation-view";
+import { ProductVariantsRelated } from "./product-variant-view";
 
 export function ProductsView() {
 	return (
-		<RoutedCollectionView<Product, ProductInput>
+		<PageCollection<Product, ProductInput>
 			collection="zelglihof.product"
 			title="Produkte"
 			rowKey={(record) => record.id}
 			loadPage={(input) => listProducts({ data: input })}
 			loadRecord={(id) => getProduct({ data: { id } })}
 			remove={(record) => deleteProduct({ data: { id: record.id } })}
-			create={(values) => createProduct({ data: values })}
-			update={(record, values) =>
-				updateProduct({
-					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
-				})
-			}
-			editor={{
-				schema: productInputSchema,
-				initialValues: newProductInput,
-				valuesFromRecord: productInputFromRecord,
-				renderFields: (props) => <ProductFields {...props} />,
+			capability={{
+				mode: "creatable",
+				editor: {
+					schema: productInputSchema,
+					initialValues: newProductInput,
+					valuesFromRecord: productInputFromRecord,
+					renderFields: (props) => <ProductFields {...props} />,
+				},
+				create: (values) => createProduct({ data: values }),
+				update: (record, values) =>
+					updateProduct({
+						data: {
+							key: { id: record.id },
+							values,
+							updatedAt: record.updatedAt,
+						},
+					}),
 			}}
 			columns={[
 				{
@@ -76,11 +82,11 @@ export function ProductsView() {
 			]}
 			renderRelated={(record) => (
 				<div className="grid gap-4">
-					<ProductVariantsView
+					<ProductVariantsRelated
 						key={`product_variant:${record.id}`}
 						productId={record.id}
 					/>
-					<ProductReservationsView
+					<ProductReservationsRelated
 						key={`product_reservation:${record.id}`}
 						productId={record.id}
 					/>

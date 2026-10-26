@@ -7,6 +7,7 @@ import {
 	ShoppingBasket,
 	Users,
 } from "lucide-react";
+import type { StudioSectionId } from "../model/navigation";
 import type { StudioSite } from "../model/sites";
 import { Nav, NavItem, NavSection } from "./ui/nav";
 
@@ -25,8 +26,8 @@ export function SiteNavigation({
 	onSelect,
 }: {
 	site: StudioSite;
-	section: string;
-	onSelect: (section: string) => void;
+	section: StudioSectionId;
+	onSelect: (section: StudioSectionId) => void;
 }) {
 	return (
 		<Nav label={site.name}>

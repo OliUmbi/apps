@@ -18,27 +18,33 @@ import { RecordField, RecordFields } from "../../ui/record-fields";
 import type { EditorFieldsProps } from "../content-form";
 import { displayStatus } from "../display";
 import { StatusField } from "../editor-controls";
-import { RoutedCollectionView } from "../routed-collection-view";
+import { PageCollection } from "../page-collection";
 
 export function InquiriesView() {
 	return (
-		<RoutedCollectionView<Inquiry, InquiryInput>
+		<PageCollection<Inquiry, InquiryInput>
 			collection="unclet.inquiry"
 			title="Anfragen"
 			rowKey={(record) => record.id}
 			loadPage={(input) => listInquiries({ data: input })}
 			loadRecord={(id) => getInquiry({ data: { id } })}
 			remove={(record) => deleteInquiry({ data: { id: record.id } })}
-			update={(record, values) =>
-				updateInquiry({
-					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
-				})
-			}
-			editor={{
-				schema: inquiryInputSchema,
-				initialValues: newInquiryInput,
-				valuesFromRecord: inquiryInputFromRecord,
-				renderFields: (props) => <InquiryFields {...props} />,
+			capability={{
+				mode: "editable",
+				editor: {
+					schema: inquiryInputSchema,
+					initialValues: newInquiryInput,
+					valuesFromRecord: inquiryInputFromRecord,
+					renderFields: (props) => <InquiryFields {...props} />,
+				},
+				update: (record, values) =>
+					updateInquiry({
+						data: {
+							key: { id: record.id },
+							values,
+							updatedAt: record.updatedAt,
+						},
+					}),
 			}}
 			columns={[
 				{

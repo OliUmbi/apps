@@ -20,30 +20,36 @@ import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { CheckboxField } from "../editor-controls";
 import { ImageField } from "../image-field";
-import { RoutedCollectionView } from "../routed-collection-view";
+import { PageCollection } from "../page-collection";
 import { SlugField } from "../slug-field";
-import { ArticleImagesView } from "./article-image-view";
+import { ArticleImagesRelated } from "./article-image-view";
 
 export function ArticlesView() {
 	return (
-		<RoutedCollectionView<Article, ArticleInput>
+		<PageCollection<Article, ArticleInput>
 			collection="zelglihof.article"
 			title="Aktuelles"
 			rowKey={(record) => record.id}
 			loadPage={(input) => listArticles({ data: input })}
 			loadRecord={(id) => getArticle({ data: { id } })}
 			remove={(record) => deleteArticle({ data: { id: record.id } })}
-			create={(values) => createArticle({ data: values })}
-			update={(record, values) =>
-				updateArticle({
-					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
-				})
-			}
-			editor={{
-				schema: articleInputSchema,
-				initialValues: newArticleInput,
-				valuesFromRecord: articleInputFromRecord,
-				renderFields: (props) => <ArticleFields {...props} />,
+			capability={{
+				mode: "creatable",
+				editor: {
+					schema: articleInputSchema,
+					initialValues: newArticleInput,
+					valuesFromRecord: articleInputFromRecord,
+					renderFields: (props) => <ArticleFields {...props} />,
+				},
+				create: (values) => createArticle({ data: values }),
+				update: (record, values) =>
+					updateArticle({
+						data: {
+							key: { id: record.id },
+							values,
+							updatedAt: record.updatedAt,
+						},
+					}),
 			}}
 			columns={[
 				{
@@ -71,7 +77,7 @@ export function ArticlesView() {
 			]}
 			renderRelated={(record) => (
 				<div className="grid gap-4">
-					<ArticleImagesView
+					<ArticleImagesRelated
 						key={`article_image:${record.id}`}
 						articleId={record.id}
 					/>

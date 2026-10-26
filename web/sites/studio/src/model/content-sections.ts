@@ -37,6 +37,13 @@ export const contentSections = [
 		icon: "commerce",
 	},
 	{
+		id: "jublawoma.donation_commitment",
+		site: "jublawoma",
+		label: "Spendenzusagen",
+		description: m.studio_overview_commerce,
+		icon: "commerce",
+	},
+	{
 		id: "unclet.showcase",
 		site: "unclet",
 		label: "Einblicke",

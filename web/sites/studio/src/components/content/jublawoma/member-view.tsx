@@ -18,28 +18,34 @@ import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { CheckboxField } from "../editor-controls";
 import { ImageField } from "../image-field";
-import { RoutedCollectionView } from "../routed-collection-view";
+import { PageCollection } from "../page-collection";
 
 export function MembersView() {
 	return (
-		<RoutedCollectionView<Member, MemberInput>
+		<PageCollection<Member, MemberInput>
 			collection="jublawoma.member"
 			title="Leitungsteam"
 			rowKey={(record) => record.id}
 			loadPage={(input) => listMembers({ data: input })}
 			loadRecord={(id) => getMember({ data: { id } })}
 			remove={(record) => deleteMember({ data: { id: record.id } })}
-			create={(values) => createMember({ data: values })}
-			update={(record, values) =>
-				updateMember({
-					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
-				})
-			}
-			editor={{
-				schema: memberInputSchema,
-				initialValues: newMemberInput,
-				valuesFromRecord: memberInputFromRecord,
-				renderFields: (props) => <MemberFields {...props} />,
+			capability={{
+				mode: "creatable",
+				editor: {
+					schema: memberInputSchema,
+					initialValues: newMemberInput,
+					valuesFromRecord: memberInputFromRecord,
+					renderFields: (props) => <MemberFields {...props} />,
+				},
+				create: (values) => createMember({ data: values }),
+				update: (record, values) =>
+					updateMember({
+						data: {
+							key: { id: record.id },
+							values,
+							updatedAt: record.updatedAt,
+						},
+					}),
 			}}
 			columns={[
 				{

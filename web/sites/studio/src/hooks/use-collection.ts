@@ -11,6 +11,7 @@ import {
 } from "@tanstack/react-query";
 import { useState } from "react";
 import type {
+	CollectionEditing,
 	CollectionNavigation,
 	CollectionSource,
 } from "../model/collection";
@@ -36,7 +37,7 @@ export function useCollection<Row, Input>(
 		create,
 		update,
 		remove,
-	}: CollectionSource<Row, Input>,
+	}: CollectionSource<Row> & CollectionEditing<Row, Input>,
 	navigation: CollectionNavigation<Row>,
 	search: string,
 ) {

@@ -1,19 +1,21 @@
 import { useState } from "react";
 import type { CollectionSelection } from "../../model/collection";
-import { CollectionView, type CollectionViewProps } from "./collection-view";
+import { Title } from "../ui/text";
+import { Collection, type CollectionProps } from "./collection";
 
-export function InlineCollectionView<Row, Input = never>(
-	props: CollectionViewProps<Row, Input>,
+// The related page type: an inline panel inside a detail page, with its own
+// local selection state and a subheading instead of the page header.
+export function RelatedCollection<Row, Input = never>(
+	props: CollectionProps<Row, Input>,
 ) {
 	const [search, setSearch] = useState("");
 	const [selection, setSelection] = useState<CollectionSelection<Row>>({
 		mode: "list",
 	});
 	return (
-		<CollectionView
+		<Collection
 			{...props}
 			key={selection.mode === "detail" ? selection.id : selection.mode}
-			inline
 			search={search}
 			onSearchChange={setSearch}
 			navigation={{
@@ -27,6 +29,14 @@ export function InlineCollectionView<Row, Input = never>(
 						record: props.loadRecord ? undefined : record,
 					}),
 			}}
+			renderHeader={(title, actions) => (
+				<header className="flex items-center justify-between gap-4">
+					<Title as="h3" size="sm">
+						{title}
+					</Title>
+					<div className="flex flex-wrap gap-2">{actions}</div>
+				</header>
+			)}
 		/>
 	);
 }

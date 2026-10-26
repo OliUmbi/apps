@@ -16,28 +16,34 @@ import {
 import { TextField } from "../../ui/text-field";
 import type { EditorFieldsProps } from "../content-form";
 import { CheckboxField, NumberField } from "../editor-controls";
-import { RoutedCollectionView } from "../routed-collection-view";
+import { PageCollection } from "../page-collection";
 
 export function ReviewsView() {
 	return (
-		<RoutedCollectionView<Review, ReviewInput>
+		<PageCollection<Review, ReviewInput>
 			collection="unclet.review"
 			title="Bewertungen"
 			rowKey={(record) => record.id}
 			loadPage={(input) => listReviews({ data: input })}
 			loadRecord={(id) => getReview({ data: { id } })}
 			remove={(record) => deleteReview({ data: { id: record.id } })}
-			create={(values) => createReview({ data: values })}
-			update={(record, values) =>
-				updateReview({
-					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
-				})
-			}
-			editor={{
-				schema: reviewInputSchema,
-				initialValues: newReviewInput,
-				valuesFromRecord: reviewInputFromRecord,
-				renderFields: (props) => <ReviewFields {...props} />,
+			capability={{
+				mode: "creatable",
+				editor: {
+					schema: reviewInputSchema,
+					initialValues: newReviewInput,
+					valuesFromRecord: reviewInputFromRecord,
+					renderFields: (props) => <ReviewFields {...props} />,
+				},
+				create: (values) => createReview({ data: values }),
+				update: (record, values) =>
+					updateReview({
+						data: {
+							key: { id: record.id },
+							values,
+							updatedAt: record.updatedAt,
+						},
+					}),
 			}}
 			columns={[
 				{

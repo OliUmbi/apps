@@ -20,30 +20,36 @@ import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { CheckboxField } from "../editor-controls";
 import { ImageField } from "../image-field";
-import { RoutedCollectionView } from "../routed-collection-view";
+import { PageCollection } from "../page-collection";
 import { SlugField } from "../slug-field";
-import { StoryImagesView } from "./story-image-view";
+import { StoryImagesRelated } from "./story-image-view";
 
 export function StoriesView() {
 	return (
-		<RoutedCollectionView<Story, StoryInput>
+		<PageCollection<Story, StoryInput>
 			collection="jublawoma.story"
 			title="Geschichten"
 			rowKey={(record) => record.id}
 			loadPage={(input) => listStories({ data: input })}
 			loadRecord={(id) => getStory({ data: { id } })}
 			remove={(record) => deleteStory({ data: { id: record.id } })}
-			create={(values) => createStory({ data: values })}
-			update={(record, values) =>
-				updateStory({
-					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
-				})
-			}
-			editor={{
-				schema: storyInputSchema,
-				initialValues: newStoryInput,
-				valuesFromRecord: storyInputFromRecord,
-				renderFields: (props) => <StoryFields {...props} />,
+			capability={{
+				mode: "creatable",
+				editor: {
+					schema: storyInputSchema,
+					initialValues: newStoryInput,
+					valuesFromRecord: storyInputFromRecord,
+					renderFields: (props) => <StoryFields {...props} />,
+				},
+				create: (values) => createStory({ data: values }),
+				update: (record, values) =>
+					updateStory({
+						data: {
+							key: { id: record.id },
+							values,
+							updatedAt: record.updatedAt,
+						},
+					}),
 			}}
 			columns={[
 				{
@@ -76,7 +82,7 @@ export function StoriesView() {
 			]}
 			renderRelated={(record) => (
 				<div className="grid gap-4">
-					<StoryImagesView
+					<StoryImagesRelated
 						key={`story_image:${record.id}`}
 						storyId={record.id}
 					/>

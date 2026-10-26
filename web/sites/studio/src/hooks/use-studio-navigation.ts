@@ -3,20 +3,18 @@ import type {
 	StudioSearch,
 	StudioWorkspace,
 } from "../model/navigation";
-import { Route } from "../routes/index";
+import { useStudioSearch } from "./use-studio-search";
 
 export function useStudioNavigation(
 	workspace: StudioWorkspace,
 ): StudioNavigation {
-	const navigate = Route.useNavigate();
+	const { navigate } = useStudioSearch();
 	const { site, area } = workspace;
 
 	function openSection(
 		destination: Pick<StudioSearch, "site" | "area" | "section">,
 	) {
-		void navigate({
-			search: { ...destination, mode: "list", record: undefined },
-		});
+		navigate({ ...destination, mode: "list", record: undefined });
 	}
 
 	return {

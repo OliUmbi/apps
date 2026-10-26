@@ -19,28 +19,34 @@ import { TextField } from "../../ui/text-field";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { ImageField } from "../image-field";
-import { RoutedCollectionView } from "../routed-collection-view";
+import { PageCollection } from "../page-collection";
 
 export function PromotionsView() {
 	return (
-		<RoutedCollectionView<Promotion, PromotionInput>
+		<PageCollection<Promotion, PromotionInput>
 			collection="zelglihof.promotion"
 			title="Promotionen"
 			rowKey={(record) => record.id}
 			loadPage={(input) => listPromotions({ data: input })}
 			loadRecord={(id) => getPromotion({ data: { id } })}
 			remove={(record) => deletePromotion({ data: { id: record.id } })}
-			create={(values) => createPromotion({ data: values })}
-			update={(record, values) =>
-				updatePromotion({
-					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
-				})
-			}
-			editor={{
-				schema: promotionInputSchema,
-				initialValues: newPromotionInput,
-				valuesFromRecord: promotionInputFromRecord,
-				renderFields: (props) => <PromotionFields {...props} />,
+			capability={{
+				mode: "creatable",
+				editor: {
+					schema: promotionInputSchema,
+					initialValues: newPromotionInput,
+					valuesFromRecord: promotionInputFromRecord,
+					renderFields: (props) => <PromotionFields {...props} />,
+				},
+				create: (values) => createPromotion({ data: values }),
+				update: (record, values) =>
+					updatePromotion({
+						data: {
+							key: { id: record.id },
+							values,
+							updatedAt: record.updatedAt,
+						},
+					}),
 			}}
 			columns={[
 				{

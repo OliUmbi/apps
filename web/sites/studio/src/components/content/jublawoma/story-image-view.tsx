@@ -13,56 +13,65 @@ import {
 	updateStoryImage,
 } from "../../../server/content/jublawoma/story-image.functions";
 import { TextField } from "../../ui/text-field";
+import type { CollectionProps } from "../collection";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { ImageField } from "../image-field";
-import { InlineCollectionView } from "../inline-collection-view";
+import { RelatedCollection } from "../related-collection";
 
-export function StoryImagesView({ storyId }: { storyId: string }) {
-	return (
-		<InlineCollectionView<StoryImage, StoryImageInput>
-			collection="jublawoma.story_image"
-			title="Geschichtenbilder"
-			scope={storyId}
-			rowKey={(record) => [record.storyId, record.imageId].join(":")}
-			loadPage={(input) => listStoryImages({ data: { ...input, storyId } })}
-			remove={(record) =>
-				deleteStoryImage({
-					data: { storyId: record.storyId, imageId: record.imageId },
-				})
-			}
-			create={(values) => createStoryImage({ data: values })}
-			update={(record, values) =>
+// The images of one story, scoped to it: a related panel inside the story
+// detail page. The rows carry no loadRecord, so opening one keeps the list
+// snapshot as its detail data.
+function storyImageCollection(
+	storyId: string,
+): CollectionProps<StoryImage, StoryImageInput> {
+	return {
+		collection: "jublawoma.story_image",
+		scope: storyId,
+		title: "Geschichtenbilder",
+		rowKey: (record) => [record.storyId, record.imageId].join(":"),
+		loadPage: (input) => listStoryImages({ data: { ...input, storyId } }),
+		remove: (record) =>
+			deleteStoryImage({
+				data: { storyId: record.storyId, imageId: record.imageId },
+			}),
+		capability: {
+			mode: "creatable",
+			editor: {
+				schema: storyImageInputSchema,
+				initialValues: () => newStoryImageInput(storyId),
+				valuesFromRecord: storyImageInputFromRecord,
+				renderFields: (props) => <StoryImageFields {...props} />,
+			},
+			create: (values) => createStoryImage({ data: values }),
+			update: (record, values) =>
 				updateStoryImage({
 					data: {
 						key: { storyId: record.storyId, imageId: record.imageId },
 						values,
 						updatedAt: record.updatedAt,
 					},
-				})
-			}
-			editor={{
-				schema: storyImageInputSchema,
-				initialValues: () => newStoryImageInput(storyId),
-				valuesFromRecord: storyImageInputFromRecord,
-				renderFields: (props) => <StoryImageFields {...props} />,
-			}}
-			columns={[
-				{
-					id: "imageId",
-					heading: m.image(),
-					render: (record) => (
-						<ImageThumbnail site="jublawoma" id={record.imageId} />
-					),
-				},
-				{
-					id: "description",
-					heading: m.description(),
-					render: (record) => record.description,
-				},
-			]}
-		/>
-	);
+				}),
+		},
+		columns: [
+			{
+				id: "imageId",
+				heading: m.image(),
+				render: (record) => (
+					<ImageThumbnail site="jublawoma" id={record.imageId} />
+				),
+			},
+			{
+				id: "description",
+				heading: m.description(),
+				render: (record) => record.description,
+			},
+		],
+	};
+}
+
+export function StoryImagesRelated({ storyId }: { storyId: string }) {
+	return <RelatedCollection {...storyImageCollection(storyId)} />;
 }
 
 function StoryImageFields({

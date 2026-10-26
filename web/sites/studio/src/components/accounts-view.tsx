@@ -1,13 +1,12 @@
-import { Route } from "../routes/index";
+import { useStudioSearch } from "../hooks/use-studio-search";
 import { AccountList } from "./accounts/account-list";
 import { AccountWorkspace } from "./accounts/account-workspace";
 import { CreateAccountForm } from "./accounts/create-account-form";
 
 export function AccountsView() {
-	const search = Route.useSearch();
-	const navigate = Route.useNavigate();
+	const { search, navigate } = useStudioSearch();
 	function select(mode: "list" | "create" | "detail", record?: string) {
-		void navigate({ search: { ...search, mode, record } });
+		navigate({ ...search, mode, record });
 	}
 	if (search.mode === "create") {
 		return (

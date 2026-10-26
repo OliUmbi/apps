@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 import type { ContentSection } from "../../model/content-sections";
+import { DonationCommitmentsView as JublawomaDonationCommitmentsView } from "./jublawoma/donation-commitment-view";
 import { DonationsView as JublawomaDonationsView } from "./jublawoma/donation-view";
 import { EventsView as JublawomaEventsView } from "./jublawoma/event-view";
 import { MembersView as JublawomaMembersView } from "./jublawoma/member-view";
@@ -22,6 +23,7 @@ const contentViews = {
 	"jublawoma.event": JublawomaEventsView,
 	"jublawoma.member": JublawomaMembersView,
 	"jublawoma.donation": JublawomaDonationsView,
+	"jublawoma.donation_commitment": JublawomaDonationCommitmentsView,
 	"unclet.showcase": UncletShowcasesView,
 	"unclet.review": UncletReviewsView,
 	"unclet.inquiry": UncletInquiriesView,

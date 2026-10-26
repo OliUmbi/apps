@@ -8,6 +8,7 @@ import {
 	ShoppingBasket,
 	Users,
 } from "lucide-react";
+import type { StudioSectionId } from "../model/navigation";
 import type { StudioSite } from "../model/sites";
 
 export function SiteOverview({
@@ -15,7 +16,7 @@ export function SiteOverview({
 	onSelectSection,
 }: {
 	site: StudioSite;
-	onSelectSection: (section: string) => void;
+	onSelectSection: (section: StudioSectionId) => void;
 }) {
 	return (
 		<div className="grid gap-8">

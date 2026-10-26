@@ -13,58 +13,65 @@ import {
 	updateShowcaseImage,
 } from "../../../server/content/unclet/showcase-image.functions";
 import { TextField } from "../../ui/text-field";
+import type { CollectionProps } from "../collection";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { ImageField } from "../image-field";
-import { InlineCollectionView } from "../inline-collection-view";
+import { RelatedCollection } from "../related-collection";
 
-export function ShowcaseImagesView({ showcaseId }: { showcaseId: string }) {
-	return (
-		<InlineCollectionView<ShowcaseImage, ShowcaseImageInput>
-			collection="unclet.showcase_image"
-			title="Einblickbilder"
-			scope={showcaseId}
-			rowKey={(record) => [record.showcaseId, record.imageId].join(":")}
-			loadPage={(input) =>
-				listShowcaseImages({ data: { ...input, showcaseId } })
-			}
-			remove={(record) =>
-				deleteShowcaseImage({
-					data: { showcaseId: record.showcaseId, imageId: record.imageId },
-				})
-			}
-			create={(values) => createShowcaseImage({ data: values })}
-			update={(record, values) =>
+// The images of one showcase, scoped to it: a related panel inside the
+// showcase detail page. The rows carry no loadRecord, so opening one keeps
+// the list snapshot as its detail data.
+function showcaseImageCollection(
+	showcaseId: string,
+): CollectionProps<ShowcaseImage, ShowcaseImageInput> {
+	return {
+		collection: "unclet.showcase_image",
+		scope: showcaseId,
+		title: "Einblickbilder",
+		rowKey: (record) => [record.showcaseId, record.imageId].join(":"),
+		loadPage: (input) => listShowcaseImages({ data: { ...input, showcaseId } }),
+		remove: (record) =>
+			deleteShowcaseImage({
+				data: { showcaseId: record.showcaseId, imageId: record.imageId },
+			}),
+		capability: {
+			mode: "creatable",
+			editor: {
+				schema: showcaseImageInputSchema,
+				initialValues: () => newShowcaseImageInput(showcaseId),
+				valuesFromRecord: showcaseImageInputFromRecord,
+				renderFields: (props) => <ShowcaseImageFields {...props} />,
+			},
+			create: (values) => createShowcaseImage({ data: values }),
+			update: (record, values) =>
 				updateShowcaseImage({
 					data: {
 						key: { showcaseId: record.showcaseId, imageId: record.imageId },
 						values,
 						updatedAt: record.updatedAt,
 					},
-				})
-			}
-			editor={{
-				schema: showcaseImageInputSchema,
-				initialValues: () => newShowcaseImageInput(showcaseId),
-				valuesFromRecord: showcaseImageInputFromRecord,
-				renderFields: (props) => <ShowcaseImageFields {...props} />,
-			}}
-			columns={[
-				{
-					id: "imageId",
-					heading: m.image(),
-					render: (record) => (
-						<ImageThumbnail site="unclet" id={record.imageId} />
-					),
-				},
-				{
-					id: "description",
-					heading: m.description(),
-					render: (record) => record.description,
-				},
-			]}
-		/>
-	);
+				}),
+		},
+		columns: [
+			{
+				id: "imageId",
+				heading: m.image(),
+				render: (record) => (
+					<ImageThumbnail site="unclet" id={record.imageId} />
+				),
+			},
+			{
+				id: "description",
+				heading: m.description(),
+				render: (record) => record.description,
+			},
+		],
+	};
+}
+
+export function ShowcaseImagesRelated({ showcaseId }: { showcaseId: string }) {
+	return <RelatedCollection {...showcaseImageCollection(showcaseId)} />;
 }
 
 function ShowcaseImageFields({

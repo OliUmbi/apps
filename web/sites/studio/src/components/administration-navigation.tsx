@@ -1,10 +1,11 @@
 import { Button } from "@base-ui/react/button";
 import { m } from "@oliumbi/i18n/messages";
 import { ArrowLeft, type LucideIcon, Mail, Users } from "lucide-react";
+import type { StudioSectionId } from "../model/navigation";
 import { Nav, NavItem } from "./ui/nav";
 
 const administrationSections: {
-	id: string;
+	id: "accounts" | "messages";
 	label: () => string;
 	icon: LucideIcon;
 }[] = [
@@ -17,8 +18,8 @@ export function AdministrationNavigation({
 	onSelect,
 	onLeave,
 }: {
-	section: string;
-	onSelect: (section: string) => void;
+	section: StudioSectionId;
+	onSelect: (section: StudioSectionId) => void;
 	onLeave: () => void;
 }) {
 	return (

@@ -14,62 +14,69 @@ import {
 	updateProductVariant,
 } from "../../../server/content/zelglihof/product-variant.functions";
 import { TextField } from "../../ui/text-field";
+import type { CollectionProps } from "../collection";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { NumberField } from "../editor-controls";
 import { ImageField } from "../image-field";
-import { InlineCollectionView } from "../inline-collection-view";
+import { RelatedCollection } from "../related-collection";
 
-export function ProductVariantsView({ productId }: { productId: string }) {
-	return (
-		<InlineCollectionView<ProductVariant, ProductVariantInput>
-			collection="zelglihof.product_variant"
-			title="Varianten"
-			scope={productId}
-			rowKey={(record) => record.id}
-			loadPage={(input) =>
-				listProductVariants({ data: { ...input, productId } })
-			}
-			loadRecord={(id) => getProductVariant({ data: { id } })}
-			remove={(record) => deleteProductVariant({ data: { id: record.id } })}
-			create={(values) => createProductVariant({ data: values })}
-			update={(record, values) =>
-				updateProductVariant({
-					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
-				})
-			}
-			editor={{
+// The variants of one product, scoped to it: a related panel inside the
+// product detail page.
+function productVariantCollection(
+	productId: string,
+): CollectionProps<ProductVariant, ProductVariantInput> {
+	return {
+		collection: "zelglihof.product_variant",
+		scope: productId,
+		title: "Varianten",
+		rowKey: (record) => record.id,
+		loadPage: (input) => listProductVariants({ data: { ...input, productId } }),
+		loadRecord: (id) => getProductVariant({ data: { id } }),
+		remove: (record) => deleteProductVariant({ data: { id: record.id } }),
+		capability: {
+			mode: "creatable",
+			editor: {
 				schema: productVariantInputSchema,
 				initialValues: () => newProductVariantInput(productId),
 				valuesFromRecord: productVariantInputFromRecord,
 				renderFields: (props) => <ProductVariantFields {...props} />,
-			}}
-			columns={[
-				{
-					id: "name",
-					heading: m.name(),
-					render: (record) => record.name,
-				},
-				{
-					id: "imageId",
-					heading: m.image(),
-					render: (record) => (
-						<ImageThumbnail site="zelglihof" id={record.imageId} />
-					),
-				},
-				{
-					id: "price",
-					heading: m.price(),
-					render: (record) => record.price,
-				},
-				{
-					id: "quantity",
-					heading: m.quantity(),
-					render: (record) => record.quantity,
-				},
-			]}
-		/>
-	);
+			},
+			create: (values) => createProductVariant({ data: values }),
+			update: (record, values) =>
+				updateProductVariant({
+					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
+				}),
+		},
+		columns: [
+			{
+				id: "name",
+				heading: m.name(),
+				render: (record) => record.name,
+			},
+			{
+				id: "imageId",
+				heading: m.image(),
+				render: (record) => (
+					<ImageThumbnail site="zelglihof" id={record.imageId} />
+				),
+			},
+			{
+				id: "price",
+				heading: m.price(),
+				render: (record) => record.price,
+			},
+			{
+				id: "quantity",
+				heading: m.quantity(),
+				render: (record) => record.quantity,
+			},
+		],
+	};
+}
+
+export function ProductVariantsRelated({ productId }: { productId: string }) {
+	return <RelatedCollection {...productVariantCollection(productId)} />;
 }
 
 function ProductVariantFields({

@@ -19,28 +19,34 @@ import { TextField } from "../../ui/text-field";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { ImageField } from "../image-field";
-import { RoutedCollectionView } from "../routed-collection-view";
+import { PageCollection } from "../page-collection";
 
 export function EventsView() {
 	return (
-		<RoutedCollectionView<Event, EventInput>
+		<PageCollection<Event, EventInput>
 			collection="jublawoma.event"
 			title="Anlässe"
 			rowKey={(record) => record.id}
 			loadPage={(input) => listEvents({ data: input })}
 			loadRecord={(id) => getEvent({ data: { id } })}
 			remove={(record) => deleteEvent({ data: { id: record.id } })}
-			create={(values) => createEvent({ data: values })}
-			update={(record, values) =>
-				updateEvent({
-					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
-				})
-			}
-			editor={{
-				schema: eventInputSchema,
-				initialValues: newEventInput,
-				valuesFromRecord: eventInputFromRecord,
-				renderFields: (props) => <EventFields {...props} />,
+			capability={{
+				mode: "creatable",
+				editor: {
+					schema: eventInputSchema,
+					initialValues: newEventInput,
+					valuesFromRecord: eventInputFromRecord,
+					renderFields: (props) => <EventFields {...props} />,
+				},
+				create: (values) => createEvent({ data: values }),
+				update: (record, values) =>
+					updateEvent({
+						data: {
+							key: { id: record.id },
+							values,
+							updatedAt: record.updatedAt,
+						},
+					}),
 			}}
 			columns={[
 				{

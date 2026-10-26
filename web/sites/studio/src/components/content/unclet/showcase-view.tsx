@@ -19,30 +19,36 @@ import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { CheckboxField, NumberField } from "../editor-controls";
 import { ImageField } from "../image-field";
-import { RoutedCollectionView } from "../routed-collection-view";
+import { PageCollection } from "../page-collection";
 import { SlugField } from "../slug-field";
-import { ShowcaseImagesView } from "./showcase-image-view";
+import { ShowcaseImagesRelated } from "./showcase-image-view";
 
 export function ShowcasesView() {
 	return (
-		<RoutedCollectionView<Showcase, ShowcaseInput>
+		<PageCollection<Showcase, ShowcaseInput>
 			collection="unclet.showcase"
 			title="Einblicke"
 			rowKey={(record) => record.id}
 			loadPage={(input) => listShowcases({ data: input })}
 			loadRecord={(id) => getShowcase({ data: { id } })}
 			remove={(record) => deleteShowcase({ data: { id: record.id } })}
-			create={(values) => createShowcase({ data: values })}
-			update={(record, values) =>
-				updateShowcase({
-					data: { key: { id: record.id }, values, updatedAt: record.updatedAt },
-				})
-			}
-			editor={{
-				schema: showcaseInputSchema,
-				initialValues: newShowcaseInput,
-				valuesFromRecord: showcaseInputFromRecord,
-				renderFields: (props) => <ShowcaseFields {...props} />,
+			capability={{
+				mode: "creatable",
+				editor: {
+					schema: showcaseInputSchema,
+					initialValues: newShowcaseInput,
+					valuesFromRecord: showcaseInputFromRecord,
+					renderFields: (props) => <ShowcaseFields {...props} />,
+				},
+				create: (values) => createShowcase({ data: values }),
+				update: (record, values) =>
+					updateShowcase({
+						data: {
+							key: { id: record.id },
+							values,
+							updatedAt: record.updatedAt,
+						},
+					}),
 			}}
 			columns={[
 				{
@@ -75,7 +81,7 @@ export function ShowcasesView() {
 			]}
 			renderRelated={(record) => (
 				<div className="grid gap-4">
-					<ShowcaseImagesView
+					<ShowcaseImagesRelated
 						key={`showcase_image:${record.id}`}
 						showcaseId={record.id}
 					/>

@@ -1,12 +1,13 @@
 import { m } from "@oliumbi/i18n/messages";
 import { useSignOut } from "../hooks/use-sign-out";
 import { useStudioNavigation } from "../hooks/use-studio-navigation";
+import { useStudioSearch } from "../hooks/use-studio-search";
 import { isContentSection } from "../model/content-sections";
 import {
 	resolveStudioWorkspace,
+	type StudioSectionId,
 	type StudioWorkspace,
 } from "../model/navigation";
-import { Route } from "../routes/index";
 import { AccountsView } from "./accounts-view";
 import { AppShell } from "./app-shell";
 import { AssetsView } from "./assets-view";
@@ -21,10 +22,8 @@ export function DashboardView({
 }: {
 	actor: { displayName: string; username: string; permissions: string[] };
 }) {
-	const workspace = resolveStudioWorkspace(
-		actor.permissions,
-		Route.useSearch(),
-	);
+	const { search } = useStudioSearch();
+	const workspace = resolveStudioWorkspace(actor.permissions, search);
 	const navigation = useStudioNavigation(workspace);
 	const signOut = useSignOut();
 	return (
@@ -49,7 +48,7 @@ function WorkspaceContent({
 	onSelectSection,
 }: {
 	workspace: StudioWorkspace;
-	onSelectSection: (section: string) => void;
+	onSelectSection: (section: StudioSectionId) => void;
 }) {
 	if (area === "profile") return <ProfileView />;
 	if (area === "administration") {
