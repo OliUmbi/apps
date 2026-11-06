@@ -1,0 +1,25 @@
+# Flyway migrations, one shot before the apps (Requires=/After= on the app
+# units). Configuration comes from FLYWAY_* variables in the environment file;
+# -connectRetries=60 (as FLYWAY_CONNECT_RETRIES) replaces the compose health
+# gating on postgres. RemainAfterExit keeps the completed run "active" so the
+# app units do not re-trigger it -- the deploy playbook restarts it explicitly.
+[Unit]
+Description=Flyway migrations (one shot)
+Requires=apps-postgres.service
+After=apps-postgres.service
+
+[Container]
+Image=ghcr.io/oliumbi/apps-migrate:{{ image_tag }}
+ContainerName=migrate
+Network=apps.network
+EnvironmentFile=/etc/default/apps-migrate
+Exec=migrate
+Pull=missing
+LogDriver=journald
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

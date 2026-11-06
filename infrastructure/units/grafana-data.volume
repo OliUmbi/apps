@@ -1,0 +1,3 @@
+# Grafana state (dashboards, users). Not backed up -- dashboards are
+# reprovisioned from infrastructure/monitoring/grafana.
+[Volume]

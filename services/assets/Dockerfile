@@ -13,7 +13,9 @@ RUN mvn -q -pl assets -am -DskipTests package
 
 FROM eclipse-temurin:25-jre-alpine@sha256:b7528962e65d43064d8a8b67ba175367896bc948363ea2d3fcd7f10d34e1f048
 WORKDIR /app
-RUN addgroup -S app && adduser -S app -G app
+# uid/gid pinned: /media is a host bind mount on the server (ansible chowns
+# /var/lib/apps/media to 100:100); adduser -S would pick ids implicitly.
+RUN addgroup -S -g 100 app && adduser -S -u 100 -G app app
 RUN mkdir -p /media && chown app:app /media
 COPY --from=build /workspace/assets/target/assets.jar /app/app.jar
 USER app

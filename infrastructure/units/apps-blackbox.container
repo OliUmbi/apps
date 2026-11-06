@@ -1,0 +1,21 @@
+# Blackbox exporter. Probes app endpoints and TLS certificates on behalf of
+# prometheus; joins both networks to reach the app containers.
+[Unit]
+Description=Blackbox exporter
+
+[Container]
+Image=docker.io/prom/blackbox-exporter:v0.29.1@sha256:ea1c7aa3ef3f307cd03e85f34abb604478ccb90b567fc690da0cd9776da76b13
+ContainerName=blackbox
+Network=apps.network
+Network=monitoring.network
+Exec=--config.file=/etc/blackbox-config.yml
+Volume=/apps/monitoring/blackbox.yml:/etc/blackbox-config.yml:ro
+Pull=missing
+LogDriver=journald
+
+[Service]
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

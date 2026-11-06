@@ -1,0 +1,4 @@
+# Monitoring network. The admin interfaces stay off the app network except
+# prometheus and blackbox, which join both to probe the app containers.
+[Network]
+Driver=bridge

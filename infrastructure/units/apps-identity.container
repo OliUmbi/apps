@@ -1,0 +1,27 @@
+# Identity service (Spring Boot, :8081). Health check uses busybox wget --
+# the JRE alpine image has no bash or curl (the compose health checks used
+# bash /dev/tcp and were permanently unhealthy, finding DP-01).
+[Unit]
+Description=Identity service
+Requires=apps-migrate.service
+After=apps-migrate.service
+
+[Container]
+Image=ghcr.io/oliumbi/apps-identity:{{ image_tag }}
+ContainerName=identity
+Network=apps.network
+EnvironmentFile=/etc/default/apps-identity
+HealthCmd=wget -q --spider http://127.0.0.1:8081/actuator/health
+HealthInterval=10s
+HealthTimeout=5s
+HealthRetries=12
+HealthStartPeriod=40s
+Pull=missing
+LogDriver=journald
+
+[Service]
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

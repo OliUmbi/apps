@@ -1,0 +1,30 @@
+# Uncle-T site (Nitro SSR, :8002). See apps-jublawoma.container.
+[Unit]
+Description=Uncle-T site
+Requires=apps-migrate.service
+Wants=apps-assets.service apps-messaging.service
+After=apps-migrate.service apps-assets.service apps-messaging.service
+
+[Container]
+Image=ghcr.io/oliumbi/apps-unclet:{{ image_tag }}
+ContainerName=unclet
+Network=apps.network
+EnvironmentFile=/etc/default/apps-unclet
+Environment=DATABASE_POOL_SIZE=10
+Environment=ASSETS_SERVICE_URL=http://assets:8083
+Environment=MESSAGING_SERVICE_URL=http://messaging:8082
+Environment=UNCLET_PUBLIC_URL=https://uncle-t.ch
+HealthCmd=wget -q --spider http://127.0.0.1:8002/
+HealthInterval=15s
+HealthTimeout=5s
+HealthRetries=10
+HealthStartPeriod=30s
+Pull=missing
+LogDriver=journald
+
+[Service]
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

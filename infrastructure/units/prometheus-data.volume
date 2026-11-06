@@ -1,0 +1,3 @@
+# Prometheus TSDB. Not backed up (metrics are disposable), which is why it is
+# a named volume while the state that the backup covers lives in /var/lib/apps.
+[Volume]

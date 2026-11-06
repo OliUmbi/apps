@@ -1,0 +1,26 @@
+# PostgreSQL 18. The data directory is a plain host directory so the backup
+# script can dump and tar it without container tricks. The image entrypoint
+# chowns the directory (uid 70) on first start.
+[Unit]
+Description=PostgreSQL 18 (apps)
+
+[Container]
+Image=docker.io/library/postgres:18-alpine@sha256:123b17998ccaf47e53b502e8c6a1e79afd8f579c6f3eec83c563da026f957395
+ContainerName=postgres
+Network=apps.network
+EnvironmentFile=/etc/default/apps-postgres
+Volume=/var/lib/apps/postgres:/var/lib/postgresql
+HealthCmd=pg_isready
+HealthInterval=10s
+HealthTimeout=5s
+HealthRetries=10
+HealthStartPeriod=30s
+Pull=missing
+LogDriver=journald
+
+[Service]
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

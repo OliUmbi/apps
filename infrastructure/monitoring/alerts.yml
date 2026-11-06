@@ -27,10 +27,21 @@ groups:
         labels:
           severity: critical
         annotations:
-          summary: "node exporter is down (host or docker problem)"
+          summary: "node exporter is down (host or container problem)"
 
-      - alert: ContainerRestartLoop
-        expr: changes(container_start_time_seconds{name=~"oliumbi-apps-.*"}[1h]) > 2
+      # restart loops and stuck units show up as failed/activating services;
+      # the systemd collector is the container-agnostic replacement for the
+      # retired cAdvisor restart rule
+      - alert: UnitFailing
+        expr: node_systemd_unit_state{state="failed", name=~"apps-.*\\.service"} == 1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.name }} is in a failed state"
+
+      - alert: UnitRestartLoop
+        expr: changes(node_systemd_unit_start_time_seconds{name=~"apps-.*\\.service"}[1h]) > 2
         for: 1m
         labels:
           severity: warning

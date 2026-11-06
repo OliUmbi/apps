@@ -135,8 +135,8 @@ Review findings of the current deployment surface, closed by this pass:
 | ID | Status | Notes |
 | --- | --- | --- |
 | S0 | done | Plan committed. |
-| S1 | done | Units + network files + assets uid pin; monitoring images pinned. |
-| S2 | done | Server role installs podman; docker removed. |
-| S3 | done | Per-service env files, unit templating, deploy/status/logs. |
-| S4 | done | backup.sh/housekeep.sh on podman + plain dirs. |
-| S5 | done | Compose files removed, docs synced, decisions recorded. |
+| S1 | done | Units + network/volume files + assets uid pin; monitoring images pinned; cAdvisor dropped. |
+| S2 | pending | |
+| S3 | pending | |
+| S4 | pending | |
+| S5 | pending | |

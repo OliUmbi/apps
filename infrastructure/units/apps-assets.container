@@ -1,0 +1,29 @@
+# Assets service (Spring Boot, :8083). Media storage is a plain host
+# directory (/var/lib/apps/media) owned 100:100 -- the image pins its app user
+# to uid 100 so the ownership is deterministic (finding DP-06).
+[Unit]
+Description=Assets service
+Requires=apps-migrate.service
+After=apps-migrate.service
+
+[Container]
+Image=ghcr.io/oliumbi/apps-assets:{{ image_tag }}
+ContainerName=assets
+Network=apps.network
+EnvironmentFile=/etc/default/apps-assets
+Environment=ASSETS_STORAGE_ROOT=/media
+Volume=/var/lib/apps/media:/media
+HealthCmd=wget -q --spider http://127.0.0.1:8083/actuator/health
+HealthInterval=10s
+HealthTimeout=5s
+HealthRetries=12
+HealthStartPeriod=40s
+Pull=missing
+LogDriver=journald
+
+[Service]
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

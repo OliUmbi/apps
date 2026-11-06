@@ -1,0 +1,25 @@
+# Caddy edge: the only unit that publishes ports. TLS via DNS-01 wildcards
+# through Infomaniak (custom build, see infrastructure/caddy). ACME state
+# lives in /var/lib/apps/caddy-data -- deleting it re-issues every certificate.
+[Unit]
+Description=Caddy edge
+
+[Container]
+Image=ghcr.io/oliumbi/apps-caddy:{{ image_tag }}
+ContainerName=caddy
+Network=apps.network
+EnvironmentFile=/etc/default/apps-caddy
+PublishPort=80:80
+PublishPort=443:443
+PublishPort=443:443/udp
+Volume=/var/lib/apps/caddy-data:/data
+Volume=/var/lib/apps/caddy-config:/config
+Pull=missing
+LogDriver=journald
+
+[Service]
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

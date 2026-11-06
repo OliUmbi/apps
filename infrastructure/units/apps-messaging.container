@@ -1,0 +1,26 @@
+# Messaging service (Spring Boot, :8082). See apps-identity.container for the
+# health check rationale.
+[Unit]
+Description=Messaging service
+Requires=apps-migrate.service
+After=apps-migrate.service
+
+[Container]
+Image=ghcr.io/oliumbi/apps-messaging:{{ image_tag }}
+ContainerName=messaging
+Network=apps.network
+EnvironmentFile=/etc/default/apps-messaging
+HealthCmd=wget -q --spider http://127.0.0.1:8082/actuator/health
+HealthInterval=10s
+HealthTimeout=5s
+HealthRetries=12
+HealthStartPeriod=40s
+Pull=missing
+LogDriver=journald
+
+[Service]
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
