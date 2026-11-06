@@ -8,7 +8,7 @@ After=apps-migrate.service
 [Container]
 Image=ghcr.io/oliumbi/apps-messaging:{{ image_tag }}
 ContainerName=messaging
-Network=apps.network
+Network=net-apps.network
 EnvironmentFile=/etc/default/apps-messaging
 HealthCmd=wget -q --spider http://127.0.0.1:8082/actuator/health
 HealthInterval=10s

@@ -9,7 +9,7 @@ After=apps-migrate.service apps-assets.service apps-messaging.service
 [Container]
 Image=ghcr.io/oliumbi/apps-jublawoma:{{ image_tag }}
 ContainerName=jublawoma
-Network=apps.network
+Network=net-apps.network
 EnvironmentFile=/etc/default/apps-jublawoma
 Environment=DATABASE_POOL_SIZE=10
 Environment=ASSETS_SERVICE_URL=http://assets:8083

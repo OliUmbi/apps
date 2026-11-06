@@ -51,10 +51,10 @@
     dest: "/etc/containers/systemd/{{ item }}"
     mode: "0644"
   loop:
-    - apps.network
-    - monitoring.network
-    - prometheus-data.volume
-    - grafana-data.volume
+    - net-apps.network
+    - net-monitoring.network
+    - data-prometheus.volume
+    - data-grafana.volume
     - apps-postgres.container
     - apps-migrate.container
     - apps-identity.container

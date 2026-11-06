@@ -11,7 +11,7 @@ After=apps-postgres.service
 [Container]
 Image=ghcr.io/oliumbi/apps-migrate:{{ image_tag }}
 ContainerName=migrate
-Network=apps.network
+Network=net-apps.network
 EnvironmentFile=/etc/default/apps-migrate
 Exec=migrate
 Pull=missing

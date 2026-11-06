@@ -10,18 +10,24 @@ development rig and deliberately not a mirror of this (finding DP-09).
 
 | File | Unit | Notes |
 | --- | --- | --- |
-| `apps.network`, `monitoring.network` | `apps-network.service`, `monitoring-network.service` | bridge networks created by quadlet; service DNS names are the `ContainerName=` values |
+| `net-apps.network`, `net-monitoring.network` | `net-apps-network.service`, `net-monitoring-network.service` | bridge networks created by quadlet; service DNS names are the `ContainerName=` values |
 | `apps-postgres.container` | `apps-postgres.service` | state in `/var/lib/apps/postgres` (bind mount) |
 | `apps-migrate.container` | `apps-migrate.service` | `Type=oneshot` Flyway run before the apps |
 | `apps-identity/-messaging/-assets` | same name | Java services on 8081–8083; assets stores media in `/var/lib/apps/media` |
 | `apps-jublawoma/-unclet/-zelglihof/-studio` | same name | Nitro SSR sites on 8000–8003 |
 | `apps-caddy` | `apps-caddy.service` | the only unit that publishes ports (80/443, 443/udp) |
 | `apps-prometheus/-alertmanager/-node-exporter/-blackbox/-grafana` | same name | monitoring; ports bound to `monitoring_bind` (WireGuard) |
-| `prometheus-data.volume`, `grafana-data.volume` | — | named volumes for state the backup does not cover |
+| `data-prometheus.volume`, `data-grafana.volume` | — | named volumes for state the backup does not cover |
 
 Files contain Jinja placeholders (`{{ image_tag }}`, `{{ monitoring_bind }}`);
-ansible renders them. The `apps-*` unit prefix is load-bearing: the status
-playbook and the alert rules match on it.
+ansible renders them.
+
+## Naming
+
+Files are named by kind so they sort together in the repository and in the
+flat `/etc/containers/systemd/` install directory: `apps-<name>.container`
+workloads, `data-<name>.volume`, `net-<name>.network`. The `apps-` prefix is
+load-bearing: the status playbook and the alert rules match on it.
 
 ## Environment
 

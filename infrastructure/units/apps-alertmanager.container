@@ -6,7 +6,7 @@ Description=Alertmanager
 [Container]
 Image=docker.io/prom/alertmanager:v0.34.2@sha256:39d8bb3966c694a124428a3a88fbcffd40bd069129ecd47c059f8a3f17c55f3b
 ContainerName=alertmanager
-Network=monitoring.network
+Network=net-monitoring.network
 Volume=/apps/monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
 PublishPort={{ monitoring_bind }}:9093:9093
 Pull=missing

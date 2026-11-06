@@ -1,16 +1,17 @@
 # Grafana. Datasource provisioning comes from the bind mount; dashboards are
-# built by hand and live in grafana-data (not backed up, see the volume note).
+# built by hand and live in the data-grafana volume (not backed up, see the
+# volume note).
 [Unit]
 Description=Grafana
 
 [Container]
 Image=docker.io/grafana/grafana:13.3.0@sha256:488984b716c0862639f91a698adbe2862677a5a07bad42da5f03f3030883b205
 ContainerName=grafana
-Network=monitoring.network
+Network=net-monitoring.network
 EnvironmentFile=/etc/default/apps-grafana
 Environment=GF_USERS_ALLOW_SIGN_UP=false
 Volume=/apps/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
-Volume=grafana-data.volume:/var/lib/grafana
+Volume=data-grafana.volume:/var/lib/grafana
 PublishPort={{ monitoring_bind }}:3000:3000
 Pull=missing
 LogDriver=journald

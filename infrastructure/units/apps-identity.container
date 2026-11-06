@@ -9,7 +9,7 @@ After=apps-migrate.service
 [Container]
 Image=ghcr.io/oliumbi/apps-identity:{{ image_tag }}
 ContainerName=identity
-Network=apps.network
+Network=net-apps.network
 EnvironmentFile=/etc/default/apps-identity
 HealthCmd=wget -q --spider http://127.0.0.1:8081/actuator/health
 HealthInterval=10s

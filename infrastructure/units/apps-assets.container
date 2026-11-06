@@ -9,7 +9,7 @@ After=apps-migrate.service
 [Container]
 Image=ghcr.io/oliumbi/apps-assets:{{ image_tag }}
 ContainerName=assets
-Network=apps.network
+Network=net-apps.network
 EnvironmentFile=/etc/default/apps-assets
 Environment=ASSETS_STORAGE_ROOT=/media
 Volume=/var/lib/apps/media:/media

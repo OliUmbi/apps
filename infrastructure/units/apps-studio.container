@@ -10,7 +10,7 @@ After=apps-migrate.service apps-identity.service apps-messaging.service apps-ass
 [Container]
 Image=ghcr.io/oliumbi/apps-studio:{{ image_tag }}
 ContainerName=studio
-Network=apps.network
+Network=net-apps.network
 EnvironmentFile=/etc/default/apps-studio
 Environment=DATABASE_POOL_SIZE=10
 Environment=STUDIO_SECURE_COOKIES=true

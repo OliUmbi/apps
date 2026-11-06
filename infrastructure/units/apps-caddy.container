@@ -7,7 +7,7 @@ Description=Caddy edge
 [Container]
 Image=ghcr.io/oliumbi/apps-caddy:{{ image_tag }}
 ContainerName=caddy
-Network=apps.network
+Network=net-apps.network
 EnvironmentFile=/etc/default/apps-caddy
 PublishPort=80:80
 PublishPort=443:443

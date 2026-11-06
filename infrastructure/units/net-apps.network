@@ -1,5 +1,5 @@
 # Internal network for the app stack. Referenced from containers as
-# Network=apps.network; quadlet creates the podman network (systemd-apps) and
+# Network=net-apps.network; quadlet creates the podman network (systemd-net-apps) and
 # wires the dependency. Service DNS names are the ContainerName= values, so
 # the Caddyfile and the monitoring configs keep their existing names.
 [Network]

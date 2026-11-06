@@ -7,7 +7,7 @@ Description=PostgreSQL 18 (apps)
 [Container]
 Image=docker.io/library/postgres:18-alpine@sha256:123b17998ccaf47e53b502e8c6a1e79afd8f579c6f3eec83c563da026f957395
 ContainerName=postgres
-Network=apps.network
+Network=net-apps.network
 EnvironmentFile=/etc/default/apps-postgres
 Volume=/var/lib/apps/postgres:/var/lib/postgresql
 HealthCmd=pg_isready

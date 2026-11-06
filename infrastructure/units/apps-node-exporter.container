@@ -6,7 +6,7 @@ Description=Node exporter
 [Container]
 Image=docker.io/prom/node-exporter:v1.12.1@sha256:1b4e4438faca4dd7e001dd445d161a4a2091b0fededa84093b3a8dfeae1f1be0
 ContainerName=node-exporter
-Network=monitoring.network
+Network=net-monitoring.network
 Exec=--path.procfs=/host/proc --path.sysfs=/host/sys --path.rootfs=/rootfs --collector.textfile --collector.textfile.directory=/textfile
 Volume=/proc:/host/proc:ro
 Volume=/sys:/host/sys:ro
