@@ -39,7 +39,7 @@ only when that makes the whole system simpler or safer.
       │
  ┌─ data ──────────────────────────────────────────┐
  │ postgres 18 · one database · one role per app   │
- │ volumes: assets-data (/media), caddy-data (TLS) │
+ │ state: /var/lib/apps (media, postgres, caddy)   │
  └─────────────────────────────────────────────────┘
 ```
 
@@ -47,13 +47,13 @@ only when that makes the whole system simpler or safer.
 
 | Component | Purpose | Owns |
 | --- | --- | --- |
-| caddy | TLS via DNS-01 (Infomaniak), hostname → service routing, security headers, body limit | certificates in `caddy-data` |
+| caddy | TLS via DNS-01 (Infomaniak), hostname → service routing, security headers, body limit | certificates in `/var/lib/apps/caddy-data` |
 | dyndns | systemd timer: keeps the Infomaniak A records on the dynamic IP, same API token as caddy | — |
 | sites (jublawoma, unclet, zelglihof) | Public SSR websites; own their routes, content tables and forms | their schema |
 | studio | Admin UI for all sites; one hostname so sessions survive | — |
 | identity | Accounts, sessions, permissions | `identity` schema |
 | messaging | Email queue, delivery, SMTP outbox | `messaging` schema |
-| assets | Image/document storage, size variants | `assets` schema + `/media` volume |
+| assets | Image/document storage, size variants | `assets` schema + `/media` (host directory) |
 | postgres | The one database; each app has its own role and schema | everything |
 | migrate | Flyway, runs before the apps on every deploy | `database/migrations` |
 
@@ -65,7 +65,7 @@ only when that makes the whole system simpler or safer.
 - **Public image** — page requests `/api/assets/<id>?size=…` → site server
   function → assets service → browser gets the image with the `Cache-Control`
   and `ETag` the assets service set (304s supported).
-- **Upload** — studio → assets service → `assets-data` volume, metadata in
+- **Upload** — studio → assets service → `/var/lib/apps/media`, metadata in
   postgres.
 - **Email** — site or studio server function → messaging (queued) → SMTP.
 
@@ -99,8 +99,8 @@ data outside production migrations.
 
 | | development | production |
 | --- | --- | --- |
-| compose | `infrastructure/compose.dev.yaml` | `infrastructure/compose.prod.yaml` |
-| config | root `.env` (gitignored; template `infrastructure/.env.dev`) | `/apps/.env` from the vault (template `infrastructure/.env.prod`) |
+| runtime | `infrastructure/compose.dev.yaml` (Docker Desktop) | systemd units from `infrastructure/units/` (podman/quadlet) |
+| config | root `.env` (gitignored; template `infrastructure/.env.dev`) | per-service `/etc/default/apps-*` from the vault (templates in `ansible/roles/app/templates/`) |
 | images | built locally | `ghcr.io/oliumbi/apps-*` pinned by `IMAGE_TAG` |
 | migrations | bind mount, edited in place | baked into `apps-migrate:<tag>` |
 | email | mailpit | real SMTP |
@@ -110,8 +110,10 @@ data outside production migrations.
 
 `.github/workflows/publish.yml` builds every image on a version tag and pushes
 `:<tag>`, `:sha-<sha>` and `:latest`. Deploy is
-`IMAGE_TAG=<tag> docker compose up -d` on the server; rollback is the same
-command with the previous tag. `migrate` runs first and the apps wait for it.
+`ansible-playbook playbooks/deploy.yml -e image_tag=<tag>` from the
+workstation: it renders the systemd units with the tag, pulls, and restarts
+the stack in dependency order. Rollback is the same command with the previous
+tag. `apps-migrate` runs first and the app units require it.
 Today the legacy stack (`legacy/`) is still live; cutover is tracked in
 [open-work.md](open-work.md).
 
@@ -122,7 +124,7 @@ Today the legacy stack (`legacy/`) is still live; cutover is tracked in
 | `web/` | TanStack Start sites + shared packages (pnpm) — [web/README.md](../web/README.md) |
 | `services/` | Spring Boot services + shared module (maven) — [services/README.md](../services/README.md) |
 | `database/` | Flyway migrations, schema source of truth — [database/README.md](../database/README.md) |
-| `infrastructure/` | prod compose, monitoring, Caddyfile, env template |
+| `infrastructure/` | systemd units, monitoring, Caddyfile, dev compose |
 | `ansible/` | the ops interface: server setup, deploy, backup, housekeeping |
 | `documentation/` | principles, architecture, sites, migration, operations, decisions, open work |
 | `legacy/` | the currently running old stack, read-only reference |

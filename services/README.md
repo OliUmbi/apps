@@ -78,7 +78,7 @@ import `shared` through the reactor rather than a separately installed artifact.
 API documentation is served at `/docs` (Swagger UI over the OpenAPI description
 from shared) only when the `dev` Spring profile is active; outside that profile
 springdoc is disabled and `/docs` does not exist. `/actuator/health` stays
-reachable without authentication for the compose health checks.
+reachable without authentication for the container health checks.
 
 Every error response is a problem response carrying `errorId`, a per-request
 correlation id that is also written to the service log. Request-validation

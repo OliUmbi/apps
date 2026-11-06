@@ -26,9 +26,9 @@ order. The web workspace is documented in
 Requirements: Docker Desktop, Node.js 24+, pnpm 11+, JDK 25, and Maven 3.9.12.
 
 Copy `infrastructure/.env.dev` to `.env` in the repository root; it is
-gitignored and holds your local values. `infrastructure/.env.dev` and
-`infrastructure/.env.prod` are the checked-in templates. Override values
-through your shell or IDE when needed, and never reuse the development
+gitignored and holds your local values. `infrastructure/.env.dev` is the
+checked-in template (production values live in the ansible vault). Override
+values through your shell or IDE when needed, and never reuse the development
 credentials in a deployed environment.
 
 Start the complete stack from the repository root:

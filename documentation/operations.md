@@ -12,8 +12,8 @@ is no reason to log into the machine.
 | --- | --- |
 | `ansible-playbook playbooks/site.yml` | full server setup (idempotent) |
 | `ansible-playbook playbooks/deploy.yml -e image_tag=<tag>` | deploy or roll back |
-| `ansible-playbook playbooks/status.yml` | containers, disk, timers, last backup |
-| `ansible-playbook playbooks/logs.yml -e service=<name>` | read container logs |
+| `ansible-playbook playbooks/status.yml` | units, containers, disk, timers, last backup |
+| `ansible-playbook playbooks/logs.yml -e service=<name>` | read unit logs |
 | `ansible-playbook playbooks/backup.yml` | run a backup now |
 | `ansible-playbook playbooks/housekeep.yml` | run housekeeping now |
 
@@ -21,12 +21,13 @@ Grafana (`:3000`), Prometheus (`:9090`) and Alertmanager (`:9093`) are bound
 to the server's WireGuard address and reachable only inside the tunnel.
 
 There is no host firewall, on purpose: the router forwards are the outer
-boundary (80/443 and the WireGuard port), and docker published ports bypass
-ufw anyway -- **what containers publish and the address they bind decides
+boundary (80/443 and the WireGuard port), and published ports bypass ufw
+anyway -- **what the units publish and the address they bind decides
 exposure**. Keep admin interfaces bound to the WireGuard address.
 
 Secrets live in `ansible/group_vars/vault.yml` (ansible-vault) and are
-rendered into `/apps/.env` (root, `0600`). Nothing secret is committed.
+rendered into the per-service `/etc/default/apps-<service>` environment files
+(root, `0600`). Nothing secret is committed.
 
 ## Provisioning from zero
 
@@ -45,8 +46,9 @@ For a clean machine (the legacy box stays untouched until cutover):
    keeps their values current. `vpn.oliumbi.ch` is the laptop's WireGuard
    endpoint, so it survives IP changes.
 5. **Vault.** Fill `ansible/group_vars/vault.yml` from the example.
-6. **Run** `ansible-playbook playbooks/site.yml` -- installs docker,
-   WireGuard and the timers, then deploys both stacks from ghcr (publish a
+6. **Run** `ansible-playbook playbooks/site.yml` -- installs podman,
+   WireGuard and the timers, renders the systemd units
+   (`infrastructure/units/`) and starts the stack from ghcr (publish a
    version tag first so the images exist).
 7. **Verify.** `status.yml`, `logs.yml`, a `backup.yml` run pulled with
    `pull-backups.ps1`, Grafana over the tunnel, certificates issued, and
@@ -67,12 +69,12 @@ deletes anything.
 
 Policy, so nobody has to invent one later:
 
-- **Everything logs to stdout/stderr.** Docker's `json-file` driver with
-  `10m x 3` rotation per container (set in `/etc/docker/daemon.json`, so it
-  applies even to containers without a compose logging block). Journald is
-  capped at 200M. Disk usage is therefore bounded by design.
-- **Read logs with `playbooks/logs.yml`** (`docker compose logs` under the
-  hood). Logs are for debugging and post-mortems; alerts come from metrics.
+- **Everything logs to stdout/stderr and lands in journald** (podman's log
+  driver; there is no container daemon and no per-container log files).
+  Journald is capped at 200M. Disk usage is therefore bounded by design.
+- **Read logs with `playbooks/logs.yml`** (`journalctl -u apps-<service>`
+  under the hood). Logs are for debugging and post-mortems; alerts come from
+  metrics.
 - **What not to log:** secrets, tokens, full request bodies, personal data.
   Caddy access logs (stdout) contain IP addresses; rotation keeps the
   retention window short. That is acceptable at this scale -- revisit if the
@@ -85,18 +87,19 @@ Policy, so nobody has to invent one later:
 
 ## Deploy and rollback
 
-Images are built by CI (`publish.yml`) on a version tag and pinned in compose
-by `IMAGE_TAG`. Deploy and rollback are the same command with a different tag
-(`deploy.yml`); `migrate` runs first and the apps wait for it. Keep the last
-few tags in ghcr and the last week of images on the server (housekeeping keeps
-7 days) so rollback never needs a rebuild.
+Images are built by CI (`publish.yml`) on a version tag and pinned in the
+units (`infrastructure/units/`, rendered with the tag by `deploy.yml`). Deploy
+and rollback are the same command with a different tag; `apps-migrate` runs
+first and the app units require it. Keep the last few tags in ghcr and the
+last week of images on the server (housekeeping keeps 7 days) so rollback
+never needs a rebuild.
 
 ## Backups
 
 Nightly at 03:00 (`apps-backup.timer`, script `ansible/files/backup.sh`):
 
 1. `pg_dump -Fc` + `pg_dumpall --globals-only` (the roles live there)
-2. tar of the `assets-data` volume (uploads)
+2. tar of `/var/lib/apps/media` (uploads)
 3. `manifest.txt` with image tags and `SHA256SUMS`
 4. one `age`-encrypted archive per run in `/var/backups/apps`, 3 kept
 
@@ -107,18 +110,15 @@ Freshness is exported as a metric (`apps_backup_last_success_timestamp_seconds`)
 and alerts after 36h; the pull script warns locally when the newest copy is
 stale.
 
-### Restore drill (quarterly)
+### Restore drill (deferred)
 
-On the workstation, from a pulled archive:
-
-```sh
-age -d -i ~/.age/key.txt apps-<stamp>.tar.gz.age | tar xz
-docker compose -f compose.prod.yaml --env-file .env.restore -f compose.restore.yaml up -d postgres
-docker compose ... exec -T postgres psql -U "$POSTGRES_MIGRATOR_USER" -d "$POSTGRES_DB" < globals.sql
-docker compose ... exec -T postgres pg_restore -U ... -d "$POSTGRES_DB" --clean database.dump
-# extract media.tgz into the assets volume, then start the rest and click
-# through Studio and the sites
-```
+The workstation drill is retired with the old compose files
+([deployment-plan](deployment-plan.md) D14). The drill becomes what a real
+disaster looks like: rebuild a dedicated machine from zero (`site.yml`) and
+restore a pulled archive into it (globals, `pg_restore`, media tar). Blocked
+on spare hardware -- tracked in [open-work.md](open-work.md). Until then the
+nightly pull to the workstation keeps proving the archives leave the server
+intact.
 
 A backup that was never restored is a hypothesis, not a backup.
 
@@ -172,13 +172,13 @@ The deploy, backup, restore and housekeeping runbooks live here and in
 
 ## Monitoring and alerting
 
-Stack: prometheus, node-exporter, cAdvisor, blackbox-exporter, alertmanager,
-grafana (`compose.monitoring.yaml`). Coverage:
+Stack: prometheus, node-exporter, blackbox-exporter, alertmanager, grafana
+(`apps-*.service` units, `infrastructure/units/`). Coverage:
 
 | signal | source |
 | --- | --- |
 | host (cpu, memory, disk) | node-exporter |
-| containers (cpu, memory, restarts) | cAdvisor |
+| units failing or restart-looping | node-exporter systemd collector |
 | sites and postgres answering | blackbox probes on the internal network |
 | certificate expiry | blackbox https probes |
 | backup freshness | textfile metric written by the backup script |
@@ -203,9 +203,8 @@ formatter can prettify them later if it bothers anyone. Alternatives if ntfy
 ever stops suiting: email via the existing SMTP creds, or a Telegram bot
 (both are `alertmanager.yml` swaps).
 
-Grafana dashboards are imported on demand
-(node-exporter id 1860, cAdvisor id 14282); only the datasource is provisioned
-as code.
+Grafana dashboards are imported on demand (node-exporter id 1860); only the
+datasource is provisioned as code.
 
 Known gap: everything above runs **on** the box it monitors. An external
 "are the sites up" check (and a dead-man's switch for the box itself) is

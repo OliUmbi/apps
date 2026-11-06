@@ -17,22 +17,24 @@ Only unresolved work. Remove items when resolved.
 
 ## Infrastructure and operations
 
-Deployment shape: ghcr images pinned by tag, `infrastructure/compose.prod.yaml`,
-caddy with DNS-01 wildcards (Infomaniak), manual deploys over WireGuard. Context:
+Deployment shape: ghcr images pinned by tag, systemd units from
+`infrastructure/units/` (podman/Quadlet), caddy with DNS-01 wildcards
+(Infomaniak), manual deploys over WireGuard. Context:
 [architecture](architecture.md), [infrastructure/README.md](../infrastructure/README.md).
 
 - [ ] Cutover from `legacy/`: freeze writes, final `pg_dump` (postgres 17), restore into postgres 18, flip DNS. Decide whether the new migrations continue the legacy history or start fresh and map the data. Delete the retired `api.*` DNS records.
 - [ ] Rotate the legacy database and email passwords: `legacy/infrastructure/.env` is committed to git. Never reuse those values.
 - [ ] Check whether 5432/8080/8000 on the current server are reachable from the internet (legacy exposure). The new stack has no host firewall by design -- the router forwards are the boundary, so verify only 80/443 and UDP 51820 (WireGuard) are forwarded, nothing else.
-- [ ] Bootstrap the server with `ansible/playbooks/site.yml` (deploy user, vault, wireguard), then verify the status / logs / backup playbooks from the workstation. A restore playbook is still missing.
-- [ ] Backups are scripted (`ansible/files/backup.sh`, nightly timer): enable on the server, confirm the workstation pull (`pull-backups.sh`), then run the first restore drill per [operations.md](operations.md).
+- [ ] Bootstrap the server in the new deployment shape ([deployment-plan.md](deployment-plan.md)): `ansible/playbooks/site.yml` on Debian stable (podman >= 5 with the quadlet generator), vault and WireGuard keys in place. Verify the units start in dependency order, `deploy.yml -e image_tag=<tag>` deploys and rolls back, `status.yml`/`logs.yml` work, and `backup.sh` produces an archive. A restore playbook is still missing.
+- [ ] Backups are scripted (`ansible/files/backup.sh`, nightly timer): enable on the server and confirm the workstation pull (`pull-backups.sh`).
+- [ ] Restore drill on its own machine (decisions D14): rebuild from zero and restore a pulled backup (globals, `pg_restore`, media tar), then walk Studio and every site. Blocked on spare hardware; the workstation drill is retired with the compose files. A backup that was never restored is a hypothesis, not a backup.
 - [ ] Housekeeping timer is scripted (`ansible/files/housekeep.sh`): enable on the server and check the first journal output.
 - [ ] WireGuard config is templated (server role). Verify provider console/KVM recovery first, then set `restrict_ssh: true` so sshd only listens on the tunnel.
 - [ ] Create the A records listed in `dyndns_records` (`ansible/group_vars/all.yml`) once in the Infomaniak manager, including `vpn.oliumbi.ch` for the laptop's WireGuard endpoint. The dyndns timer only updates existing records.
 - [ ] Decide where the oliumbi.ch apex routes: the new stack has no Oliumbi site yet (Caddyfile placeholder redirects to studio).
 - [ ] Create the ntfy alerting topic, subscribe in the phone app and store the webhook URL in the vault (`vault_ntfy_webhook_url`); setup steps in [operations.md](operations.md).
-- [ ] Deploy the monitoring stack (`infrastructure/compose.monitoring.yaml`) and confirm alerts reach the phone (test with a manual `curl` to the topic). Then add external uptime checks and a dead-man's switch outside the box -- everything current runs on the machine it watches.
-- [ ] Add `MESSAGING_SMTP_TLS_REQUIRED` to the `infrastructure/.env.dev` and `.env.prod` templates. Compose passes the variable since the 2026-10 refactor, but the templates still carry only `MESSAGING_SMTP_TLS`, so deploy-time values fall back to the compose defaults.
+- [ ] Deploy the monitoring stack (the `apps-prometheus` … `apps-grafana` units) and confirm alerts reach the phone (test with a manual `curl` to the topic). Then add external uptime checks and a dead-man's switch outside the box -- everything current runs on the machine it watches.
+- [x] Add `MESSAGING_SMTP_TLS_REQUIRED` to the env templates. (done 2026-11: `env-messaging.j2` sets it for production, `.env.dev` carries it; `.env.prod` was retired with the compose files.)
 
 ## Open decisions
 
@@ -72,10 +74,8 @@ caddy with DNS-01 wildcards (Infomaniak), manual deploys over WireGuard. Context
 
 - [ ] Rate limiting at the proxy: standard Caddy has none (legacy nginx: 10r/s, burst 20). Either build `caddy-ratelimit` into apps-caddy or accept the gap deliberately.
 - [ ] Content-Security-Policy: the legacy nginx sent one referencing `api.*`; the new stack sends none. Define one per site.
-- [ ] Service health: `/actuator/health` exists but the runtime image has no curl, so compose falls back to TCP checks. Add curl to the images or keep TCP deliberately.
 - [ ] Static asset caching is a one-hour default from caddy; revisit once `public/` files are content hashed.
-- [ ] Keep compose on pinned tags (`:latest` is published but unused) and document the postgres major upgrade path (dump/restore).
-- [ ] Pin the monitoring image versions (`:latest` placeholders in `compose.monitoring.yaml`) on first deploy.
+- [ ] Document the postgres major upgrade path (dump/restore). Images stay pinned (`:latest` is published but never deployed; the units pin every image).
 - [ ] Port the remaining legacy ideas worth keeping: web app manifest and icons, dark mode / color scheme, site analytics, UI linter.
 - [ ] `services/assets` path defenses do not contain Windows junction symlinks (a junction can point outside the storage root on Windows dev hosts). Decide whether to harden the containment check or accept the gap (owner decision).
 

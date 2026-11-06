@@ -12,7 +12,7 @@ full decision record only when someone outside the project needs the context.
 | C-002 | Separate site applications replace the hostname-switched legacy SPA. | Own build, routes, image, release and rollback per site. |
 | C-003 | TanStack Start for web applications. | Follow the framework; do not wrap it. |
 | C-004 | PostgreSQL as the datastore. | Migrations, ownership, backup and restore designed before durable data. |
-| C-005 | Docker Compose on one Linux host. | Health checks, private networks, durable volumes, pinned images. |
+| C-005 | One Linux host. (2026-11: Docker Compose replaced by podman/Quadlet systemd units — see the deployment migration below.) | Health checks, private networks, durable state, pinned images. |
 | C-006 | GitHub Actions for CI/CD. | Test and publish immutable artifacts. |
 | C-007 | The reverse proxy is part of the managed system. | TLS and routing are versioned config, not host snowflakes. |
 | C-008 | Backend components may use other languages. | Language-neutral contracts; every runtime needs the full toolchain. |
@@ -60,20 +60,47 @@ full decision record only when someone outside the project needs the context.
 
 ## Operations decisions (2026-10)
 
-- Caddy in Docker, DNS-01 wildcards through Infomaniak; one API token covers
-  certificates and the dyndns timer that keeps A records on the dynamic IP.
+- Caddy in a container, DNS-01 wildcards through Infomaniak; one API token
+  covers certificates and the dyndns timer that keeps A records on the dynamic
+  IP.
 - No host firewall: the router forwards (80/443 + WireGuard) are the boundary;
-  what containers publish and where they bind decides exposure.
+  what the units publish and where they bind decides exposure.
 - Recurring work (backup, housekeeping, dyndns) runs as systemd timers on the
   server, installed and triggered by Ansible over WireGuard. SSH is never
   public.
 - Backups: daily `pg_dump` + media tarball, `age`-encrypted, three rotating
-  copies on the server, pulled to the workstation; quarterly restore drill.
+  copies on the server, pulled to the workstation; restore drill on a
+  dedicated machine (deferred, see below).
 - Alerts: prometheus rules → alertmanager → ntfy topic to the phone.
 - Deployments are manual and pinned by image tag; `latest` is never the
   deployment source. Rollback is deploying the previous tag.
-- Server layout: the stacks live in `/apps`; secrets come from the ansible
+- Server layout: units in `/etc/containers/systemd`, monitoring config in
+  `/apps`, durable state in `/var/lib/apps`; secrets come from the ansible
   vault and never enter git.
+
+## Deployment migration (2026-11)
+
+Adopted to move the server off Docker Engine ([deployment-plan.md](deployment-plan.md)):
+
+- **D11 — Podman + Quadlet replaces Docker Compose on the server.** Every
+  workload is a systemd unit (`apps-*.service`, from `infrastructure/units/`),
+  installed by Ansible like the timer units. No container daemon, no compose
+  on the server; container names keep the service DNS names so the Caddyfile
+  and monitoring configs are unchanged. Secrets are per-service
+  `EnvironmentFile=/etc/default/apps-<service>` (0600 root). Docker Desktop +
+  `compose.dev.yaml` remain the local development rig and are deliberately
+  not a mirror of production.
+- **D12 — Backed-up state lives in plain directories** under `/var/lib/apps/`
+  (`postgres`, `media`, `caddy`); backup and restore are `pg_dump` and `tar`.
+  Monitoring state stays on named volumes and is not backed up.
+- **D13 — Deploy stays manual and pinned by image tag.** Ansible renders the
+  units with the tag, pulls, and restarts the stack in dependency order
+  (postgres → migrate → apps → caddy). Rollback is the previous tag.
+- **D14 — The restore drill is deferred to a dedicated machine**: rebuild from
+  zero, restore a backup, walk every site. Blocked on spare hardware
+  (open-work); the workstation drill is retired with the compose files.
+- **D15 — cAdvisor is dropped** (docker-coupled); node-exporter's systemd
+  collector plus blackbox cover the host and the apps.
 
 ## Still open
 
@@ -169,4 +196,5 @@ gets a new top-level directory; a new deployable joins its workspace.
 pnpm workspaces, TypeScript (strict), React 19, TanStack Start + TanStack
 Router + TanStack Query, Vite + Nitro (Node 24), Tailwind 4, Base UI, Lucide,
 Biome; Spring Boot (Java) services with actuator; PostgreSQL 18 with Flyway
-migrations; Caddy, Docker Compose, GitHub Actions.
+migrations; Caddy; podman/Quadlet systemd units on the server (Docker Compose
+for local development); GitHub Actions.

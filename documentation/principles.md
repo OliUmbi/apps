@@ -36,8 +36,9 @@ sites.
 ## Confirmed constraints
 
 Low traffic, one primary developer, TypeScript in the browser, TanStack Start
-for web, PostgreSQL as the datastore, Docker Compose for deployment, GitHub
-Actions for CI/CD. Backend components may use other languages when a stable
+for web, PostgreSQL as the datastore, systemd units (podman/Quadlet) for
+deployment, Docker Compose for local development, GitHub Actions for CI/CD.
+Backend components may use other languages when a stable
 contract and a clear benefit justify the toolchain.
 
 ## Engineering principles

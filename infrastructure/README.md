@@ -1,45 +1,39 @@
 # infrastructure
 
 Runtime configuration and production deployment. Everything here is versioned
-in git; images come from ghcr and are pinned by `IMAGE_TAG`, so a deploy is
+in git; images come from ghcr and are pinned by tag, so a deploy is
 deterministic and a rollback is deploying the previous tag.
 
 ## layout
 
 | path | purpose |
 |---|---|
-| `compose.dev.yaml` | the local development stack |
-| `.env.dev` | template for the local `.env` at the repository root |
-| `compose.prod.yaml` | the app stack (caddy, postgres, migrate, services, sites) |
-| `compose.monitoring.yaml` | prometheus, node-exporter, cAdvisor, blackbox, alertmanager, grafana |
-| `compose.restore.yaml` | override for the local restore drill (see documentation/operations.md) |
+| `units/` | production topology: systemd units (podman Quadlet) — see `units/README.md` |
 | `monitoring/` | prometheus config, alert rules, alertmanager, grafana provisioning |
 | `caddy/Caddyfile` | routing + TLS, baked into the caddy image |
 | `caddy/Dockerfile` | caddy + infomaniak DNS-01 plugin + Caddyfile |
-| `.env.prod` | template for the server's `/apps/.env` (real values: ansible vault, not git) |
+| `compose.dev.yaml` | the local development stack (Docker Desktop) |
+| `.env.dev` | template for the local `.env` at the repository root |
 | `../database/Dockerfile` | flyway + baked migrations |
 
-There are no bind mounts: the server needs only `compose.prod.yaml` and
-`.env`. Put them in `/apps` (the legacy stack used `/projects`).
+Production values are not in this directory: ansible renders the units with
+the deploy tag and the per-service `/etc/default/apps-*` environment files
+from the vault (`../ansible/roles/app/templates/`).
 
 ## deploying
 
-From the workstation (preferred):
+From the workstation:
 
 ```sh
 cd ansible
 ansible-playbook playbooks/deploy.yml -e image_tag=2026.10.24
 ```
 
-Manually on the server still works:
-
-```sh
-cd /apps
-IMAGE_TAG=2026.10.24 docker compose --env-file .env up -d
-```
-
-Rollback: same command with the previous tag. `migrate` runs first and
-everything else waits for it (`service_completed_successfully`).
+This renders `units/` into `/etc/containers/systemd/`, pulls the images, and
+restarts the stack in dependency order (postgres → migrate → apps → caddy).
+Rollback: same command with the previous tag. The app units `Require`
+`apps-migrate`, so migrations always run first. There is no compose and no
+container daemon on the server.
 
 ## routing
 
@@ -54,14 +48,14 @@ Public names (see `caddy/Caddyfile`):
 
 ## notes
 
-- `caddy-data` holds the ACME account + certificates. Deleting the volume
-  means re-issuing everything: do not delete it casually (Let's Encrypt rate
-  limits).
+- `/var/lib/apps/caddy-data` holds the ACME account + certificates. Deleting
+  it means re-issuing everything: do not delete it casually (Let's Encrypt
+  rate limits).
 - One Infomaniak API token (scopes `domain:read`, `dns:read`, `dns:write`)
   covers everything DNS: ACME DNS-01 in caddy and the dyndns timer
   (`ansible/files/dyndns.sh`) that keeps the A records on the dynamic IP.
-- Log rotation (`json-file`, 10m x 3) is set per service and in
-  `/etc/docker/daemon.json`; housekeeping prunes old images weekly.
+- Logging: everything goes to journald (capped at 200M); housekeeping prunes
+  images older than a week, keeping rollback candidates.
 - Day-to-day operations (deploy, backups, logging, monitoring) are documented
   in [documentation/operations.md](../documentation/operations.md). Ansible
   drives all of it from `../ansible/`.

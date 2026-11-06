@@ -163,6 +163,5 @@ SMTP TLS flags (both default to `false` so dev keeps working against mailpit):
 - `MESSAGING_SMTP_TLS_REQUIRED` → `mail.smtp.starttls.required`: required STARTTLS. The
   connection fails unless the session is upgraded; there is no plaintext fallback.
 
-Set both to `true` in production. Note for the ops follow-up (out of scope here):
-`infrastructure/.env.prod`, `.env.dev` and the compose `environment` sections must forward the new
-`MESSAGING_SMTP_TLS_REQUIRED` variable next to `MESSAGING_SMTP_TLS`.
+Set both to `true` in production -- `ansible/roles/app/templates/env-messaging.j2`
+does. `infrastructure/.env.dev` carries both for the dev compose stack.

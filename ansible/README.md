@@ -17,8 +17,8 @@ these playbooks, run from the workstation over WireGuard. Context:
 
 ## patterns
 
-- **Roles are concerns**: `server` (base system, docker, wireguard), `app`
-  (compose stacks + `.env`), `dyndns`, `backup`, `housekeep`.
+- **Roles are concerns**: `server` (base system, podman, wireguard), `app`
+  (systemd units + environment files), `dyndns`, `backup`, `housekeep`.
 - **Playbooks are actions**: `site` (everything), `deploy`, `backup`,
   `housekeep`, `status`, `logs`.
 - **Server-side naming is `apps-<concern>`**: scripts in

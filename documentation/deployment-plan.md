@@ -64,7 +64,7 @@ strict (S2 depends on S1's file names, S5 removes what S1–S4 replace).
 | S2 | **Server role: podman instead of docker** | DP-07 (D11) | `ansible/roles/server/**` | No docker apt repo, packages, `daemon.json` or `docker` group left; podman installed from Debian's own repo; journald logging/caps documented; role is idempotent. |
 | S3 | **App role, deploy, status, logs on systemd** | DP-08 (D11, D13) | `ansible/roles/app/**`, `ansible/group_vars/**`, `ansible/playbooks/{deploy,status,logs}.yml` | Units and per-service env files rendered and started; deploy with `-e image_tag=` pulls and restarts in dependency order; `status.yml` shows units/timers/disk; `logs.yml` reads `journalctl -u apps-<service>`. |
 | S4 | **Backup and housekeeping scripts** | DP-04 (D12) | `ansible/files/{backup.sh,housekeep.sh}`, `ansible/roles/{backup,housekeep}/**` | `backup.sh` dumps postgres via `podman exec` and tars `/var/lib/apps/media` directly (no volume-name literal, no helper container); `housekeep.sh` prunes podman images/containers; both still systemd-timer driven. |
-| S5 | **Remove compose files, sync documentation** | DP-09 (D11–D15) | `infrastructure/compose.{prod,monitoring,restore}.yaml` (deleted), `infrastructure/README.md`, `ansible/README.md`, `documentation/{operations,architecture,decisions,open-work}.md`, `AGENTS.md`, root `README.md` | No reference to a server-side compose stack remains; decisions C-005 and the operations block are amended (D11–D15 recorded); open-work carries the deferred restore drill and the pre-cutover rebuild checklist. |
+| S5 | **Remove compose files, sync documentation** | DP-09 (D11–D15) | `infrastructure/compose.{prod,monitoring,restore}.yaml`, `infrastructure/.env.prod` (deleted), `infrastructure/{README.md,.env.dev}`, `ansible/README.md`, `documentation/{operations,architecture,decisions,open-work,principles,migration}.md`, `services/{README,messaging/README}.md`, root `README.md`, `AGENTS.md` | No reference to a server-side compose stack remains; decisions C-005 and the operations block are amended (D11–D15 recorded); open-work carries the deferred restore drill and the pre-cutover rebuild checklist. |
 
 ### Unit inventory (S1)
 
@@ -139,4 +139,4 @@ Review findings of the current deployment surface, closed by this pass:
 | S2 | done | Server role installs podman; docker repo, packages, daemon.json and group removed. |
 | S3 | done | Per-service env files, unit templating, ordered restart via handlers, status/logs on systemctl/journalctl. |
 | S4 | done | backup.sh/housekeep.sh on podman + plain dirs; media backup is a plain tar. |
-| S5 | pending | |
+| S5 | done | Compose files and `.env.prod` removed, docs synced, C-005 amended, D11–D15 recorded. `AGENTS.md` edited but left uncommitted (untracked user file). |
