@@ -13,43 +13,15 @@
     update_cache: true
     cache_valid_time: 3600
 
-- name: docker apt keyring
-  ansible.builtin.get_url:
-    url: https://download.docker.com/linux/debian/gpg
-    dest: /etc/apt/keyrings/docker.asc
-    mode: "0644"
-
-- name: docker apt repository
-  ansible.builtin.apt_repository:
-    repo: >-
-      deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc]
-      https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
-    filename: docker
-
-- name: docker packages
+# podman ships the quadlet generator (podman-system-generator): every
+# workload is a systemd unit, there is no container daemon on this box.
+# Debian stable must carry podman >= 5.x -- see documentation/deployment-plan.md.
+- name: podman package
   ansible.builtin.apt:
     name:
-      - containerd.io
-      - docker-buildx-plugin
-      - docker-ce
-      - docker-ce-cli
-      - docker-compose-plugin
+      - podman
 
-- name: docker daemon json (log rotation for every container)
-  ansible.builtin.copy:
-    dest: /etc/docker/daemon.json
-    mode: "0644"
-    content: |
-      {
-        "log-driver": "json-file",
-        "log-opts": {
-          "max-size": "10m",
-          "max-file": "3"
-        }
-      }
-  notify: restart docker
-
-- name: journald size limit
+- name: journald size limit (journald is the log store for every unit)
   ansible.builtin.copy:
     dest: /etc/systemd/journald.conf.d/00-limits.conf
     mode: "0644"
@@ -69,7 +41,7 @@
 - name: deploy user
   ansible.builtin.user:
     name: "{{ ansible_user }}"
-    groups: docker,sudo
+    groups: sudo
     append: true
 
 - name: textfile collector directory for node exporter
@@ -92,9 +64,9 @@
     state: started
 
 # No host firewall on purpose. The router forwards are the outer boundary
-# (80/443 and the wireguard port), and docker published ports bypass ufw
-# anyway -- what containers publish and the address they bind decides
-# exposure. See documentation/operations.md.
+# (80/443 and the wireguard port), and published ports bypass ufw anyway --
+# what the units publish and where they bind decides exposure. See
+# documentation/operations.md.
 
 - name: sshd listens on wireguard only
   ansible.builtin.copy:
