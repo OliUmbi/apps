@@ -6,9 +6,15 @@ dependent workflows, one version can roll back without a schema rollback. The
 production system stays authoritative until a feature's cutover is complete;
 `legacy/` is read-only reference material.
 
+**Current position (2026-11).** The legacy stack is still live and authoritative.
+The replacement exists and passes its gates, but no site has been cut over. The
+restore drill, production bootstrap and final content/legal approvals are the
+open launch blockers; see [open work](open-work.md). Deploy mechanics are in
+[deployment](../operations/deployment.md); the cutover sequence is below.
+
 ## Phases
 
-1. **Decide and inventory** — record the remaining decisions ([decisions.md](decisions.md)); inventory legacy routes, tables, accounts, files, forms and integrations; mark each item **migrate / replace / archive / drop** with owner approval; capture a sanitized database + media fixture for rehearsal.
+1. **Decide and inventory** — record the remaining decisions ([decisions](../reference/decisions.md)); inventory legacy routes, tables, accounts, files, forms and integrations; mark each item **migrate / replace / archive / drop** with owner approval; capture a sanitized database + media fixture for rehearsal.
 2. **Vertical slice: Zelglihof** — one complete, operable site: real content, one durable submission workflow end to end, the editing the owner actually needs, sessions and site-scoped authorization, and the full deploy/proxy/backup/CI path. Exit: launch checklist met, clean environment builds from source + migrations, restore and rollback rehearsed.
 3. **Shared migration capabilities** — publication/archive/revision behavior, media import with deterministic derivatives, editor management, import tooling with dry-run and reconciliation reports, redirect/sitemap conventions.
 4. **First legacy site (Uncle-T first: lower scope and risk)** — build against sanitized data, rehearse imports repeatedly, owner acceptance in a production-like environment, then freeze writes briefly, final export/import/reconcile, cut over with monitoring and a rollback window, keep legacy protected until acceptance.
@@ -74,4 +80,4 @@ as a flat list of technical TODOs. Review the roadmap after each launch.
 ## Deferred on purpose
 
 Staging environments and end-to-end suites are overkill at this scale for now —
-kept on the plan to revisit ([open-work.md](open-work.md)).
+kept on the plan to revisit ([open work](open-work.md)).

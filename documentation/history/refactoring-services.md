@@ -1,5 +1,9 @@
 # Refactoring handoff — database & Java services
 
+> Historical evidence, superseded by [refactoring-plan](refactoring-plan.md).
+> Current docs start at [documentation/README.md](../README.md). Relative links
+> reflect the old layout.
+
 Executed in the 2026-10 refactoring pass; see `refactoring-plan.md` for outcomes. The registry below is historical.
 
 > Agent-to-agent handoff document. Source: code review session over `../database`,
@@ -645,6 +649,10 @@ Conflict key: `SAME-FILE:<package>` = serialize with that package.
   (submission retries, unsaved edits, role checks) can drift apart.
 - Change: proposal only — make code-quality-review purely historical and move
   live checkboxes into open-work. Do not execute without owner confirmation.
+- *Disposition (2026-11): adopted and executed - the code quality review moved to
+  `documentation/history/` as frozen evidence; live debt is in
+  `documentation/work/tech-debt.md` with `TD-*` IDs and actionable tasks are in
+  `documentation/work/open-work.md`.*
 
 ---
 

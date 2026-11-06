@@ -101,7 +101,7 @@ export function createDonationService(database: DatabasePool) {
 				// dropped silently - success-shaped answer, no row, no stock movement,
 				// no queued email - so the bot learns nothing. Throttling beyond this
 				// stays the deliberate proxy rate-limit gap (see
-				// documentation/open-work.md technical debt).
+				// documentation/work/tech-debt.md, TD-01).
 				if (values.website) return committed;
 				return database.transaction(async (transaction) => {
 					const repository = createCommitmentRepository(transaction);

@@ -1,8 +1,17 @@
 # Decisions
 
 How we do things, in one place. Not an ADR archive: the maintainer is the main
-developer, so direction and consequence matter more than rationale. Write a
-full decision record only when someone outside the project needs the context.
+developer, so direction and consequence matter more than rationale. Write a full
+decision record only when someone outside the project needs the context.
+
+Use this page for adopted direction. Open questions stay here with an `O-*`
+number until decided. Actionable work and debt live in
+[open work](../work/open-work.md) and [technical debt](../work/tech-debt.md).
+
+Status legend: **C** = fixed direction, **P** = approved proposal, **O** = a
+question (closed or open), **D** = decision adopted for a specific execution
+pass. A horizontal change to a direction is a new decision that supersedes the
+old one; do not silently rewrite history.
 
 ## Fixed directions
 
@@ -46,12 +55,12 @@ full decision record only when someone outside the project needs the context.
 | O-004 | CRUD stays in TanStack servers; where separate services are warranted, Java (Spring) is preferred. |
 | O-005 | Administration is one app at `studio.oliumbi.ch`, all site `studio.*` names redirect there; mobile support needed. (The name "studio" replaces "admin".) |
 | O-006 | **Open** — see below. |
-| O-007 | Content is site-specific and custom-built; explicitly not a generic CMS. Scope in [sites.md](sites.md). |
+| O-007 | Content is site-specific and custom-built; explicitly not a generic CMS. Scope in [sites](sites.md). |
 | O-008 | Private server, media on disk, no CDN; reasonable default limits; revisit when relevant. |
 | O-009 | Email via SMTP from the domain provider, deliberately simple now. Two mail identities per domain: a **requests** inbox (`hof@`, `info@`, `scharleitung@`) for form notifications and Reply-To, and a **newsletter@** sending identity for subscriber mail — separated so bulk mail cannot damage the deliverability of confirmations, and replies still reach a human. Strategy reviewed later. |
 | O-010 | **Open** — see below. |
-| O-011 | Requirements were low (monthly backups, up to a day to recover); now superseded: daily backups, pull to workstation, restore drills ([operations.md](operations.md)). |
-| O-012 | Low availability requirements; now superseded: monitoring + alerting exist ([operations.md](operations.md)). |
+| O-011 | Requirements were low (monthly backups, up to a day to recover); now superseded: daily backups, pull to workstation, restore drills ([operations](../operations/README.md)). |
+| O-012 | Low availability requirements; now superseded: monitoring + alerting exist ([operations](../operations/README.md)). |
 | O-013 | Superseded: certbot/nginx plan replaced by containerized Caddy with DNS-01 wildcards; dynamic DNS handled by a server-side timer. |
 | O-014 | Stability requirements low; beta versions acceptable; periodic upgrades without formal policy. |
 | O-015 | German-only for the three client sites, Oliumbi mainly English; English URL strategy with permanent redirects; Paraglide for i18n; dates via a proper library, formatted per browser locale. |
@@ -80,7 +89,7 @@ full decision record only when someone outside the project needs the context.
 
 ## Deployment migration (2026-11)
 
-Adopted to move the server off Docker Engine ([deployment-plan.md](deployment-plan.md)):
+Adopted to move the server off Docker Engine ([deployment plan](../history/deployment-plan.md)):
 
 - **D11 — Podman + Quadlet replaces Docker Compose on the server.** Every
   workload is a systemd unit (`apps-*.service`, from `infrastructure/units/`),
@@ -92,17 +101,25 @@ Adopted to move the server off Docker Engine ([deployment-plan.md](deployment-pl
   not a mirror of production.
 - **D12 — Backed-up state lives in plain directories** under `/var/lib/apps/`
   (`postgres`, `media`, `caddy`); backup and restore are `pg_dump` and `tar`.
-  Monitoring state stays on named volumes and is not backed up.
+  Monitoring state stays on named volumes and is not backed up. *(2026-11 note:
+  the nightly `backup.sh` currently archives database and media only; Caddy's
+  ACME state is re-issuable but outside the archive — see
+  [TD-16](../work/tech-debt.md#td-16).)*
 - **D13 — Deploy stays manual and pinned by image tag.** Ansible renders the
   units with the tag, pulls, and restarts the stack in dependency order
   (postgres → migrate → apps → caddy). Rollback is the previous tag.
 - **D14 — The restore drill is deferred to a dedicated machine**: rebuild from
   zero, restore a backup, walk every site. Blocked on spare hardware
-  (open-work); the workstation drill is retired with the compose files.
+  ([open work](../work/open-work.md)); the workstation drill is retired with the
+  compose files.
 - **D15 — cAdvisor is dropped** (docker-coupled); node-exporter's systemd
   collector plus blackbox cover the host and the apps.
 
 ## Still open
+
+Both items are owner decisions; actionable tracking is under **Owner decisions**
+in [open work](../work/open-work.md). The proposals below are not adopted until
+the owner confirms them.
 
 - **O-006 — authentication and account model.** Fewer than ten users; local
   passwords vs. an external provider, bootstrap/invitations, recovery,
@@ -133,8 +150,9 @@ code had it right; documentation and infrastructure did not).
 ## Adopted for the 2026-10 refactoring pass
 
 Adopted to unblock the refactoring pass
-([refactoring-plan.md](refactoring-plan.md) §1). These are adopted-by-refactor
-decisions, not long-term ratifications: review them here after the pass.
+([refactoring plan](../history/refactoring-plan.md) §1). These are
+adopted-by-refactor decisions, not long-term ratifications: review them here
+after the pass.
 
 - **D1 — Idempotent public submissions.** Each public form carries a
   client-generated submission id (one UUID per form fill, hidden field). The
@@ -171,8 +189,8 @@ decisions, not long-term ratifications: review them here after the pass.
   without passwords; credentials are provisioned per environment (dev bootstrap
   in `database/README.md`, production through the vault/Ansible flow).
 - **D10 — Unsubscribe tokens stay plaintext this pass.** Hashing is a contract
-  change with the zelglihof data package and is deferred; tracked in
-  [open-work.md](open-work.md).
+  change with the zelglihof data package and is deferred; tracked as
+  [TD-15](../work/tech-debt.md#td-15).
 - **Site token decisions (landed with the pass).** Jublawoma gold unified on
   `honey #e3d4af`; footer muted text on `oat-soft #d5cbb9`; `clay` deleted
   (unused). Uncle-T dropped `ash` and adopted `paper`.

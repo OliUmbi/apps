@@ -1,7 +1,7 @@
 # Alert rules: everything here maps to "do something now".
 # Missing on purpose: log-based alerts (logs are for debugging, metrics are
 # for alerting) and anything external (box-down detection needs a probe
-# outside the box -- tracked in documentation/open-work.md).
+# outside the box -- tracked in documentation/work/open-work.md).
 groups:
   - name: availability
     rules:

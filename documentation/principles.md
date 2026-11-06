@@ -57,7 +57,7 @@ contract and a clear benefit justify the toolchain.
 4. **Logical boundaries before process boundaries.** Content, identity, media
    and messaging are distinct capabilities with explicit ownership; they become
    separate processes only when runtime, security, reliability or language needs
-   justify the cost. See [architecture.md](architecture.md).
+   justify the cost. See [architecture](architecture/README.md).
 5. **Libraries as libraries.** Use documented extension points and ecosystem
    conventions. Do not rebuild routing, DI, validation, migrations,
    authentication or SQL mapping without a measured need.
@@ -88,7 +88,7 @@ contract and a clear benefit justify the toolchain.
 - Every deployable unit keeps a nearby README: setup, configuration, contracts,
   health and commands.
 - Use one ubiquitous language per domain; the shared vocabulary lives in
-  [sites.md](sites.md). A second developer works on this code.
+  [glossary](reference/glossary.md). A second developer works on this code.
 
 ## Non-goals
 

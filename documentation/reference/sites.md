@@ -1,7 +1,8 @@
 # Sites and capabilities
 
-What each property is, what it does, and the vocabulary shared across domains.
-Owner input summarized here; scope changes belong in [open-work.md](open-work.md).
+What each property is and what it does. Owner input is summarized here; scope
+changes belong in [open work](../work/open-work.md). The shared vocabulary is in
+[glossary](glossary.md).
 
 ## Portfolio
 
@@ -113,14 +114,9 @@ admin flag. It is not a page builder, analytics suite, CRM or marketing tool.
 
 ## Domain vocabulary
 
-Planning names, not a schema: **Site** (public property and authorization
-scope), **Editor**, **Role**, **Content item**, **Article/announcement**,
-**Media asset** (original + metadata + derived variants), **Submission**
-(durable visitor request with status and retention), **Booking request**,
-**Product offer**, **Review**, **Donation campaign**, **Message job** (a
-notification instruction, independent of domain data), **Audit event**. Every
-concept needs an owner, lifecycle, private fields, retention and deletion
-behavior before implementation.
+Planning names, not a schema. The shared terms and per-workflow states are in
+[glossary](glossary.md); every concept needs an owner, lifecycle, private fields,
+retention and deletion behavior before implementation.
 
 ## Per-site launch checklist
 

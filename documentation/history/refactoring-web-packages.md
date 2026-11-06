@@ -1,5 +1,9 @@
 # Refactoring handoff — web packages
 
+> Historical evidence, superseded by [refactoring-plan](refactoring-plan.md).
+> Current docs start at [documentation/README.md](../README.md). Relative links
+> reflect the old layout.
+
 Executed in the 2026-10 refactoring pass; see `refactoring-plan.md` for outcomes. The registry below is historical.
 
 Working document for orchestrating a refactor of `web/packages/*`. Not a maintained

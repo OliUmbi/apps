@@ -1,5 +1,8 @@
 # Refactoring plan
 
+> Historical evidence, status COMPLETE (2026-10-26). Current docs start at
+> [documentation/README.md](../README.md). Relative links reflect the old layout.
+
 Execution plan for the 2026-10 refactoring pass. It merges the four handoff
 reports (`refactoring-web-packages.md`, `refactoring-web-sites.md`,
 `refactoring-web-studio.md`, `refactoring-services.md`) with

@@ -44,7 +44,9 @@ Public names (see `caddy/Caddyfile`):
   permanent-redirects there so sessions survive
 - `www.*` → apex redirect. The old `api.*` names are retired: no redirects,
   delete the DNS records at cutover.
-- `oliumbi.ch` apex: **TODO** (no site container in the new stack yet)
+- `oliumbi.ch` apex: no site container in the new stack yet; the placeholder
+  redirects to Studio. The routing decision is tracked in
+  [documentation/work/open-work.md](../documentation/work/open-work.md).
 
 ## notes
 
@@ -57,5 +59,5 @@ Public names (see `caddy/Caddyfile`):
 - Logging: everything goes to journald (capped at 200M); housekeeping prunes
   images older than a week, keeping rollback candidates.
 - Day-to-day operations (deploy, backups, logging, monitoring) are documented
-  in [documentation/operations.md](../documentation/operations.md). Ansible
+  in [documentation/operations/README.md](../documentation/operations/README.md). Ansible
   drives all of it from `../ansible/`.

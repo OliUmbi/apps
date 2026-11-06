@@ -27,7 +27,7 @@ import { createReservationService } from "../packages/zelglihof-data/src/reserva
  * dropped by the service with the same success-shaped result a genuine fill
  * gets, while nothing is written: no submission row, no stock change, no
  * queued email. Rate limiting beyond the honeypot is the deliberate proxy gap
- * (see documentation/open-work.md technical debt).
+ * (see documentation/work/tech-debt.md, TD-01).
  */
 
 const submissionId = "6f9619ff-8b86-4d01-b42d-00cf4fc964ff";

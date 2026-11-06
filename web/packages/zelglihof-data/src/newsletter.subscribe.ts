@@ -51,7 +51,7 @@ export async function requestSubscription(
 		// Honeypot (X-04): a filled `website` marks a scripted submit; it is
 		// dropped silently - success-shaped answer, no row, no queued email - so
 		// the bot learns nothing. Throttling beyond this stays the deliberate
-		// proxy rate-limit gap (see documentation/open-work.md technical debt).
+		// proxy rate-limit gap (see documentation/work/tech-debt.md, TD-01).
 		if (website) return { outcome: "confirmation-sent" };
 		const outcome = await database.transaction(async (transaction) => {
 			const repository = createNewsletterRepository(transaction);

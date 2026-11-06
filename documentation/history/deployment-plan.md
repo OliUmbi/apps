@@ -1,5 +1,8 @@
 # Deployment plan
 
+> Historical evidence, status COMPLETE (2026-11). Current docs start at
+> [documentation/README.md](../README.md). Relative links reflect the old layout.
+
 Execution plan for the 2026-11 deployment migration: the server stops running
 Docker Engine + Compose and instead runs every workload as a **systemd unit
 managed by podman (Quadlet)**. The server is not yet rebuilt in the new

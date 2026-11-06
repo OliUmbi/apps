@@ -14,9 +14,10 @@ RUN mvn -q -pl assets -am -DskipTests package
 FROM eclipse-temurin:25-jre-alpine@sha256:b7528962e65d43064d8a8b67ba175367896bc948363ea2d3fcd7f10d34e1f048
 WORKDIR /app
 # uid/gid pinned: /media is a host bind mount on the server (ansible chowns
-# /var/lib/apps/media to 100:100); adduser -S would pick ids implicitly.
-RUN addgroup -S -g 100 app && adduser -S -u 100 -G app app
-RUN mkdir -p /media && chown app:app /media
+# /var/lib/apps/media to 100:100). Alpine already owns GID 100 as `users`, so
+# create the app user with that group instead of adding a conflicting group.
+RUN adduser -S -u 100 -G users app
+RUN mkdir -p /media && chown app:users /media
 COPY --from=build /workspace/assets/target/assets.jar /app/app.jar
 USER app
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

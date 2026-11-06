@@ -52,7 +52,8 @@ no password literal lives in this directory.
 - **Production** — provisioning is part of the deployment flow, not the
   migrations: the vault/Ansible deployment runs `ALTER ROLE … LOGIN PASSWORD …`
   for every role from the vault values after `apps-migrate` and before the
-  services start (ops follow-up tracked in `open-work.md`: "replace development
+  services start (ops follow-up tracked in `documentation/work/open-work.md`:
+  "replace development
   secrets / update roles and credentials"). Rotate any credential that was ever
   committed to this repository.
 

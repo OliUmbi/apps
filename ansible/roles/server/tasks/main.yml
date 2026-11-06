@@ -15,7 +15,7 @@
 
 # podman ships the quadlet generator (podman-system-generator): every
 # workload is a systemd unit, there is no container daemon on this box.
-# Debian stable must carry podman >= 5.x -- see documentation/deployment-plan.md.
+# Debian stable must carry podman >= 5.x -- see documentation/history/deployment-plan.md.
 - name: podman package
   ansible.builtin.apt:
     name:
@@ -66,7 +66,7 @@
 # No host firewall on purpose. The router forwards are the outer boundary
 # (80/443 and the wireguard port), and published ports bypass ufw anyway --
 # what the units publish and where they bind decides exposure. See
-# documentation/operations.md.
+# documentation/operations/access-and-security.md.
 
 - name: sshd listens on wireguard only
   ansible.builtin.copy:

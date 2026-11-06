@@ -1,6 +1,6 @@
 name: ci
 
-# Runs the verification commands from documentation/refactoring-plan.md §2:
+# Runs the verification commands from documentation/development/verification.md:
 # web `pnpm check` / `pnpm typecheck` / `pnpm test` / `pnpm build` and Java
 # `services/mvnw -f services/pom.xml test`, on the toolchain majors documented in
 # the root README (Node 24, pnpm 11 via the web/package.json packageManager pin,
@@ -142,7 +142,7 @@ jobs:
             sed -i "s/{{ image_tag }}/ci/g" /tmp/units/*
             sed -i "s/{{ monitoring_bind }}/127.0.0.1/g" /tmp/units/*
             QUADLET_UNIT_DIRS=/tmp/units /usr/lib/systemd/system-generators/podman-system-generator /out /out /out
-            expected=$(ls /tmp/units | wc -l)
+            expected=$(find /tmp/units -maxdepth 1 -type f \( -name '*.container' -o -name '*.network' -o -name '*.volume' \) | wc -l)
             generated=$(ls /out | grep -c "\.service$")
             echo "generated $generated of $expected unit files"
             test "$generated" -eq "$expected"

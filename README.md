@@ -19,51 +19,43 @@ Start with [documentation/README.md](documentation/README.md) for the reading
 order. The web workspace is documented in
 [web/README.md](web/README.md), the Java reactor in
 [services/README.md](services/README.md), and outstanding work in
-[documentation/open-work.md](documentation/open-work.md).
+[documentation/work/open-work.md](documentation/work/open-work.md) and
+[technical debt](documentation/work/tech-debt.md).
 
 ## Local development
 
-Requirements: Docker Desktop, Node.js 24+, pnpm 11+, JDK 25, and Maven 3.9.12.
-
-Copy `infrastructure/.env.dev` to `.env` in the repository root; it is
-gitignored and holds your local values. `infrastructure/.env.dev` is the
-checked-in template (production values live in the ansible vault). Override
-values through your shell or IDE when needed, and never reuse the development
-credentials in a deployed environment.
-
-Start the complete stack from the repository root:
+Requirements: Docker Desktop, Node.js 24+, pnpm 11+, JDK 25, and Maven 3.9.12
+(the wrapper pins Maven).
 
 ```powershell
 Copy-Item infrastructure/.env.dev .env
 docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d --build
 ```
 
-Mailpit receives development email at <http://localhost:8025>. To work on a
-frontend locally while infrastructure stays in Docker, start PostgreSQL,
-Flyway, and Mailpit, then run the relevant `pnpm dev:*` command from `web/`.
-Run the supporting Java services in Docker or your IDE as well: public images
-need Assets, queued email needs Messaging, and Studio also needs Identity.
-See [Java development](services/README.md#build) for native environment setup.
-
-Set `STUDIO_SECURE_COOKIES=true` whenever Studio is served over HTTPS. Restart
-running processes after changing environment values, and rebuild Java services
-after changing the shared module.
+Sites and Studio run at localhost:8000-8003, the services at 8081-8083, and
+Mailpit at <http://localhost:8025>. The full workflow, including the
+frontend-only setup and environment rules, is in
+[documentation/development/local-setup.md](documentation/development/local-setup.md).
 
 ## Database
 
 Flyway migrations in `database/migrations/` are the schema source of truth.
 During development they are edited in place, so recreate the local database
-after a migration changes. See [database/README.md](database/README.md) for the
-schema ownership summary.
+after a migration changes. See [database/README.md](database/README.md).
 
 ## Verification
 
+Every change ends with the checks in
+[documentation/development/verification.md](documentation/development/verification.md).
+The short version:
+
 ```powershell
 cd web
-pnpm build
-pnpm typecheck
 pnpm check
+pnpm typecheck
+pnpm test
+pnpm build
 
-cd ../services
-mvn test
+cd ..
+services\mvnw.cmd -f services/pom.xml test
 ```

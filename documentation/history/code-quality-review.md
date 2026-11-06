@@ -1,5 +1,14 @@
 # Code quality review
 
+> Historical evidence, frozen 2026-11. Live debt is in
+> [technical debt](../work/tech-debt.md); current docs start at
+> [documentation/README.md](../README.md). Relative links reflect the old layout.
+>
+> Open findings map to the live register: R01 → TD-06, R03 → TD-07, R07
+> (legacy-import part) → TD-14, R09 → TD-08, R11 → TD-09, R16 → TD-10, R17 →
+> TD-11, R19 → TD-12, R33 (Java follow-ups) → TD-13. Everything else is fixed,
+> resolved or accepted in place.
+
 Reviewed on 2026-09-25 against the working tree, including the pending refactor.
 
 Follow-up status: **10 findings resolved; 28 remain open.** Resolved: R05–R06, R25–R27, R30 and R35–R38. R33 also has a completed import cleanup; its tooling work remains open. The latest change completes password-change sign-out; other workflow, database and architecture changes remain open.

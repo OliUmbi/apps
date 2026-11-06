@@ -2,7 +2,7 @@
 
 The ops interface: everything that happens on or to the server goes through
 these playbooks, run from the workstation over WireGuard. Context:
-[documentation/operations.md](../documentation/operations.md).
+[documentation/operations/README.md](../documentation/operations/README.md).
 
 ## layout
 
