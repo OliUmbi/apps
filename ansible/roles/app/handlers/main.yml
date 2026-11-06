@@ -1,0 +1,32 @@
+---
+# Ordered restart in dependency order (deployment-plan D13): postgres ->
+# migrations -> services -> sites -> edge. The app units Require apps-migrate,
+# so a migrate restart propagates a stop to them -- restarting in this order
+# is what makes that harmless. Only fires when the rendered units or
+# environment files change; deploying the same tag again restarts nothing.
+- name: restart stack
+  ansible.builtin.systemd:
+    name: "apps-{{ item }}.service"
+    state: restarted
+  loop:
+    - postgres
+    - migrate
+    - identity
+    - messaging
+    - assets
+    - jublawoma
+    - unclet
+    - zelglihof
+    - studio
+    - caddy
+
+- name: restart monitoring
+  ansible.builtin.systemd:
+    name: "apps-{{ item }}.service"
+    state: restarted
+  loop:
+    - prometheus
+    - alertmanager
+    - node-exporter
+    - blackbox
+    - grafana

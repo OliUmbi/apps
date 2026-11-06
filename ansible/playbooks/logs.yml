@@ -1,7 +1,9 @@
 ---
-# Read logs without SSH-ing into the machine:
+# Read logs without SSH-ing into the machine (journald is the log store for
+# every unit):
 #   ansible-playbook playbooks/logs.yml -e service=identity
 #   ansible-playbook playbooks/logs.yml -e service=caddy -e lines=500
+# Without service= every apps-* unit is shown.
 - name: logs
   hosts: server
   gather_facts: false
@@ -9,9 +11,8 @@
     - name: read logs
       ansible.builtin.command:
         cmd: >-
-          docker compose --env-file .env -f compose.prod.yaml
-          logs --tail {{ lines | default(200) }} {{ service | default("") }}
-        chdir: "{{ project_dir }}"
+          journalctl -u {{ ('apps-' + service) if service is defined else 'apps-*' }}
+          -n {{ lines | default(200) }} --no-pager
       changed_when: false
       register: logs
 

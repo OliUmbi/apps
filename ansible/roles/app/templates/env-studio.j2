@@ -1,0 +1,7 @@
+# rendered by ansible from group_vars/vault.yml -- do not edit on the server
+DATABASE_URL=postgres://{{ vault_studio_database_user }}:{{ vault_studio_database_password }}@postgres:5432/{{ vault_postgres_db }}
+ASSETS_INTERNAL_AUTHORIZATION_TOKEN={{ vault_assets_internal_authorization_token }}
+MESSAGING_INTERNAL_AUTHORIZATION_TOKEN={{ vault_messaging_internal_authorization_token }}
+IDENTITY_INTERNAL_AUTHORIZATION_TOKEN={{ vault_identity_internal_authorization_token }}
+ZELGLIHOF_REQUESTS_EMAIL={{ vault_zelglihof_requests_email }}
+ZELGLIHOF_NEWSLETTER_EMAIL={{ vault_zelglihof_newsletter_email }}

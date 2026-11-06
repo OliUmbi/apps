@@ -5,50 +5,126 @@
     state: directory
     mode: "0750"
 
-- name: compose files
-  ansible.builtin.copy:
-    src: "{{ repo_root }}/infrastructure/{{ item }}"
-    dest: "{{ project_dir }}/{{ item }}"
-    mode: "0640"
+# State the backup covers lives in plain directories so backup.sh can dump and
+# tar it without container tricks (deployment-plan D12). Ownership must match
+# the container users: postgres 70:70 (its entrypoint also chowns on first
+# start), media 100:100 (uid pinned in the assets image), caddy runs as root.
+- name: state directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "0750"
   loop:
-    - compose.prod.yaml
-    - compose.monitoring.yaml
+    - { path: "{{ state_dir }}/postgres", owner: "70", group: "70" }
+    - { path: "{{ state_dir }}/media", owner: "100", group: "100" }
+    - { path: "{{ state_dir }}/caddy-data", owner: root, group: root }
+    - { path: "{{ state_dir }}/caddy-config", owner: root, group: root }
 
 - name: monitoring configuration
   ansible.builtin.copy:
     src: "{{ repo_root }}/infrastructure/monitoring/"
     dest: "{{ project_dir }}/monitoring/"
     mode: "0640"
+  notify: restart monitoring
 
 - name: alertmanager receiver url
   ansible.builtin.replace:
     path: "{{ project_dir }}/monitoring/alertmanager.yml"
     regexp: __NTFY_WEBHOOK_URL__
     replace: "{{ vault_ntfy_webhook_url }}"
+  notify: restart monitoring
 
-- name: environment file
+- name: quadlet unit directory
+  ansible.builtin.file:
+    path: /etc/containers/systemd
+    state: directory
+    mode: "0755"
+
+# The units are the production topology (infrastructure/units). They are jinja
+# templates because the image tag and the monitoring bind address are
+# per-deploy values; everything else in them is static config.
+- name: unit files
   ansible.builtin.template:
-    src: env.j2
-    dest: "{{ project_dir }}/.env"
+    src: "{{ repo_root }}/infrastructure/units/{{ item }}"
+    dest: "/etc/containers/systemd/{{ item }}"
+    mode: "0644"
+  loop:
+    - apps.network
+    - monitoring.network
+    - prometheus-data.volume
+    - grafana-data.volume
+    - apps-postgres.container
+    - apps-migrate.container
+    - apps-identity.container
+    - apps-messaging.container
+    - apps-assets.container
+    - apps-jublawoma.container
+    - apps-unclet.container
+    - apps-zelglihof.container
+    - apps-studio.container
+    - apps-caddy.container
+    - apps-prometheus.container
+    - apps-alertmanager.container
+    - apps-node-exporter.container
+    - apps-blackbox.container
+    - apps-grafana.container
+  notify: restart stack
+
+# One environment file per unit (0600 root) -- secrets never enter the units.
+- name: environment files
+  ansible.builtin.template:
+    src: "env-{{ item }}.j2"
+    dest: "/etc/default/apps-{{ item }}"
     mode: "0600"
+  loop:
+    - postgres
+    - migrate
+    - identity
+    - messaging
+    - assets
+    - jublawoma
+    - unclet
+    - zelglihof
+    - studio
+    - caddy
+    - grafana
+  notify: restart stack
+
+- name: systemd reload (generate the units)
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+# Pull what the rendered units reference, so the pinned images in
+# infrastructure/units stay the single source of truth.
+- name: images referenced by the units
+  ansible.builtin.shell: sed -n 's/^Image=//p' /etc/containers/systemd/*.container | sort -u
+  register: stack_images
+  changed_when: false
 
 - name: pull images
-  ansible.builtin.command:
-    cmd: docker compose --env-file .env -f {{ item }} pull
-    chdir: "{{ project_dir }}"
+  ansible.builtin.command: podman pull {{ item }}
+  loop: "{{ stack_images.stdout_lines }}"
+  changed_when: true
+
+- name: units started
+  ansible.builtin.systemd:
+    name: "apps-{{ item }}.service"
+    state: started
   loop:
-    - compose.prod.yaml
-    - compose.monitoring.yaml
-  changed_when: true
-
-- name: app stack
-  ansible.builtin.command:
-    cmd: docker compose --env-file .env -f compose.prod.yaml up -d --remove-orphans
-    chdir: "{{ project_dir }}"
-  changed_when: true
-
-- name: monitoring stack
-  ansible.builtin.command:
-    cmd: docker compose --env-file .env -f compose.monitoring.yaml up -d --remove-orphans
-    chdir: "{{ project_dir }}"
-  changed_when: true
+    - postgres
+    - migrate
+    - identity
+    - messaging
+    - assets
+    - jublawoma
+    - unclet
+    - zelglihof
+    - studio
+    - caddy
+    - prometheus
+    - alertmanager
+    - node-exporter
+    - blackbox
+    - grafana

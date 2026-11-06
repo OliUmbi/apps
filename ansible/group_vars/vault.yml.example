@@ -1,7 +1,8 @@
 ---
 # Copy to vault.yml and fill in:
 #   ansible-vault create group_vars/vault.yml
-# Never commit vault.yml. These values become /apps/.env on the server.
+# Never commit vault.yml. These values are rendered to the server as the
+# per-service /etc/default/apps-* environment files.
 
 # ---- wireguard ----
 vault_wireguard_server_private_key: ""

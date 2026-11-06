@@ -1,0 +1,12 @@
+# rendered by ansible from group_vars/vault.yml -- do not edit on the server
+DATABASE_URL=postgresql://postgres:5432/{{ vault_postgres_db }}
+MESSAGING_DATABASE_USER={{ vault_messaging_database_user }}
+MESSAGING_DATABASE_PASSWORD={{ vault_messaging_database_password }}
+MESSAGING_INTERNAL_AUTHORIZATION_TOKEN={{ vault_messaging_internal_authorization_token }}
+MESSAGING_SMTP_HOST={{ vault_messaging_smtp_host }}
+MESSAGING_SMTP_PORT={{ vault_messaging_smtp_port }}
+MESSAGING_SMTP_USERNAME={{ vault_messaging_smtp_username }}
+MESSAGING_SMTP_PASSWORD={{ vault_messaging_smtp_password }}
+MESSAGING_SMTP_AUTH=true
+MESSAGING_SMTP_TLS=true
+MESSAGING_SMTP_TLS_REQUIRED=true

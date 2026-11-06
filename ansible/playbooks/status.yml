@@ -1,18 +1,18 @@
 ---
-# Quick overview without touching the machine: containers, disk, timers,
-# last backup.
+# Quick overview without touching the machine: units, containers, disk,
+# timers, last backup.
 - name: status
   hosts: server
   gather_facts: false
   tasks:
-    - name: containers
-      ansible.builtin.command:
-        cmd: docker compose --env-file .env -f {{ item }} ps
-        chdir: "{{ project_dir }}"
+    - name: units
+      ansible.builtin.command: systemctl list-units apps-* --no-pager
       changed_when: false
-      loop:
-        - compose.prod.yaml
-        - compose.monitoring.yaml
+      register: units
+
+    - name: containers
+      ansible.builtin.command: podman ps -a
+      changed_when: false
       register: containers
 
     - name: disk
@@ -20,10 +20,10 @@
       changed_when: false
       register: disk
 
-    - name: docker disk usage
-      ansible.builtin.command: docker system df
+    - name: podman disk usage
+      ansible.builtin.command: podman system df
       changed_when: false
-      register: docker_disk
+      register: podman_disk
 
     - name: timers
       ansible.builtin.command: systemctl list-timers apps-* --no-pager
@@ -39,8 +39,9 @@
     - name: report
       ansible.builtin.debug:
         msg:
-          - "{{ containers.results | map(attribute='stdout_lines') | list }}"
+          - "{{ units.stdout_lines }}"
+          - "{{ containers.stdout_lines }}"
           - "{{ disk.stdout_lines }}"
-          - "{{ docker_disk.stdout_lines }}"
+          - "{{ podman_disk.stdout_lines }}"
           - "{{ timers.stdout_lines }}"
           - "{{ backups.stdout_lines | default(['no backups yet']) }}"

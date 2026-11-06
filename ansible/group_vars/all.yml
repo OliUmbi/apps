@@ -5,6 +5,7 @@
 
 # paths on the server
 project_dir: /apps
+state_dir: /var/lib/apps # durable state the backup covers (postgres, media, caddy)
 textfile_dir: /var/lib/node-exporter-textfile
 
 # wireguard
