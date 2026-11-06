@@ -5,34 +5,34 @@ set -eu
 # rotated (a few copies on the server, see BACKUP_KEEP). The workstation pulls
 # the copies over WireGuard (see ansible/files/pull-backups.sh).
 #
+# State lives in plain host directories (deployment-plan D12), so this is
+# pg_dump and tar -- no container tooling beyond podman exec for postgres.
 # Config comes from /etc/default/apps-backup (written by ansible).
 
 [ -f /etc/default/apps-backup ] && . /etc/default/apps-backup
 
 : "${BACKUP_DIR:=/var/backups/apps}"
 : "${BACKUP_KEEP:=3}"
-: "${PROJECT_DIR:=/apps}"
+: "${MEDIA_DIR:=/var/lib/apps/media}"
 : "${AGE_RECIPIENT:?AGE_RECIPIENT not set (age public key of the workstation)}"
 
-COMPOSE="docker compose --env-file ${PROJECT_DIR}/.env -f ${PROJECT_DIR}/compose.prod.yaml"
 STAMP=$(date -u +%Y%m%dT%H%M%SZ)
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
 
 echo "backup: database"
-${COMPOSE} exec -T postgres sh -c 'pg_dump -U "$POSTGRES_USER" -Fc "$POSTGRES_DB"' > "$WORK/database.dump"
+podman exec postgres sh -c 'pg_dump -U "$POSTGRES_USER" -Fc "$POSTGRES_DB"' > "$WORK/database.dump"
 # globals carry the roles (identity, messaging, assets, per-site users)
-${COMPOSE} exec -T postgres sh -c 'pg_dumpall -U "$POSTGRES_USER" --globals-only' > "$WORK/globals.sql"
+podman exec postgres sh -c 'pg_dumpall -U "$POSTGRES_USER" --globals-only' > "$WORK/globals.sql"
 
 echo "backup: media"
-docker run --rm -v oliumbi-apps_assets-data:/media:ro -v "$WORK:/out" alpine \
-  tar czf /out/media.tgz -C /media .
+tar czf "$WORK/media.tgz" -C "$MEDIA_DIR" .
 
 {
   echo "date: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-  echo "postgres: $(${COMPOSE} exec -T postgres postgres --version)"
+  echo "postgres: $(podman exec postgres postgres --version)"
   echo "images:"
-  ${COMPOSE} config --images
+  podman ps --format '{{.Names}} {{.Image}}'
 } > "$WORK/manifest.txt"
 sha256sum "$WORK"/* > "$WORK/SHA256SUMS"
 

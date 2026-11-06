@@ -23,7 +23,7 @@
       BACKUP_KEEP={{ backup_keep }}
       AGE_RECIPIENT={{ vault_age_recipient }}
       TEXTFILE_DIR={{ textfile_dir }}
-      PROJECT_DIR={{ project_dir }}
+      MEDIA_DIR={{ state_dir }}/media
 
 - name: backup timer
   ansible.builtin.systemd:

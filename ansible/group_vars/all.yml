@@ -44,5 +44,5 @@ dyndns_records:
   - www.oliumbi.ch
   - vpn.oliumbi.ch # wireguard endpoint for the laptop
 
-# repository root, for copying compose/config files to the server
+# repository root, for copying unit/config files to the server
 repo_root: "{{ playbook_dir | dirname | dirname }}"

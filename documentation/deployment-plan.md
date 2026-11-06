@@ -138,5 +138,5 @@ Review findings of the current deployment surface, closed by this pass:
 | S1 | done | Units + network/volume files + assets uid pin; monitoring images pinned; cAdvisor dropped. |
 | S2 | done | Server role installs podman; docker repo, packages, daemon.json and group removed. |
 | S3 | done | Per-service env files, unit templating, ordered restart via handlers, status/logs on systemctl/journalctl. |
-| S4 | pending | |
+| S4 | done | backup.sh/housekeep.sh on podman + plain dirs; media backup is a plain tar. |
 | S5 | pending | |
