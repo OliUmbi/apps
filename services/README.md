@@ -62,9 +62,10 @@ style checks. The reactor's checks run in CI (`.github/workflows/ci.yml`, via
 Run `docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d --build identity messaging assets`
 from the repository root. Compose forwards the variables declared in each service's
 `environment` section; `--env-file` alone does not pass every variable to a container.
-All three Dockerfiles use services as their build context and build the selected
-application plus shared through the reactor. They do not depend on locally
-installed shared artifacts. Generated target directories are excluded.
+All Dockerfiles build with the repository root as their context (the single root
+`.dockerignore` governs every build) and build the selected application plus shared
+through the reactor. They do not depend on locally installed shared artifacts.
+Generated target directories are excluded.
 
 ## Shared code
 

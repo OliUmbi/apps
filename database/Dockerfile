@@ -4,4 +4,4 @@
 # match the application images deployed with it.
 FROM flyway/flyway:13.4.0-alpine
 
-COPY ./migrations /flyway/sql
+COPY database/migrations /flyway/sql

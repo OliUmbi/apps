@@ -143,6 +143,9 @@ Today the legacy stack (`legacy/`) is still live; cutover is tracked in
 - Cache headers belong to the app (it knows what is immutable); caddy only
   sets a modest default for static files.
 - Deploys are boring on purpose: pinned tags, one command, manual.
+- Every image builds with the repository root as its context; the single root
+  `.dockerignore` (like `.gitignore`) governs what enters a build context. No
+  per-directory ignore files.
 
 Operations (access, logging, backups, housekeeping, monitoring) are documented
 in [operations.md](operations.md).

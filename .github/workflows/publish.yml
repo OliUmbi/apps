@@ -25,31 +25,31 @@ jobs:
       matrix:
         include:
           - image: apps-identity
-            context: ./services
+            context: .
             dockerfile: ./services/identity/Dockerfile
           - image: apps-messaging
-            context: ./services
+            context: .
             dockerfile: ./services/messaging/Dockerfile
           - image: apps-assets
-            context: ./services
+            context: .
             dockerfile: ./services/assets/Dockerfile
           - image: apps-studio
-            context: ./web
+            context: .
             dockerfile: ./web/sites/studio/Dockerfile
           - image: apps-jublawoma
-            context: ./web
+            context: .
             dockerfile: ./web/sites/jublawoma/Dockerfile
           - image: apps-unclet
-            context: ./web
+            context: .
             dockerfile: ./web/sites/unclet/Dockerfile
           - image: apps-zelglihof
-            context: ./web
+            context: .
             dockerfile: ./web/sites/zelglihof/Dockerfile
           - image: apps-migrate
-            context: ./database
+            context: .
             dockerfile: ./database/Dockerfile
           - image: apps-caddy
-            context: ./infrastructure/caddy
+            context: .
             dockerfile: ./infrastructure/caddy/Dockerfile
 
     steps:

@@ -1,0 +1,44 @@
+# One ignore file for every image build. All Dockerfiles build with the
+# repository root as their context, and docker reads .dockerignore from the
+# context root -- so this single file is the global one, like .gitignore.
+# Build inputs are web/, services/, database/migrations and
+# infrastructure/caddy; everything else stays out of the build context,
+# especially every .env file (secrets never enter a build context).
+
+.git
+.github
+.idea
+**/.idea
+*.iml
+**/*.iml
+.pnpm-store
+
+# documentation and ops sources are never image inputs
+documentation
+legacy
+media
+ansible
+README.md
+AGENTS.md
+
+# env files at any depth: templates and local secrets alike
+.env
+.env.*
+**/.env
+**/.env.*
+
+# dependencies and build outputs are recreated inside the images
+node_modules
+**/node_modules
+target
+**/target
+.output
+**/.output
+web/tests
+
+# leftover rework artifacts
+**/.dependencies-before-rework
+*-rework.mjs
+**/*-rework.mjs
+*-review.log
+**/*-review.log
