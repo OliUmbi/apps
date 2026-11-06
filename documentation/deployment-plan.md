@@ -65,6 +65,7 @@ strict (S2 depends on S1's file names, S5 removes what S1–S4 replace).
 | S3 | **App role, deploy, status, logs on systemd** | DP-08 (D11, D13) | `ansible/roles/app/**`, `ansible/group_vars/**`, `ansible/playbooks/{deploy,status,logs}.yml` | Units and per-service env files rendered and started; deploy with `-e image_tag=` pulls and restarts in dependency order; `status.yml` shows units/timers/disk; `logs.yml` reads `journalctl -u apps-<service>`. |
 | S4 | **Backup and housekeeping scripts** | DP-04 (D12) | `ansible/files/{backup.sh,housekeep.sh}`, `ansible/roles/{backup,housekeep}/**` | `backup.sh` dumps postgres via `podman exec` and tars `/var/lib/apps/media` directly (no volume-name literal, no helper container); `housekeep.sh` prunes podman images/containers; both still systemd-timer driven. |
 | S5 | **Remove compose files, sync documentation** | DP-09 (D11–D15) | `infrastructure/compose.{prod,monitoring,restore}.yaml`, `infrastructure/.env.prod` (deleted), `infrastructure/{README.md,.env.dev}`, `ansible/README.md`, `documentation/{operations,architecture,decisions,open-work,principles,migration}.md`, `services/{README,messaging/README}.md`, root `README.md`, `AGENTS.md` | No reference to a server-side compose stack remains; decisions C-005 and the operations block are amended (D11–D15 recorded); open-work carries the deferred restore drill and the pre-cutover rebuild checklist. |
+| S6 | **CI checks deployment inputs, not the dev rig** | DP-10 | `.github/workflows/ci.yml` | No CI job references `compose.dev.yaml`; every unit file generates a `.service` under the podman 5.x generator and every playbook passes `ansible-playbook --syntax-check` (both run in pinned containers). |
 
 ### Unit inventory (S1)
 
@@ -120,6 +121,11 @@ Review findings of the current deployment surface, closed by this pass:
   (quadlet units for the server, `compose.dev.yaml` for the workstation).
   *Disposition (2026-11): accepted (S5) — dev compose builds from source and
   is a development rig, not a mirror; the READMEs state the rule.*
+- **DP-10** — CI validated the dev rig (`compose.dev.yaml config`) instead of
+  the deployment inputs; nothing checked the quadlet units or the ansible
+  playbooks. *Disposition (2026-11): fixed (S6) — CI generates the units with
+  the quadlet generator and syntax-checks every playbook; dev-rig validation
+  dropped.*
 
 ## 5. Owner-gated / deferred
 
@@ -140,3 +146,4 @@ Review findings of the current deployment surface, closed by this pass:
 | S3 | done | Per-service env files, unit templating, ordered restart via handlers, status/logs on systemctl/journalctl. |
 | S4 | done | backup.sh/housekeep.sh on podman + plain dirs; media backup is a plain tar. |
 | S5 | done | Compose files and `.env.prod` removed, docs synced, C-005 amended, D11–D15 recorded. `AGENTS.md` edited but left uncommitted (untracked user file). |
+| S6 | done | CI generates the units (quadlet, podman 5.8.9 container) and syntax-checks the playbooks; the `containers` (compose config) job is gone. |

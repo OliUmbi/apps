@@ -6,9 +6,12 @@ name: ci
 # the root README (Node 24, pnpm 11 via the web/package.json packageManager pin,
 # JDK 25, Maven 3.9.12 via the services/.mvn wrapper pin). `pnpm typecheck`
 # runs `pnpm generate` first (single owner of the Paraglide message output), so
-# a clean checkout type-checks without a build. publish.yml calls this workflow
-# and only builds and pushes images when it is green, so tag pushes skip the
-# standalone trigger below and are verified through that call instead.
+# a clean checkout type-checks without a build. The deployment job checks what
+# the server actually runs -- the quadlet units must generate and the ansible
+# playbooks must parse; the dev compose rig is a workstation tool and CI does
+# not depend on it. publish.yml calls this workflow and only builds and pushes
+# images when it is green, so tag pushes skip the standalone trigger below and
+# are verified through that call instead.
 
 on:
   push:
@@ -67,8 +70,8 @@ jobs:
       - name: pnpm install --frozen-lockfile
         run: pnpm install --frozen-lockfile
 
-      # Same Flyway image and arguments as the flyway service in
-      # infrastructure/compose.dev.yaml: apply database/migrations/ in order.
+      # Apply database/migrations/ in order to the test database -- the same
+      # Flyway major that production's apps-migrate image runs.
       - name: migrate the test database
         run: >
           docker run --rm --network host
@@ -117,11 +120,42 @@ jobs:
       - name: services/mvnw -f services/pom.xml test
         run: services/mvnw -B -ntp -f services/pom.xml test
 
-  containers:
-    name: containers (compose config)
+  deployment:
+    name: deployment (units + ansible)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: docker compose -f infrastructure/compose.dev.yaml config
-        run: docker compose -f infrastructure/compose.dev.yaml config --quiet
+      # The quadlet generator is the parser that consumes the units on the
+      # server: it errors on malformed files and missing required keys, and
+      # every unit file must yield a .service. (Unknown keys are silently
+      # dropped by podman, so key typos surface at server verification, not
+      # here.) The jinja placeholders are rendered first, the same way the
+      # ansible app role does; the generator runs in the podman image so CI
+      # uses the podman 5.x generation the server requires.
+      - name: units generate (quadlet)
+        run: |
+          docker run --rm -v "$PWD/infrastructure/units:/units:ro" quay.io/podman/stable:v5.8.9 sh -c '
+            set -eu
+            mkdir -p /out
+            cp -r /units /tmp/units
+            sed -i "s/{{ image_tag }}/ci/g" /tmp/units/*
+            sed -i "s/{{ monitoring_bind }}/127.0.0.1/g" /tmp/units/*
+            QUADLET_UNIT_DIRS=/tmp/units /usr/lib/systemd/system-generators/podman-system-generator /out /out /out
+            expected=$(ls /tmp/units | wc -l)
+            generated=$(ls /out | grep -c "\.service$")
+            echo "generated $generated of $expected unit files"
+            test "$generated" -eq "$expected"
+          '
+
+      - name: ansible playbooks syntax
+        run: |
+          docker run --rm -v "$PWD/ansible:/ansible:ro" -w /ansible python:3.13-alpine sh -c '
+            set -eu
+            export ANSIBLE_ROLES_PATH=/ansible/roles
+            export ANSIBLE_INVENTORY=/ansible/inventory.yml
+            pip install -q ansible-core
+            for p in playbooks/*.yml; do
+              ansible-playbook --syntax-check "$p"
+            done
+          '

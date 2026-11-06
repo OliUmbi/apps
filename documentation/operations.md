@@ -133,8 +133,11 @@ the journal. Security updates run automatically (unattended-upgrades); a full
 ## Engineering gates
 
 Changes to `web/` and `services/` run formatting, linting, type checking and a
-production build; changed migrations get validated and container inputs get a
-build check. An all-projects build on the main branch catches mistakes in
+production build; changed migrations get validated by running Flyway against a
+fresh database, and the deployment inputs are checked -- the systemd units must
+generate (quadlet) and the ansible playbooks must pass a syntax check. The dev
+compose rig is a workstation tool; CI deliberately does not depend on it. An
+all-projects build on the main branch catches mistakes in
 affected-project detection. Generated code and lockfiles are reviewed like
 source. A release records source revision, image tag, migration version and
 verification result.
