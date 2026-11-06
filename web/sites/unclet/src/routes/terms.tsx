@@ -30,7 +30,7 @@ function TermsPage() {
 					<h2>
 						{index + 1}. {title}
 					</h2>
-					<p>{text}</p>
+					<p className="whitespace-pre-line">{text}</p>
 				</section>
 			))}
 		</LegalPage>

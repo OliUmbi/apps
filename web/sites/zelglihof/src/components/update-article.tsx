@@ -35,18 +35,19 @@ export function UpdateArticle({ update }: { update: Update }) {
 				/>
 			</div>
 			<div className="shell grid gap-10 py-16 md:grid-cols-[0.7fr_1.3fr] md:py-24">
-				<aside>
-					<p className="eyebrow text-moss">
-						{m.zelglihof_article_newsletter_eyebrow()}
-					</p>
-				</aside>
-				<div className="max-w-2xl text-lg leading-relaxed text-ink/70">
+				<div className="max-w-2xl text-lg leading-relaxed text-ink/70 md:col-start-2">
 					<SimpleMarkdown value={update.body} className="farm-markdown" />
-					<hr className="my-10 border-forest/15" />
-					<h2 className="font-serif text-4xl font-bold">
-						{m.zelglihof_article_newsletter_title()}
-					</h2>
-					<p>{m.zelglihof_article_newsletter_body()}</p>
+					<div className="mt-12 rounded-[1.75rem] bg-sage/45 p-8 md:p-10">
+						<p className="eyebrow text-moss">
+							{m.zelglihof_article_newsletter_eyebrow()}
+						</p>
+						<h2 className="mt-5 font-serif text-4xl font-bold">
+							{m.zelglihof_article_newsletter_title()}
+						</h2>
+						<p className="mt-4 text-base leading-relaxed text-ink/70">
+							{m.zelglihof_article_newsletter_body()}
+						</p>
+					</div>
 				</div>
 			</div>
 			{update.images.length > 0 && (

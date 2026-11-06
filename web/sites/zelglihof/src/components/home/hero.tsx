@@ -14,10 +14,6 @@ export function Hero({
 				<div className="absolute -right-10 top-10 size-44 rounded-full border border-white/10" />
 				<div className="relative flex flex-wrap items-center gap-x-4 gap-y-2">
 					<p className="eyebrow text-sun">{m.zelglihof_home_hero_eyebrow()}</p>
-					<p className="inline-flex items-center gap-2 rounded-full border border-sun/45 px-3.5 py-1.5 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-sun">
-						<span className="size-1.5 rounded-full bg-sun" aria-hidden="true" />
-						{m.zelglihof_home_hero_notice()}
-					</p>
 				</div>
 				<div className="relative">
 					<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] max-w-xl text-[clamp(4.2rem,9vw,7.8rem)]">
@@ -48,7 +44,7 @@ export function Hero({
 				</div>
 				<a
 					href="#aktuell"
-					className="relative flex w-fit items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-cream/55 hover:text-cream"
+					className="relative flex w-fit items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-cream/70 hover:text-cream"
 				>
 					<ArrowDown size={16} aria-hidden="true" />
 					{m.zelglihof_home_latest_updates()}

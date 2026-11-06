@@ -54,7 +54,7 @@ export function NewsletterSignup() {
 							},
 						]}
 					/>
-					<p className="mt-4 text-xs leading-[1.6] text-cream/48">
+					<p className="mt-4 text-sm leading-[1.6] text-cream/70">
 						{m.zelglihof_newsletter_privacy()}
 					</p>
 				</div>

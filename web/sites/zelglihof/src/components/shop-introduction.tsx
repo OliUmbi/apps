@@ -5,7 +5,7 @@ export function ShopIntroduction() {
 		<section className="shell grid gap-8 py-14 md:grid-cols-[0.8fr_1.2fr] md:items-end md:py-24">
 			<div>
 				<p className="eyebrow text-clay">{m.zelglihof_shop_eyebrow()}</p>
-				<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-6xl md:text-8xl">
+				<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-[clamp(3.4rem,6.5vw,6rem)]">
 					{m.zelglihof_shop_title()}
 					<br />
 					{m.zelglihof_shop_title_accent()}

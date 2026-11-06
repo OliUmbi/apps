@@ -64,6 +64,9 @@ caddy with DNS-01 wildcards (Infomaniak), manual deploys over WireGuard. Context
 - [ ] Zelglihof: confirm contact fields, products, quantity limits, pickup statuses and reservation windows. Agree display-only CHF price wording.
 - [ ] Jubla: confirm annual dates, same-day event endings, calendar/PDF exports, group names and donation units with the second developer.
 - [ ] Set up the two mail identities per domain that sends subscriber mail: `newsletter@` (sending identity) plus the requests inbox (`hof@`/`info@`/`scharleitung@`, recipient and Reply-To). Confirm the provider SMTP may send as both addresses, and confirm the `@zelglihof.ch` mailboxes the code defaults to actually exist (site domain is `zelglihof-maegenwil.ch`).
+- [ ] Content review (2026-11), Jubla: confirm the club's founding year. The rewrite's hero eyebrow claim "seit 1981" had no source in legacy or jubla.ch and was removed until confirmed.
+- [ ] Content review (2026-11), legal: approve restoring the paragraphs the rewrite dropped — Jubla Impressum (full Haftungsausschluss incl. the links disclaimer and the "Quelle: SwissAnwalt" credit), Uncle-T Disclaimer block, Uncle-T AGB clauses on cleaning and on insurance/permits. The published legacy wording is ready to restore on a go-ahead.
+- [ ] Content review (2026-11), wording decisions: "Beitreten" vs "Mitmachen", the "Spende" → "Zusage" domain rebrand, the invented three-step join process (Melden/Schnuppern/Entscheiden), the dropped partner descriptions (31'000 Mitglieder, 53 Scharen, group sizes) and the dropped delivery offer on Uncle-T ("nachhause oder in die Firma geliefert").
 
 ## Technical debt
 

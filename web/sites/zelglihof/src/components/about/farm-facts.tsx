@@ -57,7 +57,7 @@ export function FarmFacts() {
 							<dt className="mt-2.5 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-cream/70">
 								{count.label()}
 							</dt>
-							<p className="mt-1.5 text-xs leading-relaxed text-cream/50">
+							<p className="mt-1.5 text-xs leading-relaxed text-cream/70">
 								{count.note()}
 							</p>
 						</div>

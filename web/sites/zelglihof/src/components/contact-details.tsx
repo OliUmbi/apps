@@ -9,7 +9,7 @@ export function ContactDetails() {
 			<section className="shell py-14 md:py-24">
 				<p className="eyebrow text-clay">{m.contact()}</p>
 				<div className="mt-5 grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-end">
-					<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] text-6xl md:text-8xl">
+					<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] text-[clamp(3.4rem,6.5vw,6rem)]">
 						{m.zelglihof_contact_hero_title()}
 						<br />
 						{m.zelglihof_contact_hero_title_accent()}
@@ -47,7 +47,7 @@ export function ContactDetails() {
 							{m.zelglihof_contact_shop_body()}
 						</p>
 					</div>
-					<p className="px-2 text-sm leading-relaxed text-ink/50">
+					<p className="px-2 text-sm leading-relaxed text-ink/70">
 						{m.zelglihof_contact_inquiry_body()}
 					</p>
 				</div>

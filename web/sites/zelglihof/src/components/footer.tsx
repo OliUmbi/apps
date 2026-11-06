@@ -64,7 +64,7 @@ export default function Footer({ year }: { year: number }) {
 				</div>
 			</div>
 			<div className="border-t border-white/12">
-				<div className="shell flex flex-col gap-4 py-6 text-xs text-cream/50 md:flex-row md:items-center md:justify-between">
+				<div className="shell flex flex-col gap-4 py-6 text-xs text-cream/70 md:flex-row md:items-center md:justify-between">
 					<p>
 						© {year}
 						{m.zelglihof_footer_ownership()}
