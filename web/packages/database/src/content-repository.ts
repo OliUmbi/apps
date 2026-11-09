@@ -37,8 +37,8 @@ export interface ContentRepositorySpec<Key, Input> {
 	createdAt: PgColumn;
 	updatedAt: PgColumn;
 	/**
-	 * Column projection for reads when the table stores columns (tokens) that
-	 * must never cross the package boundary; reads select all columns without it.
+	 * Column projection for reads and returning rows when the table stores
+	 * columns (tokens) that must never cross the package boundary.
 	 */
 	selection?: Record<string, PgColumn>;
 	/** The parent column `listScoped` filters by; child repositories only. */
@@ -125,15 +125,15 @@ export function createContentRepository<Row, Key, Input>(
 
 	async function create(input: Input): Promise<Row> {
 		const now = new Date().toISOString();
-		const [record] = await db
-			.insert(spec.table)
-			.values({
-				...input,
-				...(spec.guard ? { [spec.guard.field]: spec.guard.value } : {}),
-				createdAt: now,
-				updatedAt: now,
-			} as never)
-			.returning();
+		const statement = db.insert(spec.table).values({
+			...input,
+			...(spec.guard ? { [spec.guard.field]: spec.guard.value } : {}),
+			createdAt: now,
+			updatedAt: now,
+		} as never);
+		const [record] = await (spec.selection
+			? statement.returning(spec.selection)
+			: statement.returning());
 		if (!record) throw recordNotCreatedError();
 		return record as Row;
 	}
@@ -165,11 +165,13 @@ export function createContentRepository<Row, Key, Input>(
 		if (spec.guard)
 			conditions.push(eq(spec.guard.column, spec.guard.value as never));
 		conditions.push(eq(spec.updatedAt, expectedUpdatedAt as never));
-		const [record] = await db
+		const statement = db
 			.update(spec.table)
 			.set(set as never)
-			.where(and(...conditions))
-			.returning();
+			.where(and(...conditions));
+		const [record] = await (spec.selection
+			? statement.returning(spec.selection)
+			: statement.returning());
 		if (record) return record as Row;
 		const current = (await get(key)) as ({ updatedAt: string } & Fields) | null;
 		throw updateMissError(

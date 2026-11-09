@@ -87,7 +87,11 @@ export function ArticlesView() {
 	);
 }
 
-function ArticleFields({ values, onChange }: EditorFieldsProps<ArticleInput>) {
+function ArticleFields({
+	values,
+	onChange,
+	onPendingChange,
+}: EditorFieldsProps<ArticleInput>) {
 	return (
 		<>
 			<SlugField
@@ -105,6 +109,7 @@ function ArticleFields({ values, onChange }: EditorFieldsProps<ArticleInput>) {
 				onChange={(event) => onChange("description", event.target.value)}
 			/>
 			<ImageField
+				onPendingChange={onPendingChange}
 				site="zelglihof"
 				value={values.imageId}
 				nullable

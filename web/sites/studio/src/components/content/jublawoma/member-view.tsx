@@ -75,7 +75,11 @@ export function MembersView() {
 	);
 }
 
-function MemberFields({ values, onChange }: EditorFieldsProps<MemberInput>) {
+function MemberFields({
+	values,
+	onChange,
+	onPendingChange,
+}: EditorFieldsProps<MemberInput>) {
 	return (
 		<>
 			<TextField
@@ -86,6 +90,7 @@ function MemberFields({ values, onChange }: EditorFieldsProps<MemberInput>) {
 				onChange={(event) => onChange("name", event.target.value)}
 			/>
 			<ImageField
+				onPendingChange={onPendingChange}
 				site="jublawoma"
 				value={values.imageId}
 				nullable

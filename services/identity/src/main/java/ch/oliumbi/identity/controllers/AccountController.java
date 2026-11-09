@@ -2,6 +2,7 @@ package ch.oliumbi.identity.controllers;
 
 import ch.oliumbi.identity.data.requests.AccountCreateRequest;
 import ch.oliumbi.identity.data.requests.AccountPasswordRequest;
+import ch.oliumbi.identity.data.requests.AccountProfileUpdateRequest;
 import ch.oliumbi.identity.data.requests.AccountUpdateRequest;
 import ch.oliumbi.identity.data.responses.AccountDetailResponse;
 import ch.oliumbi.identity.data.responses.AccountResponse;
@@ -68,6 +69,14 @@ public class AccountController {
                                   @Valid @RequestBody AccountUpdateRequest request) {
         this.authorization.requireValid(authorization);
         return accountService.update(id, request);
+    }
+
+    @PutMapping("/{id}/profile")
+    public AccountResponse updateProfile(@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+                                         @PathVariable UUID id,
+                                         @Valid @RequestBody AccountProfileUpdateRequest request) {
+        this.authorization.requireValid(authorization);
+        return accountService.updateProfile(id, request);
     }
 
     @PutMapping("/{id}/password")

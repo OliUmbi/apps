@@ -94,6 +94,7 @@ export function ShowcasesView() {
 function ShowcaseFields({
 	values,
 	onChange,
+	onPendingChange,
 }: EditorFieldsProps<ShowcaseInput>) {
 	return (
 		<>
@@ -120,6 +121,7 @@ function ShowcaseFields({
 				onChange={(value) => onChange("guestCount", value ?? Number.NaN)}
 			/>
 			<ImageField
+				onPendingChange={onPendingChange}
 				site="unclet"
 				value={values.imageId}
 				nullable

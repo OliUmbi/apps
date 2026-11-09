@@ -9,7 +9,6 @@ import {
 import { formatTimestamp } from "../../../model/dates";
 import {
 	createProduct,
-	deleteProduct,
 	getProduct,
 	listProducts,
 	updateProduct,
@@ -32,7 +31,6 @@ export function ProductsView() {
 			rowKey={(record) => record.id}
 			loadPage={(input) => listProducts({ data: input })}
 			loadRecord={(id) => getProduct({ data: { id } })}
-			remove={(record) => deleteProduct({ data: { id: record.id } })}
 			capability={{
 				mode: "creatable",
 				editor: {
@@ -96,7 +94,11 @@ export function ProductsView() {
 	);
 }
 
-function ProductFields({ values, onChange }: EditorFieldsProps<ProductInput>) {
+function ProductFields({
+	values,
+	onChange,
+	onPendingChange,
+}: EditorFieldsProps<ProductInput>) {
 	return (
 		<>
 			<TextField
@@ -123,6 +125,7 @@ function ProductFields({ values, onChange }: EditorFieldsProps<ProductInput>) {
 				onChange={(event) => onChange("body", event.target.value)}
 			/>
 			<ImageField
+				onPendingChange={onPendingChange}
 				site="zelglihof"
 				value={values.imageId}
 				nullable

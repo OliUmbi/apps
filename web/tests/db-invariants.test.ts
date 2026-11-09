@@ -9,6 +9,8 @@ import {
 	type Transaction,
 } from "../packages/database/src";
 import { createDonationCommitmentRepository } from "../packages/jublawoma-data/src/content/donation-commitment.repository";
+import { createQueueClient } from "../packages/queue/src";
+import { emailMessage } from "../packages/queue/src/email";
 import { message as queuedMessage } from "../packages/queue/src/schema";
 import { createProductReservationRepository } from "../packages/zelglihof-data/src/content/product-reservation.repository";
 import { createNewsletterRepository } from "../packages/zelglihof-data/src/newsletter.repository";
@@ -45,11 +47,12 @@ test("address correction keeps unsubscribed subscribers out of the funnel", () =
 });
 
 const enabled = Boolean(process.env.STUDIO_TEST_ADMIN_URL);
+const adminRole = process.env.STUDIO_TEST_ADMIN_ROLE ?? "postgres";
 test("database invariants against the migrated schema", {
 	skip: !enabled,
 }, async (context) => {
 	const admin = createDatabasePool({
-		role: "postgres",
+		role: adminRole,
 		applicationName: "db-invariant-tests",
 		connectionString: () => process.env.STUDIO_TEST_ADMIN_URL,
 	});
@@ -75,7 +78,7 @@ test("database invariants against the migrated schema", {
 	// fixtures roll back with everything else.
 	function joined(transaction: Transaction): DatabasePool {
 		return {
-			role: "postgres",
+			role: adminRole,
 			db: transaction as unknown as Database,
 			transaction: (work) => work(transaction),
 			close: async () => {},
@@ -445,6 +448,83 @@ test("database invariants against the migrated schema", {
 				});
 			},
 		);
+
+		await context.test(
+			"producer roles can enqueue without queue reads",
+			async () => {
+				for (const role of [
+					"studio",
+					"oliumbi",
+					"jublawoma",
+					"unclet",
+					"zelglihof",
+				]) {
+					await rolledBack(async (transaction) => {
+						await transaction.execute(sql`SET LOCAL ROLE ${sql.raw(role)}`);
+						const message = emailMessage(
+							"review",
+							"sender@example.com",
+							"recipient@example.com",
+							"Review",
+							"Review body",
+						);
+						await createQueueClient(transaction).enqueue(message);
+						await transaction.execute(sql`RESET ROLE`);
+						assert.equal(
+							await queuedCount(transaction, "recipient@example.com"),
+							1,
+						);
+					});
+				}
+			},
+		);
+
+		await context.test(
+			"a duplicate queue id fails closed without a read grant",
+			async () => {
+				const message = emailMessage(
+					"review",
+					"sender@example.com",
+					"recipient@example.com",
+					"Review",
+					"Review body",
+				);
+				await assert.rejects(
+					admin.transaction(async (transaction) => {
+						await transaction.execute(sql`SET LOCAL ROLE studio`);
+						await createQueueClient(transaction).enqueue(message);
+						await createQueueClient(transaction).enqueue(message);
+					}),
+					(error) => {
+						const cause = (error as { cause?: { message?: string } }).cause;
+						assert.match(cause?.message ?? "", /duplicate key/);
+						return true;
+					},
+				);
+			},
+		);
+
+		await context.test("producer roles cannot read the queue", async () => {
+			for (const role of [
+				"studio",
+				"oliumbi",
+				"jublawoma",
+				"unclet",
+				"zelglihof",
+			]) {
+				await assert.rejects(
+					admin.transaction(async (transaction) => {
+						await transaction.execute(sql`SET LOCAL ROLE ${sql.raw(role)}`);
+						await transaction.select().from(queuedMessage);
+					}),
+					(error) => {
+						const cause = (error as { cause?: { message?: string } }).cause;
+						assert.match(cause?.message ?? "", /permission denied/);
+						return true;
+					},
+				);
+			}
+		});
 	} finally {
 		await admin.close();
 	}

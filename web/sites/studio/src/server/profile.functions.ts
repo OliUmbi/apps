@@ -1,30 +1,24 @@
-import { createServerFn } from "@tanstack/react-start";
 import { profilePasswordSchema, profileSchema } from "../model/profile";
-import { clearSessionCookie, requireAuthenticatedActor } from "./auth.server";
+import { createServerFn } from "@tanstack/react-start";
+import { clearSessionCookie } from "./auth.server";
 import { identity } from "./identity.server";
+import { authenticatedAuthorization } from "./studio-authorization";
 
-export const getProfile = createServerFn({ method: "GET" }).handler(
-	async () => {
-		const actor = await requireAuthenticatedActor();
-		return identity.getAccount(actor.id);
+export const getProfile = createServerFn({ method: "GET" }).middleware([authenticatedAuthorization()]).handler(
+	async ({ context }) => {
+		return identity.getAccount(context.actor.id);
 	},
 );
 
-export const updateProfile = createServerFn({ method: "POST" })
+export const updateProfile = createServerFn({ method: "POST" }).middleware([authenticatedAuthorization()])
 	.validator(profileSchema)
-	.handler(async ({ data }) => {
-		const actor = await requireAuthenticatedActor();
-		const current = await identity.getAccount(actor.id);
-		return identity.updateAccount(actor.id, {
-			...data,
-			enabled: current.account.enabled,
-		});
+	.handler(async ({ data, context }) => {
+		return identity.updateProfile(context.actor.id, data);
 	});
 
-export const changeProfilePassword = createServerFn({ method: "POST" })
+export const changeProfilePassword = createServerFn({ method: "POST" }).middleware([authenticatedAuthorization()])
 	.validator(profilePasswordSchema)
-	.handler(async ({ data }) => {
-		const actor = await requireAuthenticatedActor();
-		await identity.changePassword(actor.id, data.password);
+	.handler(async ({ data, context }) => {
+		await identity.changePassword(context.actor.id, data.password);
 		clearSessionCookie();
 	});

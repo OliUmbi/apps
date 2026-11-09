@@ -84,6 +84,7 @@ export function PromotionsView() {
 function PromotionFields({
 	values,
 	onChange,
+	onPendingChange,
 }: EditorFieldsProps<PromotionInput>) {
 	return (
 		<>
@@ -110,6 +111,7 @@ function PromotionFields({
 				onChange={(event) => onChange("link", event.target.value)}
 			/>
 			<ImageField
+				onPendingChange={onPendingChange}
 				site="jublawoma"
 				value={values.imageId}
 				nullable

@@ -51,8 +51,8 @@ tracking is process-local.
 
 ## Flow: public read
 
-1. A site server function calls assets with the internal token.
-2. Assets checks visibility and site, then returns the rendition with a
+1. A site server function calls the public assets endpoint without management
+   credentials. Assets checks visibility, then returns the rendition with a
    content-derived `ETag` and explicit `Cache-Control`.
 3. A conditional request returns 304.
 4. Unknown ids and mismatched sites return 404 everywhere, including deletion.

@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: ${POSTGRES_MIGRATOR_USER:-apps_migrator}
       POSTGRES_PASSWORD: ${POSTGRES_MIGRATOR_PASSWORD:-dev-migrator-password}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres-data:/var/lib/postgresql
     healthcheck:
@@ -34,8 +34,8 @@ services:
 
   # Migrations create the application roles as NOLOGIN without passwords; this
   # one-shot provisioner grants login credentials per environment (see
-  # database/README.md). Production provisions the same statements from the
-  # vault through Ansible instead.
+  # database/README.md). Production must provision equivalent statements from
+  # the vault before applications start; DR-04 tracks that missing Ansible step.
   roles:
     image: postgres:18-alpine
     environment:

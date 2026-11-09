@@ -215,6 +215,11 @@ extraction on another machine.
 dash supports it) and write relative checksums from the work directory. Verify
 the archive before encryption and test the procedure in the restore drill.
 
+*Disposition (2026-11): in progress (G0-C) - the media tar is now written to
+`$WORK/media.tgz` before encryption. The remaining failure-masking pipeline is
+the outer archive (`tar czf - ... | age ...`); TD-17 and the outer pipeline
+remain open.*
+
 ### DR-09 - Housekeeping can delete named monitoring volumes
 
 **Evidence:** `ansible/files/housekeep.sh` runs `podman container prune -f`
@@ -309,6 +314,9 @@ vendor the Caddy build), pin the CI tool images, and pin actions to a commit
 SHA where practical. Keep the existing rule: bump tag and digest together.
 
 ## P3 - verify or clean up
+
+*Disposition (2026-11): open (G0-B/G0-F) - DR-15 through DR-20 are now tracked
+in `open-work.md`; they no longer live only in this review.*
 
 ### DR-15 - The server role assumes `sudo` is installed
 

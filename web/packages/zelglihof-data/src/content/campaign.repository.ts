@@ -1,4 +1,4 @@
-import { guardRepository } from "@oliumbi/contracts";
+import { AppError, guardRepository } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { createContentRepository } from "@oliumbi/database/content-repository";
 import { campaign } from "../schema";
@@ -24,6 +24,13 @@ export function createCampaignRepository(db: DatabaseExecutor) {
 		get: store.get,
 		create: store.create,
 		update: store.update,
-		delete: store.delete,
+		async delete(key: CampaignKey) {
+			const current = await store.get(key);
+			// Queued mail has no cancellation contract; deleting its campaign must
+			// never disguise a dispatch that is still in progress.
+			if (current && current.status !== "draft")
+				throw new AppError("forbidden", "Only draft campaigns can be deleted");
+			await store.delete(key);
+		},
 	});
 }

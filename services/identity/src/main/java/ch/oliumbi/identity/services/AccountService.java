@@ -3,6 +3,7 @@ package ch.oliumbi.identity.services;
 import ch.oliumbi.identity.data.entities.Account;
 import ch.oliumbi.identity.data.requests.AccountCreateRequest;
 import ch.oliumbi.identity.data.requests.AccountPasswordRequest;
+import ch.oliumbi.identity.data.requests.AccountProfileUpdateRequest;
 import ch.oliumbi.identity.data.requests.AccountUpdateRequest;
 import ch.oliumbi.identity.data.responses.AccountDetailResponse;
 import ch.oliumbi.identity.data.responses.AccountResponse;
@@ -68,21 +69,22 @@ public class AccountService {
         var account = accountRepository.findLockedById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        var name = inputNormalizer.normalizeName(request.name());
-        var email = inputNormalizer.normalizeEmail(request.email());
-
-        if (!isAvailable(name, email, id)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Name or email already in use");
-        }
-
-        account.setName(name);
-        account.setEmail(email);
+        updateDetails(id, account, request.name(), request.email());
         account.setEnabled(request.enabled());
 
         if (!request.enabled()) {
             accountSessionRepository.revokeByAccountId(id, clock.instant());
         }
 
+        return AccountResponse.fromAccount(accountRepository.saveAndFlush(account));
+    }
+
+    @Transactional
+    public AccountResponse updateProfile(UUID id, AccountProfileUpdateRequest request) {
+        var account = accountRepository.findLockedById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        updateDetails(id, account, request.name(), request.email());
         return AccountResponse.fromAccount(accountRepository.saveAndFlush(account));
     }
 
@@ -103,6 +105,18 @@ public class AccountService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         accountRepository.delete(account);
+    }
+
+    private void updateDetails(UUID id, Account account, String requestedName, String requestedEmail) {
+        var name = inputNormalizer.normalizeName(requestedName);
+        var email = inputNormalizer.normalizeEmail(requestedEmail);
+
+        if (!isAvailable(name, email, id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Name or email already in use");
+        }
+
+        account.setName(name);
+        account.setEmail(email);
     }
 
     private boolean isAvailable(String name, String email) {

@@ -13,38 +13,35 @@ import {
 	showcaseImageKeySchema,
 } from "@oliumbi/unclet-data/content/showcase-image";
 import { createShowcaseImageRepository } from "@oliumbi/unclet-data/content/showcase-image.repository";
-import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { assets } from "../../assets.server";
-import { requireActor } from "../../auth.server";
 import { database } from "../../database.server";
+import { createServerFn } from "@tanstack/react-start";
+import { studioAuthorization } from "../../studio-authorization";
 
-export const listShowcaseImages = createServerFn({ method: "GET" })
+export const listShowcaseImages = createServerFn({ method: "GET" }).middleware([studioAuthorization("unclet")])
 	.validator(pageSchema.extend({ showcaseId: idSchema }))
 	.handler(async ({ data }) => {
-		await requireActor("unclet");
 		return createShowcaseImageRepository(database.db).listForShowcase(
 			data,
 			data.showcaseId,
 		);
 	});
 
-export const getShowcaseImage = createServerFn({ method: "GET" })
+export const getShowcaseImage = createServerFn({ method: "GET" }).middleware([studioAuthorization("unclet")])
 	.validator(showcaseImageKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("unclet");
 		return createShowcaseImageRepository(database.db).get(data);
 	});
 
-export const createShowcaseImage = createServerFn({ method: "POST" })
+export const createShowcaseImage = createServerFn({ method: "POST" }).middleware([studioAuthorization("unclet")])
 	.validator(showcaseImageInputSchema)
 	.handler(async ({ data }) => {
-		await requireActor("unclet");
 		if (data.imageId) await assets.images.get("unclet", data.imageId);
 		return createShowcaseImageRepository(database.db).create(data);
 	});
 
-export const updateShowcaseImage = createServerFn({ method: "POST" })
+export const updateShowcaseImage = createServerFn({ method: "POST" }).middleware([studioAuthorization("unclet")])
 	.validator(
 		z.strictObject({
 			key: showcaseImageKeySchema,
@@ -53,7 +50,6 @@ export const updateShowcaseImage = createServerFn({ method: "POST" })
 		}),
 	)
 	.handler(async ({ data }) => {
-		await requireActor("unclet");
 		if (data.values.imageId)
 			await assets.images.get("unclet", data.values.imageId);
 		try {
@@ -69,9 +65,8 @@ export const updateShowcaseImage = createServerFn({ method: "POST" })
 		}
 	});
 
-export const deleteShowcaseImage = createServerFn({ method: "POST" })
+export const deleteShowcaseImage = createServerFn({ method: "POST" }).middleware([studioAuthorization("unclet")])
 	.validator(showcaseImageKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("unclet");
 		await createShowcaseImageRepository(database.db).delete(data);
 	});

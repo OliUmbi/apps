@@ -13,38 +13,35 @@ import {
 	storyImageKeySchema,
 } from "@oliumbi/jublawoma-data/content/story-image";
 import { createStoryImageRepository } from "@oliumbi/jublawoma-data/content/story-image.repository";
-import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { assets } from "../../assets.server";
-import { requireActor } from "../../auth.server";
 import { database } from "../../database.server";
+import { createServerFn } from "@tanstack/react-start";
+import { studioAuthorization } from "../../studio-authorization";
 
-export const listStoryImages = createServerFn({ method: "GET" })
+export const listStoryImages = createServerFn({ method: "GET" }).middleware([studioAuthorization("jublawoma")])
 	.validator(pageSchema.extend({ storyId: idSchema }))
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		return createStoryImageRepository(database.db).listForStory(
 			data,
 			data.storyId,
 		);
 	});
 
-export const getStoryImage = createServerFn({ method: "GET" })
+export const getStoryImage = createServerFn({ method: "GET" }).middleware([studioAuthorization("jublawoma")])
 	.validator(storyImageKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		return createStoryImageRepository(database.db).get(data);
 	});
 
-export const createStoryImage = createServerFn({ method: "POST" })
+export const createStoryImage = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
 	.validator(storyImageInputSchema)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		if (data.imageId) await assets.images.get("jublawoma", data.imageId);
 		return createStoryImageRepository(database.db).create(data);
 	});
 
-export const updateStoryImage = createServerFn({ method: "POST" })
+export const updateStoryImage = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
 	.validator(
 		z.strictObject({
 			key: storyImageKeySchema,
@@ -53,7 +50,6 @@ export const updateStoryImage = createServerFn({ method: "POST" })
 		}),
 	)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		if (data.values.imageId)
 			await assets.images.get("jublawoma", data.values.imageId);
 		try {
@@ -69,9 +65,8 @@ export const updateStoryImage = createServerFn({ method: "POST" })
 		}
 	});
 
-export const deleteStoryImage = createServerFn({ method: "POST" })
+export const deleteStoryImage = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
 	.validator(storyImageKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		await createStoryImageRepository(database.db).delete(data);
 	});

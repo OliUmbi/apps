@@ -79,7 +79,10 @@ export function useCollection<Row, Input>(
 		},
 	});
 	const deletion = useMutation({
-		mutationFn: remove,
+		mutationFn: async (record: Row) => {
+			if (!remove) throw new Error("This record cannot be deleted");
+			return remove(record);
+		},
 		onSuccess: async (_, removed) => {
 			cache.removeQueries({
 				queryKey: [...collectionKey, "detail", rowKey(removed)],

@@ -55,7 +55,7 @@ they are not published in production.
 Keep infrastructure in Docker and run the web app natively:
 
 ```powershell
-docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d postgres flyway mailpit
+docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d postgres flyway roles mailpit
 cd web
 pnpm dev:studio        # or dev:jublawoma, dev:unclet, dev:zelglihof
 ```

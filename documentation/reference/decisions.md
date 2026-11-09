@@ -108,12 +108,25 @@ Adopted to move the server off Docker Engine ([deployment plan](../history/deplo
 - **D13 — Deploy stays manual and pinned by image tag.** Ansible renders the
   units with the tag, pulls, and restarts the stack in dependency order
   (postgres → migrate → apps → caddy). Rollback is the previous tag.
-- **D14 — The restore drill is deferred to a dedicated machine**: rebuild from
-  zero, restore a backup, walk every site. Blocked on spare hardware
-  ([open work](../work/open-work.md)); the workstation drill is retired with the
-  compose files.
+- **D14 — The restore drill uses a dedicated machine**: rebuild from zero,
+  restore a backup, walk every site. The workstation drill is retired with the
+  compose files. *(2026-11 execution clarification: use the not-yet-live
+  replacement host after an import rehearsal while legacy remains live; the
+  drill remains open in [open work](../work/open-work.md).)*
 - **D15 — cAdvisor is dropped** (docker-coupled); node-exporter's systemd
-  collector plus blackbox cover the host and the apps.
+  collector plus blackbox cover the host and the apps. *(2026-11: the systemd
+  collector is not yet enabled/wired in the container unit; see RV-01.)*
+- **D16 — Legacy migration is manual and owner-led.** The owner will migrate the
+  small data set by hand; no importer will be built. A sanitized rehearsal,
+  explicit mappings, disabled historical notifications and source/migrated/
+  skipped/failed plus media reconciliation are still required. The committed
+  legacy credential values were placeholders and are already handled, so no
+  legacy rotation task remains; production still uses only unique vault secrets.
+- **D17 — The pre-launch Flyway baseline stays consolidated.** Owning migration
+  files are edited in place until the first accepted production import, and local
+  volumes may be rebuilt from zero. Submission idempotency lives in V008–V010
+  with the tables it protects; the separate V011 patch is removed. Once live data
+  exists, new changes are append-only expand/contract migrations.
 
 ## Still open
 

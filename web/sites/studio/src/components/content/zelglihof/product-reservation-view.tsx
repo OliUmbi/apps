@@ -8,7 +8,6 @@ import {
 } from "@oliumbi/zelglihof-data/content/product-reservation";
 import { reservationStatusValues } from "@oliumbi/zelglihof-data/statuses";
 import {
-	deleteProductReservation,
 	getProductReservation,
 	listProductReservations,
 	updateProductReservation,
@@ -35,7 +34,6 @@ function productReservationCollection(
 		loadPage: (input) =>
 			listProductReservations({ data: { ...input, productId } }),
 		loadRecord: (id) => getProductReservation({ data: { id } }),
-		remove: (record) => deleteProductReservation({ data: { id: record.id } }),
 		capability: {
 			mode: "editable",
 			editor: {
@@ -137,7 +135,9 @@ function ProductReservationFields({
 }: EditorFieldsProps<ProductReservationInput>) {
 	return (
 		<StatusField
-			statuses={reservationStatusValues}
+			statuses={reservationStatusValues.filter(
+				(status) => status !== "cancelled",
+			)}
 			value={values.status}
 			onChange={(value) => onChange("status", value)}
 		/>

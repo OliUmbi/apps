@@ -62,8 +62,7 @@ test("the queue client stores the message under the email envelope in the caller
 					if (name === "values") stored.push(input[0]);
 					return api;
 				};
-			for (const name of ["insert", "values", "onConflictDoNothing"])
-				api[name] = step(name);
+			for (const name of ["insert", "values"]) api[name] = step(name);
 			// biome-ignore lint/suspicious/noThenProperty: the fake is deliberately a thenable: awaiting it runs the recorded query
 			api.then = (resolve: (value: unknown) => unknown) =>
 				Promise.resolve(undefined).then(resolve);

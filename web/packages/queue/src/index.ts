@@ -8,10 +8,11 @@ export type { QueuedEmail } from "./message";
 export function createQueueClient(transaction: Transaction) {
 	return {
 		async enqueue(message: QueuedEmail): Promise<void> {
+			// Producers have INSERT-only privileges. Their domain idempotency check
+			// prevents normal replays; the unique id remains a fail-closed backstop.
 			await transaction
 				.insert(queuedMessage)
-				.values({ ...message, type: "email" })
-				.onConflictDoNothing({ target: queuedMessage.id });
+				.values({ ...message, type: "email" });
 		},
 	};
 }

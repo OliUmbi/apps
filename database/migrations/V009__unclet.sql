@@ -30,11 +30,15 @@ CREATE TABLE unclet.review
     name        text        NOT NULL,
     description text        NOT NULL,
     visible     boolean     NOT NULL,
+    -- Nullable for non-public rows; one moderation row per public form fill.
+    submission_id uuid,
     created_at  timestamptz NOT NULL,
     updated_at  timestamptz NOT NULL,
     -- Reviews are a five-star scale; moderation is the visible flag.
     CONSTRAINT review_stars_range CHECK (stars BETWEEN 1 AND 5)
 );
+
+CREATE UNIQUE INDEX review_submission_id_idx ON unclet.review (submission_id);
 
 CREATE TABLE unclet.inquiry
 (
@@ -47,7 +51,11 @@ CREATE TABLE unclet.inquiry
     location    text,
     guest_count integer,
     note        text,
+    -- Nullable for non-public rows; one durable inquiry per public form fill.
+    submission_id uuid,
     created_at  timestamptz NOT NULL,
     updated_at  timestamptz NOT NULL,
     CONSTRAINT inquiry_status_domain CHECK (status IN ('new', 'in-progress', 'completed', 'cancelled'))
 );
+
+CREATE UNIQUE INDEX inquiry_submission_id_idx ON unclet.inquiry (submission_id);

@@ -15,7 +15,7 @@ view: what is owned, how a change moves, and which rules always hold.
 | `identity` | identity service | identity role | identity service only |
 | `messaging` | messaging service | messaging role | messaging service only |
 | `assets` | assets service | assets role | assets service only |
-| `queue` | producer contract, consumed by messaging | every producer role (insert only), messaging | producers read their inserts; messaging consumes |
+| `queue` | producer contract, consumed by messaging | every producer role (insert only), messaging | messaging consumes; producers have no queue read access |
 | `studio` | Studio | studio role | studio role |
 | `jublawoma` | Jublawoma | jublawoma role + studio role | jublawoma, studio |
 | `unclet` | Uncle-T | unclet role + studio role | unclet, studio |
@@ -36,10 +36,9 @@ uses their HTTP contracts. A site never reads another site's schema.
 | `V005__assets.sql` | asset metadata and variants |
 | `V006__studio.sql` | Studio-owned records |
 | `V007__oliumbi.sql` | reserved Oliumbi schema |
-| `V008__jublawoma.sql` | club events, stories, members, promotions, donations |
-| `V009__unclet.sql` | showcases, reviews, inquiries |
-| `V010__zelglihof.sql` | articles, products, reservations, inquiries, newsletter |
-| `V011__submission_idempotency.sql` | nullable submission ids and unique indexes on the four public-submission tables |
+| `V008__jublawoma.sql` | club events, stories, members, promotions, donations and submission idempotency |
+| `V009__unclet.sql` | showcases, reviews, inquiries and submission idempotency |
+| `V010__zelglihof.sql` | articles, products, reservations, inquiries, newsletter and submission idempotency |
 
 Every table ends with `created_at` and `updated_at`. Delivery records have
 independent ids; their unique `queue_id` preserves replay protection without a
@@ -84,8 +83,9 @@ environment:
 - **development** - the compose stack runs migrations, then a one-shot `roles`
   service that issues `ALTER ROLE ... LOGIN PASSWORD ...` from
   `infrastructure/.env.dev`;
-- **production** - the Ansible/vault flow provisions credentials after
-  `apps-migrate` and before the services start.
+- **production** - the Ansible/vault flow must provision credentials after
+  `apps-migrate` and before the services start; that step is not implemented yet
+  and blocks clean-host bootstrap (DR-04).
 
 Any credential ever committed to the repository must be rotated. See
 [open work](../../work/open-work.md) for the current provisioning checks.
@@ -107,7 +107,7 @@ Any credential ever committed to the repository must be rotated. See
 - Legacy-import validation against the new constraints is incomplete: imported
   inquiry subjects must map to `other`, and zero-quantity legacy rows are
   rejected. See [TD-14](../../work/tech-debt.md#td-14).
-- Production role provisioning must be verified on the rebuilt server
-  ([open work](../../work/open-work.md)).
+- Production role provisioning must be implemented and then verified on the
+  rebuilt server (DR-04 in [open work](../../work/open-work.md)).
 - A PostgreSQL major-version upgrade path is not yet documented
   ([TD-04](../../work/tech-debt.md#td-04)).

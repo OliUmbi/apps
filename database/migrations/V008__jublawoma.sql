@@ -107,6 +107,8 @@ CREATE TABLE jublawoma.donation_commitment
     phone            text        NOT NULL,
     quantity         numeric     NOT NULL,
     note             text,
+    -- Nullable for non-public rows; one durable commitment per public form fill.
+    submission_id    uuid,
     created_at       timestamptz NOT NULL,
     updated_at       timestamptz NOT NULL,
     -- A commitment always carries positive snapshots and a positive quantity.
@@ -114,3 +116,5 @@ CREATE TABLE jublawoma.donation_commitment
     CONSTRAINT donation_commitment_step_positive CHECK (step > 0),
     CONSTRAINT donation_commitment_quantity_positive CHECK (quantity > 0)
 );
+
+CREATE UNIQUE INDEX donation_commitment_submission_id_idx ON jublawoma.donation_commitment (submission_id);

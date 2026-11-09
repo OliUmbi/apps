@@ -77,10 +77,12 @@ export function StoryImagesRelated({ storyId }: { storyId: string }) {
 function StoryImageFields({
 	values,
 	onChange,
+	onPendingChange,
 }: EditorFieldsProps<StoryImageInput>) {
 	return (
 		<>
 			<ImageField
+				onPendingChange={onPendingChange}
 				site="jublawoma"
 				value={values.imageId}
 				onChange={(value) => onChange("imageId", value ?? "")}

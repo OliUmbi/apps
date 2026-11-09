@@ -1,27 +1,24 @@
 import { pageSchema } from "@oliumbi/contracts";
 import { subscriberKeySchema } from "@oliumbi/zelglihof-data/content/subscriber";
 import { createSubscriberRepository } from "@oliumbi/zelglihof-data/content/subscriber.repository";
-import { createServerFn } from "@tanstack/react-start";
-import { requireActor } from "../../auth.server";
 import { database } from "../../database.server";
+import { createServerFn } from "@tanstack/react-start";
+import { studioAuthorization } from "../../studio-authorization";
 
-export const listSubscribers = createServerFn({ method: "GET" })
+export const listSubscribers = createServerFn({ method: "GET" }).middleware([studioAuthorization("zelglihof")])
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
-		await requireActor("zelglihof");
 		return createSubscriberRepository(database.db).list(data);
 	});
 
-export const getSubscriber = createServerFn({ method: "GET" })
+export const getSubscriber = createServerFn({ method: "GET" }).middleware([studioAuthorization("zelglihof")])
 	.validator(subscriberKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("zelglihof");
 		return createSubscriberRepository(database.db).get(data);
 	});
 
-export const deleteSubscriber = createServerFn({ method: "POST" })
+export const deleteSubscriber = createServerFn({ method: "POST" }).middleware([studioAuthorization("zelglihof")])
 	.validator(subscriberKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("zelglihof");
 		await createSubscriberRepository(database.db).delete(data);
 	});

@@ -84,12 +84,16 @@ CREATE TABLE zelglihof.product_reservation
     quantity            integer     NOT NULL,
     note                text,
     status              text        NOT NULL,
+    -- Nullable for non-public rows; one reservation and stock movement per form fill.
+    submission_id       uuid,
     created_at          timestamptz NOT NULL,
     updated_at          timestamptz NOT NULL,
     CONSTRAINT product_reservation_status_domain CHECK (status IN ('new', 'in-progress', 'completed', 'cancelled')),
     CONSTRAINT product_reservation_quantity_positive CHECK (quantity > 0),
     CONSTRAINT product_reservation_variant_quantity_nonnegative CHECK (variant_quantity IS NULL OR variant_quantity >= 0)
 );
+
+CREATE UNIQUE INDEX product_reservation_submission_id_idx ON zelglihof.product_reservation (submission_id);
 
 CREATE TABLE zelglihof.subscriber
 (
@@ -127,8 +131,12 @@ CREATE TABLE zelglihof.inquiry
     phone      text        NOT NULL,
     email      text,
     message    text        NOT NULL,
+    -- Nullable for non-public rows; one durable inquiry per public form fill.
+    submission_id uuid,
     created_at timestamptz NOT NULL,
     updated_at timestamptz NOT NULL,
     CONSTRAINT inquiry_status_domain CHECK (status IN ('new', 'in-progress', 'completed', 'cancelled')),
     CONSTRAINT inquiry_subject_domain CHECK (subject IN ('hofladen', 'reservation', 'hof', 'other'))
 );
+
+CREATE UNIQUE INDEX inquiry_submission_id_idx ON zelglihof.inquiry (submission_id);

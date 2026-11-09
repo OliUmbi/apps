@@ -37,14 +37,15 @@ domain write:
 INSERT INTO queue.message
     (id, site, type, sender, recipient, subject, text, html)
 VALUES
-    (:id, :site, 'email', :sender, :recipient, :subject, :text, :html)
-ON CONFLICT (id) DO NOTHING;
+    (:id, :site, 'email', :sender, :recipient, :subject, :text, :html);
 ```
 
-The id is the producer's request UUID; reusing it after an uncertain commit is
-required for replay protection. Text and HTML are alternatives of the same
-email. Templates and localization remain producer responsibilities. Messaging
-consumes `type = 'email'` only; other types stay untouched for a future consumer.
+The id is the producer's request UUID. The domain idempotency check prevents a
+normal replay from enqueueing again; a duplicate id is a fail-closed unique
+violation rather than a silent success, so producers need only INSERT privilege,
+never queue reads. Text and HTML are alternatives of the same email. Templates
+and localization remain producer responsibilities. Messaging consumes
+`type = 'email'` only; other types stay untouched for a future consumer.
 
 ## Flow
 

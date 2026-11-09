@@ -120,9 +120,10 @@ units (but before the application units matter):
    deviation belong in the restore report. Fix the procedure from what actually
    happened.
 
-Until a restore on spare hardware succeeds, the nightly pull is the only evidence
-that archives leave the server intact. The drill is tracked in
-[open work](../work/open-work.md) and blocked on hardware.
+Until a from-zero restore succeeds, the nightly pull is the only evidence that
+archives leave the server intact. The preferred drill target is the not-yet-live
+replacement host after an import rehearsal, while legacy remains live. The drill
+is tracked in [open work](../work/open-work.md).
 
 ## Failure handling
 

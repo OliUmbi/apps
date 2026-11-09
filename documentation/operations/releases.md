@@ -9,7 +9,7 @@ tag actually running afterwards.
 
 | Date (UTC) | Tag deployed | Source commit | Migration | Verified by | Result | Rollback target | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| _example_ | `2026.10.24` | `abc1234` | `V011` | _name_ | pass / pass with notes / rolled back | `2026.10.17` | _what changed, what was checked_ |
+| _example_ | `2026.10.24` | `abc1234` | `V010` | _name_ | pass / pass with notes / rolled back | `2026.10.17` | _what changed, what was checked_ |
 
 ## What to record
 

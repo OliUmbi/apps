@@ -42,6 +42,11 @@ export function createIdentityClient(options: Omit<ServiceOptions, "name">) {
 			),
 		createAccount: (input: { name: string; email: string; password: string }) =>
 			http.json("/account", accountSchema, post(input)),
+		updateProfile: (id: string, input: { name: string; email: string }) =>
+			http.json(`/account/${encodeURIComponent(id)}/profile`, accountSchema, {
+				method: "PUT",
+				body: JSON.stringify(input),
+			}),
 		updateAccount: (
 			id: string,
 			input: {

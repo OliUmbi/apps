@@ -78,6 +78,7 @@ export function Collection<Row, Input = never>({
 	loadPage,
 	loadRecord,
 	remove,
+	canDelete,
 	title,
 	columns,
 	capability,
@@ -174,16 +175,18 @@ export function Collection<Row, Input = never>({
 						<>
 							{renderActions?.(record)}
 							{renderRelated?.(record)}
-							<div className="flex items-center justify-between gap-6 pt-5">
-								<Body>{m.confirm_delete_description()}</Body>
-								<Button
-									variant="danger"
-									disabled={save.isPending}
-									onClick={() => requestDelete(record)}
-								>
-									{m.delete_record()}
-								</Button>
-							</div>
+							{remove && (!canDelete || canDelete(record)) ? (
+								<div className="flex items-center justify-between gap-6 pt-5">
+									<Body>{m.confirm_delete_description()}</Body>
+									<Button
+										variant="danger"
+										disabled={save.isPending}
+										onClick={() => requestDelete(record)}
+									>
+										{m.delete_record()}
+									</Button>
+								</div>
+							) : null}
 						</>
 					)}
 				</>

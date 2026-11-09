@@ -24,12 +24,14 @@ export function ImageField({
 	site,
 	value,
 	onChange,
+	onPendingChange,
 	nullable = false,
 	label = m.image(),
 }: {
 	site: SiteId;
 	value: string | null;
 	onChange: (value: string | null) => void;
+	onPendingChange: (pending: boolean) => void;
 	nullable?: boolean;
 	label?: string;
 }) {
@@ -48,6 +50,7 @@ export function ImageField({
 	const images = query.data?.pages.flatMap((page) => page.items) ?? [];
 	const creation = useMutation({
 		mutationFn: (file: File) => {
+			onPendingChange(true);
 			const data = new FormData();
 			data.set("site", site);
 			data.set("kind", "images");
@@ -59,6 +62,7 @@ export function ImageField({
 			onChange("image" in result ? result.image.id : result.id);
 			await cache.invalidateQueries({ queryKey: ["assets", site, "images"] });
 		},
+		onSettled: () => onPendingChange(false),
 	});
 
 	return (

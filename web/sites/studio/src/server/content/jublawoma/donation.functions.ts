@@ -8,33 +8,30 @@ import {
 	concurrentUpdateMessage,
 	isConcurrentUpdateError,
 } from "@oliumbi/jublawoma-data/content/errors";
-import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireActor } from "../../auth.server";
 import { database } from "../../database.server";
+import { createServerFn } from "@tanstack/react-start";
+import { studioAuthorization } from "../../studio-authorization";
 
-export const listDonations = createServerFn({ method: "GET" })
+export const listDonations = createServerFn({ method: "GET" }).middleware([studioAuthorization("jublawoma")])
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		return createDonationRepository(database.db).list(data);
 	});
 
-export const getDonation = createServerFn({ method: "GET" })
+export const getDonation = createServerFn({ method: "GET" }).middleware([studioAuthorization("jublawoma")])
 	.validator(donationKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		return createDonationRepository(database.db).get(data);
 	});
 
-export const createDonation = createServerFn({ method: "POST" })
+export const createDonation = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
 	.validator(donationInputSchema)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		return createDonationRepository(database.db).create(data);
 	});
 
-export const updateDonation = createServerFn({ method: "POST" })
+export const updateDonation = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
 	.validator(
 		z.strictObject({
 			key: donationKeySchema,
@@ -43,7 +40,6 @@ export const updateDonation = createServerFn({ method: "POST" })
 		}),
 	)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		try {
 			return await createDonationRepository(database.db).update(
 				data.key,
@@ -57,9 +53,8 @@ export const updateDonation = createServerFn({ method: "POST" })
 		}
 	});
 
-export const deleteDonation = createServerFn({ method: "POST" })
+export const deleteDonation = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
 	.validator(donationKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		await createDonationRepository(database.db).delete(data);
 	});

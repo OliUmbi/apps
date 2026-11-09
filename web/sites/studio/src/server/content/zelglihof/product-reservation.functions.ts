@@ -13,29 +13,27 @@ import {
 	productReservationKeySchema,
 } from "@oliumbi/zelglihof-data/content/product-reservation";
 import { createProductReservationRepository } from "@oliumbi/zelglihof-data/content/product-reservation.repository";
-import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireActor } from "../../auth.server";
 import { database } from "../../database.server";
+import { createServerFn } from "@tanstack/react-start";
+import { studioAuthorization } from "../../studio-authorization";
 
-export const listProductReservations = createServerFn({ method: "GET" })
+export const listProductReservations = createServerFn({ method: "GET" }).middleware([studioAuthorization("zelglihof")])
 	.validator(pageSchema.extend({ productId: idSchema.optional() }))
 	.handler(async ({ data }) => {
-		await requireActor("zelglihof");
 		const repository = createProductReservationRepository(database.db);
 		return data.productId
 			? repository.listForProduct(data, data.productId)
 			: repository.list(data);
 	});
 
-export const getProductReservation = createServerFn({ method: "GET" })
+export const getProductReservation = createServerFn({ method: "GET" }).middleware([studioAuthorization("zelglihof")])
 	.validator(productReservationKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("zelglihof");
 		return createProductReservationRepository(database.db).get(data);
 	});
 
-export const updateProductReservation = createServerFn({ method: "POST" })
+export const updateProductReservation = createServerFn({ method: "POST" }).middleware([studioAuthorization("zelglihof")])
 	.validator(
 		z.strictObject({
 			key: productReservationKeySchema,
@@ -44,7 +42,6 @@ export const updateProductReservation = createServerFn({ method: "POST" })
 		}),
 	)
 	.handler(async ({ data }) => {
-		await requireActor("zelglihof");
 		try {
 			return await createProductReservationRepository(database.db).update(
 				data.key,
@@ -58,9 +55,8 @@ export const updateProductReservation = createServerFn({ method: "POST" })
 		}
 	});
 
-export const deleteProductReservation = createServerFn({ method: "POST" })
+export const deleteProductReservation = createServerFn({ method: "POST" }).middleware([studioAuthorization("zelglihof")])
 	.validator(productReservationKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("zelglihof");
 		await createProductReservationRepository(database.db).delete(data);
 	});

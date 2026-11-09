@@ -81,7 +81,11 @@ export function EventsView() {
 	);
 }
 
-function EventFields({ values, onChange }: EditorFieldsProps<EventInput>) {
+function EventFields({
+	values,
+	onChange,
+	onPendingChange,
+}: EditorFieldsProps<EventInput>) {
 	return (
 		<>
 			<TextField
@@ -108,6 +112,7 @@ function EventFields({ values, onChange }: EditorFieldsProps<EventInput>) {
 				onChange={(event) => onChange("location", event.target.value)}
 			/>
 			<ImageField
+				onPendingChange={onPendingChange}
 				site="jublawoma"
 				value={values.imageId}
 				nullable

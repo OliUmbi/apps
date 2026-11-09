@@ -113,7 +113,15 @@ export function createPublicRepository(db: DatabaseExecutor) {
 		listReviews(page: number): Promise<Page<Review>> {
 			return paginate<Review>(
 				db
-					.select()
+					.select({
+						id: review.id,
+						stars: review.stars,
+						name: review.name,
+						description: review.description,
+						visible: review.visible,
+						createdAt: review.createdAt,
+						updatedAt: review.updatedAt,
+					})
 					.from(review)
 					.where(eq(review.visible, true))
 					.orderBy(desc(review.createdAt), review.id)

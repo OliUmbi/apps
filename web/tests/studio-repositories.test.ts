@@ -39,11 +39,12 @@ import { createSubscriberRepository as zelglihofSubscriberStore } from "../packa
 import * as zelglihof from "../packages/zelglihof-data/src/schema";
 
 const enabled = Boolean(process.env.STUDIO_TEST_ADMIN_URL);
+const adminRole = process.env.STUDIO_TEST_ADMIN_ROLE ?? "postgres";
 test("explicit Studio repositories against PostgreSQL migrations", {
 	skip: !enabled,
 }, async (context) => {
 	const admin = createDatabasePool({
-		role: "postgres",
+		role: adminRole,
 		applicationName: "studio-review-tests",
 		connectionString: () => process.env.STUDIO_TEST_ADMIN_URL,
 	});
@@ -668,6 +669,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 							.length,
 						0,
 					);
+					await assert.rejects(store.delete(key), /Products cannot be deleted/);
 				},
 			);
 			await context.test(
@@ -711,6 +713,10 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 						ZelglihofRecordKeyMismatchError,
 					);
 					assert.equal((await store.get(key))?.productId, input.productId);
+					await assert.rejects(
+						store.delete(key),
+						/Product variants cannot be deleted/,
+					);
 				},
 			);
 			await context.test(
@@ -757,6 +763,14 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					);
 					assert.equal(updated.status, "completed");
 					assert.equal(updated.name, record.name);
+					await assert.rejects(
+						store.update(key, { status: "cancelled" }, updated.updatedAt),
+						/cancellation is not available/,
+					);
+					await assert.rejects(
+						store.delete(key),
+						/Reservation history cannot be deleted/,
+					);
 				},
 			);
 			await context.test(
@@ -831,6 +845,16 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 						/no longer editable/,
 					);
 					assert.equal((await store.get(key))?.status, "queued");
+					await assert.rejects(
+						store.delete(key),
+						/Only draft campaigns can be deleted/,
+					);
+					await transaction
+						.update(zelglihof.campaign)
+						.set({ status: "draft" })
+						.where(eq(zelglihof.campaign.id, record.id));
+					await store.delete(key);
+					assert.equal(await store.get(key), null);
 				},
 			);
 			await context.test(
@@ -873,20 +897,25 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 				"public reviews remain hidden until moderated",
 				async () => {
 					const name = `Review ${randomUUID()}`;
-					await transaction.execute(sql`SET LOCAL ROLE unclet`);
-					await createReviewSubmissionRepository(transaction).submit({
+					const input = {
 						stars: 5,
 						name,
 						description: "A public submission",
 						submissionId: randomUUID(),
-					});
+					};
+					await transaction.execute(sql`SET LOCAL ROLE unclet`);
+					await createReviewSubmissionRepository(transaction).submit(input);
+					await createReviewSubmissionRepository(transaction).submit(input);
 					await transaction.execute(sql`SET LOCAL ROLE studio`);
-					const [review] = await transaction
+					const reviews = await transaction
 						.select()
 						.from(unclet.review)
 						.where(eq(unclet.review.name, name));
+					assert.equal(reviews.length, 1);
+					const [review] = reviews;
 					assert.equal(review.stars, 5);
 					assert.equal(review.visible, false);
+					assert.equal(review.submissionId, input.submissionId);
 					assert.equal(
 						review.createdAt,
 						new Date(review.createdAt).toISOString(),

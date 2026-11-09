@@ -9,7 +9,7 @@ import {
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { assets } from "./assets.server";
-import { requireActor } from "./auth.server";
+import { studioAuthorization } from "./studio-authorization";
 
 const assetInput = z.object({
 	site: siteSchema,
@@ -21,32 +21,38 @@ const visibilityInput = assetInput.extend({
 	visible: z.boolean(),
 });
 const deleteAssetInput = assetInput.extend({ id: idSchema });
-export const listAssets = createServerFn({ method: "GET" })
+
+function assetSite(data: unknown) {
+	const parsed = assetInput.safeParse(
+		data instanceof FormData ? Object.fromEntries(data) : data,
+	);
+	if (!parsed.success)
+		throw new AppError("validation", "Site and asset kind are required");
+	return parsed.data.site;
+}
+
+export const listAssets = createServerFn({ method: "GET" }).middleware([studioAuthorization(assetSite)])
 	.validator(listAssetInput)
 	.handler(async ({ data }) => {
-		await requireActor(data.site);
 		return assets[data.kind].list(data.site, data.page, data.size);
 	});
-export const setAssetVisibility = createServerFn({ method: "POST" })
+export const setAssetVisibility = createServerFn({ method: "POST" }).middleware([studioAuthorization(assetSite)])
 	.validator(visibilityInput)
 	.handler(async ({ data }) => {
-		await requireActor(data.site);
 		await assets[data.kind].visibility(data.site, data.id, data.visible);
 	});
-export const deleteAsset = createServerFn({ method: "POST" })
+export const deleteAsset = createServerFn({ method: "POST" }).middleware([studioAuthorization(assetSite)])
 	.validator(deleteAssetInput)
 	.handler(async ({ data }) => {
-		await requireActor(data.site);
 		await assets[data.kind].delete(data.site, data.id);
 	});
-export const uploadAsset = createServerFn({ method: "POST" })
-	.validator((input: FormData) => input)
+export const uploadAsset = createServerFn({ method: "POST" }).middleware([studioAuthorization(assetSite)])
+	.validator((input: unknown) => input as FormData)
 	.handler(async ({ data }) =>
 		// One boundary: the handler-level schema reads leave typed as validation
 		// verdicts, never as raw ZodErrors across the server-function boundary.
 		mapErrors(async () => {
 			const input = assetInput.parse(Object.fromEntries(data));
-			await requireActor(input.site);
 			const file = data.get("file");
 			if (!(file instanceof File))
 				throw new AppError("validation", "File required");

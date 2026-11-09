@@ -77,10 +77,12 @@ export function ShowcaseImagesRelated({ showcaseId }: { showcaseId: string }) {
 function ShowcaseImageFields({
 	values,
 	onChange,
+	onPendingChange,
 }: EditorFieldsProps<ShowcaseImageInput>) {
 	return (
 		<>
 			<ImageField
+				onPendingChange={onPendingChange}
 				site="unclet"
 				value={values.imageId}
 				onChange={(value) => onChange("imageId", value ?? "")}

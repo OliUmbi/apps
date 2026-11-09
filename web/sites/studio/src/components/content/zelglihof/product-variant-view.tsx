@@ -8,7 +8,6 @@ import {
 } from "@oliumbi/zelglihof-data/content/product-variant";
 import {
 	createProductVariant,
-	deleteProductVariant,
 	getProductVariant,
 	listProductVariants,
 	updateProductVariant,
@@ -33,7 +32,6 @@ function productVariantCollection(
 		rowKey: (record) => record.id,
 		loadPage: (input) => listProductVariants({ data: { ...input, productId } }),
 		loadRecord: (id) => getProductVariant({ data: { id } }),
-		remove: (record) => deleteProductVariant({ data: { id: record.id } }),
 		capability: {
 			mode: "creatable",
 			editor: {
@@ -82,6 +80,7 @@ export function ProductVariantsRelated({ productId }: { productId: string }) {
 function ProductVariantFields({
 	values,
 	onChange,
+	onPendingChange,
 }: EditorFieldsProps<ProductVariantInput>) {
 	return (
 		<>
@@ -102,6 +101,7 @@ function ProductVariantFields({
 				}
 			/>
 			<ImageField
+				onPendingChange={onPendingChange}
 				site="zelglihof"
 				value={values.imageId}
 				nullable

@@ -12,8 +12,11 @@ questions are in [decisions](../reference/decisions.md).
   [decisions](../reference/decisions.md).
 - A code-complete item that still needs an environment check stays open as
   `[verify]`; do not remove it because the code landed.
-- The launch gate is the union of this page's **Launch gate** section and every
-  P1 item in [technical debt](tech-debt.md).
+- The launch gate is the union of this page's **Launch gate** section, every P1
+  item in [technical debt](tech-debt.md), deployment blockers DR-04–DR-07 and
+  go-live findings RV-01–RV-04.
+- The clean-host execution order, package ownership and acceptance evidence are
+  in the [first go-live remediation plan](go-live-remediation-plan.md).
 
 ## Launch gate
 
@@ -52,12 +55,45 @@ fixed during the review; the remaining items are open.
   pinned tag and reject `latest` in the deploy path.
 - [ ] **DR-07** Add `studio.oliumbi.ch` and the intended `studio.*`/`admin.*`
   redirect names to the managed DNS records; verify resolution.
-- [ ] Harden backup and housekeeping: no masked tar failure and no blanket
-  `volume prune` of unbacked monitoring state (DR-08, DR-09).
+- [ ] Harden backup and housekeeping: make the remaining outer tar/encryption
+  pipeline fail closed and remove blanket `volume prune` of unbacked monitoring
+  state (DR-08, DR-09).
 - [ ] Fix monitoring restarts, secret templating and the Studio upload body
   limit (DR-10, DR-11, DR-12).
 - [ ] Make builds reproducible and verified before release: build images in CI
-  and pin base/tool images and the Caddy plugin (DR-13, DR-14).
+  and pin base/tool images, the Caddy plugin and the CI Ansible package (DR-13,
+  DR-14).
+- [ ] **DR-15** Install `sudo` or make the bootstrap privilege prerequisite
+  explicit and verified before relying on `become_method = sudo`.
+- [ ] **DR-16** Order WireGuard-bound monitoring units after the tunnel so a
+  reboot cannot race their published addresses.
+- [ ] **DR-17** Template the backup/housekeeping schedules from their variables
+  or remove the dead configuration.
+- [ ] **DR-18** Verify public TLS probes through the router; use an internal
+  Caddy probe with the correct host header if NAT hairpin is unsupported.
+- [ ] **DR-19** Remove the WireGuard-only sshd drop-in when `restrict_ssh` is
+  false and verify that lockdown remains reversible.
+- [ ] **DR-20** Provision Grafana dashboards as code or correct the volume
+  comment and document their deliberate manual restoration.
+
+## First go-live review (2026-11)
+
+Evidence: [first go-live review](../history/go-live-review-2026-11.md).
+Sequencing and acceptance criteria:
+[first go-live remediation plan](go-live-remediation-plan.md).
+
+- [ ] **RV-01** Enable and wire node-exporter's host systemd collector. Verify
+  `node_systemd_unit_state` and `node_systemd_unit_start_time_seconds` exist on
+  the real host, then fire `UnitFailing` and `UnitRestartLoop` as tests.
+- [ ] **RV-02** Alert when the backup success metric is absent as well as stale,
+  and publish the node-exporter textfile atomically. Test before the first
+  backup and after an injected backup failure.
+- [ ] **RV-03** Add an explicit pre-cutover mode so `site.yml` on a parallel
+  clean host cannot update live DNS. Keep router forwarding and live records on
+  legacy until the final import and smoke tests; enable dyndns only at cutover.
+- [ ] **RV-04** Define the cutover point of no return and how post-cutover writes
+  are exported/replayed or rolled forward before any rollback to legacy. Do not
+  switch DNS back in a way that silently strands accepted submissions.
 
 ## Infrastructure and operations
 
@@ -71,8 +107,6 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   restore into Postgres 18, flip DNS. Decide whether the new migrations continue
   the legacy history or start fresh and map the data. Delete the retired `api.*`
   DNS records. Follow [migration](migration.md#cutover-playbook).
-- [ ] Rotate the legacy database and email passwords: `legacy/infrastructure/.env`
-  was committed to git. Never reuse those values.
 - [ ] Check whether 5432/8080/8000 on the current server are reachable from the
   internet (legacy exposure). The new stack has no host firewall by design, so
   verify only 80/443 and UDP 51820 (WireGuard) are forwarded.
@@ -86,8 +120,10 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   the server and confirm the workstation pull (`pull-backups.sh`).
 - [ ] Restore drill on its own machine (D14): rebuild from zero and restore a
   pulled backup (globals, `pg_restore`, media tar), then walk Studio and every
-  site. Blocked on spare hardware; the workstation drill is retired with the
-  compose files. The draft procedure is in
+  site. The preferred target is the not-yet-live replacement host after a
+  meaningful import rehearsal, while legacy remains live; no third host is
+  needed for that drill. The workstation drill is retired with the compose
+  files. The draft procedure is in
   [backup and restore](../operations/backup-restore.md#restore-untested-until-the-drill).
 - [ ] Housekeeping timer is scripted (`ansible/files/housekeep.sh`): enable on the
   server and check the first journal output.

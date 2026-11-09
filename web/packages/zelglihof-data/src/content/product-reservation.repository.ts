@@ -1,4 +1,4 @@
-import { guardRepository } from "@oliumbi/contracts";
+import { AppError, guardRepository } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { createContentRepository } from "@oliumbi/database/content-repository";
 import { productReservation } from "../schema";
@@ -28,8 +28,24 @@ export function createProductReservationRepository(db: DatabaseExecutor) {
 	return guardRepository({
 		list: store.list,
 		get: store.get,
-		update: store.update,
-		delete: store.delete,
+		async update(
+			key: ProductReservationKey,
+			input: ProductReservationInput,
+			expectedUpdatedAt: string,
+		) {
+			const current = await store.get(key);
+			// Cancellation must not claim to release stock before its transition and
+			// restoration rules exist. Other workflow transitions keep their stock.
+			if (current?.status !== "cancelled" && input.status === "cancelled")
+				throw new AppError(
+					"forbidden",
+					"Reservation cancellation is not available yet",
+				);
+			return store.update(key, input, expectedUpdatedAt);
+		},
+		async delete(_key: ProductReservationKey) {
+			throw new AppError("forbidden", "Reservation history cannot be deleted");
+		},
 		listForProduct: store.listScoped,
 	});
 }

@@ -16,9 +16,9 @@ V001 defines schemas, roles and default permissions. V002 defines the producer
 inbox. V003 defines identity. V004 defines messaging's delivery state and
 attempt history. V005 defines assets. V006 defines the studio schema. V007 is
 reserved for the future Oliumbi site. V008–V010 define the three site schemas
-(jublawoma, unclet, zelglihof). V011 adds the nullable `submission_id`
-idempotency key with unique indexes to the four public-submission tables. Every
-table ends its columns with `created_at` and `updated_at`.
+(jublawoma, unclet, zelglihof), including nullable `submission_id` idempotency
+keys and unique indexes on the five public-submission tables. Every table ends
+its columns with `created_at` and `updated_at`.
 
 Delivery records have independent IDs. Their unique queue_id correlates with the
 original request and protects against replay. No foreign key points back to the
@@ -49,13 +49,13 @@ no password literal lives in this directory.
   and `zelglihof` with the matching variable. Existing development volumes
   created before this change keep working until their roles are re-provisioned
   once with the same statements.
-- **Production** — provisioning is part of the deployment flow, not the
-  migrations: the vault/Ansible deployment runs `ALTER ROLE … LOGIN PASSWORD …`
+- **Production** — provisioning must be part of the deployment flow, not the
+  migrations: the vault/Ansible deployment must run `ALTER ROLE … LOGIN PASSWORD …`
   for every role from the vault values after `apps-migrate` and before the
-  services start (ops follow-up tracked in `documentation/work/open-work.md`:
-  "replace development
-  secrets / update roles and credentials"). Rotate any credential that was ever
-  committed to this repository.
+  services start. This is not implemented yet; DR-04 blocks a clean production
+  bootstrap ([open work](../documentation/work/open-work.md)). Rotate any
+  real credential that was ever committed to this repository; non-secret
+  placeholders are not credentials.
 
 ## Constraint list (RS-E2 / R07, plan decision D3)
 
@@ -107,4 +107,5 @@ reservations must carry positive quantities and steps.
 (`donation_title`, `item_name`, `product_name`, `variant_*`). Deleting a parent
 must not make its business records vanish: admin lists include orphaned rows and
 Studio marks them where parent context is shown. The unique nullable
-`submission_id` (V011) is the public-form idempotency key and must stay unique.
+`submission_id` in each public-submission table is the public-form idempotency
+key and must stay unique.

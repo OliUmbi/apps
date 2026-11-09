@@ -8,35 +8,32 @@ import {
 	eventKeySchema,
 } from "@oliumbi/jublawoma-data/content/event";
 import { createEventRepository } from "@oliumbi/jublawoma-data/content/event.repository";
-import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { assets } from "../../assets.server";
-import { requireActor } from "../../auth.server";
 import { database } from "../../database.server";
+import { createServerFn } from "@tanstack/react-start";
+import { studioAuthorization } from "../../studio-authorization";
 
-export const listEvents = createServerFn({ method: "GET" })
+export const listEvents = createServerFn({ method: "GET" }).middleware([studioAuthorization("jublawoma")])
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		return createEventRepository(database.db).list(data);
 	});
 
-export const getEvent = createServerFn({ method: "GET" })
+export const getEvent = createServerFn({ method: "GET" }).middleware([studioAuthorization("jublawoma")])
 	.validator(eventKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		return createEventRepository(database.db).get(data);
 	});
 
-export const createEvent = createServerFn({ method: "POST" })
+export const createEvent = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
 	.validator(eventInputSchema)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		if (data.imageId) await assets.images.get("jublawoma", data.imageId);
 		return createEventRepository(database.db).create(data);
 	});
 
-export const updateEvent = createServerFn({ method: "POST" })
+export const updateEvent = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
 	.validator(
 		z.strictObject({
 			key: eventKeySchema,
@@ -45,7 +42,6 @@ export const updateEvent = createServerFn({ method: "POST" })
 		}),
 	)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		if (data.values.imageId)
 			await assets.images.get("jublawoma", data.values.imageId);
 		try {
@@ -61,9 +57,8 @@ export const updateEvent = createServerFn({ method: "POST" })
 		}
 	});
 
-export const deleteEvent = createServerFn({ method: "POST" })
+export const deleteEvent = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
 	.validator(eventKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		await createEventRepository(database.db).delete(data);
 	});

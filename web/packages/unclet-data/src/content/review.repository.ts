@@ -12,6 +12,16 @@ export function createReviewRepository(db: DatabaseExecutor) {
 		search: review.name,
 		createdAt: review.createdAt,
 		updatedAt: review.updatedAt,
+		// The public-form idempotency key never crosses the management boundary.
+		selection: {
+			id: review.id,
+			stars: review.stars,
+			name: review.name,
+			description: review.description,
+			visible: review.visible,
+			createdAt: review.createdAt,
+			updatedAt: review.updatedAt,
+		},
 	});
 	return guardRepository({
 		list: store.list,

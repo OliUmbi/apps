@@ -73,7 +73,7 @@ Replace `studio` with another site name as needed. Node loads the root `.env`, w
 
 Java does not load `.env` automatically and does not implement `APP_ENV_FILE`. Supply variables through the shell or the IDE run configuration, including an IDE environment-file loader if available. Java commands run through the pinned Maven wrapper (`services/mvnw`, `services/mvnw.cmd`) or an installed Maven of the same version; see [Java development](../services/README.md#build) for the supported setup.
 
-Use `docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d --build` from the repository root to share these values with containers. Compose sets container-network hostnames separately. For native application development, start only infrastructure with `docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d postgres flyway mailpit`, then launch Java and the desired web apps locally.
+Use `docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d --build` from the repository root to share these values with containers. Compose sets container-network hostnames separately. For native application development, start only infrastructure with `docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d postgres flyway roles mailpit`, then launch Java and the desired web apps locally.
 
 Local Java uses `MESSAGING_SMTP_HOST=localhost` to reach Mailpit on port 1025. Compose uses `MESSAGING_SMTP_CONTAINER_HOST=mailpit` inside its network. Database role passwords must match the migrated database; editing the environment file does not change existing PostgreSQL passwords.
 

@@ -8,33 +8,30 @@ import {
 	reviewKeySchema,
 } from "@oliumbi/unclet-data/content/review";
 import { createReviewRepository } from "@oliumbi/unclet-data/content/review.repository";
-import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireActor } from "../../auth.server";
 import { database } from "../../database.server";
+import { createServerFn } from "@tanstack/react-start";
+import { studioAuthorization } from "../../studio-authorization";
 
-export const listReviews = createServerFn({ method: "GET" })
+export const listReviews = createServerFn({ method: "GET" }).middleware([studioAuthorization("unclet")])
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
-		await requireActor("unclet");
 		return createReviewRepository(database.db).list(data);
 	});
 
-export const getReview = createServerFn({ method: "GET" })
+export const getReview = createServerFn({ method: "GET" }).middleware([studioAuthorization("unclet")])
 	.validator(reviewKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("unclet");
 		return createReviewRepository(database.db).get(data);
 	});
 
-export const createReview = createServerFn({ method: "POST" })
+export const createReview = createServerFn({ method: "POST" }).middleware([studioAuthorization("unclet")])
 	.validator(reviewInputSchema)
 	.handler(async ({ data }) => {
-		await requireActor("unclet");
 		return createReviewRepository(database.db).create(data);
 	});
 
-export const updateReview = createServerFn({ method: "POST" })
+export const updateReview = createServerFn({ method: "POST" }).middleware([studioAuthorization("unclet")])
 	.validator(
 		z.strictObject({
 			key: reviewKeySchema,
@@ -43,7 +40,6 @@ export const updateReview = createServerFn({ method: "POST" })
 		}),
 	)
 	.handler(async ({ data }) => {
-		await requireActor("unclet");
 		try {
 			return await createReviewRepository(database.db).update(
 				data.key,
@@ -57,9 +53,8 @@ export const updateReview = createServerFn({ method: "POST" })
 		}
 	});
 
-export const deleteReview = createServerFn({ method: "POST" })
+export const deleteReview = createServerFn({ method: "POST" }).middleware([studioAuthorization("unclet")])
 	.validator(reviewKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("unclet");
 		await createReviewRepository(database.db).delete(data);
 	});

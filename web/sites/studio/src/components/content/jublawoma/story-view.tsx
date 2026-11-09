@@ -92,7 +92,11 @@ export function StoriesView() {
 	);
 }
 
-function StoryFields({ values, onChange }: EditorFieldsProps<StoryInput>) {
+function StoryFields({
+	values,
+	onChange,
+	onPendingChange,
+}: EditorFieldsProps<StoryInput>) {
 	return (
 		<>
 			<SlugField
@@ -117,6 +121,7 @@ function StoryFields({ values, onChange }: EditorFieldsProps<StoryInput>) {
 				onChange={(event) => onChange("author", event.target.value)}
 			/>
 			<ImageField
+				onPendingChange={onPendingChange}
 				site="jublawoma"
 				value={values.imageId}
 				nullable

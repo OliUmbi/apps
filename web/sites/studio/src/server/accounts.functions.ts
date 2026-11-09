@@ -1,5 +1,4 @@
 import { AppError, idSchema } from "@oliumbi/contracts";
-import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import {
 	newAccountSchema,
@@ -7,50 +6,43 @@ import {
 	permissionSchema,
 	updateAccountSchema,
 } from "../model/accounts";
-import { requireActor } from "./auth.server";
+import { createServerFn } from "@tanstack/react-start";
 import { identity } from "./identity.server";
+import { studioAuthorization } from "./studio-authorization";
 
-export const listAccounts = createServerFn({ method: "GET" }).handler(
-	async () => {
-		await requireActor();
-		return identity.listAccounts();
-	},
-);
-export const getAccount = createServerFn({ method: "GET" })
+export const listAccounts = createServerFn({ method: "GET" }).middleware([studioAuthorization()]).handler(async () => {
+	return identity.listAccounts();
+});
+export const getAccount = createServerFn({ method: "GET" }).middleware([studioAuthorization()])
 	.validator(idSchema)
 	.handler(async ({ data }) => {
-		await requireActor();
 		return identity.getAccount(data);
 	});
-export const createAccount = createServerFn({ method: "POST" })
+export const createAccount = createServerFn({ method: "POST" }).middleware([studioAuthorization()])
 	.validator(newAccountSchema)
 	.handler(async ({ data }) => {
-		await requireActor();
 		return identity.createAccount(data);
 	});
-export const updateAccount = createServerFn({ method: "POST" })
+export const updateAccount = createServerFn({ method: "POST" }).middleware([studioAuthorization()])
 	.validator(updateAccountSchema)
-	.handler(async ({ data }) => {
-		const actor = await requireActor();
-		if (data.id === actor.id && !data.enabled)
+	.handler(async ({ data, context }) => {
+		if (data.id === context.actor.id && !data.enabled)
 			throw new AppError("forbidden", "Cannot disable your own account");
 		return identity.updateAccount(data.id, data);
 	});
-export const deleteAccount = createServerFn({ method: "POST" })
+export const deleteAccount = createServerFn({ method: "POST" }).middleware([studioAuthorization()])
 	.validator(idSchema)
-	.handler(async ({ data }) => {
-		const actor = await requireActor();
-		if (data === actor.id)
+	.handler(async ({ data, context }) => {
+		if (data === context.actor.id)
 			throw new AppError("forbidden", "Cannot delete your own account");
 		await identity.deleteAccount(data);
 	});
-export const changePassword = createServerFn({ method: "POST" })
+export const changePassword = createServerFn({ method: "POST" }).middleware([studioAuthorization()])
 	.validator(z.object({ id: idSchema, password: passwordSchema }))
 	.handler(async ({ data }) => {
-		await requireActor();
 		await identity.changePassword(data.id, data.password);
 	});
-export const setPermission = createServerFn({ method: "POST" })
+export const setPermission = createServerFn({ method: "POST" }).middleware([studioAuthorization()])
 	.validator(
 		z.object({
 			id: idSchema,
@@ -58,10 +50,9 @@ export const setPermission = createServerFn({ method: "POST" })
 			granted: z.boolean(),
 		}),
 	)
-	.handler(async ({ data }) => {
-		const actor = await requireActor();
+	.handler(async ({ data, context }) => {
 		if (
-			actor.id === data.id &&
+			context.actor.id === data.id &&
 			data.permission === "studio.admin" &&
 			!data.granted
 		)

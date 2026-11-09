@@ -13,36 +13,33 @@ import {
 	concurrentUpdateMessage,
 	isConcurrentUpdateError,
 } from "@oliumbi/jublawoma-data/content/errors";
-import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireActor } from "../../auth.server";
 import { database } from "../../database.server";
+import { createServerFn } from "@tanstack/react-start";
+import { studioAuthorization } from "../../studio-authorization";
 
-export const listDonationItems = createServerFn({ method: "GET" })
+export const listDonationItems = createServerFn({ method: "GET" }).middleware([studioAuthorization("jublawoma")])
 	.validator(pageSchema.extend({ donationId: idSchema }))
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		return createDonationItemRepository(database.db).listForDonation(
 			data,
 			data.donationId,
 		);
 	});
 
-export const getDonationItem = createServerFn({ method: "GET" })
+export const getDonationItem = createServerFn({ method: "GET" }).middleware([studioAuthorization("jublawoma")])
 	.validator(donationItemKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		return createDonationItemRepository(database.db).get(data);
 	});
 
-export const createDonationItem = createServerFn({ method: "POST" })
+export const createDonationItem = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
 	.validator(donationItemInputSchema)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		return createDonationItemRepository(database.db).create(data);
 	});
 
-export const updateDonationItem = createServerFn({ method: "POST" })
+export const updateDonationItem = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
 	.validator(
 		z.strictObject({
 			key: donationItemKeySchema,
@@ -51,7 +48,6 @@ export const updateDonationItem = createServerFn({ method: "POST" })
 		}),
 	)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		try {
 			return await createDonationItemRepository(database.db).update(
 				data.key,
@@ -65,9 +61,8 @@ export const updateDonationItem = createServerFn({ method: "POST" })
 		}
 	});
 
-export const deleteDonationItem = createServerFn({ method: "POST" })
+export const deleteDonationItem = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
 	.validator(donationItemKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("jublawoma");
 		await createDonationItemRepository(database.db).delete(data);
 	});

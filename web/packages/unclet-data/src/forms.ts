@@ -51,7 +51,7 @@ export const inquirySchema = z.strictObject({
 export type InquirySubmissionInput = z.infer<typeof inquirySchema>;
 
 export const reviewSchema = z.strictObject({
-	// Every public form fill carries one submission id (D1); reviews are not deduplicated yet.
+	// Every public form fill carries one submission id (D1).
 	submissionId: idSchema,
 	stars: z.number().int().min(1).max(5),
 	name: nameSchema,

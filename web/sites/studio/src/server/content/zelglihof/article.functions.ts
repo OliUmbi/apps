@@ -8,35 +8,32 @@ import {
 	concurrentUpdateMessage,
 	isConcurrentUpdateError,
 } from "@oliumbi/zelglihof-data/content/errors";
-import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { assets } from "../../assets.server";
-import { requireActor } from "../../auth.server";
 import { database } from "../../database.server";
+import { createServerFn } from "@tanstack/react-start";
+import { studioAuthorization } from "../../studio-authorization";
 
-export const listArticles = createServerFn({ method: "GET" })
+export const listArticles = createServerFn({ method: "GET" }).middleware([studioAuthorization("zelglihof")])
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
-		await requireActor("zelglihof");
 		return createArticleRepository(database.db).list(data);
 	});
 
-export const getArticle = createServerFn({ method: "GET" })
+export const getArticle = createServerFn({ method: "GET" }).middleware([studioAuthorization("zelglihof")])
 	.validator(articleKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("zelglihof");
 		return createArticleRepository(database.db).get(data);
 	});
 
-export const createArticle = createServerFn({ method: "POST" })
+export const createArticle = createServerFn({ method: "POST" }).middleware([studioAuthorization("zelglihof")])
 	.validator(articleInputSchema)
 	.handler(async ({ data }) => {
-		await requireActor("zelglihof");
 		if (data.imageId) await assets.images.get("zelglihof", data.imageId);
 		return createArticleRepository(database.db).create(data);
 	});
 
-export const updateArticle = createServerFn({ method: "POST" })
+export const updateArticle = createServerFn({ method: "POST" }).middleware([studioAuthorization("zelglihof")])
 	.validator(
 		z.strictObject({
 			key: articleKeySchema,
@@ -45,7 +42,6 @@ export const updateArticle = createServerFn({ method: "POST" })
 		}),
 	)
 	.handler(async ({ data }) => {
-		await requireActor("zelglihof");
 		if (data.values.imageId)
 			await assets.images.get("zelglihof", data.values.imageId);
 		try {
@@ -61,9 +57,8 @@ export const updateArticle = createServerFn({ method: "POST" })
 		}
 	});
 
-export const deleteArticle = createServerFn({ method: "POST" })
+export const deleteArticle = createServerFn({ method: "POST" }).middleware([studioAuthorization("zelglihof")])
 	.validator(articleKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("zelglihof");
 		await createArticleRepository(database.db).delete(data);
 	});

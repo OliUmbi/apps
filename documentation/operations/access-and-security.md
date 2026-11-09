@@ -24,6 +24,12 @@ WireGuard address.
 
 For a clean machine; the legacy box stays untouched until cutover.
 
+> **Parallel-host safeguard:** the current `site.yml` enables dyndns for live
+> production names. Complete RV-03 in [open work](../work/open-work.md) before
+> running it on a parallel host, and keep router forwarding/live DNS on legacy
+> until the rehearsed cutover. Otherwise the new host can redirect production
+> traffic before it is ready.
+
 1. **Workstation prep.** Ansible installed, `age-keygen` for the backup key,
    `wg genkey` for both WireGuard keys, an Infomaniak API token with
    `domain:read`, `dns:read` and `dns:write`.
@@ -52,9 +58,10 @@ For a clean machine; the legacy box stays untouched until cutover.
   never contain a secret.
 - Development secrets live in the gitignored root `.env`, copied from
   `infrastructure/.env.dev`. Never reuse them in a deployed environment.
-- The legacy `.env` was committed to git. Rotate every legacy database and email
-  password; never reuse those values.
-- A credential that ever entered git is compromised, even after deletion.
+- The owner confirmed in 2026-11 that the committed legacy `.env` contained only
+  placeholders and that those values were already handled; no legacy rotation
+  task remains. Never reuse placeholder or development values in production.
+- A real credential that ever entered git is compromised, even after deletion.
 
 ### Rotating a secret
 
@@ -107,7 +114,8 @@ When an editor leaves or changes role:
 
 - WireGuard and SSH lockdown are not yet verified on the rebuilt server
   ([open work](../work/open-work.md)).
-- Restore drill and spare hardware ([open work](../work/open-work.md)).
+- Restore drill on the not-yet-live replacement host before cutover
+  ([open work](../work/open-work.md)).
 - External uptime and dead-man's-switch monitoring ([open work](../work/open-work.md)).
 - Legacy exposure check: confirm 5432/8080/8000 are not reachable from the
   internet ([open work](../work/open-work.md)).

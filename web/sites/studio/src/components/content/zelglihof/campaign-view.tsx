@@ -29,6 +29,7 @@ export function CampaignsView() {
 			loadPage={(input) => listCampaigns({ data: input })}
 			loadRecord={(id) => getCampaign({ data: { id } })}
 			remove={(record) => deleteCampaign({ data: { id: record.id } })}
+			canDelete={(record) => record.status === "draft"}
 			capability={{
 				mode: "creatable",
 				editor: {

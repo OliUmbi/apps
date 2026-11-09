@@ -7,16 +7,18 @@ production system stays authoritative until a feature's cutover is complete;
 `legacy/` is read-only reference material.
 
 **Current position (2026-11).** The legacy stack is still live and authoritative.
-The replacement exists and passes its gates, but no site has been cut over. The
-restore drill, production bootstrap and final content/legal approvals are the
-open launch blockers; see [open work](open-work.md). Deploy mechanics are in
-[deployment](../operations/deployment.md); the cutover sequence is below.
+The replacement exists and passes its local gates, but no site has been cut over.
+The complete launch gate includes deployment/bootstrap, application P1 debt,
+restore and import rehearsals, and content/legal approval; see
+[open work](open-work.md) and the [remediation plan](go-live-remediation-plan.md).
+Deploy mechanics are in [deployment](../operations/deployment.md); the cutover
+sequence is below.
 
 ## Phases
 
 1. **Decide and inventory** — record the remaining decisions ([decisions](../reference/decisions.md)); inventory legacy routes, tables, accounts, files, forms and integrations; mark each item **migrate / replace / archive / drop** with owner approval; capture a sanitized database + media fixture for rehearsal.
 2. **Vertical slice: Zelglihof** — one complete, operable site: real content, one durable submission workflow end to end, the editing the owner actually needs, sessions and site-scoped authorization, and the full deploy/proxy/backup/CI path. Exit: launch checklist met, clean environment builds from source + migrations, restore and rollback rehearsed.
-3. **Shared migration capabilities** — publication/archive/revision behavior, media import with deterministic derivatives, editor management, import tooling with dry-run and reconciliation reports, redirect/sitemap conventions.
+3. **Shared migration capabilities** — publication/archive/revision behavior, media import with deterministic derivatives, editor management, the owner-led manual mapping and reconciliation checklist (D16), and redirect/sitemap conventions.
 4. **First legacy site (Uncle-T first: lower scope and risk)** — build against sanitized data, rehearse imports repeatedly, owner acceptance in a production-like environment, then freeze writes briefly, final export/import/reconcile, cut over with monitoring and a rollback window, keep legacy protected until acceptance.
 5. **Second legacy site (Jublawoma)** — reuse proven contracts, not the first site's page components. Decide articles, events, documents, donations, points and youth-privacy handling.
 6. **Oliumbi and experiments** — small MVP after the primary sites operate; experiments get explicit boundaries so they cannot destabilize client sites.
@@ -24,15 +26,19 @@ open launch blockers; see [open work](open-work.md). Deploy mechanics are in
 
 ## Data migration method
 
+Use the [owner-led manual migration checklist](manual-migration-checklist.md)
+(D16); no importer will be built.
+
 - **Discover**: row counts, invalid references, status values, duplicates,
   timestamps, encodings, orphaned media; identify personal data.
 - **Extract**: read-only production role; timestamped, checksummed export with
   schema version and counts; media manifest with hash and target relation. No
   real production data in ordinary dev environments.
-- **Transform and load**: deterministic importer, safe to rerun into a clean
-  target; preserve source ids in a mapping report; explicit status mapping that
-  reports unknowns; validated payloads; transactions sized for useful rollback;
-  never send real email during rehearsal.
+- **Transform and load**: the owner migrates the small data set by hand (D16),
+  using a repeatable checklist into a clean target rather than an importer.
+  Preserve source ids in a mapping report; use explicit status mapping that
+  reports unknowns, validated payloads and transactions sized for useful
+  rollback; never send real email during rehearsal.
 - **Reconcile**: compare source/migrated/skipped/failed counts and media hashes;
   sample-check long content, Unicode, missing images, drafts, future dates and
   deleted states with the owner; crawl migrated routes; store the signed-off
@@ -67,6 +73,11 @@ Rollback triggers are objective: inaccessible primary routes, lost or corrupt
 submissions, unsafe authorization, broken admin workflow, invalid TLS, or error
 rate above threshold. Roll back application/routing to a schema-compatible
 version; down-migrations are never the default recovery.
+
+**Cutover data gap (RV-04):** routing back to legacy after the replacement has
+accepted writes can strand those submissions on the new database. Before public
+forms open, define the point of no return and the new-write export/replay or
+roll-forward procedure. A DNS rollback alone is not a data-safe rollback.
 
 ## Roadmap rules
 

@@ -5,7 +5,8 @@ What is unfinished, and where each kind of unfinished thing lives.
 ## At a glance
 
 - **Launch blockers** - the **Launch gate** section of [open work](open-work.md),
-  plus all P1 debt.
+  all P1 debt, DR-04–DR-07 and RV-01–RV-04. Execution order and acceptance:
+  [first go-live remediation plan](go-live-remediation-plan.md).
 - **P1 debt** - [TD-01](tech-debt.md#td-01) proxy rate limiting,
   [TD-06](tech-debt.md#td-06) profile field ownership,
   [TD-14](tech-debt.md#td-14) legacy import validation.

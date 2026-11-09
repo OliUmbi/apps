@@ -26,12 +26,12 @@ debt: it is listed so it is not rediscovered as a surprise.
 | [TD-03](#td-03) | Edge: static asset caching | P3 | open |
 | [TD-04](#td-04) | Data: PostgreSQL major upgrade path | P2 | open |
 | [TD-05](#td-05) | Assets: Windows junction containment | P2 | decision-gated |
-| [TD-06](#td-06) | Studio/identity: profile field ownership | P1 | open |
-| [TD-07](#td-07) | Studio: upload vs. save state | P2 | open |
+| [TD-06](#td-06) | Studio/identity: profile field ownership | P1 | resolved |
+| [TD-07](#td-07) | Studio: upload vs. save state | P2 | in progress |
 | [TD-08](#td-08) | Studio: deletion and stock-restoration policy | P2 | decision-gated |
-| [TD-09](#td-09) | Studio: dirty editor navigation | P2 | open |
-| [TD-10](#td-10) | Studio: per-handler authorization convention | P3 | open |
-| [TD-11](#td-11) | Data: queue privileges exceed the producer interface | P2 | decision-gated |
+| [TD-09](#td-09) | Studio: dirty editor navigation | P2 | resolved |
+| [TD-10](#td-10) | Studio: per-handler authorization convention | P3 | resolved |
+| [TD-11](#td-11) | Data: queue privileges exceed the producer interface | P2 | resolved |
 | [TD-12](#td-12) | Messaging: unbounded campaign batch | P3 | decision-gated |
 | [TD-13](#td-13) | Services: integration tests and Java style check | P3 | open |
 | [TD-14](#td-14) | Data: legacy import validation | P1 | open |
@@ -39,7 +39,7 @@ debt: it is listed so it is not rediscovered as a surprise.
 | [TD-16](#td-16) | Operations: Caddy state outside the backup | P2 | decision-gated |
 | [TD-17](#td-17) | Operations: backup checksum manifest is not portable | P3 | open |
 
-Counts: 3 P1, 9 P2, 5 P3. The 2026-10 refactor resolved most findings in the
+Open counts: 2 P1, 6 P2, 4 P3. The 2026-10 refactor resolved most findings in the
 [code quality review](../history/code-quality-review.md); their dispositions
 remain there as evidence and are not repeated here.
 
@@ -69,14 +69,16 @@ administrator disabling the account between the read and write can be undone.
 
 ### TD-14
 
-**Legacy imports are not validated against the new constraints.** Constraints are
-in place, but imported inquiries need a subject (map uncategorized contacts to
-`other`), and zero-quantity donation/reservation rows are rejected. Importing
-without reconciliation can fail mid-run or silently drop rows.
+**The owner-led manual legacy import is not yet validated or reconciled.** The
+owner will migrate the small data set by hand (D16); no importer will be built.
+Constraints are in place, but imported inquiries need a subject (map
+uncategorized contacts to `other`), and zero-quantity donation/reservation rows
+are rejected. An unchecked manual copy can fail mid-run or silently drop rows.
 
-- **Next action:** validate a sanitized legacy extract against the constraints,
-  map every unknown status and subject, and reconcile source/migrated/skipped/
-  failed counts before live data exists.
+- **Next action:** rehearse the manual checklist with a sanitized extract, map
+  every unknown status and subject, never send historical notifications, and
+  reconcile source/migrated/skipped/failed counts plus media hashes before live
+  data exists. Execute through [G0-E](go-live-remediation-plan.md#g0-e--reconcile-the-owner-led-manual-migration).
 - **Source:** R07 remainder; [database/README.md](../../database/README.md).
 
 ## P2 - next focused cleanup

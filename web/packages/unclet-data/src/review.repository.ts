@@ -10,14 +10,18 @@ import { review } from "./schema";
 export function createReviewSubmissionRepository(db: DatabaseExecutor) {
 	return guardRepository({
 		async submit(input: ReviewSubmissionInput): Promise<void> {
-			await db.insert(review).values({
-				stars: input.stars,
-				name: input.name,
-				description: input.description,
-				visible: false,
-				createdAt: sql`now()`,
-				updatedAt: sql`now()`,
-			});
+			await db
+				.insert(review)
+				.values({
+					stars: input.stars,
+					name: input.name,
+					description: input.description,
+					visible: false,
+					submissionId: input.submissionId,
+					createdAt: sql`now()`,
+					updatedAt: sql`now()`,
+				})
+				.onConflictDoNothing({ target: review.submissionId });
 		},
 	});
 }

@@ -1,4 +1,4 @@
-import { guardRepository } from "@oliumbi/contracts";
+import { AppError, guardRepository } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { createContentRepository } from "@oliumbi/database/content-repository";
 import { productVariant } from "../schema";
@@ -29,7 +29,14 @@ export function createProductVariantRepository(db: DatabaseExecutor) {
 		get: store.get,
 		create: store.create,
 		update: store.update,
-		delete: store.delete,
+		async delete(_key: ProductVariantKey) {
+			// Reservations keep snapshots, but deleting a variant also destroys the
+			// stock row that a future cancellation policy would need to restore.
+			throw new AppError(
+				"forbidden",
+				"Product variants cannot be deleted while reservation history depends on them",
+			);
+		},
 		listForProduct: store.listScoped,
 	});
 }

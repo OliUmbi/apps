@@ -1,4 +1,4 @@
-import { guardRepository } from "@oliumbi/contracts";
+import { AppError, guardRepository } from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { createContentRepository } from "@oliumbi/database/content-repository";
 import { product } from "../schema";
@@ -18,6 +18,12 @@ export function createProductRepository(db: DatabaseExecutor) {
 		get: store.get,
 		create: store.create,
 		update: store.update,
-		delete: store.delete,
+		async delete(_key: ProductKey) {
+			// Product deletion cascades through variants and orphans reservations.
+			throw new AppError(
+				"forbidden",
+				"Products cannot be deleted while reservation lifecycle is unresolved; make the product unavailable instead",
+			);
+		},
 	});
 }

@@ -8,35 +8,32 @@ import {
 	productKeySchema,
 } from "@oliumbi/zelglihof-data/content/product";
 import { createProductRepository } from "@oliumbi/zelglihof-data/content/product.repository";
-import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { assets } from "../../assets.server";
-import { requireActor } from "../../auth.server";
 import { database } from "../../database.server";
+import { createServerFn } from "@tanstack/react-start";
+import { studioAuthorization } from "../../studio-authorization";
 
-export const listProducts = createServerFn({ method: "GET" })
+export const listProducts = createServerFn({ method: "GET" }).middleware([studioAuthorization("zelglihof")])
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
-		await requireActor("zelglihof");
 		return createProductRepository(database.db).list(data);
 	});
 
-export const getProduct = createServerFn({ method: "GET" })
+export const getProduct = createServerFn({ method: "GET" }).middleware([studioAuthorization("zelglihof")])
 	.validator(productKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("zelglihof");
 		return createProductRepository(database.db).get(data);
 	});
 
-export const createProduct = createServerFn({ method: "POST" })
+export const createProduct = createServerFn({ method: "POST" }).middleware([studioAuthorization("zelglihof")])
 	.validator(productInputSchema)
 	.handler(async ({ data }) => {
-		await requireActor("zelglihof");
 		if (data.imageId) await assets.images.get("zelglihof", data.imageId);
 		return createProductRepository(database.db).create(data);
 	});
 
-export const updateProduct = createServerFn({ method: "POST" })
+export const updateProduct = createServerFn({ method: "POST" }).middleware([studioAuthorization("zelglihof")])
 	.validator(
 		z.strictObject({
 			key: productKeySchema,
@@ -45,7 +42,6 @@ export const updateProduct = createServerFn({ method: "POST" })
 		}),
 	)
 	.handler(async ({ data }) => {
-		await requireActor("zelglihof");
 		if (data.values.imageId)
 			await assets.images.get("zelglihof", data.values.imageId);
 		try {
@@ -61,9 +57,8 @@ export const updateProduct = createServerFn({ method: "POST" })
 		}
 	});
 
-export const deleteProduct = createServerFn({ method: "POST" })
+export const deleteProduct = createServerFn({ method: "POST" }).middleware([studioAuthorization("zelglihof")])
 	.validator(productKeySchema)
 	.handler(async ({ data }) => {
-		await requireActor("zelglihof");
 		await createProductRepository(database.db).delete(data);
 	});

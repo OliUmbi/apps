@@ -77,10 +77,12 @@ export function ArticleImagesRelated({ articleId }: { articleId: string }) {
 function ArticleImageFields({
 	values,
 	onChange,
+	onPendingChange,
 }: EditorFieldsProps<ArticleImageInput>) {
 	return (
 		<>
 			<ImageField
+				onPendingChange={onPendingChange}
 				site="zelglihof"
 				value={values.imageId}
 				onChange={(value) => onChange("imageId", value ?? "")}
