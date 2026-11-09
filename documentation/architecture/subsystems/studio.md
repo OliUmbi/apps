@@ -51,9 +51,11 @@ web/sites/studio/src/
 5. Views and server functions both hide unauthorized actions, but only the
    server check is authoritative.
 
-`requireActor(site?)` is the boundary. It is deliberately called by each handler,
-which is a convention rather than a compiler-enforced capability type - see
-[TD-10](../../work/tech-debt.md#td-10).
+`requireActor(site?)` is the boundary. It runs through the
+`studioAuthorization`/`authenticatedAuthorization` middleware that every server
+function declares - a convention rather than a compiler-enforced capability
+type; the typed guard was deliberately not built so TanStack's import
+protection can see `createServerFn` ([TD-10](../../work/tech-debt.md#td-10)).
 
 Password change and sign-out revoke the session server-side; the Studio handler
 clears the cookie only after identity confirms success.
@@ -71,8 +73,8 @@ clears the cookie only after identity confirms success.
 5. Publishing and archiving change explicit states; deletion is a separate,
    confirmed action (see [TD-08](../../work/tech-debt.md#td-08) for the policy gap).
 
-Uploads are handled by the assets service. An image selection currently uploads
-outside the editor's save state; see [TD-07](../../work/tech-debt.md#td-07).
+Uploads are handled by the assets service. The editor tracks upload readiness
+and blocks saving while an upload runs (TD-07, fixed 2026-11).
 
 ## Invariants
 
@@ -96,11 +98,8 @@ production. Local setup is in [development/local-setup.md](../../development/loc
 
 ## Known gaps
 
-- Profile updates can overwrite an administrative `enabled` change
-  ([TD-06](../../work/tech-debt.md#td-06), R01).
-- Uploads can finish after a save and change or discard the selected image
-  ([TD-07](../../work/tech-debt.md#td-07), R03).
-- Unsaved editor state does not reach navigation ([TD-09](../../work/tech-debt.md#td-09), R11).
-- Authorization is a per-handler convention ([TD-10](../../work/tech-debt.md#td-10), R16).
-- Mobile lists and unsaved-edit protection are design work in
-  [open work](../../work/open-work.md).
+- Authorization is a per-handler convention; a new handler can forget the
+  middleware ([TD-10](../../work/tech-debt.md#td-10), R16).
+- Mobile lists are design work in [open work](../../work/open-work.md). A
+  related collection's panel navigation still bypasses the unsaved-edit warning
+  (TD-09 residual).

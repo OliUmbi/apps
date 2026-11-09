@@ -27,8 +27,8 @@ questions are in [decisions](../reference/decisions.md).
 - [ ] Confirm the backup timer and the workstation pull work on the rebuilt
   server, and complete a restore on the dedicated machine
   ([backup and restore](../operations/backup-restore.md)).
-- [ ] Close every P1 item in [technical debt](tech-debt.md) - currently TD-01,
-  TD-06 and TD-14 - or record the owner's explicit acceptance.
+- [ ] Close every P1 item in [technical debt](tech-debt.md) - currently TD-01
+  and TD-14 - or record the owner's explicit acceptance.
 - [ ] Check site permissions and unpublished content with real roles. Verify
   application checks on shared media and queues.
 - [ ] Deploy health checks, alerts and useful logs, and confirm an alert reaches
@@ -59,10 +59,13 @@ fixed during the review; the remaining items are open.
   pipeline fail closed and remove blanket `volume prune` of unbacked monitoring
   state (DR-08, DR-09).
 - [ ] Fix monitoring restarts, secret templating and the Studio upload body
-  limit (DR-10, DR-11, DR-12).
+  limit (DR-10, DR-11, DR-12). (DR-10: monitoring containers carry
+  `Restart=always`; the deploy-path wiring for unit and env changes is still
+  open)
 - [ ] Make builds reproducible and verified before release: build images in CI
   and pin base/tool images, the Caddy plugin and the CI Ansible package (DR-13,
-  DR-14).
+  DR-14). (Application and site images are digest-pinned; Flyway, Caddy, the
+  plugin and the CI toolchain are not)
 - [ ] **DR-15** Install `sudo` or make the bootstrap privilege prerequisite
   explicit and verified before relying on `become_method = sudo`.
 - [ ] **DR-16** Order WireGuard-bound monitoring units after the tunnel so a
@@ -74,7 +77,9 @@ fixed during the review; the remaining items are open.
 - [ ] **DR-19** Remove the WireGuard-only sshd drop-in when `restrict_ssh` is
   false and verify that lockdown remains reversible.
 - [ ] **DR-20** Provision Grafana dashboards as code or correct the volume
-  comment and document their deliberate manual restoration.
+  comment and document their deliberate manual restoration. (The unit comment
+  and the manual-restoration docs are corrected; the `data-grafana.volume`
+  comment still claims provisioning)
 
 ## First go-live review (2026-11)
 
@@ -156,15 +161,17 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   implemented. Set retention rules for messages, tokens and personal data.
 - [ ] Clarify image publication and retention when linked content outlives an
   image.
-- [ ] Improve image selection and previews in Studio.
+- [x] Improve image selection and previews in Studio. (resolved 2026-11 - the
+  image field is a picker with thumbnails, pagination and inline upload)
 
 ## Design and accessibility
 
 - [ ] Jubla: check final illustrations and long titles on small phones.
-- [ ] Uncle-T: use one form of address throughout the site.
+- [x] Uncle-T: use one form of address throughout the site. (resolved in the
+  W3-B pass - Sie -> Du across site and catalog)
 - [ ] Zelglihof: use real farm photos.
-- [ ] Studio: simplify mobile lists. Unsaved-edit protection is
-  [TD-09](tech-debt.md#td-09).
+- [ ] Studio: simplify mobile lists. (Unsaved-edit protection landed as TD-09,
+  resolved 2026-11.)
 - [ ] Check keyboard use, focus, contrast and mobile menus. Verify German
   customer sites and Studio translations.
 

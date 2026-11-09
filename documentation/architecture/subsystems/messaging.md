@@ -116,9 +116,8 @@ Limits are request validation and are re-checked before every SMTP send.
 ## Known gaps
 
 - There is no administrator retry endpoint or alert transport yet.
-- Campaign sending is not bounded by campaign size; see
+- Campaign sending pages recipients with a keyset cursor but still runs in one
+  transaction and is not bounded by campaign size; see
   [TD-12](../../work/tech-debt.md#td-12) (R19).
-- Queue roles have broader privileges than the producer interface needs; see
-  [TD-11](../../work/tech-debt.md#td-11) (R17).
 - Campaign delivery results per recipient and retry rules for uncertain sends
   are open product work ([open work](../../work/open-work.md)).

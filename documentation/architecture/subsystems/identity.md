@@ -105,5 +105,3 @@ see [data and schema](data-and-schema.md) and
   external provider, bootstrap/invitation, recovery, MFA. The proposed local
   model is recorded in [decisions](../../reference/decisions.md); the owner has
   not confirmed it.
-- Studio profile updates can overwrite an administrative `enabled` change
-  because they reuse the general account update ([TD-06](../../work/tech-debt.md#td-06), R01).

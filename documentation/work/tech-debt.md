@@ -25,9 +25,9 @@ debt: it is listed so it is not rediscovered as a surprise.
 | [TD-02](#td-02) | Edge: Content-Security-Policy | P2 | open |
 | [TD-03](#td-03) | Edge: static asset caching | P3 | open |
 | [TD-04](#td-04) | Data: PostgreSQL major upgrade path | P2 | open |
-| [TD-05](#td-05) | Assets: Windows junction containment | P2 | decision-gated |
+| [TD-05](#td-05) | Assets: Windows junction containment | P2 | in progress |
 | [TD-06](#td-06) | Studio/identity: profile field ownership | P1 | resolved |
-| [TD-07](#td-07) | Studio: upload vs. save state | P2 | in progress |
+| [TD-07](#td-07) | Studio: upload vs. save state | P2 | resolved |
 | [TD-08](#td-08) | Studio: deletion and stock-restoration policy | P2 | decision-gated |
 | [TD-09](#td-09) | Studio: dirty editor navigation | P2 | resolved |
 | [TD-10](#td-10) | Studio: per-handler authorization convention | P3 | resolved |
@@ -67,6 +67,11 @@ administrator disabling the account between the read and write can be undone.
   email. Keep administrative fields in identity's administrative operation.
 - **Source:** R01.
 
+*Disposition (2026-11): fixed (TD-06) - identity gained a dedicated
+`PUT /account/{id}/profile` operation that updates only name and email; the
+profile path reads with a row lock and can no longer carry `enabled`, with a
+regression test in `AccountServiceTest`.*
+
 ### TD-14
 
 **The owner-led manual legacy import is not yet validated or reconciled.** The
@@ -80,6 +85,10 @@ are rejected. An unchecked manual copy can fail mid-run or silently drop rows.
   reconcile source/migrated/skipped/failed counts plus media hashes before live
   data exists. Execute through [G0-E](go-live-remediation-plan.md#g0-e--reconcile-the-owner-led-manual-migration).
 - **Source:** R07 remainder; [database/README.md](../../database/README.md).
+
+*Update (2026-11): the manual checklist is complete
+([manual-migration-checklist](manual-migration-checklist.md)); executing the
+rehearsal and reconciliation is the open work.*
 
 ## P2 - next focused cleanup
 
@@ -113,6 +122,11 @@ Linux, so this is a development-host risk.
   reparse points or accept the gap and document why. Owner decision.
 - **Source:** old open-work technical debt.
 
+*Disposition (2026-11): hardened in code - `StorageFiles.checkPath` rejects a
+symbolic-link storage root and walks every ancestor rejecting symbolic links on
+all path entry points; the JDK reports NTFS junctions as symlinks. Remaining:
+verify once against a real Windows junction, then close.*
+
 ### TD-07
 
 **Image uploads do not participate in the editor save state.** An editor can
@@ -122,6 +136,10 @@ a late result may change local state or be discarded when the form remounts.
 - **Next action:** expose upload readiness to the editor and block saving an
   incomplete image selection.
 - **Source:** R03.
+
+*Disposition (2026-11): fixed (TD-07) - the editor tracks upload readiness,
+disables saving while an upload runs, and surfaces the wait in the i18n
+catalog; a new value enters form state only on upload success.*
 
 ### TD-08
 
@@ -143,6 +161,12 @@ not warn or block, so unsaved changes can be lost.
   browser navigation.
 - **Source:** R11.
 
+*Disposition (2026-11): fixed (TD-09) - `useBlocker` intercepts in-app
+navigation and registers `beforeunload` for the browser, a discard dialog
+covers cancel/close, and a successful save remounts the editor. Known residual:
+a related collection's own panel navigation still bypasses the warning; the
+form's cancel button and router navigation are covered.*
+
 ### TD-11
 
 **Queue roles have broader privileges than the producer interface needs.**
@@ -153,6 +177,11 @@ their own replay handling). This is a least-privilege gap, not an exploit.
   still works without broad read access. Owner/design decision.
 - **Source:** R17.
 
+*Disposition (2026-11): fixed (TD-11) - producer roles receive INSERT-only
+default privileges on `queue`; enqueue no longer reads the table, and
+idempotency is owned by the per-domain `submission_id` unique indexes with the
+queue's unique id as a fail-closed backstop.*
+
 ### TD-15
 
 **Unsubscribe tokens are stored plaintext.** Hashing is a contract change with
@@ -161,6 +190,10 @@ the Zelglihof data package and was deferred in the 2026-10 pass.
 - **Next action:** decide the token contract (lookup strategy, migration of
   existing links, expiry) and hash at rest.
 - **Source:** D10; old open-work technical debt.
+
+*Update (2026-11): confirmation tokens are hashed at rest; unsubscribe tokens
+are still plaintext and are looked up by equality, so the token-contract
+decision (including migration of existing links) remains open.*
 
 ### TD-16
 
@@ -195,6 +228,13 @@ the check.
   unguarded handler does not type-check.
 - **Source:** R16.
 
+*Disposition (2026-11): resolved with an accepted deviation - every Studio
+server function declares the `studioAuthorization`/`authenticatedAuthorization`
+middleware, and the only unguarded functions are the public session endpoints.
+The type-level guard was deliberately not built: TanStack's import protection
+requires `createServerFn` visible at each endpoint. The residual risk (a new
+handler can forget the middleware) is accepted and recorded here.*
+
 ### TD-12
 
 **Campaign batching does not bound the transaction.** A campaign send reads
@@ -204,6 +244,10 @@ not bounded by campaign size. A very large campaign holds a long transaction.
 - **Next action:** set a campaign-size bound or page the send with a resumable
   cursor. Decision-gated on expected volume.
 - **Source:** R19.
+
+*Update (2026-11): recipients are now paged with a keyset cursor, but the whole
+send still runs in one transaction and is not resumable; the bound/resumable
+decision remains open.*
 
 ### TD-13
 

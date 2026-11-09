@@ -261,7 +261,7 @@ the per-site launch checklists are signed.
 | G0-A | planned | Immediate legacy exposure check and RV-03 should precede `site.yml`; legacy placeholders are already handled. |
 | G0-B | planned | DR-04–DR-07, DR-10–DR-16, DR-18–DR-20, RV-01/02, TD-01/02/03; DR-17 is G0-C. |
 | G0-C | planned | Code first; data-bearing restore drill follows a G0-E rehearsal. |
-| G0-D | in progress | Web correctness/cleanup is being implemented; TD-14 execution is G0-E. |
+| G0-D | in progress | TD-06/07/09/11 landed; TD-05 hardened, awaits one junction verification; open: TD-08, TD-15, TD-13, TD-10 deviation. TD-14 execution is G0-E. |
 | G0-E | planned | Owner-led manual migration (D16); no importer will be built. |
 | G0-F | planned | Owner input can be gathered earlier; final acceptance is last. |
 | Cutover | blocked | Requires every preceding exit gate. |

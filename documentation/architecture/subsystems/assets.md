@@ -88,9 +88,8 @@ lock so uploads are never blocked. This closed R18.
 
 ## Known gaps
 
-- Path containment does not defend against Windows junction symlinks, which can
-  point outside the storage root on a Windows development host. See
+- Windows junction containment is hardened in code (symbolic-link roots and
+  ancestors are rejected) and awaits a one-time junction verification; see
   [TD-05](../../work/tech-debt.md#td-05).
 - Image publication and retention when linked content outlives an image is still
   an open product decision ([open work](../../work/open-work.md)).
-- Studio image selection and previews need improvement ([open work](../../work/open-work.md)).
