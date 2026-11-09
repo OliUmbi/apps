@@ -120,9 +120,9 @@ oliumbi.ch, *.oliumbi.ch {
 	}
 
 	handle {
-		# TODO: the new stack has no oliumbi site container yet. Placeholder so
-		# the apex is not empty at cutover -- replace with the site reverse
-		# proxy once it exists.
+		# The new stack has no oliumbi site container yet. Placeholder so the
+		# apex is not empty at cutover; the apex decision is tracked in
+		# documentation/work/open-work.md.
 		redir https://studio.oliumbi.ch{uri} permanent
 	}
 }
