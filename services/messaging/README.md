@@ -64,8 +64,8 @@ foreign key to a deleted row. Producers must reuse their request UUID after an u
 A claim and its new attempt commit together before SMTP starts. Completion finishes the attempt
 and applies the next state in another transaction. Database failures roll back together.
 SMTP-success/process-crash remains inherently ambiguous: recovery can send a duplicate. No
-state machine can undo an external SMTP send. There is no administrator retry endpoint or alert
-transport yet; terminal failures remain inspectable and safe failure codes are logged.
+state machine can undo an external SMTP send. Terminal failures stay inspectable in Studio and
+alert as `MessageFailed` / `QueueStalled`; retry is manual by design (D30).
 
 Both worker loops isolate their items: one row that throws during claim, intake, send or complete is
 logged with its full cause chain and skipped for the remainder of that poll; the batch moves on and
