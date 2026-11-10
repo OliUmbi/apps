@@ -179,9 +179,10 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   watches.
 - [ ] Monthly: refresh the pinned image digests and action SHAs
   (D24, DR-14) - all Dockerfile `FROM` lines, the CI container pins in
-  `ci.yml` and the `publish.yml` action SHAs. Runtime version bumps (Caddy,
-  Node, temurin) stay deliberate, separate bumps; this refresh only picks up
-  silent base rebuild fixes.
+  `ci.yml` and the `publish.yml` action SHAs. The full register with owning
+  files and the procedure is [versions](../reference/versions.md). Runtime
+  version bumps (Caddy, Node, temurin) stay deliberate, separate bumps; this
+  refresh only picks up silent base rebuild fixes.
 
 ## Product features
 
