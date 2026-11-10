@@ -83,6 +83,23 @@ test("a correction onto an address owned by another subscriber is refused with n
 	correctionLocks(run.log);
 });
 
+test("saving the address that is already stored is a no-op", async () => {
+	const run = fakeDatabase([[self], [self]]);
+	assert.deepEqual(
+		await createSubscriberService(run.database, options).correctEmail(
+			id,
+			" ANA@Example.com ",
+		),
+		{ outcome: "corrected" },
+	);
+	// An idempotent save must not restart confirmation, deactivate an active
+	// subscriber, or send an email for an address that did not change.
+	assert.equal(run.log.updates, 0);
+	assert.deepEqual(run.log.inserts, []);
+	nothingQueued(run.log);
+	correctionLocks(run.log);
+});
+
 test("correcting an unsubscribed subscriber keeps them out of the funnel", async () => {
 	const run = fakeDatabase([[unsubscribed], []]);
 	assert.deepEqual(

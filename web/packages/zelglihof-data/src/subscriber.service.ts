@@ -23,20 +23,35 @@ export interface CorrectionPlan {
 	// The new address has never confirmed: pending and active subscribers go
 	// back to pending with a fresh confirmation.
 	restartConfirmation: boolean;
+	// A correction to the stored address writes nothing: an idempotent save
+	// must not deactivate an active subscriber or send a pointless email.
+	changeEmail: boolean;
 }
 
 // Pure decision point: an address owned by another subscriber is a typed
-// conflict, and an unsubscribed subscriber is never silently re-subscribed by
-// an address correction.
+// conflict, an unchanged address is a no-op, and an unsubscribed subscriber is
+// never silently re-subscribed by an address correction.
 export function decideCorrection(input: {
 	conflict: boolean;
+	sameAddress: boolean;
 	status: "pending" | "active" | "unsubscribed";
 }): CorrectionPlan {
 	if (input.conflict)
-		return { outcome: "conflict", restartConfirmation: false };
+		return {
+			outcome: "conflict",
+			restartConfirmation: false,
+			changeEmail: false,
+		};
+	if (input.sameAddress)
+		return {
+			outcome: "corrected",
+			restartConfirmation: false,
+			changeEmail: false,
+		};
 	return {
 		outcome: "corrected",
 		restartConfirmation: input.status !== "unsubscribed",
+		changeEmail: true,
 	};
 }
 
@@ -82,9 +97,11 @@ export function createSubscriberService(
 						const owner = await repository.byEmail(normalized);
 						const plan = decideCorrection({
 							conflict: Boolean(owner && owner.id !== id),
+							sameAddress: subscriber.email === normalized,
 							status: subscriber.status,
 						});
 						if (plan.outcome === "conflict") return { outcome: plan.outcome };
+						if (!plan.changeEmail) return { outcome: plan.outcome };
 						const now = new Date();
 						if (plan.restartConfirmation) {
 							const token = newToken();

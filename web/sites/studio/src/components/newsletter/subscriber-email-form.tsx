@@ -34,6 +34,24 @@ export function SubscriberEmailForm({
 		failed: correction.isError,
 		result: correction.data,
 	});
+	// The outcome alone cannot describe the consequence: saving the stored
+	// address changes nothing, an unsubscribed record stays unsubscribed, and
+	// only a pending/active record gets a new confirmation.
+	const submitted = correction.variables?.trim().toLowerCase();
+	const unchanged =
+		submitted !== undefined && submitted === subscriber.email.toLowerCase();
+	const message =
+		feedback === "failed"
+			? m.studio_subscriber_action_error()
+			: feedback === "conflict"
+				? m.studio_subscriber_email_conflict()
+				: feedback === "corrected"
+					? unchanged
+						? m.studio_subscriber_email_unchanged()
+						: subscriber.status === "unsubscribed"
+							? m.studio_subscriber_email_changed_unsubscribed()
+							: m.studio_subscriber_email_changed()
+					: null;
 	return (
 		<>
 			<Form
@@ -65,13 +83,7 @@ export function SubscriberEmailForm({
 				</Button>
 			</Form>
 			<Alert tone={feedback === "corrected" ? "success" : "error"}>
-				{feedback === "failed"
-					? m.studio_subscriber_action_error()
-					: feedback === "conflict"
-						? m.studio_subscriber_email_conflict()
-						: feedback === "corrected"
-							? m.studio_subscriber_email_changed()
-							: null}
+				{message}
 			</Alert>
 		</>
 	);
