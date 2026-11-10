@@ -175,6 +175,18 @@ and set the recovery and cutover boundaries.
   export/replay the new writes or roll forward; a DNS-only switch back is not
   data-safe. The observation window and owner sign-off decide when the point is
   crossed.
+- **D24 — Base/tool images are pinned `tag@digest` and refreshed monthly.**
+  Dockerfile `FROM` lines, CI container images and publish action SHAs pin
+  exact bytes (DR-14); a digest change is always a deliberate, reviewable
+  commit, so builds stay reproducible and rollback targets known bytes.
+  Runtime CVE fixes (Caddy, Node, temurin) arrive as new version tags and stay
+  deliberate bumps; the monthly refresh in
+  [open work](../work/open-work.md) picks up silent base (alpine) rebuild
+  fixes. Floating tags were considered and declined (2026-11): without a
+  scheduled rebuild pipeline they would not deliver base fixes faster, and
+  they lose the reproducibility DR-14 exists for. Industry consensus (Kubernetes,
+  Chainguard, Renovate, Docker) is pin + automated refresh; if the manual
+  cadence slips, Renovate-style digest automation is the prepared alternative.
 
 ### O-006 threat model (accepted 2026-11)
 

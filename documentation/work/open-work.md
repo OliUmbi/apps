@@ -177,6 +177,11 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   and confirm alerts reach the phone. Then add external uptime checks and a
   dead-man's switch outside the box: everything current runs on the machine it
   watches.
+- [ ] Monthly: refresh the pinned image digests and action SHAs
+  (D24, DR-14) - all Dockerfile `FROM` lines, the CI container pins in
+  `ci.yml` and the `publish.yml` action SHAs. Runtime version bumps (Caddy,
+  Node, temurin) stay deliberate, separate bumps; this refresh only picks up
+  silent base rebuild fixes.
 
 ## Product features
 
