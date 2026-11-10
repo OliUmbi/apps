@@ -63,7 +63,7 @@ old one; do not silently rewrite history.
 | O-012 | Low availability requirements; now superseded: monitoring + alerting exist ([operations](../operations/README.md)). |
 | O-013 | Superseded: certbot/nginx plan replaced by containerized Caddy with DNS-01 wildcards; dynamic DNS handled by a server-side timer. |
 | O-014 | Stability requirements low; beta versions acceptable; periodic upgrades without formal policy. |
-| O-015 | German-only for the three client sites, Oliumbi mainly English; English URL strategy with permanent redirects; Paraglide for i18n; dates via a proper library, formatted per browser locale. |
+| O-015 | German-only for the three client sites, Oliumbi mainly English; **German public paths** via Paraglide `urlPatterns` with English route files (2026-11, D32); Paraglide for i18n; dates via a proper library, formatted per browser locale. |
 | O-016 | No analytics; minimal third-party embeds. Instagram is an explicit requirement (Uncle-T, Jublawoma); review better embedding options. |
 | O-017 | Owner confirmation is easy; small data sets may be migrated by hand. |
 
@@ -238,6 +238,12 @@ and set the recovery and cutover boundaries.
   on one recovery sheet. A lost workstation is recoverable from the sheet; a
   lost sheet means a new key and a fresh archive. The drill restores from the
   printed copy, not the password manager.
+- **D32 — Public URLs are German; route files stay English.** `urlPatterns` in
+  the Paraglide compiler options map `/about` to `/ueber-uns` and so on; the
+  router's existing input/output rewrite applies them, so links and navigation
+  keep using the type-safe English route ids. Sitemaps use the German paths.
+  System endpoints (`/api/*`, newsletter tokens) are never localized. A missing
+  pattern fails the `i18n-urls` test.
 
 ### O-006 threat model (accepted 2026-11)
 

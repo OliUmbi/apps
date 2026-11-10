@@ -25,4 +25,38 @@ export const paraglideOptions = {
 	// The same tree-shaking flag the Vite plugin picks, so generated files are
 	// byte-identical no matter which writer produced them.
 	isServer: "import.meta.env?.SSR ?? typeof window === 'undefined'",
+	// German public paths. The router's input/output rewrite maps these to the
+	// English route ids, so route files and type-safe links stay English while
+	// the address bar, sitemaps and canonical URLs are German.
+	urlPatterns: [
+		{ pattern: "/about", localized: [["de-CH", "/ueber-uns"]] },
+		{ pattern: "/contact", localized: [["de-CH", "/kontakt"]] },
+		{ pattern: "/crops", localized: [["de-CH", "/anbau"]] },
+		{ pattern: "/products", localized: [["de-CH", "/produkte"]] },
+		{
+			pattern: "/products/:productId",
+			localized: [["de-CH", "/produkte/:productId"]],
+		},
+		{ pattern: "/latest", localized: [["de-CH", "/aktuelles"]] },
+		{ pattern: "/latest/:slug", localized: [["de-CH", "/aktuelles/:slug"]] },
+		{ pattern: "/events", localized: [["de-CH", "/anlaesse"]] },
+		{ pattern: "/stories", localized: [["de-CH", "/geschichten"]] },
+		{
+			pattern: "/stories/:slug",
+			localized: [["de-CH", "/geschichten/:slug"]],
+		},
+		{ pattern: "/donations", localized: [["de-CH", "/spenden"]] },
+		{ pattern: "/join", localized: [["de-CH", "/beitreten"]] },
+		{ pattern: "/services", localized: [["de-CH", "/angebot"]] },
+		{ pattern: "/showcases", localized: [["de-CH", "/referenzen"]] },
+		{
+			pattern: "/showcases/:slug",
+			localized: [["de-CH", "/referenzen/:slug"]],
+		},
+		{ pattern: "/inquiry", localized: [["de-CH", "/anfrage"]] },
+		{ pattern: "/review", localized: [["de-CH", "/bewertung"]] },
+		{ pattern: "/privacy", localized: [["de-CH", "/datenschutz"]] },
+		{ pattern: "/legal", localized: [["de-CH", "/impressum"]] },
+		{ pattern: "/terms", localized: [["de-CH", "/agb"]] },
+	],
 };

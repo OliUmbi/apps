@@ -291,8 +291,10 @@ Remaining product features are deliberately deferred until after launch; see
   the placeholder site and apex route are built.
 - [ ] Translate the remaining hard-coded labels and content in Studio and the
   public sites.
-- [ ] Check Paraglide URL translation, such as `/kontakt` and `/contact`. Use
-  German customer URLs and English source filenames.
+- [x] Paraglide URL translation (`/kontakt`, `/produkte`, ...). (implemented in
+  PH-9 - German public paths via `urlPatterns`, English route ids, sitemaps
+  updated; `i18n-urls` test pins the mapping.) The remaining hard-coded TSX
+  labels are tracked separately.
 - [ ] Revisit queued newsletter cancellation and stale confirmation links as
   volume grows. Current priority is low.
 - [ ] Add email verification and password recovery only if public accounts are
