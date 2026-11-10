@@ -11,7 +11,7 @@ COPY services/shared/src shared/src
 COPY services/assets/src assets/src
 RUN mvn -q -pl assets -am -DskipTests package
 
-FROM eclipse-temurin:25-jre-alpine@sha256:b7528962e65d43064d8a8b67ba175367896bc948363ea2d3fcd7f10d34e1f048
+FROM eclipse-temurin:25-jre-alpine@sha256:e1898fd6a11fc965a994d8ace186fd3585aeb636cf8f05f47a723fcfee0b0918
 WORKDIR /app
 # uid/gid pinned: /media is a host bind mount on the server (ansible chowns
 # /var/lib/apps/media to 100:100). Alpine already owns GID 100 as `users`, so
