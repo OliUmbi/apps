@@ -16,6 +16,8 @@ function Privacy() {
 			<p>{m.jublawoma_privacy_personal_data_body()}</p>
 			<p>{m.jublawoma_privacy_legal_basis_body()}</p>
 			<p>{m.jublawoma_privacy_data_processing_body()}</p>
+			<h2>{m.jublawoma_privacy_technical_data_title()}</h2>
+			<p>{m.jublawoma_privacy_technical_data_body()}</p>
 			<a
 				className="button dark"
 				href={privacyPolicyPdf}

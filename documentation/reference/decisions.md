@@ -193,9 +193,10 @@ and set the recovery and cutover boundaries.
   referrer or visitor identifier) and counts into `analytics.view_daily`, one
   row per site, day and route template. Bot and no-JS traffic is not counted.
   Studio shows a per-site 30-day total, top routes and a daily series. No
-  consent banner is needed because the counters carry no personal data.
-  Jublawoma is not tracked until its external privacy policy mentions the
-  counting; Oliumbi has no database.
+  consent banner is needed because the counters carry no personal data. All
+  three German sites are tracked; each privacy page states the anonymous
+  counting inline, including Jublawoma (the external PDF is unchanged). Oliumbi
+  has no database and is excluded until it has one.
 - **D26 — The audit trail is append-only, admin-only and narrow.** Studio
   records destructive and administrative actions (accounts, permissions, asset
   visibility/deletion, product/variant archival, reservation changes and

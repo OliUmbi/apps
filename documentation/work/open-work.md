@@ -187,8 +187,6 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   `analytics.view_daily`, a per-site Studio panel, no cookies or identifiers;
   decision D25.) Jublawoma stays untracked until its external privacy policy
   covers the counting, and Oliumbi has no database.
-- [ ] Extend anonymous page counting to Jublawoma once the owner updates the
-  external privacy policy, and decide whether Oliumbi needs it at all.
 - [ ] Explore error tracking so failures surface without a user report:
   frontend JS errors and Java `errorId`s currently end in journald with no
   aggregation. Weigh a self-hosted option (GlitchTip or similar) against

@@ -57,7 +57,9 @@ export const studioSites: StudioSite[] = siteDetails.map((site) => ({
 			description: m.studio_dashboard_workspaces_title,
 			icon: "home",
 		},
-		...(site.id === "unclet" || site.id === "zelglihof"
+		...(site.id === "jublawoma" ||
+		site.id === "unclet" ||
+		site.id === "zelglihof"
 			? [
 					{
 						id: "traffic" as const,

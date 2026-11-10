@@ -12,6 +12,6 @@ CREATE TABLE analytics.view_daily
     PRIMARY KEY (site, day, route)
 );
 
-GRANT USAGE ON SCHEMA analytics TO unclet, zelglihof, studio;
-GRANT INSERT, UPDATE ON analytics.view_daily TO unclet, zelglihof;
+GRANT USAGE ON SCHEMA analytics TO jublawoma, unclet, zelglihof, studio;
+GRANT INSERT, UPDATE ON analytics.view_daily TO jublawoma, unclet, zelglihof;
 GRANT SELECT ON analytics.view_daily TO studio;

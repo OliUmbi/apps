@@ -62,7 +62,7 @@ function WorkspaceContent({
 		return <ContentView key={section} section={section} />;
 	if (
 		section === "traffic" &&
-		(site.id === "unclet" || site.id === "zelglihof")
+		(site.id === "jublawoma" || site.id === "unclet" || site.id === "zelglihof")
 	)
 		return <TrafficView site={site.id} />;
 	if (section === "images" || section === "documents") {

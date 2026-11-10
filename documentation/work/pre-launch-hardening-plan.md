@@ -38,8 +38,8 @@ evidence exists and the registers are updated.
 | PH-3 | done | Same-address correction is a no-op; Studio distinguishes unchanged, confirmation-sent, unsubscribed and conflict. Test added. |
 | PH-4 | done | `studio.audit_event` (append-only), admin-only view, 17 wired actions, no before/after. Decision D26. |
 | PH-5 | done | 12-month delivery history, 30-day inbox rows, 18-month audit, 25-month analytics; flock, success metric and `HousekeepStale`. Decision D27, debt TD-22. |
-| PH-6 | done | `analytics.view_daily`, route-id beacon on Unclet and Zelglihof, per-site Studio panel, no cookies/identifiers/referrer; privacy text updated. Decision D25. |
-| PH-7 | in progress | Micrometer on the three services, queue gauges (counts + oldest age), Caddy edge metrics, postgres_exporter with the `monitoring` role, coverage rules for service/pool/queue/connections/probe absence/TLS, `Permissions-Policy`, a 5xx body, and the messaging batch/lease/shutdown fix. Prometheus config and 18 rules validate with `promtool`; Caddy validate runs in the image build. |
+| PH-6 | done | `analytics.view_daily`, route-id beacon on Jublawoma, Unclet and Zelglihof, per-site Studio panel, no cookies/identifiers/referrer; each privacy page carries the disclosure (Jublawoma inline, PDF unchanged). Decision D25. |
+| PH-7 | done (host verification pending) | Micrometer on the three services, queue gauges (counts + oldest age), Caddy edge metrics, postgres_exporter with the `monitoring` role, coverage rules for service/pool/queue/connections/probe absence/TLS, `Permissions-Policy`, a 5xx body, and the messaging batch/lease/shutdown fix. Prometheus config and 18 rules validate with `promtool`; the Caddyfile validates with `caddy validate`. |
 | PH-8 | done (owner prints the sheet) | Passphrase-wrapped age identity, printed recovery sheet, and the restore commands updated to the wrapped identity. The drill itself remains owner-executed. |
 | PH-9 | partial | German public paths shipped (D32) with a test and updated sitemaps. The remaining hard-coded TSX labels are still open. |
 | PH-10 | partial | Canonical links, LocalBusiness/Organization JSON-LD and dynamic `/sitemap.xml` routes (static pages + articles/products/showcases/stories) ship. The legacy redirect map needs the migration URL inventory. |
@@ -53,8 +53,9 @@ evidence exists and the registers are updated.
 - PH-2 to PH-4: `pnpm test` green, including the PostgreSQL-gated suites.
 - PH-5: `apps-housekeep.service` runs once on the host, the metric appears and
   an injected failure leaves `HousekeepStale` firing.
-- PH-6: a navigation on Unclet and Zelglihof increments `analytics.view_daily`;
-  the Studio panel shows the day and the route; no cookie is set.
+- PH-6: a navigation on Jublawoma, Unclet and Zelglihof increments
+  `analytics.view_daily`; the Studio panel shows the day and the route; no
+  cookie is set.
 - PH-7: Prometheus scrapes the three services and Caddy, the new rules fire
   when tested, and the probe-silence rule catches a stopped blackbox.
 - PH-8: a restore from a pulled archive using the printed identity and its

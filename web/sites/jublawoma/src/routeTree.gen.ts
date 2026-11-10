@@ -19,6 +19,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as StoriesIndexRouteImport } from './routes/stories.index'
 import { Route as StoriesSlugRouteImport } from './routes/stories.$slug'
+import { Route as ApiAnalyticsViewRouteImport } from './routes/api.analytics.view'
 import { Route as ApiAssetsIdRouteImport } from './routes/api.assets.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -71,6 +72,11 @@ const StoriesSlugRoute = StoriesSlugRouteImport.update({
   path: '/stories/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAnalyticsViewRoute = ApiAnalyticsViewRouteImport.update({
+  id: '/api/analytics/view',
+  path: '/api/analytics/view',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAssetsIdRoute = ApiAssetsIdRouteImport.update({
   id: '/api/assets/$id',
   path: '/api/assets/$id',
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stories/$slug': typeof StoriesSlugRoute
   '/stories/': typeof StoriesIndexRoute
+  '/api/analytics/view': typeof ApiAnalyticsViewRoute
   '/api/assets/$id': typeof ApiAssetsIdRoute
 }
 export interface FileRoutesByTo {
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stories/$slug': typeof StoriesSlugRoute
   '/stories': typeof StoriesIndexRoute
+  '/api/analytics/view': typeof ApiAnalyticsViewRoute
   '/api/assets/$id': typeof ApiAssetsIdRoute
 }
 export interface FileRoutesById {
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/stories/$slug': typeof StoriesSlugRoute
   '/stories/': typeof StoriesIndexRoute
+  '/api/analytics/view': typeof ApiAnalyticsViewRoute
   '/api/assets/$id': typeof ApiAssetsIdRoute
 }
 export interface FileRouteTypes {
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/stories/$slug'
     | '/stories/'
+    | '/api/analytics/view'
     | '/api/assets/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/stories/$slug'
     | '/stories'
+    | '/api/analytics/view'
     | '/api/assets/$id'
   id:
     | '__root__'
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/stories/$slug'
     | '/stories/'
+    | '/api/analytics/view'
     | '/api/assets/$id'
   fileRoutesById: FileRoutesById
 }
@@ -170,6 +182,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StoriesSlugRoute: typeof StoriesSlugRoute
   StoriesIndexRoute: typeof StoriesIndexRoute
+  ApiAnalyticsViewRoute: typeof ApiAnalyticsViewRoute
   ApiAssetsIdRoute: typeof ApiAssetsIdRoute
 }
 
@@ -245,6 +258,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StoriesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/analytics/view': {
+      id: '/api/analytics/view'
+      path: '/api/analytics/view'
+      fullPath: '/api/analytics/view'
+      preLoaderRoute: typeof ApiAnalyticsViewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/assets/$id': {
       id: '/api/assets/$id'
       path: '/api/assets/$id'
@@ -266,6 +286,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StoriesSlugRoute: StoriesSlugRoute,
   StoriesIndexRoute: StoriesIndexRoute,
+  ApiAnalyticsViewRoute: ApiAnalyticsViewRoute,
   ApiAssetsIdRoute: ApiAssetsIdRoute,
 }
 export const routeTree = rootRouteImport
