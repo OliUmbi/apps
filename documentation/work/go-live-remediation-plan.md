@@ -60,9 +60,9 @@ not live only in frozen review evidence.
    Flyway/schema-per-capability model are the baseline; do not change course
    after live data exists without a new decision.
 5. Pre-launch migrations may be edited in place only until the first accepted
-   production import. The current head is V012 (V007 Jublawoma, V008 Uncle-T
-   and V009 Zelglihof, then V010 audit, V011 analytics and V012 monitoring
-   role); the empty Oliumbi placeholder migration is removed and its
+   production import. The current head is V012 (V007 reserved for Oliumbi,
+   V008 Jublawoma, V009 Uncle-T, V010 Zelglihof, V011 analytics and V012
+   monitoring role); the empty Oliumbi placeholder migration is removed and its
    schema/role stays reserved in V001. Tag that baseline; afterwards use
    append-only expand/backfill/verify/contract migrations.
 6. Do not retire legacy until reconciliation, the observation window, final

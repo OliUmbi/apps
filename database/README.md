@@ -16,11 +16,12 @@ changes are append-only migrations.
 
 V001 defines schemas, roles and default permissions. V002 defines the producer
 inbox. V003 defines identity. V004 defines messaging's delivery state and
-attempt history. V005 defines assets. V006 defines the studio schema. V007–V009
+attempt history. V005 defines assets. V006 defines the studio schema, including
+the append-only `studio.audit_event` history. **V007 is reserved for Oliumbi**;
+it has no database yet. V008–V010
 define the three site schemas (jublawoma, unclet, zelglihof), including nullable
 `submission_id` idempotency keys and unique indexes on the five
-public-submission tables. V010 adds the append-only `studio.audit_event` history
-for destructive and administrative Studio actions; V011 adds the anonymous
+public-submission tables. V011 adds the anonymous
 `analytics.view_daily` counter; V012 adds the read-only `monitoring` role
 (`pg_monitor`) for postgres_exporter. Every table ends its columns with
 `created_at` and `updated_at`.

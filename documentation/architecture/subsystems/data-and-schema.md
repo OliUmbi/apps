@@ -34,13 +34,15 @@ uses their HTTP contracts. A site never reads another site's schema.
 | `V003__identity.sql` | accounts, sessions, permissions |
 | `V004__messaging.sql` | delivery state and attempt history |
 | `V005__assets.sql` | asset metadata and variants |
-| `V006__studio.sql` | Studio-owned records |
-| `V007__jublawoma.sql` | club events, stories, members, promotions, donations and submission idempotency |
-| `V008__unclet.sql` | showcases, reviews, inquiries and submission idempotency |
-| `V009__zelglihof.sql` | articles, products, reservations, inquiries, newsletter and submission idempotency |
-| `V010__audit.sql` | append-only Studio audit events |
+| `V006__studio.sql` | Studio-owned records, including the append-only audit history |
+| `V008__jublawoma.sql` | club events, stories, members, promotions, donations and submission idempotency |
+| `V009__unclet.sql` | showcases, reviews, inquiries and submission idempotency |
+| `V010__zelglihof.sql` | articles, products, reservations, inquiries, newsletter and submission idempotency |
 | `V011__analytics.sql` | anonymous daily page-view counters |
 | `V012__monitoring_role.sql` | read-only `monitoring` role for postgres_exporter |
+
+V007 is reserved for the first Oliumbi table set; the schema and role already
+exist, so the migration slots in there when the site needs one.
 
 The old empty Oliumbi migration is gone. The `oliumbi` schema and role remain
 reserved in V001, but no tables are created and production leaves the role

@@ -18,7 +18,7 @@ evidence exists and the registers are updated.
 | PH-1 | Service image builds and CI pins. `services/*/Dockerfile`, `.github/workflows/ci.yml`. | - |
 | PH-2 | Session boundary tests. `web/sites/studio/src/server/{session,auth.server}.ts`, `web/tests/studio-session.test.ts`. | - |
 | PH-3 | Subscriber correction rules. `web/packages/zelglihof-data/src/subscriber.service.ts`, `web/sites/studio/src/components/newsletter/subscriber-email-form.tsx`, `web/tests/subscriber-service.test.ts`, catalog. | PH-4 for the audit call |
-| PH-4 | Audit trail. `database/migrations/V010__audit.sql`, `web/sites/studio/src/server/audit*`, the wired handlers, the Studio view, catalog. | - |
+| PH-4 | Audit trail. `database/migrations/V006__studio.sql` (audit table), `web/sites/studio/src/server/audit*`, the wired handlers, the Studio view, catalog. | - |
 | PH-5 | Operational retention. `ansible/files/housekeep.sh`, `ansible/roles/housekeep/**`, `ansible/group_vars/all.yml`, `infrastructure/monitoring/alerts.yml`, `documentation/operations/housekeeping.md`. | PH-4 |
 | PH-6 | Anonymous analytics. `database/migrations/V011__analytics.sql`, `web/packages/analytics/**`, the two site endpoints and root hooks, `web/sites/studio/src/server/traffic.functions.ts`, `web/sites/studio/src/components/traffic-view.tsx`, catalog. | - |
 | PH-7 | Observability. `services/*/pom.xml` + `application.yaml`, messaging metrics, `infrastructure/units/**`, `infrastructure/monitoring/**`, `infrastructure/caddy/{Caddyfile,Dockerfile}`, `ansible/roles/app/**`, `documentation/operations/monitoring.md`. | - |

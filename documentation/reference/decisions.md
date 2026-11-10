@@ -125,11 +125,11 @@ Adopted to move the server off Docker Engine ([deployment plan](../history/deplo
   legacy rotation task remains; production still uses only unique vault secrets.
 - **D17 — The pre-launch Flyway baseline stays consolidated.** Owning migration
   files are edited in place until the first accepted production import, and local
-  volumes may be rebuilt from zero. The current head is V012: V007 is Jublawoma,
-  V008 Uncle-T and V009 Zelglihof, followed by V010 audit, V011 analytics and
-  V012 monitoring role; the old empty Oliumbi placeholder migration is
-  removed and the Oliumbi schema/role stays reserved in V001. Submission
-  idempotency lives in V007–V009 with the tables it protects. Once live data
+  volumes may be rebuilt from zero. The current head is V012: V006 is Studio
+  (with the audit history), V007 is reserved for Oliumbi, V008 Jublawoma,
+  V009 Uncle-T and V010 Zelglihof, V011 analytics and V012 the monitoring role;
+  the Oliumbi schema/role stays reserved in V001. Submission
+  idempotency lives in V008–V010 with the tables it protects. Once live data
   exists, new changes are append-only expand/contract migrations.
 
 Also closed: the Zelglihof domain is `zelglihof-maegenwil.ch` (the application

@@ -12,7 +12,7 @@ content. Keep source extracts, mapping notes and production values outside git.
       **migrate / replace / archive / drop** with owner approval.
 - [ ] Real email is disabled for rehearsal. Historical records will not create
       queue rows or notifications.
-- [ ] The replacement schema is at the accepted pinned migration baseline (V009
+- [ ] The replacement schema is at the accepted pinned migration baseline (V012
       before the first accepted import).
 
 ## Map before copying

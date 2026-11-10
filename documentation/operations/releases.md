@@ -11,8 +11,9 @@ tag actually running afterwards.
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | _example_ | `2026.10.24` | `abc1234` | `V012` | _name_ | pass / pass with notes / rolled back | `2026.10.17` | _what changed, what was checked_ |
 
-The highest migration is currently V012 (V010 audit, V011 analytics and V012
-monitoring role; the site schemas are V007–V009); the empty Oliumbi placeholder
+The highest migration is currently V012 (V006 studio with audit, V007 reserved
+for Oliumbi, V008–V010 the site schemas, V011 analytics and V012 monitoring
+role); the empty Oliumbi placeholder
 migration is removed. CI builds
 every image without pushing, and a release tag publishes the same matrix with
 pinned base/tool images, actions and the Caddy plugin. `latest` is never a
