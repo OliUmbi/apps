@@ -251,3 +251,6 @@ Remaining product features are deliberately deferred until after launch; see
   volume grows. Current priority is low.
 - [ ] Add email verification and password recovery only if public accounts are
   introduced; Studio is excluded.
+- [ ] Replace the `caddy-ratelimit` commit pin with a release tag once upstream
+  tags something newer than `5625512f` (the `v0.1.0` tag predates Caddy 2.10 and
+  lacks the config-reload fix).
