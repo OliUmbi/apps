@@ -220,7 +220,8 @@ jobs:
 
   deployment:
     name: deployment (units + ansible)
-    runs-on: ubuntu-latest    steps:
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       # The quadlet generator is the parser that consumes the units on the
