@@ -19,8 +19,9 @@ inbox. V003 defines identity. V004 defines messaging's delivery state and
 attempt history. V005 defines assets. V006 defines the studio schema. V007–V009
 define the three site schemas (jublawoma, unclet, zelglihof), including nullable
 `submission_id` idempotency keys and unique indexes on the five
-public-submission tables. Every table ends its columns with `created_at` and
-`updated_at`.
+public-submission tables. V010 adds the append-only `studio.audit_event` history
+for destructive and administrative Studio actions. Every table ends its columns
+with `created_at` and `updated_at`.
 
 V001 still reserves the `oliumbi` schema and role, but there is no Oliumbi
 migration and no table: the first Oliumbi slice is a static site with no

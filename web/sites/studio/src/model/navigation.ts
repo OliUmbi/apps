@@ -11,6 +11,7 @@ const studioChromeSections = [
 	"profile",
 	"accounts",
 	"messages",
+	"audit",
 ] as const;
 
 export type StudioSectionId =
@@ -77,7 +78,10 @@ export function resolveStudioWorkspace(
 		return { ...access, area: "profile", section: "profile" };
 	}
 	if (search.area === "administration" && isAdministrator) {
-		const section = search.section === "messages" ? "messages" : "accounts";
+		const section =
+			search.section === "messages" || search.section === "audit"
+				? search.section
+				: "accounts";
 		return { ...access, area: "administration", section };
 	}
 	const section = site.sections.some((section) => section.id === search.section)

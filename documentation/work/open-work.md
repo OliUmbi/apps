@@ -287,8 +287,10 @@ Remaining product features are deliberately deferred until after launch; see
 - [ ] Replace the `caddy-ratelimit` commit pin with a release tag once upstream
   tags something newer than `5625512f` (the `v0.1.0` tag predates Caddy 2.10 and
   lacks the config-reload fix).
-- [ ] Design the admin audit trail that [sites](../reference/sites.md)
-  promises ("audit view for destructive actions"): no audit table exists beyond
-  the reservation cancellation columns, so define the event catalog first.
+- [x] Admin audit trail for destructive and administrative actions.
+  (implemented in PH-4 - append-only `studio.audit_event` with actor, action,
+  entity and site, a read-only Studio view for administrators, and the scope
+  recorded in [decisions](../reference/decisions.md). Retention is part of the
+  housekeeping package.)
 - [ ] Explore a personal-data export (subscribers, submissions) for Studio,
   alongside the retention-rules item above; both are revDSG/GDPR hygiene.

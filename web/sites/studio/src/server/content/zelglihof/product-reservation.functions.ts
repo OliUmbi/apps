@@ -15,6 +15,7 @@ import {
 import { createProductReservationRepository } from "@oliumbi/zelglihof-data/content/product-reservation.repository";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { recordAudit } from "../../audit.server";
 import { database } from "../../database.server";
 import { studioAuthorization } from "../../studio-authorization";
 
@@ -44,13 +45,19 @@ export const updateProductReservation = createServerFn({ method: "POST" })
 			updatedAt: timestampSchema,
 		}),
 	)
-	.handler(async ({ data }) => {
+	.handler(async ({ data, context }) => {
 		try {
-			return await createProductReservationRepository(database.db).update(
-				data.key,
-				data.values,
-				data.updatedAt,
-			);
+			const record = await createProductReservationRepository(
+				database.db,
+			).update(data.key, data.values, data.updatedAt);
+			await recordAudit(context.actor, {
+				site: "zelglihof",
+				action: "reservation.update",
+				entity: "product-reservation",
+				entityId: data.key.id,
+				summary: data.values.status,
+			});
+			return record;
 		} catch (error) {
 			if (isConcurrentUpdateError(error))
 				throw new Error(concurrentUpdateMessage);
@@ -71,7 +78,7 @@ export const cancelProductReservation = createServerFn({ method: "POST" })
 		try {
 			// One transaction holds the reservation and variant row locks: stock is
 			// restored and the cancellation metadata is written atomically.
-			return await database.transaction((transaction) =>
+			const record = await database.transaction((transaction) =>
 				createProductReservationRepository(transaction).cancel(
 					data.key,
 					data.updatedAt,
@@ -79,6 +86,13 @@ export const cancelProductReservation = createServerFn({ method: "POST" })
 					data.reason ?? null,
 				),
 			);
+			await recordAudit(context.actor, {
+				site: "zelglihof",
+				action: "reservation.cancel",
+				entity: "product-reservation",
+				entityId: data.key.id,
+			});
+			return record;
 		} catch (error) {
 			if (isConcurrentUpdateError(error))
 				throw new Error(concurrentUpdateMessage);

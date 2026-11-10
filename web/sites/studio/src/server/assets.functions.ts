@@ -9,6 +9,7 @@ import {
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { assets } from "./assets.server";
+import { recordAudit } from "./audit.server";
 import { studioAuthorization } from "./studio-authorization";
 
 const assetInput = z.object({
@@ -40,14 +41,27 @@ export const listAssets = createServerFn({ method: "GET" })
 export const setAssetVisibility = createServerFn({ method: "POST" })
 	.middleware([studioAuthorization(assetSite)])
 	.validator(visibilityInput)
-	.handler(async ({ data }) => {
+	.handler(async ({ data, context }) => {
 		await assets[data.kind].visibility(data.site, data.id, data.visible);
+		await recordAudit(context.actor, {
+			site: data.site,
+			action: "asset.visibility",
+			entity: data.kind === "images" ? "image" : "document",
+			entityId: data.id,
+			summary: data.visible ? "public" : "private",
+		});
 	});
 export const deleteAsset = createServerFn({ method: "POST" })
 	.middleware([studioAuthorization(assetSite)])
 	.validator(deleteAssetInput)
-	.handler(async ({ data }) => {
+	.handler(async ({ data, context }) => {
 		await assets[data.kind].delete(data.site, data.id);
+		await recordAudit(context.actor, {
+			site: data.site,
+			action: "asset.delete",
+			entity: data.kind === "images" ? "image" : "document",
+			entityId: data.id,
+		});
 	});
 export const uploadAsset = createServerFn({ method: "POST" })
 	.middleware([studioAuthorization(assetSite)])

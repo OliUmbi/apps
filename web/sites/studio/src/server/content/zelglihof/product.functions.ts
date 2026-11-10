@@ -11,6 +11,7 @@ import { createProductRepository } from "@oliumbi/zelglihof-data/content/product
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { assets } from "../../assets.server";
+import { recordAudit } from "../../audit.server";
 import { database } from "../../database.server";
 import { studioAuthorization } from "../../studio-authorization";
 
@@ -71,11 +72,18 @@ export const archiveProduct = createServerFn({ method: "POST" })
 	)
 	.handler(async ({ data, context }) => {
 		try {
-			return await createProductRepository(database.db).archive(
+			const record = await createProductRepository(database.db).archive(
 				data.key,
 				data.updatedAt,
 				context.actor.name,
 			);
+			await recordAudit(context.actor, {
+				site: "zelglihof",
+				action: "product.archive",
+				entity: "product",
+				entityId: data.key.id,
+			});
+			return record;
 		} catch (error) {
 			if (isConcurrentUpdateError(error))
 				throw new Error(concurrentUpdateMessage);

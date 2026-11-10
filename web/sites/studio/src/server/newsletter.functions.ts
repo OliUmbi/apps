@@ -9,6 +9,7 @@ import { createNewsletterService } from "@oliumbi/zelglihof-data/newsletter.serv
 import { createSubscriberService } from "@oliumbi/zelglihof-data/subscriber.service";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { recordAudit } from "./audit.server";
 import { database } from "./database.server";
 import { studioAuthorization } from "./studio-authorization";
 
@@ -22,14 +23,23 @@ const options = () => ({
 export const sendCampaign = createServerFn({ method: "POST" })
 	.middleware([studioAuthorization("zelglihof")])
 	.validator(z.object({ id: idSchema, updatedAt: timestampSchema }))
-	.handler(async ({ data }) => {
+	.handler(async ({ data, context }) => {
 		// One boundary: typed outcomes (queued / stale-draft) leave as clean
 		// values, failures as the typed model's clean messages.
 		return mapErrors(async () => {
-			return createCampaignService(database, options()).send(
+			const result = await createCampaignService(database, options()).send(
 				data.id,
 				data.updatedAt,
 			);
+			if (result.outcome === "queued")
+				await recordAudit(context.actor, {
+					site: "zelglihof",
+					action: "campaign.send",
+					entity: "campaign",
+					entityId: data.id,
+					summary: `${result.count} recipients`,
+				});
+			return result;
 		});
 	});
 export const requestSubscriberConfirmation = createServerFn({ method: "POST" })
@@ -43,20 +53,34 @@ export const requestSubscriberConfirmation = createServerFn({ method: "POST" })
 export const unsubscribeSubscriber = createServerFn({ method: "POST" })
 	.middleware([studioAuthorization("zelglihof")])
 	.validator(z.object({ id: idSchema }))
-	.handler(async ({ data }) => {
+	.handler(async ({ data, context }) => {
 		return mapErrors(async () => {
-			return createSubscriberService(database, options()).unsubscribe(data.id);
+			await createSubscriberService(database, options()).unsubscribe(data.id);
+			await recordAudit(context.actor, {
+				site: "zelglihof",
+				action: "subscriber.unsubscribe",
+				entity: "subscriber",
+				entityId: data.id,
+			});
 		});
 	});
 export const correctSubscriberEmail = createServerFn({ method: "POST" })
 	.middleware([studioAuthorization("zelglihof")])
 	.validator(z.object({ id: idSchema, email: emailSchema }))
-	.handler(async ({ data }) => {
+	.handler(async ({ data, context }) => {
 		// Typed outcome as a clean value: { outcome: "corrected" | "conflict" }.
 		return mapErrors(async () => {
-			return createSubscriberService(database, options()).correctEmail(
-				data.id,
-				data.email,
-			);
+			const result = await createSubscriberService(
+				database,
+				options(),
+			).correctEmail(data.id, data.email);
+			if (result.outcome === "corrected")
+				await recordAudit(context.actor, {
+					site: "zelglihof",
+					action: "subscriber.correct-email",
+					entity: "subscriber",
+					entityId: data.id,
+				});
+			return result;
 		});
 	});

@@ -10,6 +10,7 @@ import {
 import { createReviewRepository } from "@oliumbi/unclet-data/content/review.repository";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { recordAudit } from "../../audit.server";
 import { database } from "../../database.server";
 import { studioAuthorization } from "../../studio-authorization";
 
@@ -43,13 +44,21 @@ export const updateReview = createServerFn({ method: "POST" })
 			updatedAt: timestampSchema,
 		}),
 	)
-	.handler(async ({ data }) => {
+	.handler(async ({ data, context }) => {
 		try {
-			return await createReviewRepository(database.db).update(
+			const record = await createReviewRepository(database.db).update(
 				data.key,
 				data.values,
 				data.updatedAt,
 			);
+			await recordAudit(context.actor, {
+				site: "unclet",
+				action: "review.update",
+				entity: "review",
+				entityId: data.key.id,
+				summary: data.values.visible ? "public" : "hidden",
+			});
+			return record;
 		} catch (error) {
 			if (isConcurrentUpdateError(error))
 				throw new Error(concurrentUpdateMessage);

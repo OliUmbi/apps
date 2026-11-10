@@ -10,6 +10,7 @@ import {
 import { createInquiryRepository } from "@oliumbi/unclet-data/content/inquiry.repository";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { recordAudit } from "../../audit.server";
 import { database } from "../../database.server";
 import { studioAuthorization } from "../../studio-authorization";
 
@@ -36,13 +37,21 @@ export const updateInquiry = createServerFn({ method: "POST" })
 			updatedAt: timestampSchema,
 		}),
 	)
-	.handler(async ({ data }) => {
+	.handler(async ({ data, context }) => {
 		try {
-			return await createInquiryRepository(database.db).update(
+			const record = await createInquiryRepository(database.db).update(
 				data.key,
 				data.values,
 				data.updatedAt,
 			);
+			await recordAudit(context.actor, {
+				site: "unclet",
+				action: "inquiry.update",
+				entity: "inquiry",
+				entityId: data.key.id,
+				summary: data.values.status,
+			});
+			return record;
 		} catch (error) {
 			if (isConcurrentUpdateError(error))
 				throw new Error(concurrentUpdateMessage);

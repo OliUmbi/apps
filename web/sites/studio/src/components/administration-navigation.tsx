@@ -1,16 +1,17 @@
 import { Button } from "@base-ui/react/button";
 import { m } from "@oliumbi/i18n/messages";
-import { ArrowLeft, type LucideIcon, Mail, Users } from "lucide-react";
+import { ArrowLeft, History, type LucideIcon, Mail, Users } from "lucide-react";
 import type { StudioSectionId } from "../model/navigation";
 import { Nav, NavItem } from "./ui/nav";
 
 const administrationSections: {
-	id: "accounts" | "messages";
+	id: "accounts" | "messages" | "audit";
 	label: () => string;
 	icon: LucideIcon;
 }[] = [
 	{ id: "accounts", label: m.studio_accounts, icon: Users },
 	{ id: "messages", label: m.studio_messages, icon: Mail },
+	{ id: "audit", label: m.studio_audit, icon: History },
 ];
 
 export function AdministrationNavigation({

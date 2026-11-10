@@ -11,6 +11,7 @@ import {
 import { AccountsView } from "./accounts-view";
 import { AppShell } from "./app-shell";
 import { AssetsView } from "./assets-view";
+import { AuditView } from "./audit-view";
 import { ContentView } from "./content/content-view";
 import { MessagesView } from "./messages-view";
 import { ProfileView } from "./profile-view";
@@ -52,7 +53,9 @@ function WorkspaceContent({
 }) {
 	if (area === "profile") return <ProfileView />;
 	if (area === "administration") {
-		return section === "messages" ? <MessagesView /> : <AccountsView />;
+		if (section === "messages") return <MessagesView />;
+		if (section === "audit") return <AuditView />;
+		return <AccountsView />;
 	}
 	if (isContentSection(section))
 		return <ContentView key={section} section={section} />;

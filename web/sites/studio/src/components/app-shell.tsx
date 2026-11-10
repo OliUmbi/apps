@@ -104,7 +104,12 @@ function workspaceContext({ site, area, section }: StudioWorkspace) {
 	if (area === "administration")
 		return {
 			label: m.studio_system(),
-			title: section === "messages" ? m.studio_messages() : m.studio_accounts(),
+			title:
+				section === "messages"
+					? m.studio_messages()
+					: section === "audit"
+						? m.studio_audit()
+						: m.studio_accounts(),
 		};
 	return {
 		label: site.name,
