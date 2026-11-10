@@ -18,6 +18,19 @@ public interface MessageRepository extends JpaRepository<Message, UUID> {
 
     boolean existsByQueueId(UUID queueId);
 
+    long countByStatus(MessageStatus status);
+
+    /**
+     * Milliseconds matter less than the trend: a stalled queue is a pending row
+     * older than the alert threshold, not a precise duration.
+     */
+    @Query(value = """
+            SELECT COALESCE(EXTRACT(EPOCH FROM now() - MIN(created_at))::double precision, 0)
+            FROM messaging.message
+            WHERE status = 'PENDING'
+            """, nativeQuery = true)
+    double oldestPendingAgeSeconds();
+
     Page<Message> findByStatus(MessageStatus status, Pageable pageable);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)

@@ -18,7 +18,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health,prometheus
 # /docs stays closed outside the dev profile (RS-D4); health stays open for compose checks.
 springdoc:
   api-docs:

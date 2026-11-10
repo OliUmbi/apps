@@ -53,6 +53,27 @@ scrape_configs:
       - target_label: __address__
         replacement: blackbox:9115
 
+  # Application metrics: HTTP status/latency, Hikari pool and the messaging
+  # queue gauges. Services are on the private app network only.
+  - job_name: services
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets:
+          - identity:8081
+          - messaging:8082
+          - assets:8083
+
+  # Caddy's admin endpoint carries the Prometheus metrics enabled in the
+  # Caddyfile. It is bound inside the container network and never published.
+  - job_name: caddy
+    static_configs:
+      - targets: ["caddy:2019"]
+
+  # Postgres statistics through the read-only `monitoring` role.
+  - job_name: postgres
+    static_configs:
+      - targets: ["postgres-exporter:9187"]
+
   # TLS and certificate expiry, probed against Caddy on the app network. Each
   # target uses a per-site module that sends the public name as SNI and Host,
   # so the probe never depends on NAT hairpin (DR-18). instance stays the public
@@ -76,6 +97,10 @@ scrape_configs:
         labels:
           public_host: studio.oliumbi.ch
           probe_module: https_studio
+      - targets: ["https://caddy:443/"]
+        labels:
+          public_host: oliumbi.ch
+          probe_module: https_oliumbi
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target

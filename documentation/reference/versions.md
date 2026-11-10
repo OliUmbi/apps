@@ -37,6 +37,7 @@ first refresh.
 | `grafana` | 13.3.0 | monitoring | `infrastructure/units/apps-grafana.container` |
 | `node-exporter` | v1.12.1 | monitoring | `infrastructure/units/apps-node-exporter.container` |
 | `blackbox-exporter` | v0.29.1 | monitoring | `infrastructure/units/apps-blackbox.container` |
+| `postgres-exporter` | v0.19.0 | database statistics | `infrastructure/units/apps-postgres-exporter.container` |
 | `python` | 3.13-alpine | CI ansible syntax check | `ci.yml` |
 
 The `ghcr.io/oliumbi/apps-*` images are built here from the bases above and

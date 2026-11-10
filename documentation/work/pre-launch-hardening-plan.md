@@ -39,7 +39,7 @@ evidence exists and the registers are updated.
 | PH-4 | done | `studio.audit_event` (append-only), admin-only view, 17 wired actions, no before/after. Decision D26. |
 | PH-5 | done | 12-month delivery history, 30-day inbox rows, 18-month audit, 25-month analytics; flock, success metric and `HousekeepStale`. Decision D27, debt TD-22. |
 | PH-6 | done | `analytics.view_daily`, route-id beacon on Unclet and Zelglihof, per-site Studio panel, no cookies/identifiers/referrer; privacy text updated. Decision D25. |
-| PH-7 | next | Mesh of Java Micrometer + Caddy metrics + postgres_exporter, service scrapes, probe-silence and TLS-failure rules, `Permissions-Policy`, Caddy error handling. |
+| PH-7 | in progress | Micrometer on the three services, queue gauges (counts + oldest age), Caddy edge metrics, postgres_exporter with the `monitoring` role, coverage rules for service/pool/queue/connections/probe absence/TLS, `Permissions-Policy`, a 5xx body, and the messaging batch/lease/shutdown fix. Prometheus config and 18 rules validate with `promtool`; Caddy validate runs in the image build. |
 | PH-8 | owner | Passphrase-wrapped age identity, printed recovery sheet, restore drill using the paper copy. |
 | PH-9 | next | Paraglide `urlPatterns`, internal links and sitemap through the localized helper. |
 | PH-10 | open | Dynamic sitemap, canonical, JSON-LD, legacy redirects. |

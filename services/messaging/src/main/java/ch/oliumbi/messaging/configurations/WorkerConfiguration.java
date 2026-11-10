@@ -23,6 +23,10 @@ public class WorkerConfiguration {
         var scheduler = new ThreadPoolTaskScheduler();
         scheduler.setPoolSize(2);
         scheduler.setThreadNamePrefix("messaging-worker-");
+        // A deploy must not cut an SMTP send in half: finish the in-flight item
+        // and let the lease expiry handle anything longer.
+        scheduler.setWaitForTasksToCompleteOnShutdown(true);
+        scheduler.setAwaitTerminationSeconds(30);
         return scheduler;
     }
 }

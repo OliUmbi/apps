@@ -35,6 +35,8 @@ vault_zelglihof_database_user: "zelglihof"
 vault_zelglihof_database_password: ""
 vault_studio_database_user: "studio"
 vault_studio_database_password: ""
+# read-only statistics role for postgres_exporter (pg_monitor)
+vault_monitoring_database_password: ""
 
 # ---- mail (messaging only) ----
 vault_messaging_smtp_host: ""
@@ -51,7 +53,8 @@ vault_zelglihof_requests_email: ""
 vault_zelglihof_newsletter_email: ""
 
 # ---- backups ----
-# age public key of the workstation that pulls the backups
+# age public key of the recovery identity that decrypts pulled backups
+# (the private half is passphrase-wrapped; see operations/backup-restore.md)
 vault_age_recipient: ""
 
 # ---- first admin (one-time bootstrap) ----

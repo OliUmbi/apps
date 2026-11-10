@@ -36,7 +36,7 @@ The attempt number identifies the claim. A delayed worker cannot finish a newer 
 The database also checks valid combinations. Audit timestamps remain Hibernate-managed.
 
 Retry delays, lease duration and batch size live under `messaging.worker` in application.yaml.
-Four delays mean five total attempts. Defaults: 2, 4, 8, 16 minutes; five-minute lease; 20 items.
+Four delays mean five total attempts. Defaults: 2, 4, 8, 16 minutes; ten-minute lease; 10 items.
 The state machine receives explicit time and settings, so it can be verified without Spring or a database.
 
 ## Retries, leases and the send-time budget
@@ -47,11 +47,12 @@ backoff (`now + retry-delays[n]`), never immediately. The original send may stil
 the lease, and an immediate re-send would turn a slow send into a duplicate email.
 
 **Invariant: the worst-case send time of one batch must stay well below `worker.lease-duration`.**
-A batch of 20 sends runs serially against three five-second SMTP timeouts
+A batch of 10 sends runs serially against three five-second SMTP timeouts
 (`mail.smtp.connectiontimeout`/`timeout`/`writetimeout`) plus unbounded DNS resolution; with the
-defaults this budget can approach the five-minute lease. If sends are slow, either lower
-`worker.batch-size` or raise `worker.lease-duration`. A send that outlives its lease is still
-ambiguous — see below — so the budget is a correctness margin, not just a tuning knob.
+defaults the budget is 150 seconds against a ten-minute lease. If sends are slow, either lower
+`worker.batch-size` or raise `worker.lease-duration` - and keep the arithmetic in the comment.
+A send that outlives its lease is still
+ambiguous - see below - so the budget is a correctness margin, not just a tuning knob.
 
 ## Transactions and failures
 

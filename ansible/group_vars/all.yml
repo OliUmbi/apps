@@ -34,6 +34,7 @@ app_database_roles:
   - { user: "{{ vault_jublawoma_database_user }}", password: "{{ vault_jublawoma_database_password }}" }
   - { user: "{{ vault_unclet_database_user }}", password: "{{ vault_unclet_database_password }}" }
   - { user: "{{ vault_zelglihof_database_user }}", password: "{{ vault_zelglihof_database_password }}" }
+  - { user: "monitoring", password: "{{ vault_monitoring_database_password }}" }
 
 # backup
 backup_dir: /var/backups/apps

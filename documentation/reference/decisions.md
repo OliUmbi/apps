@@ -215,6 +215,22 @@ and set the recovery and cutover boundaries.
   stays unsubscribed; an address owned by another subscriber is a conflict; and
   saving the stored address is a no-op. Consequence: Studio can invite an
   address, never subscribe it silently.
+- **D29 — Observability is metric-first and bounded.** Identity, messaging and
+  assets expose Micrometer/Prometheus on the private network; Caddy exposes
+  edge request/latency/status metrics on its internal admin listener;
+  postgres_exporter runs as a read-only `monitoring` role (`pg_monitor`).
+  Alerts cover absence as well as thresholds: a disappeared probe series, a
+  failing TLS probe, a service that stops exposing metrics, edge and service 5xx
+  ratios, pool and connection saturation, queue age and terminal message
+  failures. Dashboards stay manual, logs stay journald, and page analytics is
+  not a Prometheus workload. Consequence: a silent monitor is treated as an
+  incident, not as reassurance.
+- **D30 — Delivery is at-least-once with an explicit batch/lease budget.**
+  The worker sends at most 10 messages per batch against three five-second SMTP
+  timeouts (150 s) inside a ten-minute lease, and shuts down gracefully with a
+  60 s stop timeout. A crash after SMTP accepted a message can still duplicate
+  it; that is accepted, and there is no manual retry endpoint. A failed campaign
+  email remains visible in Studio but is not resent without a new campaign.
 
 ### O-006 threat model (accepted 2026-11)
 

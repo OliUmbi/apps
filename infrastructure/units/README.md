@@ -17,6 +17,7 @@ development rig and deliberately not a mirror of this (finding DP-09).
 | `apps-jublawoma/-unclet/-zelglihof/-oliumbi/-studio` | same name | Nitro sites on 8000–8004 |
 | `apps-caddy` | `apps-caddy.service` | the only unit that publishes ports (80/443, 443/udp) |
 | `apps-prometheus/-alertmanager/-node-exporter/-blackbox/-grafana` | same name | monitoring; ports bound to `monitoring_bind` (WireGuard) |
+| `apps-postgres-exporter` | same name | read-only database statistics; internal networks only |
 | `data-prometheus.volume`, `data-grafana.volume` | — | named volumes for state the backup does not cover |
 
 Files contain Jinja placeholders (`{{ image_tag }}`, `{{ monitoring_bind }}`);

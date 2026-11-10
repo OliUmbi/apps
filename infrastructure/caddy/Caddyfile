@@ -13,6 +13,10 @@
 {
 	email {$ACME_EMAIL}
 	acme_dns infomaniak {env.INFOMANIAK_API_TOKEN}
+	# Prometheus scrapes the admin endpoint on the private app network. The
+	# admin port is never published; only Caddy's 80/443 leave the host.
+	admin :2019
+	metrics
 }
 
 # Shared behaviour for all sites: compression, the legacy security headers
@@ -27,6 +31,9 @@
 		X-Content-Type-Options "nosniff"
 		X-Frame-Options "DENY"
 		Referrer-Policy "strict-origin-when-cross-origin"
+		# Deny powerful features nothing on these sites uses; keep media
+		# playback allowed for a future background video (self only).
+		Permissions-Policy "accelerometer=(), autoplay=(self), camera=(), display-capture=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(self), publickey-credentials-get=(), screen-wake-lock=(), usb=(), xr-spatial-tracking=(), browsing-topics=()"
 		Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: blob:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests"
 		defer
 	}
@@ -86,6 +93,18 @@
 	}
 }
 
+# A proxy or app failure gets a short readable body instead of Caddy's empty
+# default. Only 5xx is handled: app 404 pages and Caddy's own 429/413 keep
+# their normal responses.
+(errors) {
+	handle_errors {
+		@server_error expression {err.status_code} >= 500
+		handle @server_error {
+			respond "Vorübergehend nicht erreichbar. Bitte später erneut versuchen." {err.status_code}
+		}
+	}
+}
+
 # ---------------------------------------------------------------------------
 # jublawoma.ch
 # ---------------------------------------------------------------------------
@@ -107,6 +126,7 @@ jublawoma.ch, *.jublawoma.ch {
 		import public-body
 		reverse_proxy jublawoma:8001
 	}
+	import errors
 }
 
 # ---------------------------------------------------------------------------
@@ -129,6 +149,7 @@ uncle-t.ch, *.uncle-t.ch {
 		import public-body
 		reverse_proxy unclet:8002
 	}
+	import errors
 }
 
 # ---------------------------------------------------------------------------
@@ -151,6 +172,7 @@ zelglihof-maegenwil.ch, *.zelglihof-maegenwil.ch {
 		import public-body
 		reverse_proxy zelglihof:8003
 	}
+	import errors
 }
 
 # ---------------------------------------------------------------------------
@@ -181,4 +203,5 @@ oliumbi.ch, *.oliumbi.ch {
 		import public-body
 		reverse_proxy oliumbi:8004
 	}
+	import errors
 }

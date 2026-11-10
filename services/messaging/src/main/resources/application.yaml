@@ -1,6 +1,9 @@
 server:
   port: 8082
+  shutdown: graceful
 spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
   data:
     web:
       pageable:
@@ -33,7 +36,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health,prometheus
 # /docs stays closed outside the dev profile (RS-D4); health stays open for compose checks.
 springdoc:
   api-docs:
@@ -44,10 +47,13 @@ springdoc:
 messaging:
   authorization-token: ${MESSAGING_INTERNAL_AUTHORIZATION_TOKEN}
   worker:
-    batch-size: 20
+    # Worst case is batch-size x (connect + read + write timeout) = 10 x 15s =
+    # 150s, well below the lease. Raising either number without rechecking that
+    # arithmetic can turn a slow send into a duplicate email.
+    batch-size: 10
     accept-poll-delay-ms: 1000
     deliver-poll-delay-ms: 1000
-    lease-duration: 5m
+    lease-duration: 10m
     retry-delays: [2m, 4m, 8m, 16m]
 
 ---

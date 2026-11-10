@@ -21,8 +21,9 @@ define the three site schemas (jublawoma, unclet, zelglihof), including nullable
 `submission_id` idempotency keys and unique indexes on the five
 public-submission tables. V010 adds the append-only `studio.audit_event` history
 for destructive and administrative Studio actions; V011 adds the anonymous
-`analytics.view_daily` counter. Every table ends its columns with `created_at`
-and `updated_at`.
+`analytics.view_daily` counter; V012 adds the read-only `monitoring` role
+(`pg_monitor`) for postgres_exporter. Every table ends its columns with
+`created_at` and `updated_at`.
 
 V001 still reserves the `oliumbi` schema and role, but there is no Oliumbi
 migration and no table: the first Oliumbi slice is a static site with no
@@ -39,7 +40,9 @@ passwords**: `identity`, `messaging`, `assets`, `studio`, `jublawoma`, `unclet`,
 `zelglihof` and the reserved `oliumbi`. Credentials are provisioned per
 environment after `V001` has run; no password literal lives in this directory.
 Seven roles are provisioned in production; `oliumbi` stays `NOLOGIN` because the
-static site has no database client. The first Studio administrator is likewise
+static site has no database client. V012 adds a separate read-only `monitoring`
+role (`pg_monitor`) for postgres_exporter, provisioned the same way. The first
+Studio administrator is likewise
 an operational step (`ansible/playbooks/first-admin.yml`), not a migration seed.
 
 - **Development** — the documented entry path is the dev compose stack:

@@ -21,6 +21,9 @@ LogDriver=journald
 [Service]
 Restart=always
 RestartSec=5
+# Graceful shutdown: the worker finishes the in-flight send before the unit is
+# stopped (server.shutdown=graceful, scheduler await 30s).
+TimeoutStopSec=60
 
 [Install]
 WantedBy=multi-user.target

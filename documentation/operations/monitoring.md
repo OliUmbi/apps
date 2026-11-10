@@ -32,7 +32,11 @@ lives in `infrastructure/monitoring/`.
 | units failing or restart-looping | node-exporter systemd collector (host dbus) |
 | sites and postgres answering | blackbox probes on the internal network |
 | certificate expiry | internal blackbox HTTPS probes against Caddy |
+| edge request rate, latency, 5xx ratio | Caddy admin metrics (`caddy:2019`) |
+| service 5xx, Hikari pool, queue depth and age | Micrometer on identity, messaging and assets |
+| connections, locks, database size | postgres_exporter as the read-only `monitoring` role |
 | backup freshness and size | textfile metrics from `backup.sh` |
+| housekeeping freshness | textfile metric from `housekeep.sh` |
 
 The systemd collector is enabled with `--collector.systemd` and
 `--collector.systemd.enable-start-time-metrics`, and the node-exporter unit
@@ -52,6 +56,15 @@ action:
 | Alert | Meaning | First action |
 | --- | --- | --- |
 | `SiteProbeFailing` | a site is not answering for 5 minutes | check caddy and the site unit; see [runbooks](runbooks.md#site-unavailable) |
+| `ProbeSeriesMissing` | a blackbox probe series disappeared | blackbox or the scrape is down; check the exporter unit |
+| `ServiceDown` | a service stopped exposing metrics | `logs.yml` for that service |
+| `TlsProbeFailing` | the TLS handshake or route fails | Caddy logs, DNS and the certificate state |
+| `Edge5xxRate` | more than 1% of edge responses are 5xx | correlate with `Service5xxRate` and site logs |
+| `Service5xxRate` | a service returns more than 1% 5xx | `logs.yml`, then the service runbook |
+| `DbPoolSaturated` | a service pool is above 90% | look for a slow query or a stuck request |
+| `PostgresConnectionsHigh` | above 80% of `max_connections` | check pools and long transactions |
+| `MessageFailed` | a message reached FAILED | inspect the attempt history in Studio; see [messaging](runbooks.md#email-not-delivered) |
+| `QueueStalled` | the oldest pending message is over 30 minutes old | check the messaging unit and SMTP reachability |
 | `PostgresNotAnswering` | postgres rejects connections | check the postgres unit and disk; do not restart blindly |
 | `NodeExporterDown` | the host or exporter is unhealthy | check the host over WireGuard; this may be the host itself |
 | `UnitFailing` | an `apps-*` unit is failed | `logs.yml` for that unit, then the relevant runbook |
@@ -69,13 +82,19 @@ Alerts and recoveries go to an **ntfy** topic as a push notification. The
 webhook URL lives in the vault as `vault_ntfy_webhook_url` and is rendered into
 `alertmanager.yml`.
 
+The Caddy admin listener is bound to `:2019` inside the app network only; it
+carries `/metrics` and is never published. The three services expose
+`/actuator/prometheus` on the private network, and `postgres_exporter` connects
+as the read-only `monitoring` role (`pg_monitor`): statistics are visible,
+application rows are not.
+
 ## Edge policy: rate limiting and CSP
 
 Rate limiting and the Content-Security-Policy are edge behaviour, not metrics.
 After an edge change:
 
-- confirm the CSP header with `curl -I https://<site>/` and load one page with
-  every embed the site uses;
+- confirm the CSP and `Permissions-Policy` headers with `curl -I https://<site>/`
+  and load one page with every embed the site uses;
 - burst more than 20 requests in two seconds from one address and confirm a 429,
   then confirm login is limited to 10 per minute on `/api/session/login`;
 - read Caddy logs for rejected requests. There is no CSP report endpoint or

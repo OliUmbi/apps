@@ -188,9 +188,11 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   frontend JS errors and Java `errorId`s currently end in journald with no
   aggregation. Weigh a self-hosted option (GlitchTip or similar) against
   O-016's minimal-embeds stance.
-- [ ] Explore exposing Java service metrics to Prometheus: identity,
-  messaging and assets publish only `/actuator/health`, so queue depth and JVM
-  state are invisible. Add Micrometer endpoints and scrape jobs.
+- [x] Expose Java service metrics to Prometheus. (implemented in PH-7 -
+  Micrometer endpoints on identity, messaging and assets, queue gauges and
+  oldest-pending age, Caddy edge metrics, postgres_exporter as the read-only
+  `monitoring` role, and the service/pool/queue/connection alert rules.) Add
+  Grafana dashboards for the new series later; they stay manual imports.
 - [ ] Decide on Caddy access logging: the Caddyfile has no `log` directive,
   but [monitoring](../operations/monitoring.md) implies short-retention access
   logs exist. Either enable them (they remain the forensic record; usage
@@ -256,6 +258,10 @@ Remaining product features are deliberately deferred until after launch; see
   inventory.
 
 ## Later
+
+- [ ] Add Grafana dashboards for the service, queue, edge and Postgres series as
+  code once the metric names have settled on the host. Dashboards stay manual
+  imports and are not backed up.
 
 - [ ] Strengthen `AccountServiceTest`: it has two tests for a nine-method
   service and mocks `PasswordService`, so `changePassword` could store a bad

@@ -1,0 +1,5 @@
+# Rendered by ansible from group_vars/vault.yml -- do not edit on the server.
+# The exporter reads the statistics views as the read-only `monitoring` role.
+DATA_SOURCE_URI=postgres:5432/{{ vault_postgres_db }}?sslmode=disable
+DATA_SOURCE_USER=monitoring
+DATA_SOURCE_PASS={{ vault_monitoring_database_password }}
