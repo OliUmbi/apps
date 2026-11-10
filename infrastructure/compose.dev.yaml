@@ -18,7 +18,7 @@ services:
       retries: 30
 
   flyway:
-    image: flyway/flyway:13.4.0-alpine
+    image: flyway/flyway:13.12.1-alpine
     command:
       - -url=jdbc:postgresql://postgres:5432/${POSTGRES_DB:-apps}
       - -user=${POSTGRES_MIGRATOR_USER:-apps_migrator}
@@ -65,7 +65,7 @@ services:
         condition: service_completed_successfully
 
   mailpit:
-    image: axllent/mailpit:v1.27
+    image: axllent/mailpit:v1.29.7
     ports:
       - "1025:1025"
       - "8025:8025"
