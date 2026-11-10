@@ -14,6 +14,16 @@
     - apps-housekeep.service
     - apps-housekeep.timer
 
+- name: housekeep environment
+  ansible.builtin.copy:
+    dest: /etc/default/apps-housekeep
+    mode: "0640"
+    content: |
+      TEXTFILE_DIR={{ textfile_dir }}
+      QUEUE_RETENTION_DAYS={{ queue_retention_days }}
+      MESSAGE_RETENTION_DAYS={{ message_retention_days }}
+      AUDIT_RETENTION_DAYS={{ audit_retention_days }}
+
 - name: housekeep timer
   ansible.builtin.systemd:
     name: apps-housekeep.timer

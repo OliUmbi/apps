@@ -7,15 +7,32 @@ It runs on the server as a systemd timer, never from the workstation.
 
 Sunday 04:00, `apps-housekeep.timer` runs `ansible/files/housekeep.sh`:
 
-1. `podman image prune -af --filter "until=168h"` - remove images older than
+1. **Expired operational data.** Retention comes from
+   `/etc/default/apps-housekeep`, templated from `ansible/group_vars/all.yml`:
+   `messaging.message` in `SENT`/`FAILED` after 365 days (attempts cascade),
+   `queue.message` older than 30 days, and `studio.audit_event` older than 548
+   days (18 months). Product data - inquiries, reservations, subscribers,
+   donations - is never deleted here.
+2. `podman image prune -af --filter "until=168h"` - remove images older than
    seven days, keeping fresh rollback candidates;
-2. `podman container prune -f` - remove stopped containers;
-3. `journalctl --vacuum-size=200M` - enforce the log cap;
-4. report `df -h /` and `podman system df` to the journal.
+3. `podman container prune -f` - remove stopped containers;
+4. `journalctl --vacuum-size=200M` - enforce the log cap;
+5. publish `apps_housekeep_last_success_timestamp_seconds` for the
+   node-exporter textfile collector, then report `df -h /` and
+   `podman system df` to the journal.
+
+`flock` prevents a manual run from interleaving with the timer. The success
+metric is written last, so a failed stage leaves the alert firing
+(`HousekeepStale`: absent or older than eight days).
 
 The timer schedule is templated from `housekeep_day` and `housekeep_hour` in
 `ansible/group_vars/all.yml`; the backup timer is templated the same way from
 `backup_hour`. Change the variable and redeploy, not the unit on the server.
+
+The retention job is a shell script today because it is a handful of deletes on
+one host. If the policy grows (per-table windows, anonymization, a staging or
+export path), move it into a scheduled job owned by the service that owns the
+data instead of expanding the script. Recorded as [TD-22](../work/tech-debt.md#td-22).
 
 Run it manually when needed:
 

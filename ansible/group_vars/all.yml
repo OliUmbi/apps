@@ -43,6 +43,10 @@ backup_hour: 3
 # housekeeping
 housekeep_hour: 4
 housekeep_day: sun
+# Retention for operational copies only. Product data is never deleted here.
+queue_retention_days: 30
+message_retention_days: 365
+audit_retention_days: 548 # 18 months
 
 # monitoring: admin interfaces bind to the wireguard address only
 monitoring_bind: "{{ wireguard_address.split('/')[0] }}"

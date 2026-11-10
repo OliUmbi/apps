@@ -68,6 +68,15 @@ groups:
         annotations:
           summary: "no successful backup on record or none in the last 36 hours"
 
+      - alert: HousekeepStale
+        # Weekly timer: 8 days leaves room for one skipped run before alarming.
+        expr: absent(apps_housekeep_last_success_timestamp_seconds) or time() - apps_housekeep_last_success_timestamp_seconds > 8 * 24 * 3600
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "housekeeping has not reported a successful run for 8 days"
+
       # Caddy's ACME state is deliberately outside the backup (TD-16): a rebuilt
       # host re-issues. This alert makes sure re-issuance actually happens
       # before the current certificate expires.

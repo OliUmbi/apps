@@ -39,9 +39,10 @@ debt: it is listed so it is not rediscovered as a surprise.
 | [TD-16](#td-16) | Operations: Caddy state outside the backup | P2 | accepted |
 | [TD-17](#td-17) | Operations: backup checksum manifest is not portable | P3 | resolved |
 | [TD-18](#td-18) | Services: bearer check runs after request binding | P3 | open |
+| [TD-22](#td-22) | Operations: retention runs in the housekeeping shell script | P3 | accepted |
 
-Open counts: 1 P1, 0 P2, 1 P3. Accepted: TD-13 (P3), TD-15 (P2) and TD-16 (P2);
-accepted debt stays listed. Every other entry is resolved. The 2026-10 refactor
+Open counts: 1 P1, 0 P2, 1 P3. Accepted: TD-13 (P3), TD-15 (P2), TD-16 (P2) and
+TD-22 (P3); accepted debt stays listed. Every other entry is resolved. The 2026-10 refactor
 resolved most findings in the [code quality review](../history/code-quality-review.md);
 their dispositions remain there as evidence and are not repeated here.
 
@@ -370,6 +371,25 @@ well-formed bodies so they exercise the intended authorization path.
   method-security annotation) that runs before argument resolution, then drop
   the well-formed-body workaround from the controller tests.
 - **Source:** 2026-11 test review (Java mutation testing).
+
+### TD-22
+
+**Retention runs inside the host housekeeping shell script.** The weekly
+`housekeep.sh` deletes expired delivery history, inbox rows and audit events
+with `psql` through `podman exec`. It is fine for a handful of time windows on
+one host, but it is not the place to grow a retention policy: per-table
+anonymization, an export path or a second environment would turn the script
+into a second data-access layer.
+
+- **Next action:** revisit after launch. If the policy grows beyond simple age
+  deletes, move retention into a scheduled job owned by the service that owns
+  the data, with the same single success metric and alert.
+- **Source:** PH-5; owner decision 2026-11 (interim shell job accepted).
+
+*Disposition (2026-11): accepted (TD-22) - the current deletes are bounded,
+fail closed (metric written last) and covered by `HousekeepStale`. The trigger
+to revisit is a second retention rule that needs per-row logic or another
+environment.*
 
 ## Accepted limitations (not debt)
 

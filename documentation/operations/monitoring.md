@@ -58,6 +58,7 @@ action:
 | `UnitRestartLoop` | a unit restarted more than twice in an hour | read its logs and the last deploy tag |
 | `DiskFillingUp` | root filesystem above 85% | run housekeeping, find the large directory, do not delete state blindly |
 | `BackupStale` | no backup metric at all, or no success in 36 hours | run `backup.yml`, read the backup journal |
+| `HousekeepStale` | no housekeeping success metric, or none in 8 days | run `housekeep.yml`, read the housekeeping journal |
 | `CertificateExpiringSoon` | a certificate expires within 14 days | check caddy ACME logs, DNS and the vault token; re-issue rather than copy state |
 
 `BackupStale` has an `absent()` branch, so a fresh host with no first backup is
