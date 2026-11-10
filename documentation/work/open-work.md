@@ -45,8 +45,8 @@ questions are in [decisions](../reference/decisions.md).
   reaches the phone ([monitoring](../operations/monitoring.md)).
 - [ ] [owner] Approve final content, photos and legal pages. The legal, wording
   and founding-year decisions are resolved; real photos and final content assets
-  remain owner-executed. Add old URL redirects, page metadata and content
-  sitemaps.
+  remain owner-executed. Add old URL redirects and finish PH-10: a dynamic
+  sitemap, canonical links, JSON-LD and the redirect map.
 - [ ] [verify] Run the environment integration pass: publishing, forms,
   reservations, login, email, and one service outage. Retry a public submission
   and confirm it returns the original outcome with no duplicate row, stock
@@ -202,9 +202,11 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   but [monitoring](../operations/monitoring.md) implies short-retention access
   logs exist. Either enable them (they remain the forensic record; usage
   counting no longer depends on them) or correct the doc.
-- [ ] Explore automated dependency vulnerability scanning (Dependabot or
-  Renovate, or a scheduled trivy/`pnpm audit` step in CI). The monthly digest
-  refresh (D24) covers base images, not CVEs in dependencies.
+- [ ] Implement the dependency and secret scanning agreed in PH-12: `gitleaks`
+  in CI, Trivy on the built images (report-only on pull requests, blocking on
+  the weekly scheduled run) and a weekly `pnpm audit --prod` plus a Trivy
+  filesystem scan for the Maven tree. The monthly digest refresh (D24) covers
+  base images, not CVEs in dependencies.
 - [ ] Monthly: refresh the pinned image digests and action SHAs
   (D24, DR-14) - all Dockerfile `FROM` lines, the CI container pins in
   `ci.yml` and the `publish.yml` action SHAs. The full register with owning
@@ -230,8 +232,13 @@ Remaining product features are deliberately deferred until after launch; see
   [refactoring handoff](../history/refactoring-web-sites.md))
 - [ ] Studio: simplify mobile lists. (Unsaved-edit protection landed as TD-09,
   resolved 2026-11; the list navigation itself is still a design task.)
+- [ ] Oliumbi: finish the placeholder's rough edges - `robots.txt`, a sitemap,
+  a branded 404 and error boundary, and one smoke test (PH-11).
 - [ ] Check keyboard use, focus, contrast and mobile menus. Verify German
-  customer sites and Studio translations.
+  customer sites and Studio translations. The agreed high-value set is a skip
+  link and `main` target on every site, focus after a successful Zelglihof
+  submission, focus-visible styles on Jublawoma and Studio, Studio reduced
+  motion, and `aria-describedby` on field errors (PH-11).
 
 ## Owner decisions
 
