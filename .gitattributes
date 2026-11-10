@@ -1,0 +1,24 @@
+# All text files are LF in the repository and in every working tree, including
+# Windows checkouts: Biome, the editors and CI all assume LF, and CRLF working
+# copies caused recurring phantom diffs (route trees) and local format
+# failures. git normalizes to LF on check-in, so committed content is
+# unchanged by this file.
+
+* text=auto eol=lf
+
+# Windows batch scripts must be CRLF in the working tree or cmd.exe can
+# misparse labels; the index stays LF.
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Shell scripts never leave LF, even when checked out on Windows.
+*.sh text eol=lf
+
+# Binaries: never normalize, never show as text diffs.
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.ico binary
+*.webp binary
+*.pdf binary
+*.woff2 binary
