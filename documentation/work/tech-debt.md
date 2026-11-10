@@ -293,6 +293,13 @@ The type-level guard was deliberately not built: TanStack's import protection
 requires `createServerFn` visible at each endpoint. The residual risk (a new
 handler can forget the middleware) is accepted and recorded here.*
 
+*Update (2026-11, test review): the residual risk is now guarded by a
+structural test (`web/tests/studio-wiring.test.ts`): every `createServerFn` in
+`web/sites/studio/src/server/**/*.functions.ts` must declare one of the two
+authorization middleware entries, and the public session file is the only
+allowlisted exception. Removing the middleware from any handler fails the
+suite.*
+
 ### TD-12
 
 **Campaign batching does not bound the transaction.** A campaign send reads
