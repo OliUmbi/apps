@@ -112,6 +112,26 @@ jobs:
   java:
     name: services (mvnw test)
     runs-on: ubuntu-latest
+    env:
+      # The narrow persistence suites validate JPA mappings and native SQL
+      # against the migrated schema; without this they are disabled and CI
+      # would lose its only schema-drift check.
+      STUDIO_TEST_ADMIN_URL: postgres://postgres:ci-postgres@127.0.0.1:5432/apps
+    services:
+      postgres:
+        # postgres:18-alpine@sha256:... -- bump tag and digest together (DR-14).
+        image: postgres:18-alpine@sha256:123b17998ccaf47e53b502e8c6a1e79afd8f579c6f3eec83c563da026f957395
+        env:
+          POSTGRES_DB: apps
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ci-postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d apps"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
@@ -120,6 +140,20 @@ jobs:
           distribution: temurin
           java-version: 25
           cache: maven
+
+      # Apply database/migrations/ in order to the test database before the
+      # persistence suites boot. Same Flyway image as the web job.
+      - name: migrate the test database
+        run: >
+          docker run --rm --network host
+          -v "$GITHUB_WORKSPACE/database/migrations:/flyway/sql:ro"
+          flyway/flyway:13.4.0-alpine@sha256:66c0278f4398dd46b84d4108919a015b6ca03657a3d44ff2b349ad0602ace956
+          -url=jdbc:postgresql://127.0.0.1:5432/apps
+          -user=postgres
+          -password=ci-postgres
+          -connectRetries=60
+          -locations=filesystem:/flyway/sql
+          migrate
 
       # The wrapper (services/.mvn/wrapper/maven-wrapper.properties) pins the
       # same Maven version the READMEs document, so CI and local runs agree.
