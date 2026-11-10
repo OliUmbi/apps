@@ -2,7 +2,9 @@ package ch.oliumbi.assets.services;
 
 import ch.oliumbi.assets.configurations.ImageProperties;
 import ch.oliumbi.assets.data.entities.Image;
+import ch.oliumbi.assets.data.entities.ImageVariant;
 import ch.oliumbi.assets.data.requests.ImageCreateRequest;
+import ch.oliumbi.assets.domain.AssetContent;
 import ch.oliumbi.assets.domain.AssetKind;
 import ch.oliumbi.assets.domain.ImageFormat;
 import ch.oliumbi.assets.domain.ImageRendition;
@@ -56,19 +58,7 @@ class ImageServiceTest {
     }
 
     @Test
-    void wrongSiteDeleteReturnsNotFoundWithoutDeleting() {
-        when(images.findLockedByIdAndSite(ID, SITE)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> service.delete(ID, SITE))
-                .isInstanceOfSatisfying(ResponseStatusException.class, exception ->
-                        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND));
-
-        verify(images, never()).delete(any());
-        verify(storage, never()).delete(any(), any());
-    }
-
-    @Test
-    void unknownIdDeleteReturnsNotFoundWithoutDeleting() {
+    void deleteOfAnUnknownOrForeignIdIsA404AndTouchesNoFile() {
         when(images.findLockedByIdAndSite(ID, SITE)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.delete(ID, SITE))
@@ -103,6 +93,64 @@ class ImageServiceTest {
     }
 
     @Test
+    void publicContentOnlyLooksUpVisibleImages() {
+        var image = new Image(ID, SITE, true);
+        var variant = variant(image);
+        when(images.findByIdAndVisibleTrue(ID)).thenReturn(Optional.of(image));
+        when(variants.findByImageIdAndSize(ID, ImageSize.XL)).thenReturn(Optional.of(variant));
+        when(storage.file(AssetKind.IMAGE, ID, "xl.jpg")).thenReturn(Path.of("media", "xl.jpg"));
+
+        AssetContent content = service.content(ID, null, "xl");
+
+        verify(images).findByIdAndVisibleTrue(ID);
+        verify(images, never()).findByIdAndSite(any(), any());
+        assertThat(content.contentType()).isEqualTo("image/jpeg");
+        assertThat(content.bytes()).isEqualTo(3);
+    }
+
+    @Test
+    void publicContentRejectsTheMasterSize() {
+        when(images.findByIdAndVisibleTrue(ID)).thenReturn(Optional.of(new Image(ID, SITE, true)));
+
+        assertThatThrownBy(() -> service.content(ID, null, "master"))
+                .isInstanceOfSatisfying(ResponseStatusException.class,
+                        exception -> assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST));
+
+        verifyNoInteractions(variants);
+    }
+
+    @Test
+    void internalContentLooksUpTheImageForTheSite() {
+        var image = new Image(ID, SITE, true);
+        when(images.findByIdAndSite(ID, SITE)).thenReturn(Optional.of(image));
+        when(variants.findByImageIdAndSize(ID, ImageSize.XL)).thenReturn(Optional.of(variant(image)));
+        when(storage.file(any(), any(), any())).thenReturn(Path.of("media", "xl.jpg"));
+
+        service.content(ID, SITE, "xl");
+
+        verify(images).findByIdAndSite(ID, SITE);
+        verify(images, never()).findByIdAndVisibleTrue(any());
+    }
+
+    @Test
+    void uploadOfExactlyTheSizeLimitIsAccepted() throws Exception {
+        var file = mock(MultipartFile.class);
+        when(file.getSize()).thenReturn(1024L);
+        var upload = mock(BlobStorage.Upload.class);
+        when(upload.directory()).thenReturn(Path.of("staging", ID.toString()));
+        var staged = upload.directory().resolve("upload");
+        when(storage.stage(any())).thenReturn(upload);
+        when(storage.upload(any(), any(), anyLong())).thenReturn(staged);
+        when(processor.process(any(), any())).thenReturn(List.of());
+        when(images.saveAndFlush(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        service.create(SITE, new ImageCreateRequest(true), file);
+
+        verify(storage).upload(any(), any(), anyLong());
+        verify(images).saveAndFlush(any());
+    }
+
+    @Test
     void oversizedUploadIsRejectedBeforeStaging() throws Exception {
         var file = mock(MultipartFile.class);
         when(file.getSize()).thenReturn(1025L);
@@ -134,5 +182,10 @@ class ImageServiceTest {
         verify(upload).close();
         // Published files stay behind for the orphan sweep to reconcile the failed commit.
         verify(storage, never()).delete(any(), any());
+    }
+
+    private static ImageVariant variant(Image image) {
+        return new ImageVariant(image, new ImageRendition(ImageSize.XL, ImageFormat.JPEG, 4, 2,
+                new StoredFile("xl.jpg", "image/jpeg", 3, "abc")));
     }
 }

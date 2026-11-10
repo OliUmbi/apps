@@ -134,6 +134,21 @@ class DeliveryStoreTest {
     }
 
     @Test
+    void claimAbandonsTheExpiredFinalAttemptBeforeClosingTheMessage() {
+        // two delays allow three attempts, so the expired third attempt has none left
+        var message = message(new DeliveryState.Processing(3, NOW.minus(LEASE)));
+        var attempt = mock(MessageAttempt.class);
+        when(messages.findNext(NOW, NOW.minus(LEASE), "")).thenReturn(Optional.of(message));
+        when(attempts.findByMessageIdAndAttemptNumber(message.getId(), 3)).thenReturn(Optional.of(attempt));
+
+        var result = store.claim(new HashSet<>());
+
+        assertThat(result).isInstanceOf(DeliveryStore.ClaimResult.Closed.class);
+        verify(attempt).finish(AttemptOutcome.ABANDONED, Optional.of(FailureDetail.abandoned()), NOW);
+        assertThat(message.state()).isEqualTo(new DeliveryState.Failed(3, NOW));
+    }
+
+    @Test
     void completeFinishesTheAttemptAndTheMessage() {
         var message = message(new DeliveryState.Processing(1, NOW));
         var attempt = mock(MessageAttempt.class);

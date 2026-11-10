@@ -6,6 +6,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.charset.StandardCharsets;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,6 +36,23 @@ class PasswordServiceTest {
         assertThat(passwordService.meetsRequirements("NoDigitsHere")).isFalse();
         // bcrypt only reads the first 72 UTF-8 bytes
         assertThat(passwordService.meetsRequirements("Aa1" + "x".repeat(70))).isFalse();
+    }
+
+    @Test
+    void acceptsExactlySeventyTwoUtf8Bytes() {
+        var password = "Aa1" + "x".repeat(69);
+
+        assertThat(password.getBytes(StandardCharsets.UTF_8)).hasSize(72);
+        assertThat(passwordService.meetsRequirements(password)).isTrue();
+    }
+
+    @Test
+    void rejectsPasswordsThatExceedSeventyTwoUtf8BytesEvenWithinTheCharacterBudget() {
+        // 39 characters pass the length and character-class rules; only the 75-byte size rejects it.
+        var password = "Aa1" + "\u00e4".repeat(36);
+
+        assertThat(password.getBytes(StandardCharsets.UTF_8)).hasSize(75);
+        assertThat(passwordService.meetsRequirements(password)).isFalse();
     }
 
     @Test

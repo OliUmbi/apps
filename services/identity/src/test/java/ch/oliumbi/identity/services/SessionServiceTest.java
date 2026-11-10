@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 class SessionServiceTest {
@@ -73,10 +74,12 @@ class SessionServiceTest {
                 .thenReturn(Optional.of(new Account("alice", "alice@example.com", "hash", true)));
         when(mockedPasswords.matches("CorrectHorse1", "hash")).thenReturn(true);
 
-        service.create(new SessionCreateRequest("Alice", "CorrectHorse1"));
+        var response = service.create(new SessionCreateRequest("Alice", "CorrectHorse1"));
 
         verify(mockedPasswords).matches("CorrectHorse1", "hash");
         verify(mockedPasswords, never()).matchesDummy(any());
+        verify(sessions).save(any(AccountSession.class));
+        assertThat(response.token()).isNotBlank();
     }
 
     @Test
@@ -153,5 +156,6 @@ class SessionServiceTest {
                 .doesNotThrowAnyException();
 
         verify(sessions).revokeByTokenHash(tokenService.hash("unknown"), NOW);
+        verifyNoMoreInteractions(sessions);
     }
 }

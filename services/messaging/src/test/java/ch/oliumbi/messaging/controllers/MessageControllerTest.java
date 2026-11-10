@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -25,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MessageControllerTest {
 
     private static final String TOKEN = "internal-token";
+    private static final UUID ID = UUID.fromString("11111111-2222-3333-4444-555555555555");
 
     private final MessageService messageService = mock(MessageService.class);
     private final MockMvc mvc = MockMvcBuilders
@@ -44,6 +46,22 @@ class MessageControllerTest {
     @Test
     void historyWithAWrongTokenIsA401ProblemDetail() throws Exception {
         mvc.perform(get("/message").header("Authorization", "Bearer wrong-token"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.errorId").isString())
+                .andExpect(jsonPath("$.detail").value("Missing or invalid internal bearer token"));
+    }
+
+    @Test
+    void detailWithoutAuthorizationIsA401ProblemDetail() throws Exception {
+        mvc.perform(get("/message/{id}", ID))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.errorId").isString())
+                .andExpect(jsonPath("$.detail").value("Missing or invalid internal bearer token"));
+    }
+
+    @Test
+    void detailWithAWrongTokenIsA401ProblemDetail() throws Exception {
+        mvc.perform(get("/message/{id}", ID).header("Authorization", "Bearer wrong-token"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.errorId").isString())
                 .andExpect(jsonPath("$.detail").value("Missing or invalid internal bearer token"));

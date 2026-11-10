@@ -84,6 +84,30 @@ class MessageWorkerTest {
     }
 
     @Test
+    void deliverStopsAtTheConfiguredBatchSize() {
+        when(store.claim(any())).thenReturn(new DeliveryStore.ClaimResult.Claimed(CLAIM));
+        when(delivery.send(any())).thenReturn(new DeliveryResult.Sent());
+
+        worker.deliver();
+
+        verify(store, times(3)).claim(any());
+        verify(delivery, times(3)).send(CLAIM);
+    }
+
+    @Test
+    void deliverContinuesAfterClosedAndDeferredClaims() {
+        when(store.claim(any()))
+                .thenReturn(new DeliveryStore.ClaimResult.Closed())
+                .thenReturn(new DeliveryStore.ClaimResult.Deferred())
+                .thenReturn(new DeliveryStore.ClaimResult.Empty());
+
+        worker.deliver();
+
+        verify(store, times(3)).claim(any());
+        verify(delivery, never()).send(any());
+    }
+
+    @Test
     void acceptContinuesAfterAnIntakeFailure() {
         when(intake.acceptNext(any()))
                 .thenThrow(new IllegalStateException("poisoned"))

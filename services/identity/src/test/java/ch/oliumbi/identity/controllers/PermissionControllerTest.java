@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.UUID;
 
 import static org.mockito.Mockito.mock;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,6 +30,15 @@ class PermissionControllerTest {
     @Test
     void grantWithoutAuthorizationIsA401ProblemDetail() throws Exception {
         mvc.perform(put("/account/" + ACCOUNT_ID + "/permission")
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"permission\":\"studio.admin\"}"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.errorId").isString())
+                .andExpect(jsonPath("$.detail").value("Missing or invalid internal bearer token"));
+    }
+
+    @Test
+    void revokeWithoutAuthorizationIsA401ProblemDetail() throws Exception {
+        mvc.perform(delete("/account/" + ACCOUNT_ID + "/permission")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"permission\":\"studio.admin\"}"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.errorId").isString())

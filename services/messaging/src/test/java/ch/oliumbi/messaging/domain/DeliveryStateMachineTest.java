@@ -82,6 +82,15 @@ class DeliveryStateMachineTest {
     }
 
     @Test
+    void recoveryOfAnExpiredSecondAttemptWaitsTheSecondBackoffDelay() {
+        var decision = machine.claim(new DeliveryState.Processing(2, NOW.minus(LEASE)), NOW);
+
+        assertThat(decision).isInstanceOf(DeliveryStateMachine.ClaimDecision.Recover.class)
+                .extracting(d -> ((DeliveryStateMachine.ClaimDecision.Recover) d).next())
+                .isEqualTo(new DeliveryState.Pending(2, NOW.plus(Duration.ofMinutes(5))));
+    }
+
+    @Test
     void aRecoveredMessageIsNotImmediatelyClaimableAgain() {
         var decision = machine.claim(new DeliveryState.Processing(1, NOW.minus(LEASE)), NOW);
         var recovered = ((DeliveryStateMachine.ClaimDecision.Recover) decision).next();

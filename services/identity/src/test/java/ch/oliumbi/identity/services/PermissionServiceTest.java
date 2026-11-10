@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -81,6 +82,17 @@ class PermissionServiceTest {
         permissionService.revoke(ACCOUNT_ID, new PermissionRevokeRequest("studio.admin"));
 
         verify(permissions).deleteById(new AccountPermissionId(ACCOUNT_ID, "studio.admin"));
+    }
+
+    @Test
+    void revokeRejectsAnUnknownAccountWithoutDeleting() {
+        when(accounts.findLockedById(ACCOUNT_ID)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> permissionService.revoke(ACCOUNT_ID, new PermissionRevokeRequest("studio.admin")))
+                .isInstanceOfSatisfying(ResponseStatusException.class,
+                        exception -> assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND));
+
+        verify(permissions, never()).deleteById(any());
     }
 
     private static Account account() {

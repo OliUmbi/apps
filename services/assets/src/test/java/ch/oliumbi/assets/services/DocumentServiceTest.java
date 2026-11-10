@@ -7,6 +7,7 @@ import ch.oliumbi.assets.domain.AssetKind;
 import ch.oliumbi.assets.repositories.DocumentRepository;
 import ch.oliumbi.assets.services.storage.BlobStorage;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -14,6 +15,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,6 +24,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -46,19 +50,7 @@ class DocumentServiceTest {
     }
 
     @Test
-    void wrongSiteDeleteReturnsNotFoundWithoutDeleting() {
-        when(documents.findLockedByIdAndSite(ID, SITE)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> service.delete(ID, SITE))
-                .isInstanceOfSatisfying(ResponseStatusException.class, exception ->
-                        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND));
-
-        verify(documents, never()).delete(any());
-        verify(storage, never()).delete(any(), any());
-    }
-
-    @Test
-    void unknownIdDeleteReturnsNotFoundWithoutDeleting() {
+    void deleteOfAnUnknownOrForeignIdIsA404AndTouchesNoFile() {
         when(documents.findLockedByIdAndSite(ID, SITE)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.delete(ID, SITE))
@@ -78,6 +70,26 @@ class DocumentServiceTest {
 
         verify(documents).delete(document);
         verify(storage).delete(AssetKind.DOCUMENT, ID);
+    }
+
+    @Test
+    void uploadOfExactlyTheSizeLimitIsAccepted(@TempDir Path directory) throws Exception {
+        var bytes = new byte[(int) properties.documentMaxBytes()];
+        System.arraycopy("%PDF-".getBytes(StandardCharsets.US_ASCII), 0, bytes, 0, 5);
+        var staged = directory.resolve("upload");
+        Files.write(staged, bytes);
+
+        var upload = mock(BlobStorage.Upload.class);
+        when(upload.directory()).thenReturn(directory);
+        when(storage.stage(any())).thenReturn(upload);
+        when(storage.upload(any(), any(), anyLong())).thenReturn(staged);
+        when(documents.saveAndFlush(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        var file = mock(MultipartFile.class);
+        when(file.getSize()).thenReturn(properties.documentMaxBytes());
+
+        service.create(SITE, new DocumentCreateRequest("guide", true), file);
+
+        verify(documents).saveAndFlush(any());
     }
 
     @Test
