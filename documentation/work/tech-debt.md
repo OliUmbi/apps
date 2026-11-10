@@ -335,6 +335,13 @@ CI.
   launch value at this volume. Revisit when a service boundary changes or an
   integration regression appears.*
 
+*Update (2026-11, test review): the highest-value slice is now covered. Each
+service has a narrow `@DataJpaTest` persistence suite against the same migrated
+database (CI provisions it): `ddl-auto=validate` catches entity/schema drift,
+and the tests pin the native queue/delivery/permission queries, the lifecycle
+CHECK constraints and one `SKIP LOCKED` claim. Broader end-to-end service
+integration (HTTP plus JPA) remains accepted debt.*
+
 ### TD-17
 
 **The backup checksum manifest is not portable.** `backup.sh` runs

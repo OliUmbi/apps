@@ -53,13 +53,24 @@ services\mvnw.cmd -f services/pom.xml test
 ```
 
 From `services/`, `./mvnw test` or `mvn test` is equivalent. The wrapper pins
-Maven 3.9.12, the same version CI uses. The suites run without a database or SMTP
-server.
+Maven 3.9.12, the same version CI uses. The unit and controller suites need no
+database or SMTP server.
+
+The narrow persistence suites (`*PersistenceTest` in each module's
+`repositories` package) do need the migrated database. They boot the JPA slice
+with `ddl-auto=validate`, so an entity/schema drift fails the build, then pin
+the native queue, delivery and permission queries, the lifecycle CHECK
+constraints and one `FOR UPDATE SKIP LOCKED` claim. They are disabled unless
+`STUDIO_TEST_ADMIN_URL` is set; CI provisions and migrates PostgreSQL and sets
+it. Locally, point it at the dev database (the JDBC user comes from the URL):
+
+```powershell
+$env:STUDIO_TEST_ADMIN_URL = "postgres://apps_migrator:dev-migrator-password@127.0.0.1:5432/apps"
+services\mvnw.cmd -f services/pom.xml test
+```
 
 `mvn test` also runs Checkstyle through `services/checkstyle.xml`, so a style
-violation fails the gate the same way a test failure does. There is still no
-integration suite against a real PostgreSQL; that is accepted post-launch debt
-([TD-13](../work/tech-debt.md#td-13)).
+violation fails the gate the same way a test failure does.
 
 ## Database
 
