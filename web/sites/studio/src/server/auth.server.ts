@@ -1,46 +1,33 @@
 import { AppError, type SiteId, toAppError } from "@oliumbi/contracts";
-import { ServiceError } from "@oliumbi/http-client";
 import {
 	getRequestHeader,
 	setResponseHeader,
 } from "@tanstack/react-start/server";
 import { identity } from "./identity.server";
 import { mayManage } from "./roles";
+import {
+	isInvalidSession,
+	readSessionToken,
+	sessionCookieHeader,
+} from "./session";
 
 const secure = process.env.STUDIO_SECURE_COOKIES === "true";
-const cookieName = secure ? "__Host-studio_session" : "studio_session";
 
 function requestToken() {
-	const cookie = (getRequestHeader("cookie") ?? "")
-		.split(";")
-		.find((part) => part.trim().startsWith(`${cookieName}=`));
-	if (!cookie) return null;
-	try {
-		return decodeURIComponent(cookie.trim().slice(cookieName.length + 1));
-	} catch {
-		return null;
-	}
+	return readSessionToken(getRequestHeader("cookie") ?? null, secure);
 }
 
-function sessionCookie(value: string, expires: string) {
-	setResponseHeader(
-		"Set-Cookie",
-		cookieName +
-			"=" +
-			encodeURIComponent(value) +
-			"; Path=/; HttpOnly; SameSite=Lax; Expires=" +
-			expires +
-			(secure ? "; Secure" : ""),
-	);
+function sessionCookie(value: string, expires: Date) {
+	setResponseHeader("Set-Cookie", sessionCookieHeader(secure, value, expires));
 }
 
 export function clearSessionCookie() {
-	sessionCookie("", new Date(0).toUTCString());
+	sessionCookie("", new Date(0));
 }
 
 export async function login(name: string, password: string) {
 	const session = await identity.createSession(name, password);
-	sessionCookie(session.token, new Date(session.expiresAt).toUTCString());
+	sessionCookie(session.token, new Date(session.expiresAt));
 	return session.actor;
 }
 
@@ -57,7 +44,7 @@ export async function currentActor() {
 			permissions: permissions.map((entry) => entry.permission),
 		};
 	} catch (error) {
-		if (error instanceof ServiceError && [401, 404].includes(error.status)) {
+		if (isInvalidSession(error)) {
 			clearSessionCookie();
 			return null;
 		}
@@ -84,8 +71,7 @@ export async function logout() {
 	try {
 		if (token) await identity.revokeSession(token);
 	} catch (error) {
-		if (!(error instanceof ServiceError && [401, 404].includes(error.status)))
-			throw toAppError(error);
+		if (!isInvalidSession(error)) throw toAppError(error);
 	} finally {
 		clearSessionCookie();
 	}
