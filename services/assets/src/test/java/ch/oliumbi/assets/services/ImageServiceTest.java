@@ -15,6 +15,8 @@ import ch.oliumbi.assets.repositories.ImageVariantRepository;
 import ch.oliumbi.assets.services.processing.ImageProcessor;
 import ch.oliumbi.assets.services.storage.BlobStorage;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -31,7 +33,9 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -55,6 +59,28 @@ class ImageServiceTest {
         var manager = mock(PlatformTransactionManager.class);
         when(manager.getTransaction(any())).thenReturn(mock(TransactionStatus.class));
         return new TransactionTemplate(manager);
+    }
+
+    @Test
+    void listWithoutVisibilityUsesTheWholeSite() {
+        var pageable = PageRequest.of(0, 20);
+        when(images.findBySite(SITE, pageable)).thenReturn(Page.empty());
+
+        service.list(SITE, null, pageable);
+
+        verify(images).findBySite(SITE, pageable);
+        verify(images, never()).findBySiteAndVisible(anyString(), anyBoolean(), any());
+    }
+
+    @Test
+    void listWithVisibilityNarrowsTheQuery() {
+        var pageable = PageRequest.of(0, 20);
+        when(images.findBySiteAndVisible(SITE, false, pageable)).thenReturn(Page.empty());
+
+        service.list(SITE, false, pageable);
+
+        verify(images).findBySiteAndVisible(SITE, false, pageable);
+        verify(images, never()).findBySite(any(), any());
     }
 
     @Test
