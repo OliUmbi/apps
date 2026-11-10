@@ -47,6 +47,7 @@ housekeep_day: sun
 queue_retention_days: 30
 message_retention_days: 365
 audit_retention_days: 548 # 18 months
+analytics_retention_days: 760 # 25 months
 
 # monitoring: admin interfaces bind to the wireguard address only
 monitoring_bind: "{{ wireguard_address.split('/')[0] }}"

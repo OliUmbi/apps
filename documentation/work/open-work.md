@@ -177,11 +177,13 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   and confirm alerts reach the phone. Then add external uptime checks and a
   dead-man's switch outside the box: everything current runs on the machine it
   watches.
-- [ ] Explore usage metrics for the public sites (revisit O-016 "No
-  analytics"): choose between privacy-friendly self-hosted analytics, plain
-  request counting from access logs, or staying dark. No third-party script or
-  cookie without a new decision recorded in
-  [decisions](../reference/decisions.md).
+- [x] Anonymous first-party page counting (revisit O-016 "No analytics").
+  (implemented in PH-6 - one route-id beacon per navigation into
+  `analytics.view_daily`, a per-site Studio panel, no cookies or identifiers;
+  decision D25.) Jublawoma stays untracked until its external privacy policy
+  covers the counting, and Oliumbi has no database.
+- [ ] Extend anonymous page counting to Jublawoma once the owner updates the
+  external privacy policy, and decide whether Oliumbi needs it at all.
 - [ ] Explore error tracking so failures surface without a user report:
   frontend JS errors and Java `errorId`s currently end in journald with no
   aggregation. Weigh a self-hosted option (GlitchTip or similar) against
@@ -191,8 +193,8 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   state are invisible. Add Micrometer endpoints and scrape jobs.
 - [ ] Decide on Caddy access logging: the Caddyfile has no `log` directive,
   but [monitoring](../operations/monitoring.md) implies short-retention access
-  logs exist. Either enable them (they are also the raw material for usage
-  counting) or correct the doc.
+  logs exist. Either enable them (they remain the forensic record; usage
+  counting no longer depends on them) or correct the doc.
 - [ ] Explore automated dependency vulnerability scanning (Dependabot or
   Renovate, or a scheduled trivy/`pnpm audit` step in CI). The monthly digest
   refresh (D24) covers base images, not CVEs in dependencies.

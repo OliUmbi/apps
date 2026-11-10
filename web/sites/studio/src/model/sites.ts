@@ -57,6 +57,16 @@ export const studioSites: StudioSite[] = siteDetails.map((site) => ({
 			description: m.studio_dashboard_workspaces_title,
 			icon: "home",
 		},
+		...(site.id === "unclet" || site.id === "zelglihof"
+			? [
+					{
+						id: "traffic" as const,
+						label: m.studio_traffic(),
+						description: m.studio_traffic_description,
+						icon: "content" as const,
+					},
+				]
+			: []),
 		...contentSections
 			.filter((section) => section.site === site.id)
 			.map(({ id, label, description, icon }) => ({

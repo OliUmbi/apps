@@ -20,8 +20,9 @@ attempt history. V005 defines assets. V006 defines the studio schema. V007–V00
 define the three site schemas (jublawoma, unclet, zelglihof), including nullable
 `submission_id` idempotency keys and unique indexes on the five
 public-submission tables. V010 adds the append-only `studio.audit_event` history
-for destructive and administrative Studio actions. Every table ends its columns
-with `created_at` and `updated_at`.
+for destructive and administrative Studio actions; V011 adds the anonymous
+`analytics.view_daily` counter. Every table ends its columns with `created_at`
+and `updated_at`.
 
 V001 still reserves the `oliumbi` schema and role, but there is no Oliumbi
 migration and no table: the first Oliumbi slice is a static site with no

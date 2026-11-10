@@ -187,6 +187,34 @@ and set the recovery and cutover boundaries.
   they lose the reproducibility DR-14 exists for. Industry consensus (Kubernetes,
   Chainguard, Renovate, Docker) is pin + automated refresh; if the manual
   cadence slips, Renovate-style digest automation is the prepared alternative.
+- **D25 — Analytics are anonymous, first-party and aggregate.** Each site sends
+  one route-id beacon per resolved navigation (no URL, cookie, address,
+  referrer or visitor identifier) and counts into `analytics.view_daily`, one
+  row per site, day and route template. Bot and no-JS traffic is not counted.
+  Studio shows a per-site 30-day total, top routes and a daily series. No
+  consent banner is needed because the counters carry no personal data.
+  Jublawoma is not tracked until its external privacy policy mentions the
+  counting; Oliumbi has no database.
+- **D26 — The audit trail is append-only, admin-only and narrow.** Studio
+  records destructive and administrative actions (accounts, permissions, asset
+  visibility/deletion, product/variant archival, reservation changes and
+  cancellation, inquiry/review status, campaign send, subscriber changes) in
+  `studio.audit_event` with actor, site, action and entity. No before/after
+  values and no message bodies. The application role cannot update or delete
+  rows; 18-month retention runs in housekeeping. A site role cannot read the
+  trail.
+- **D27 — Operational retention is age-based and never touches product data.**
+  Delivery history ages out after 12 months, inbox rows after 30 days, audit
+  events after 18 months and analytics counters after 25 months. Inquiries,
+  reservations, subscribers and donations are never deleted by housekeeping.
+  The current shell job is an interim; it moves into a service-owned scheduled
+  job if the policy grows ([TD-22](../work/tech-debt.md#td-22)).
+- **D28 — A subscriber address correction keeps the consent chain intact.** The
+  Studio correction is allowed, but a pending or active subscriber returns to
+  pending with a confirmation email to the new address; an unsubscribed record
+  stays unsubscribed; an address owned by another subscriber is a conflict; and
+  saving the stored address is a no-op. Consequence: Studio can invite an
+  address, never subscribe it silently.
 
 ### O-006 threat model (accepted 2026-11)
 

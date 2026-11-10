@@ -114,6 +114,7 @@ test("every @oliumbi specifier resolves through its package export map", () => {
 // Every value name is unique across one package's entry points, so an editor
 // auto-import cannot silently pick the workflow instead of the CRUD factory.
 const runtimePackages = [
+	"analytics",
 	"assets",
 	"contracts",
 	"database",

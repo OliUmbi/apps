@@ -11,6 +11,7 @@
   "dependencies": {
     "@base-ui/react": "catalog:",
     "@oliumbi/assets": "workspace:*",
+    "@oliumbi/analytics": "workspace:*",
     "@oliumbi/contracts": "workspace:*",
     "@oliumbi/database": "workspace:*",
     "@oliumbi/http-client": "workspace:*",

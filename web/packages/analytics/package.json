@@ -1,0 +1,23 @@
+{
+  "name": "@oliumbi/analytics",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./server": "./src/server.ts"
+  },
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@oliumbi/database": "workspace:*",
+    "@tanstack/react-router": "catalog:",
+    "drizzle-orm": "catalog:",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "typescript": "catalog:"
+  }
+}

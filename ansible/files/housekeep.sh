@@ -7,6 +7,7 @@ set -eu
 : "${QUEUE_RETENTION_DAYS:=30}"
 : "${MESSAGE_RETENTION_DAYS:=365}"
 : "${AUDIT_RETENTION_DAYS:=548}"
+: "${ANALYTICS_RETENTION_DAYS:=760}"
 
 # Weekly housekeeping. Bounded on purpose: expired operational data, a week of
 # images for rollback, what nothing references, and a capped journald.
@@ -33,7 +34,8 @@ podman exec postgres psql -v ON_ERROR_STOP=1 \
 	-U "$POSTGRES_USER" -d "$POSTGRES_DB" \
 	-c "DELETE FROM messaging.message WHERE status IN ('SENT', 'FAILED') AND created_at < now() - interval '${MESSAGE_RETENTION_DAYS} days';" \
 	-c "DELETE FROM queue.message WHERE created_at < now() - interval '${QUEUE_RETENTION_DAYS} days';" \
-	-c "DELETE FROM studio.audit_event WHERE created_at < now() - interval '${AUDIT_RETENTION_DAYS} days';"
+	-c "DELETE FROM studio.audit_event WHERE created_at < now() - interval '${AUDIT_RETENTION_DAYS} days';" \
+	-c "DELETE FROM analytics.view_daily WHERE day < current_date - make_interval(days => ${ANALYTICS_RETENTION_DAYS});"
 
 echo "housekeep: podman image gc (keep 7 days)"
 podman image prune -af --filter "until=168h"

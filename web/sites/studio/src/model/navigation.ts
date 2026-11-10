@@ -12,6 +12,7 @@ const studioChromeSections = [
 	"accounts",
 	"messages",
 	"audit",
+	"traffic",
 ] as const;
 
 export type StudioSectionId =

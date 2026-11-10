@@ -10,9 +10,10 @@ Sunday 04:00, `apps-housekeep.timer` runs `ansible/files/housekeep.sh`:
 1. **Expired operational data.** Retention comes from
    `/etc/default/apps-housekeep`, templated from `ansible/group_vars/all.yml`:
    `messaging.message` in `SENT`/`FAILED` after 365 days (attempts cascade),
-   `queue.message` older than 30 days, and `studio.audit_event` older than 548
-   days (18 months). Product data - inquiries, reservations, subscribers,
-   donations - is never deleted here.
+   `queue.message` older than 30 days, `studio.audit_event` older than 548
+   days (18 months) and `analytics.view_daily` older than 760 days (25 months).
+   Product data - inquiries, reservations, subscribers, donations - is never
+   deleted here.
 2. `podman image prune -af --filter "until=168h"` - remove images older than
    seven days, keeping fresh rollback candidates;
 3. `podman container prune -f` - remove stopped containers;

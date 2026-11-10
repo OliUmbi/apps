@@ -20,6 +20,7 @@ import { Route as LatestIndexRouteImport } from './routes/latest.index'
 import { Route as LatestSlugRouteImport } from './routes/latest.$slug'
 import { Route as ProductsIndexRouteImport } from './routes/products.index'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
+import { Route as ApiAnalyticsViewRouteImport } from './routes/api.analytics.view'
 import { Route as ApiAssetsIdRouteImport } from './routes/api.assets.$id'
 import { Route as NewsletterConfirmTokenRouteImport } from './routes/newsletter.confirm.$token'
 import { Route as NewsletterUnsubscribeTokenRouteImport } from './routes/newsletter.unsubscribe.$token'
@@ -80,6 +81,11 @@ const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
   path: '/products/$productId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAnalyticsViewRoute = ApiAnalyticsViewRouteImport.update({
+  id: '/api/analytics/view',
+  path: '/api/analytics/view',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAssetsIdRoute = ApiAssetsIdRouteImport.update({
   id: '/api/assets/$id',
   path: '/api/assets/$id',
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/products/$productId': typeof ProductsProductIdRoute
   '/latest/': typeof LatestIndexRoute
   '/products/': typeof ProductsIndexRoute
+  '/api/analytics/view': typeof ApiAnalyticsViewRoute
   '/api/assets/$id': typeof ApiAssetsIdRoute
   '/newsletter/confirm/$token': typeof NewsletterConfirmTokenRoute
   '/newsletter/unsubscribe/$token': typeof NewsletterUnsubscribeTokenRoute
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/products/$productId': typeof ProductsProductIdRoute
   '/latest': typeof LatestIndexRoute
   '/products': typeof ProductsIndexRoute
+  '/api/analytics/view': typeof ApiAnalyticsViewRoute
   '/api/assets/$id': typeof ApiAssetsIdRoute
   '/newsletter/confirm/$token': typeof NewsletterConfirmTokenRoute
   '/newsletter/unsubscribe/$token': typeof NewsletterUnsubscribeTokenRoute
@@ -150,6 +158,7 @@ export interface FileRoutesById {
   '/products/$productId': typeof ProductsProductIdRoute
   '/latest/': typeof LatestIndexRoute
   '/products/': typeof ProductsIndexRoute
+  '/api/analytics/view': typeof ApiAnalyticsViewRoute
   '/api/assets/$id': typeof ApiAssetsIdRoute
   '/newsletter/confirm/$token': typeof NewsletterConfirmTokenRoute
   '/newsletter/unsubscribe/$token': typeof NewsletterUnsubscribeTokenRoute
@@ -169,6 +178,7 @@ export interface FileRouteTypes {
     | '/products/$productId'
     | '/latest/'
     | '/products/'
+    | '/api/analytics/view'
     | '/api/assets/$id'
     | '/newsletter/confirm/$token'
     | '/newsletter/unsubscribe/$token'
@@ -186,6 +196,7 @@ export interface FileRouteTypes {
     | '/products/$productId'
     | '/latest'
     | '/products'
+    | '/api/analytics/view'
     | '/api/assets/$id'
     | '/newsletter/confirm/$token'
     | '/newsletter/unsubscribe/$token'
@@ -203,6 +214,7 @@ export interface FileRouteTypes {
     | '/products/$productId'
     | '/latest/'
     | '/products/'
+    | '/api/analytics/view'
     | '/api/assets/$id'
     | '/newsletter/confirm/$token'
     | '/newsletter/unsubscribe/$token'
@@ -221,6 +233,7 @@ export interface RootRouteChildren {
   ProductsProductIdRoute: typeof ProductsProductIdRoute
   LatestIndexRoute: typeof LatestIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
+  ApiAnalyticsViewRoute: typeof ApiAnalyticsViewRoute
   ApiAssetsIdRoute: typeof ApiAssetsIdRoute
   NewsletterConfirmTokenRoute: typeof NewsletterConfirmTokenRoute
   NewsletterUnsubscribeTokenRoute: typeof NewsletterUnsubscribeTokenRoute
@@ -306,6 +319,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/analytics/view': {
+      id: '/api/analytics/view'
+      path: '/api/analytics/view'
+      fullPath: '/api/analytics/view'
+      preLoaderRoute: typeof ApiAnalyticsViewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/assets/$id': {
       id: '/api/assets/$id'
       path: '/api/assets/$id'
@@ -349,6 +369,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProductsProductIdRoute: ProductsProductIdRoute,
   LatestIndexRoute: LatestIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
+  ApiAnalyticsViewRoute: ApiAnalyticsViewRoute,
   ApiAssetsIdRoute: ApiAssetsIdRoute,
   NewsletterConfirmTokenRoute: NewsletterConfirmTokenRoute,
   NewsletterUnsubscribeTokenRoute: NewsletterUnsubscribeTokenRoute,

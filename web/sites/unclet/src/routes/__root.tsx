@@ -1,3 +1,4 @@
+import { usePageView } from "@oliumbi/analytics";
 import { m } from "@oliumbi/i18n/messages";
 import { getLocale } from "@oliumbi/i18n/runtime";
 import { QueryProvider } from "@oliumbi/query";
@@ -42,6 +43,7 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
+	usePageView();
 	return (
 		<QueryProvider>
 			<Outlet />

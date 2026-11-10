@@ -23,6 +23,7 @@
       QUEUE_RETENTION_DAYS={{ queue_retention_days }}
       MESSAGE_RETENTION_DAYS={{ message_retention_days }}
       AUDIT_RETENTION_DAYS={{ audit_retention_days }}
+      ANALYTICS_RETENTION_DAYS={{ analytics_retention_days }}
 
 - name: housekeep timer
   ansible.builtin.systemd:
