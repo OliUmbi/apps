@@ -202,11 +202,11 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   but [monitoring](../operations/monitoring.md) implies short-retention access
   logs exist. Either enable them (they remain the forensic record; usage
   counting no longer depends on them) or correct the doc.
-- [ ] Implement the dependency and secret scanning agreed in PH-12: `gitleaks`
-  in CI, Trivy on the built images (report-only on pull requests, blocking on
-  the weekly scheduled run) and a weekly `pnpm audit --prod` plus a Trivy
-  filesystem scan for the Maven tree. The monthly digest refresh (D24) covers
-  base images, not CVEs in dependencies.
+- [x] Dependency and secret scanning. (implemented in PH-12 - `gitleaks` on
+  every change, report-only `trivy fs` on pull requests, blocking weekly
+  `security.yml` with Trivy and `pnpm audit --prod`; the manual image scan is
+  part of the monthly checklist in [versions](../reference/versions.md).) The
+  first remote security run is the remaining evidence.
 - [ ] Monthly: refresh the pinned image digests and action SHAs
   (D24, DR-14) - all Dockerfile `FROM` lines, the CI container pins in
   `ci.yml` and the `publish.yml` action SHAs. The full register with owning

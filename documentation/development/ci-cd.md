@@ -7,8 +7,9 @@ Workflows live in `.github/workflows/`:
 
 | Workflow | Trigger | Purpose |
 | --- | --- | --- |
-| `ci.yml` | every branch push (tags excluded), pull request, and called by publish | verify web, Java, image builds and deployment inputs |
+| `ci.yml` | every branch push (tags excluded), pull request, and called by publish | verify web, Java, image builds, deployment inputs and the report-only security scan |
 | `publish.yml` | version tag `*.*`, or manual dispatch | re-run CI, build and push every image |
+| `security.yml` | weekly schedule, manual dispatch | blocking secret, dependency and lockfile audit |
 
 ## `ci.yml`
 
@@ -18,17 +19,23 @@ Workflows live in `.github/workflows/`:
 | `java` | JDK 25, `services/mvnw -B -ntp -f services/pom.xml test` (includes Checkstyle) |
 | `images` | build-only, same matrix as publish; no push. Catches Dockerfile, base-image and Caddy-plugin breakage on pull requests |
 | `deployment` | every Quadlet unit generates a `.service` under podman 5.8.9; every Ansible playbook passes `--syntax-check` |
+| `security` | `gitleaks` over the checkout (a committed secret fails immediately) and a report-only `trivy fs` dependency scan |
 
 Details that matter:
 
 - The web job applies `database/migrations/` with the same Flyway major as
-  production (`flyway/flyway:13.4.0-alpine`).
+  production (`flyway/flyway:13.12.1-alpine`).
 - `STUDIO_TEST_ADMIN_URL` points at the CI database, so the PostgreSQL-gated
   suites run. A guard step fails the job if any suite reports skipped.
-- pnpm is pinned by `web/package.json`; Node is 24; Maven by the wrapper; JDK 25.
+- pnpm is pinned by `web/package.json`; Node is 26; Maven by the wrapper; JDK 25.
 - Inputs are pinned: GitHub Actions by commit SHA, CI tool images
-  (`postgres`, `flyway`, podman, Python) by `tag@digest`, and `ansible-core` by
-  an exact version. Bump the tag and digest together.
+  (`postgres`, `flyway`, podman, Python, trivy, gitleaks) by `tag@digest`, and
+  `ansible-core` by an exact version. Bump the tag and digest together.
+- The security job is deliberately split: a secret is always blocking, while a
+  new upstream CVE is reported on pull requests and becomes blocking in the
+  weekly `security.yml` run, so a hotfix is never held hostage by an unrelated
+  advisory. `infrastructure/.env.dev` is allowlisted in `.gitleaks.toml` as a
+  committed dev placeholder, not a leak.
 - The deployment job renders the Jinja placeholders before running the Quadlet
   generator, the same way the Ansible app role does. Unknown unit keys are
   silently dropped by podman, so key typos surface during server verification,

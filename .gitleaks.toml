@@ -1,0 +1,9 @@
+# Gitleaks configuration for the repository scan.
+#
+# The dev rig commits placeholder credentials on purpose (they are documented as
+# dev-only and never reused in a deployed environment). Allowlisting that one
+# file keeps the scan focused on real leaks; anything else that looks like a
+# secret fails the run.
+[allowlist]
+description = "Committed dev placeholders"
+paths = ['''infrastructure/\.env\.dev''']

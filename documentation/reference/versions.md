@@ -38,6 +38,8 @@ first refresh.
 | `node-exporter` | v1.12.1 | monitoring | `infrastructure/units/apps-node-exporter.container` |
 | `blackbox-exporter` | v0.29.1 | monitoring | `infrastructure/units/apps-blackbox.container` |
 | `postgres-exporter` | v0.19.0 | database statistics | `infrastructure/units/apps-postgres-exporter.container` |
+| `trivy` | 0.67.0 | weekly dependency scan | `.github/workflows/{ci,security}.yml` |
+| `gitleaks` | v8.28.0 | secret scan | `.github/workflows/{ci,security}.yml` |
 | `python` | 3.13-alpine | CI ansible syntax check | `ci.yml` |
 
 The `ghcr.io/oliumbi/apps-*` images are built here from the bases above and
@@ -88,14 +90,35 @@ lombok 1.18.
 
 ## Monthly refresh (D24)
 
-1. Look up the current digest of every tag in the images table:
-   `docker buildx imagetools inspect <name>:<tag>` (the multi-arch
-   manifest-list digest) or the Docker Hub API
-   (`/v2/repositories/<repo>/tags/<tag>`).
-2. Update tag and digest together in the owning files. Runtime version bumps
-   (Caddy, Node, temurin, ...) are deliberate separate commits; the refresh
-   only picks up silent base rebuild fixes.
-3. CI actions: check the latest release of each, update SHA and version
-   comment together.
-4. Run the verification gate - web gate from `web/`, Maven tests, compose
-   config check - then push; CI rebuilds every image (DR-13).
+Do this once a month, in daylight, on a branch. It is a deliberate commit, not
+an automation: the point is that someone looks at what changed.
+
+1. **Record the starting point.** Note the date, the current `image_tag`, and the
+   digests in the table above (or read them from the owning files).
+2. **Look up every current digest.**
+   `docker buildx imagetools inspect <name>:<tag>` for each image in the table
+   (the multi-arch manifest-list digest), or the Docker Hub tag API
+   (`/v2/repositories/<repo>/tags/<tag>`). A digest change means the same tag
+   was rebuilt upstream.
+3. **Update tag and digest together** in the owning file. Never change a tag
+   without checking its digest, and never leave a digest from the old tag.
+   Runtime version bumps (Caddy, Node, temurin, ...) are separate, deliberate
+   commits; this pass only picks up silent base rebuilds.
+4. **Update the CI actions.** Check the latest release of every action listed
+   above, update the SHA and the version comment together.
+5. **Update the two scan tools** (`trivy`, `gitleaks`) the same way, including
+   their digests in both workflows.
+6. **Run the gate:** `pnpm check`, `pnpm typecheck`, `pnpm test` (with a migrated
+   database), `pnpm build`, `services\mvnw.cmd -f services/pom.xml test`, and
+   `docker compose -f infrastructure/compose.dev.yaml --env-file .env config`.
+7. **Run the blocking scans locally** (or read the weekly workflow):
+   `trivy fs --severity HIGH,CRITICAL web services database` and `gitleaks detect`.
+   A HIGH or CRITICAL with a fix available is a finding to address, not a reason
+   to skip the refresh.
+8. **Before a release, scan the built images** (manual, not in CI):
+   `trivy image ghcr.io/oliumbi/apps-<name>:<tag> --severity HIGH,CRITICAL`.
+   The images are pinned by digest, so this measures the bytes you deploy.
+9. **Commit** as `chore: refresh pinned digests (D24)`, push, and confirm the
+   `security` workflow and the image build are green.
+10. **Record the run** in the release notes table (`releases.md`): date, tag,
+    which digests changed, gate result. If a step was skipped, say so.

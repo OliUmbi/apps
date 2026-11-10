@@ -44,7 +44,7 @@ evidence exists and the registers are updated.
 | PH-9 | partial | German public paths shipped (D32) with a test and updated sitemaps. The remaining hard-coded TSX labels are still open. |
 | PH-10 | open | Dynamic sitemap, canonical, JSON-LD, legacy redirects. |
 | PH-11 | open | Oliumbi robots/sitemap/404/error, skip links, focus and reduced motion. |
-| PH-12 | open | Trivy/gitleaks/audit cadence and the monthly version checklist. |
+| PH-12 | done (first remote run pending) | `gitleaks` + report-only Trivy in CI, blocking weekly `security.yml` (Trivy, gitleaks, `pnpm audit --prod`), a dev-placeholder allowlist, and the 10-step monthly refresh checklist. |
 | PH-13 | in progress | Decisions D25-D32, both registers, the plan and the V012 head are updated. Trimming the component READMEs to structure only remains. |
 
 ## Acceptance evidence
