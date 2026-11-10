@@ -20,7 +20,7 @@
     "dev:zelglihof": "pnpm --filter zelglihof dev",
     "fix": "biome check --write",
     "generate": "pnpm --filter @oliumbi/i18n generate",
-    "test": "tsx --test tests/*.test.ts tests/integration/*.test.ts",
+    "test": "node --env-file-if-exists=../.env --import tsx --test tests/*.test.ts tests/integration/*.test.ts",
     "typecheck": "pnpm generate && pnpm -r check && tsc --project tests/tsconfig.json"
   },
   "devDependencies": {

@@ -37,9 +37,9 @@ What they mean:
 - `test` is the `node:test` suite. The integration suites under
   `tests/integration/` are PostgreSQL-gated: they exercise the real write paths
   (row locks, joins, upserts, aggregates, grants) against a migrated database,
-  and they log a warning and skip when `STUDIO_TEST_ADMIN_URL` is unset. CI
-  points it at a migrated database and fails if anything skips; locally, set it
-  before running tests that touch a repository or workflow.
+  and they log a warning and skip when `STUDIO_TEST_ADMIN_URL` is unset. Locally,
+  `pnpm test` loads the root `.env` when it exists; CI supplies the variables
+  directly and fails if anything skips.
 - `build` builds all five sites (including the static Oliumbi placeholder).
   Studio is the broadest consumer of shared packages, which is why it has its
   own required build.

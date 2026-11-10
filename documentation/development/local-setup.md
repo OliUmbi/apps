@@ -22,10 +22,23 @@ credentials in a deployed environment. Vite development servers load the root
 both. Only `VITE_` variables reach browser code. Restart a process after changing
 environment files.
 
-Java does not read `.env` automatically and has no `APP_ENV_FILE` loader. Supply
-variables through the shell or the IDE run configuration, for example with an
-IDE environment-file plugin. Rebuild Java services after changing the shared
-module.
+The template also sets `STUDIO_TEST_ADMIN_URL` and `STUDIO_TEST_ADMIN_ROLE`, the
+migrator connection used by the PostgreSQL-gated web and Java suites. If a
+native PostgreSQL already owns port 5432, change `POSTGRES_PORT` **and** the
+port in both `DATABASE_URL` and `STUDIO_TEST_ADMIN_URL` together.
+
+`pnpm test` loads the root `.env` when it exists, so the web integration suites
+run without exporting anything. Java does not read `.env` automatically and has
+no `APP_ENV_FILE` loader; supply variables through the shell or the IDE run
+configuration, for example with an IDE environment-file plugin. To run the Java
+persistence suites from PowerShell:
+
+```powershell
+$env:STUDIO_TEST_ADMIN_URL = (Select-String -Path .env -Pattern '^STUDIO_TEST_ADMIN_URL=').Line.Split('=', 2)[1]
+services\mvnw.cmd -f services/pom.xml test
+```
+
+Rebuild Java services after changing the shared module.
 
 ## Run the whole stack
 
