@@ -34,10 +34,12 @@ What they mean:
   and is collected by `typecheck`. `pnpm fix` writes Biome fixes.
 - `typecheck` runs `pnpm generate` (the single owner of the Paraglide output),
   then `tsc` per package/site and the tests project.
-- `test` is the `node:test` suite. Two suites are PostgreSQL-gated and skip
-  silently when `STUDIO_TEST_ADMIN_URL` is unset. CI points it at a migrated
-  database and fails if anything skips; locally, set it if you touched a
-  repository or workflow.
+- `test` is the `node:test` suite. The integration suites under
+  `tests/integration/` are PostgreSQL-gated: they exercise the real write paths
+  (row locks, joins, upserts, aggregates, grants) against a migrated database,
+  and they log a warning and skip when `STUDIO_TEST_ADMIN_URL` is unset. CI
+  points it at a migrated database and fails if anything skips; locally, set it
+  before running tests that touch a repository or workflow.
 - `build` builds all five sites (including the static Oliumbi placeholder).
   Studio is the broadest consumer of shared packages, which is why it has its
   own required build.
@@ -62,14 +64,19 @@ integration suite against a real PostgreSQL; that is accepted post-launch debt
 ## Database
 
 CI applies `database/migrations/` in order to a fresh PostgreSQL 18 for the web
-suite. The PostgreSQL-gated web suites run against that real database:
-empty-database migration, constraints, authorization at server boundaries,
-queue creation alongside the domain write, and duplicate submissions. Tests
-never send live email or touch production. Locally:
+suite. The PostgreSQL-gated suites in `web/tests/integration/` run against that
+real database: empty-database migration, constraints and grants, and the
+production write paths driven through their services (donation commitments,
+reservations and cancellations, newsletter lifecycle, campaign dispatch,
+inquiries, reviews, repository CRUD and optimistic concurrency). Tests never
+send live email or touch production. Locally:
 
 1. recreate the database (`down -v`, then `up -d --build` with the dev compose
    stack), or apply the migrations to a fresh database;
-2. run the PG-gated suites with `STUDIO_TEST_ADMIN_URL` set;
+2. run the PG-gated suites with `STUDIO_TEST_ADMIN_URL` set; the dev compose
+   database has no `postgres` role, so also set
+   `STUDIO_TEST_ADMIN_ROLE=apps_migrator` (CI's URL uses `postgres`, which needs
+   no override);
 3. if a migration changed, verify the constraint and status tables in
    [database/README.md](../../database/README.md) still match.
 

@@ -236,6 +236,14 @@ Remaining product features are deliberately deferred until after launch; see
 
 ## Later
 
+- [ ] Strengthen `AccountServiceTest`: it has two tests for a nine-method
+  service and mocks `PasswordService`, so `changePassword` could store a bad
+  hash and still pass; create/update conflicts and `isAvailable` self-exclusion
+  are untested. Use a real `PasswordService` for the password path.
+- [ ] Decide whether correcting a subscriber to their own current address should
+  be a no-op. Today an active or pending self-correction restarts confirmation
+  and queues a new confirmation email because `correctEmail` has no same-address
+  branch; only an unsubscribed self-correction leaves state untouched.
 - [ ] After launch by the go-live plan: connect notifications to users with site
   access. Choose event names and initial subscribers.
   `studio.account_notification` has no event catalog or dispatch contract yet.

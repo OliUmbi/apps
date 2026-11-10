@@ -38,8 +38,9 @@ debt: it is listed so it is not rediscovered as a surprise.
 | [TD-15](#td-15) | Identity: plaintext unsubscribe tokens | P2 | accepted |
 | [TD-16](#td-16) | Operations: Caddy state outside the backup | P2 | accepted |
 | [TD-17](#td-17) | Operations: backup checksum manifest is not portable | P3 | resolved |
+| [TD-18](#td-18) | Services: bearer check runs after request binding | P3 | open |
 
-Open counts: 1 P1, 0 P2, 0 P3. Accepted: TD-13 (P3), TD-15 (P2) and TD-16 (P2);
+Open counts: 1 P1, 0 P2, 1 P3. Accepted: TD-13 (P3), TD-15 (P2) and TD-16 (P2);
 accepted debt stays listed. Every other entry is resolved. The 2026-10 refactor
 resolved most findings in the [code quality review](../history/code-quality-review.md);
 their dispositions remain there as evidence and are not repeated here.
@@ -341,6 +342,20 @@ find the files; verification is manual and easy to skip.
 *Disposition (2026-11): fixed (TD-17) - the manifest is written from the work
   directory with relative names, so `sha256sum -c SHA256SUMS` verifies the
   extracted archive on another machine.*
+
+### TD-18
+
+**Bearer checks run after Spring binds request arguments.** In the assets
+controllers (and `PermissionController`), `@RequestPart`/`@RequestBody`
+resolution happens before `authorization.requireValid(...)`, so an
+unauthenticated request with a malformed body receives `400` instead of `401`.
+No data is exposed; the only leak is that the endpoint exists. The tests send
+well-formed bodies so they exercise the intended authorization path.
+
+- **Next action:** move the bearer check into a filter or interceptor (or
+  method-security annotation) that runs before argument resolution, then drop
+  the well-formed-body workaround from the controller tests.
+- **Source:** 2026-11 test review (Java mutation testing).
 
 ## Accepted limitations (not debt)
 
