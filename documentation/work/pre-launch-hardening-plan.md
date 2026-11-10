@@ -45,7 +45,7 @@ evidence exists and the registers are updated.
 | PH-10 | open | Dynamic sitemap, canonical, JSON-LD, legacy redirects. |
 | PH-11 | open | Oliumbi robots/sitemap/404/error, skip links, focus and reduced motion. |
 | PH-12 | open | Trivy/gitleaks/audit cadence and the monthly version checklist. |
-| PH-13 | open | Decisions, registers, README trimming. |
+| PH-13 | in progress | Decisions D25-D32, both registers, the plan and the V012 head are updated. Trimming the component READMEs to structure only remains. |
 
 ## Acceptance evidence
 

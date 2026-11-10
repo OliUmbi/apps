@@ -5,6 +5,11 @@
 .pnpm-store/
 legacy/
 
+# ansible secrets (the example file stays tracked)
+ansible/group_vars/vault.yml
+ansible/group_vars/vault.yml.*
+!ansible/group_vars/vault.yml.example
+
 # web
 node_modules
 .dependencies-before-rework/
