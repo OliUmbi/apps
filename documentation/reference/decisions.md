@@ -253,7 +253,7 @@ gets a new top-level directory; a new deployable joins its workspace.
 ## Stack
 
 pnpm workspaces, TypeScript (strict), React 19, TanStack Start + TanStack
-Router + TanStack Query, Vite + Nitro (Node 24), Tailwind 4, Base UI, Lucide,
+Router + TanStack Query, Vite + Nitro (Node 26), Tailwind 4, Base UI, Lucide,
 Biome; Spring Boot (Java) services with actuator; PostgreSQL 18 with Flyway
 migrations; Caddy; podman/Quadlet systemd units on the server (Docker Compose
 for local development); GitHub Actions.
