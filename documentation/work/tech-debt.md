@@ -379,6 +379,7 @@ defects. Revisit only when the stated condition changes.
 | Limitation | Why accepted |
 | --- | --- |
 | No staging environment or end-to-end suite | One maintainer, low traffic; the environment integration pass and restore drill cover the risk for now. |
+| No code coverage measurement | Unit, persistence-gated and web suites with a no-silent-skip CI guard cover the risk; a coverage percentage adds little signal at this scale (C-010). |
 | One host, no HA, autoscaling or multi-region | Traffic and budget do not justify it; recoverability is the chosen answer. |
 | No host firewall | The router forwards and unit bind addresses are the boundary; a host firewall would not stop published ports. |
 | No CDN; media on disk | Private server, small audience; the assets service owns cache headers. |

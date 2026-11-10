@@ -177,6 +177,25 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   and confirm alerts reach the phone. Then add external uptime checks and a
   dead-man's switch outside the box: everything current runs on the machine it
   watches.
+- [ ] Explore usage metrics for the public sites (revisit O-016 "No
+  analytics"): choose between privacy-friendly self-hosted analytics, plain
+  request counting from access logs, or staying dark. No third-party script or
+  cookie without a new decision recorded in
+  [decisions](../reference/decisions.md).
+- [ ] Explore error tracking so failures surface without a user report:
+  frontend JS errors and Java `errorId`s currently end in journald with no
+  aggregation. Weigh a self-hosted option (GlitchTip or similar) against
+  O-016's minimal-embeds stance.
+- [ ] Explore exposing Java service metrics to Prometheus: identity,
+  messaging and assets publish only `/actuator/health`, so queue depth and JVM
+  state are invisible. Add Micrometer endpoints and scrape jobs.
+- [ ] Decide on Caddy access logging: the Caddyfile has no `log` directive,
+  but [monitoring](../operations/monitoring.md) implies short-retention access
+  logs exist. Either enable them (they are also the raw material for usage
+  counting) or correct the doc.
+- [ ] Explore automated dependency vulnerability scanning (Dependabot or
+  Renovate, or a scheduled trivy/`pnpm audit` step in CI). The monthly digest
+  refresh (D24) covers base images, not CVEs in dependencies.
 - [ ] Monthly: refresh the pinned image digests and action SHAs
   (D24, DR-14) - all Dockerfile `FROM` lines, the CI container pins in
   `ci.yml` and the `publish.yml` action SHAs. The full register with owning
@@ -268,3 +287,8 @@ Remaining product features are deliberately deferred until after launch; see
 - [ ] Replace the `caddy-ratelimit` commit pin with a release tag once upstream
   tags something newer than `5625512f` (the `v0.1.0` tag predates Caddy 2.10 and
   lacks the config-reload fix).
+- [ ] Design the admin audit trail that [sites](../reference/sites.md)
+  promises ("audit view for destructive actions"): no audit table exists beyond
+  the reservation cancellation columns, so define the event catalog first.
+- [ ] Explore a personal-data export (subscribers, submissions) for Studio,
+  alongside the retention-rules item above; both are revDSG/GDPR hygiene.
