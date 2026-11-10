@@ -6,8 +6,12 @@ import { createDonationService } from "../../packages/jublawoma-data/src/donatio
 import { donationCommitment } from "../../packages/jublawoma-data/src/schema";
 import { message as queuedMessage } from "../../packages/queue/src/schema";
 import type { ReservationInput } from "../../packages/zelglihof-data/src/forms";
+import { requestSubscription } from "../../packages/zelglihof-data/src/newsletter.subscribe";
 import { createReservationService } from "../../packages/zelglihof-data/src/reservation.service";
-import { productReservation } from "../../packages/zelglihof-data/src/schema";
+import {
+	productReservation,
+	subscriber,
+} from "../../packages/zelglihof-data/src/schema";
 import { adminDatabase, databaseEnabled } from "../support/database";
 import {
 	id,
@@ -62,6 +66,16 @@ async function queuedCount(database: DatabasePool, sender: string) {
 			.select({ value: count() })
 			.from(queuedMessage)
 			.where(eq(queuedMessage.sender, sender));
+		return Number(row?.value ?? 0);
+	});
+}
+
+async function queuedTo(database: DatabasePool, recipient: string) {
+	return database.transaction(async (transaction) => {
+		const [row] = await transaction
+			.select({ value: count() })
+			.from(queuedMessage)
+			.where(eq(queuedMessage.recipient, recipient));
 		return Number(row?.value ?? 0);
 	});
 }
@@ -246,5 +260,54 @@ test("two commitments for the last capacity cannot both win", {
 		}
 	} finally {
 		await Promise.all([seeding.close(), left.close(), right.close()]);
+	}
+});
+
+const newsletterOptions = {
+	publicUrl: "http://localhost:8003",
+	sender: "newsletter@zelglihof.ch",
+	replyTo: "hof@zelglihof.ch",
+};
+
+test("concurrent signups for one address send one confirmation", {
+	skip,
+	timeout: 20_000,
+}, async () => {
+	const seeding = adminDatabase();
+	const left = adminDatabase();
+	const right = adminDatabase();
+	const email = uniqueEmail("race-signup");
+	try {
+		const results = await Promise.all([
+			requestSubscription(left, newsletterOptions, email),
+			requestSubscription(right, newsletterOptions, email),
+		]);
+
+		// The advisory lock serializes the pair: the loser sees the fresh pending
+		// row and is suppressed instead of queuing a second confirmation.
+		assert.deepEqual(results.map((result) => result.outcome).sort(), [
+			"confirmation-sent",
+			"suppressed",
+		]);
+		assert.equal(await queuedTo(seeding, email), 1);
+		const subscribers = await seeding.transaction(async (transaction) => {
+			const [row] = await transaction
+				.select({ value: count() })
+				.from(subscriber)
+				.where(eq(subscriber.email, email));
+			return Number(row?.value ?? 0);
+		});
+		assert.equal(subscribers, 1);
+	} finally {
+		try {
+			await seeding.transaction(async (transaction) => {
+				await transaction
+					.delete(queuedMessage)
+					.where(eq(queuedMessage.recipient, email));
+				await transaction.delete(subscriber).where(eq(subscriber.email, email));
+			});
+		} finally {
+			await Promise.all([seeding.close(), left.close(), right.close()]);
+		}
 	}
 });

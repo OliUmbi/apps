@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test, { after } from "node:test";
 import { count, eq, inArray } from "drizzle-orm";
-import type { Transaction } from "../../packages/database/src";
+import type { DatabasePool, Transaction } from "../../packages/database/src";
 import { message as queuedMessage } from "../../packages/queue/src/schema";
 import { createCampaignService } from "../../packages/zelglihof-data/src/campaign.service";
 import { campaignRecipientLimit } from "../../packages/zelglihof-data/src/campaign.types";
@@ -46,6 +46,16 @@ async function activeCount(transaction: Transaction) {
 		.from(subscriber)
 		.where(eq(subscriber.status, "active"));
 	return Number(row?.value ?? 0);
+}
+
+async function queuedTo(database: DatabasePool, recipient: string) {
+	return database.transaction(async (transaction) => {
+		const [row] = await transaction
+			.select({ value: count() })
+			.from(queuedMessage)
+			.where(eq(queuedMessage.recipient, recipient));
+		return Number(row?.value ?? 0);
+	});
 }
 
 async function campaignRow(transaction: Transaction, campaignId: string) {
@@ -95,6 +105,30 @@ test("dispatch pages the whole audience exactly once across batches", {
 		assert.equal(perRecipient.length, emails.length);
 		for (const row of perRecipient)
 			assert.equal(Number(row.value), 1, row.email);
+
+		const [recipient] = emails;
+		assert.ok(recipient);
+		const [subscriberRow] = await transaction
+			.select({ token: subscriber.unsubscribeToken })
+			.from(subscriber)
+			.where(eq(subscriber.email, recipient));
+		const [mail] = await transaction
+			.select({
+				subject: queuedMessage.subject,
+				text: queuedMessage.text,
+				sender: queuedMessage.sender,
+				replyTo: queuedMessage.replyTo,
+			})
+			.from(queuedMessage)
+			.where(eq(queuedMessage.recipient, recipient));
+		assert.equal(mail?.subject, "Review subject");
+		assert.ok(mail?.text.startsWith("Review body"));
+		assert.ok(
+			mail?.text.includes(`/newsletter/unsubscribe/${subscriberRow?.token}`),
+			"the campaign mail carries this recipient's unsubscribe link",
+		);
+		assert.equal(mail?.sender, options.sender);
+		assert.equal(mail?.replyTo, options.replyTo);
 
 		assert.equal(
 			(await campaignRow(transaction, campaignId))?.status,
@@ -257,4 +291,76 @@ test("the zelglihof role may send through the production grants", {
 		});
 		assert.equal(await queuedEmails(transaction, tracked.email), 1);
 	});
+});
+
+test("concurrent sends of one draft queue it once", {
+	skip,
+	timeout: 20_000,
+}, async () => {
+	const seeding = adminDatabase();
+	const left = adminDatabase();
+	const right = adminDatabase();
+	const emails: string[] = [];
+	let campaignId: string | undefined;
+	try {
+		const seeded = await seeding.transaction(async (transaction) => {
+			for (let index = 0; index < 3; index += 1) {
+				const seed = await seedSubscriber(transaction, { status: "active" });
+				emails.push(seed.email);
+			}
+			return seedCampaign(transaction);
+		});
+		campaignId = seeded.campaignId;
+		const [saved] = await seeding.transaction((transaction) =>
+			transaction
+				.select({ updatedAt: campaign.updatedAt })
+				.from(campaign)
+				.where(eq(campaign.id, seeded.campaignId)),
+		);
+		assert.ok(saved);
+
+		const settled = await Promise.allSettled([
+			createCampaignService(left, options).send(
+				seeded.campaignId,
+				saved.updatedAt,
+			),
+			createCampaignService(right, options).send(
+				seeded.campaignId,
+				saved.updatedAt,
+			),
+		]);
+
+		// The campaign row lock serializes the pair: the loser reads the queued
+		// status and is refused before it can queue a second copy.
+		const fulfilled = settled.filter((entry) => entry.status === "fulfilled");
+		const rejected = settled.filter((entry) => entry.status === "rejected");
+		assert.equal(fulfilled.length, 1);
+		assert.equal(rejected.length, 1);
+		assert.equal(
+			(fulfilled[0] as PromiseFulfilledResult<{ outcome: string }>).value
+				.outcome,
+			"queued",
+		);
+		assert.equal(
+			(rejected[0] as PromiseRejectedResult).reason.code,
+			"forbidden",
+		);
+		for (const email of emails)
+			assert.equal(await queuedTo(seeding, email), 1, email);
+	} finally {
+		try {
+			await seeding.transaction(async (transaction) => {
+				await transaction
+					.delete(queuedMessage)
+					.where(inArray(queuedMessage.recipient, emails));
+				if (campaignId)
+					await transaction.delete(campaign).where(eq(campaign.id, campaignId));
+				await transaction
+					.delete(subscriber)
+					.where(inArray(subscriber.email, emails));
+			});
+		} finally {
+			await Promise.all([seeding.close(), left.close(), right.close()]);
+		}
+	}
 });

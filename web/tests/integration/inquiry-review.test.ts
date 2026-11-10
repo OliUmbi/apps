@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import test, { after } from "node:test";
 import { count, eq } from "drizzle-orm";
 import { errorCode } from "../../packages/contracts/src";
+import type { Transaction } from "../../packages/database/src";
 import { referenceFor } from "../../packages/queue/src/email";
+import { message as queuedMessage } from "../../packages/queue/src/schema";
 import type { ReviewSubmissionInput } from "../../packages/unclet-data/src/forms";
 import { createInquiryService as createUncletInquiryService } from "../../packages/unclet-data/src/inquiry.service";
 import { createReviewService } from "../../packages/unclet-data/src/review.service";
@@ -62,6 +64,16 @@ function zelglihofInquiryInput(submissionId = id()): ContactInput {
 	};
 }
 
+async function messagesFor(transaction: Transaction, recipient: string) {
+	return transaction
+		.select({
+			subject: queuedMessage.subject,
+			text: queuedMessage.text,
+		})
+		.from(queuedMessage)
+		.where(eq(queuedMessage.recipient, recipient));
+}
+
 function reviewInput(submissionId = id()): ReviewSubmissionInput {
 	return {
 		submissionId,
@@ -106,6 +118,20 @@ test("an unclet inquiry stores the submission and queues both emails", {
 
 		assert.equal(await queuedEmails(transaction, uncletRequests), 1);
 		assert.equal(await queuedEmails(transaction, input.email), 1);
+
+		const reference = referenceFor(input.submissionId);
+		const [adminMail] = await messagesFor(transaction, uncletRequests);
+		for (const value of [
+			input.name,
+			input.email,
+			input.phone,
+			input.location,
+			"12",
+			reference,
+		])
+			assert.ok(adminMail?.text.includes(value), `admin mail lacks ${value}`);
+		const [customerMail] = await messagesFor(transaction, input.email);
+		assert.ok(customerMail?.text.includes(reference));
 	});
 });
 
@@ -164,6 +190,17 @@ test("a zelglihof inquiry stores the submission and queues the admin email", {
 		assert.equal(row.message, input.message);
 
 		assert.equal(await queuedEmails(transaction, zelglihofRequests), 1);
+
+		const [adminMail] = await messagesFor(transaction, zelglihofRequests);
+		assert.equal(adminMail?.subject, "Neue Hofanfrage");
+		for (const value of [
+			input.name,
+			input.phone,
+			input.subject,
+			input.message,
+			referenceFor(input.submissionId),
+		])
+			assert.ok(adminMail?.text.includes(value), `admin mail lacks ${value}`);
 	});
 });
 

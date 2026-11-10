@@ -81,6 +81,16 @@ async function queuedFrom(transaction: Transaction, sender: string) {
 	return Number(row?.value ?? 0);
 }
 
+async function messagesFor(transaction: Transaction, recipient: string) {
+	return transaction
+		.select({
+			subject: queuedMessage.subject,
+			text: queuedMessage.text,
+		})
+		.from(queuedMessage)
+		.where(eq(queuedMessage.recipient, recipient));
+}
+
 async function seedReservation(
 	transaction: Transaction,
 	seed: ProductSeed,
@@ -153,6 +163,24 @@ test("a reservation stores the row, decrements stock and queues both emails", {
 		assert.equal(await queuedFrom(transaction, sender), 2);
 		assert.equal(await queuedEmails(transaction, sender), 1);
 		assert.equal(await queuedEmails(transaction, customer), 1);
+
+		const reference = referenceFor(submissionId);
+		const [adminMail] = await messagesFor(transaction, sender);
+		assert.equal(adminMail?.subject, "Neue Reservation");
+		for (const value of [
+			"Ana Muster",
+			"079 123 45 67",
+			customer,
+			"Review product",
+			"Review variant",
+			"2",
+			reference,
+		])
+			assert.ok(adminMail?.text.includes(value), `admin mail lacks ${value}`);
+
+		const [customerMail] = await messagesFor(transaction, customer);
+		assert.equal(customerMail?.subject, "Deine Reservation beim Zelglihof");
+		assert.ok(customerMail?.text.includes(reference));
 	});
 });
 
