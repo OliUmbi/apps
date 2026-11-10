@@ -12,49 +12,49 @@ and should be added here.
 
 This is what makes the app readable top-down like a book:
 
-| Level | Where | Answers |
-| --- | --- | --- |
-| Screen | `src/components/*-view.tsx` | What is on this page, in what order |
-| Section | `src/components/<domain>/` | How a feature is arranged and wired |
-| Leaf | `src/components/ui/` | Exactly what it looks like |
+| Level   | Where                       | Answers                             |
+| ------- | --------------------------- | ----------------------------------- |
+| Screen  | `src/components/*-view.tsx` | What is on this page, in what order |
+| Section | `src/components/<domain>/`  | How a feature is arranged and wired |
+| Leaf    | `src/components/ui/`        | Exactly what it looks like          |
 
-Start at a view to find *where* something is, drop into `ui/` to change *how*
+Start at a view to find _where_ something is, drop into `ui/` to change _how_
 it looks. The leaves are flat on purpose: there is no nesting to learn.
 
 ## Vocabulary
 
-| Element | Purpose |
-| --- | --- |
-| `text.tsx` | The type scale: `Title`, `Kicker`, `Body`. |
-| `field.tsx` | Label, control and message slot. `controlClass` is the shared control shape. |
-| `text-field.tsx` | Single and multi-line text entry. |
-| `date-field.tsx` | Date and optional time entry: popover trigger plus the `calendar.tsx` picker. |
-| `checkbox.tsx` | The only checkbox. `disabled` and `description` slots. |
-| `select.tsx` | Dropdown with selection. |
-| `popover.tsx` | Anchored panel; `calendar.tsx` is the picker that sits in it. |
-| `file-input.tsx` | File picker. |
-| `button.tsx` | `Button` and `IconButton`. |
-| `filter-chip.tsx` | Filter toggle: `selected` plus `tone` (`danger` marks the failure filter). |
-| `alert.tsx` | Feedback that reserves its space, so nothing shifts. Studio-local by design — see below. |
-| `panel.tsx` | A titled group of fields: `kicker`, title, description, `aside`. `className` carries layout placement. |
-| `form.tsx` | `Form`, `FormFields` and `FormActions`. |
-| `form-footer.tsx` | The divider row that closes a form and holds its buttons. |
-| `record-fields.tsx` | Read-only detail: `RecordFields`, `RecordField`. |
-| `dialog.tsx` | `ConfirmDialog` for destructive actions. |
-| `badge.tsx` | Small status marker. `className` carries layout placement. |
-| `list.tsx` | List chrome: `ListShell`, `ListRow`, `ListMeta`, `Avatar`. |
-| `attempt-row.tsx` | Delivery timeline row: mono index, outcome line, error `pre`. |
-| `nav.tsx` | `Nav`, `NavSection`, `NavItem`. |
-| `sidebar.tsx` | `Sidebar`, `SidebarHeader`, `SidebarFooter`. |
-| `drawer.tsx` | Off-canvas navigation for small screens. |
-| `top-bar.tsx` | Workspace context bar. |
-| `menu.tsx` | The only dropdown menu. |
-| `brand.tsx` | The identity mark. |
-| `page-header.tsx` | The top of every screen: kicker, screen name, supporting copy. |
-| `split.tsx` | Page-level split: scenery panel + content panel. |
-| `gradient-panel.tsx` | Decorative aurora surface under a grain overlay. |
-| `message-screen.tsx` | Centred card for empty and failed screens. |
-| `danger-zone.tsx` | The destructive end of a record, behind a red hairline. |
+| Element              | Purpose                                                                                                |
+| -------------------- | ------------------------------------------------------------------------------------------------------ |
+| `text.tsx`           | The type scale: `Title`, `Kicker`, `Body`.                                                             |
+| `field.tsx`          | Label, control and message slot. `controlClass` is the shared control shape.                           |
+| `text-field.tsx`     | Single and multi-line text entry.                                                                      |
+| `date-field.tsx`     | Date and optional time entry: popover trigger plus the `calendar.tsx` picker.                          |
+| `checkbox.tsx`       | The only checkbox. `disabled` and `description` slots.                                                 |
+| `select.tsx`         | Dropdown with selection.                                                                               |
+| `popover.tsx`        | Anchored panel; `calendar.tsx` is the picker that sits in it.                                          |
+| `file-input.tsx`     | File picker.                                                                                           |
+| `button.tsx`         | `Button` and `IconButton`.                                                                             |
+| `filter-chip.tsx`    | Filter toggle: `selected` plus `tone` (`danger` marks the failure filter).                             |
+| `alert.tsx`          | Feedback that reserves its space, so nothing shifts. Studio-local by design — see below.               |
+| `panel.tsx`          | A titled group of fields: `kicker`, title, description, `aside`. `className` carries layout placement. |
+| `form.tsx`           | `Form`, `FormFields` and `FormActions`.                                                                |
+| `form-footer.tsx`    | The divider row that closes a form and holds its buttons.                                              |
+| `record-fields.tsx`  | Read-only detail: `RecordFields`, `RecordField`.                                                       |
+| `dialog.tsx`         | `ConfirmDialog` for destructive actions.                                                               |
+| `badge.tsx`          | Small status marker. `className` carries layout placement.                                             |
+| `list.tsx`           | List chrome: `ListShell`, `ListRow`, `ListMeta`, `Avatar`.                                             |
+| `attempt-row.tsx`    | Delivery timeline row: mono index, outcome line, error `pre`.                                          |
+| `nav.tsx`            | `Nav`, `NavSection`, `NavItem`.                                                                        |
+| `sidebar.tsx`        | `Sidebar`, `SidebarHeader`, `SidebarFooter`.                                                           |
+| `drawer.tsx`         | Off-canvas navigation for small screens.                                                               |
+| `top-bar.tsx`        | Workspace context bar.                                                                                 |
+| `menu.tsx`           | The only dropdown menu.                                                                                |
+| `brand.tsx`          | The identity mark.                                                                                     |
+| `page-header.tsx`    | The top of every screen: kicker, screen name, supporting copy.                                         |
+| `split.tsx`          | Page-level split: scenery panel + content panel.                                                       |
+| `gradient-panel.tsx` | Decorative aurora surface under a grain overlay.                                                       |
+| `message-screen.tsx` | Centred card for empty and failed screens.                                                             |
+| `danger-zone.tsx`    | The destructive end of a record, behind a red hairline.                                                |
 
 Add a leaf when the same look appears twice. Do not add a leaf to abstract a
 single one-off — a view can carry a layout utility instead.
