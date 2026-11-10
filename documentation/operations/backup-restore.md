@@ -28,6 +28,34 @@ The backup does **not** include monitoring state (deliberately, D12), the
 Ansible vault, or Caddy's ACME state. Certificates are re-issued rather than
 copied (D21); see below.
 
+## Key handling (once, then treat it as done)
+
+The server only ever holds the **public** recipient in the vault
+(`vault_age_recipient`); it cannot decrypt its own archives. The private
+identity is passphrase-wrapped, stored in the password manager and printed on a
+single recovery sheet. `age` decrypts a passphrase-protected identity file
+automatically when it is passed with `-i`, so recovery stays two commands.
+
+On the workstation:
+
+```sh
+age-keygen -o backup-identity.txt                 # prints the public age1... key
+age -p -a -o backup-identity.age backup-identity.txt   # 6-word passphrase
+rm backup-identity.txt                            # no plaintext key remains
+```
+
+1. Put the printed public key (`age1...`) in the vault as `vault_age_recipient`.
+2. Put `backup-identity.age` (ASCII-armored) in the password manager.
+3. Print the same armored block plus the passphrase and the two commands on the
+   recovery sheet. Store it where a second person could find it if the
+   maintainer is unavailable; that is the actual bus-factor fix.
+4. Test the sheet once during the restore drill, not the password manager copy.
+
+Losing the identity is losing every archive; losing only the workstation is
+recoverable from the sheet. Replacing the key means: generate a new identity,
+update `vault_age_recipient`, take a fresh archive, and keep the old sheet until
+the old archives are outside the retention window.
+
 ## Caddy ACME state and re-issuance
 
 `/var/lib/apps/caddy-data` and `caddy-config` (the ACME account and issued
@@ -103,10 +131,13 @@ units (but before the application units matter):
 1. **Prepare the archive on the workstation.**
 
    ```sh
-   age -d -i <age-identity-file> apps-<stamp>.tar.gz.age > apps-<stamp>.tar.gz
+   age -d -i backup-identity.age apps-<stamp>.tar.gz.age > apps-<stamp>.tar.gz
    tar xzf apps-<stamp>.tar.gz
    sha256sum -c SHA256SUMS
    ```
+
+   The identity file is passphrase-protected; `age` prompts once. If the
+   workstation copy is gone, the printed recovery sheet is the input.
 
    The manifest uses relative names, so verification works in the extraction
    directory on any machine (TD-17 is fixed). If any checksum fails, stop: do not
@@ -155,7 +186,7 @@ units (but before the application units matter):
    ```
 
    The deploy re-provisions the application role passwords from the vault and
-   runs the migrate unit, so confirm Flyway reports the expected head (V009).
+   runs the migrate unit, so confirm Flyway reports the expected head (V012).
 
 6. **Verify** with the post-deploy checklist in
    [deployment](deployment.md#verify-after-deploying): every unit, each site,
@@ -201,7 +232,7 @@ until the new cluster is accepted.
    traffic returns.
 6. **Reconcile credentials:** run the deploy role provisioning from the vault so
    the application roles have the current passwords, then run `apps-migrate` and
-   confirm the Flyway head is V009 (or the then-current baseline). Do not start
+   confirm the Flyway head is V012 (or the then-current baseline). Do not start
    the apps before schema and code agree.
 7. **Verify and re-enable:** start the stack, walk every site and Studio, check
    one durable write, take a fresh backup, pull it, and re-enable

@@ -53,8 +53,9 @@ rollback candidates; the last few tags stay in ghcr.
 2. **The migration is compatible with the previous application tag.** Rollback
    deploys the previous tag; it never runs a down-migration. A destructive
    schema change must follow expand → backfill → verify → contract across
-   releases. The current pre-launch baseline head is V009 (V007 Jublawoma,
-   V008 Uncle-T, V009 Zelglihof).
+   releases. The current pre-launch baseline head is V012 (V007 Jublawoma,
+   V008 Uncle-T and V009 Zelglihof, then V010 audit, V011 analytics and V012
+   monitoring role).
 3. **Secrets are in the vault.** A new environment variable needs a vault key and
    the per-service template before the deploy that reads it. Production roles are
    provisioned from the vault after migrate; `STUDIO_SECURE_COOKIES=true` is in

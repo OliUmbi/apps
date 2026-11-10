@@ -31,6 +31,10 @@ questions are in [decisions](../reference/decisions.md).
 - [ ] [verify] Confirm the backup timer and the workstation pull work on the
   rebuilt server, and complete a restore on the dedicated machine
   ([backup and restore](../operations/backup-restore.md)).
+- [ ] [owner] Generate the backup recovery identity, keep the passphrase-wrapped
+  key in the password manager and print the recovery sheet; restore from the
+  printed sheet in the drill
+  ([key handling](../operations/backup-restore.md#key-handling-once-then-treat-it-as-done)).
 - [ ] Close every P1 item in [technical debt](tech-debt.md) - currently TD-14
   only - or record the owner's explicit acceptance.
 - [ ] [verify] Check site permissions and unpublished content with real roles.
@@ -136,7 +140,8 @@ Deployment shape: ghcr images pinned by tag, systemd units from
 
 - [ ] [owner] Cutover from `legacy/`: freeze writes, final `pg_dump` (Postgres
   17), restore into Postgres 18, flip routing and explicitly enable dyndns.
-  Migrations end at V009 (V007 Jublawoma, V008 Uncle-T, V009 Zelglihof); the
+  Migrations end at V012 (V007 Jublawoma, V008 Uncle-T, V009 Zelglihof, then
+  V010 audit, V011 analytics and V012 monitoring role); the
   baseline freezes at the first accepted import. Delete the retired `api.*` DNS
   records. Follow [migration](migration.md#cutover-playbook).
 - [ ] [verify] Check whether 5432/8080/8000 on the current server are reachable

@@ -125,8 +125,9 @@ Adopted to move the server off Docker Engine ([deployment plan](../history/deplo
   legacy rotation task remains; production still uses only unique vault secrets.
 - **D17 — The pre-launch Flyway baseline stays consolidated.** Owning migration
   files are edited in place until the first accepted production import, and local
-  volumes may be rebuilt from zero. The current head is V009: V007 is Jublawoma,
-  V008 Uncle-T and V009 Zelglihof; the old empty Oliumbi placeholder migration is
+  volumes may be rebuilt from zero. The current head is V012: V007 is Jublawoma,
+  V008 Uncle-T and V009 Zelglihof, followed by V010 audit, V011 analytics and
+  V012 monitoring role; the old empty Oliumbi placeholder migration is
   removed and the Oliumbi schema/role stays reserved in V001. Submission
   idempotency lives in V007–V009 with the tables it protects. Once live data
   exists, new changes are append-only expand/contract migrations.
@@ -231,6 +232,12 @@ and set the recovery and cutover boundaries.
   60 s stop timeout. A crash after SMTP accepted a message can still duplicate
   it; that is accepted, and there is no manual retry endpoint. A failed campaign
   email remains visible in Studio but is not resent without a new campaign.
+- **D31 — The backup key survives the workstation.** The server holds only the
+  public `age` recipient. The private identity is passphrase-wrapped, kept in
+  the password manager and printed with its passphrase and the restore commands
+  on one recovery sheet. A lost workstation is recoverable from the sheet; a
+  lost sheet means a new key and a fresh archive. The drill restores from the
+  printed copy, not the password manager.
 
 ### O-006 threat model (accepted 2026-11)
 

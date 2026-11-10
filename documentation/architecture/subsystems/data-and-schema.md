@@ -38,6 +38,9 @@ uses their HTTP contracts. A site never reads another site's schema.
 | `V007__jublawoma.sql` | club events, stories, members, promotions, donations and submission idempotency |
 | `V008__unclet.sql` | showcases, reviews, inquiries and submission idempotency |
 | `V009__zelglihof.sql` | articles, products, reservations, inquiries, newsletter and submission idempotency |
+| `V010__audit.sql` | append-only Studio audit events |
+| `V011__analytics.sql` | anonymous daily page-view counters |
+| `V012__monitoring_role.sql` | read-only `monitoring` role for postgres_exporter |
 
 The old empty Oliumbi migration is gone. The `oliumbi` schema and role remain
 reserved in V001, but no tables are created and production leaves the role

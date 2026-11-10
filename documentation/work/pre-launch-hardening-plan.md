@@ -40,7 +40,7 @@ evidence exists and the registers are updated.
 | PH-5 | done | 12-month delivery history, 30-day inbox rows, 18-month audit, 25-month analytics; flock, success metric and `HousekeepStale`. Decision D27, debt TD-22. |
 | PH-6 | done | `analytics.view_daily`, route-id beacon on Unclet and Zelglihof, per-site Studio panel, no cookies/identifiers/referrer; privacy text updated. Decision D25. |
 | PH-7 | in progress | Micrometer on the three services, queue gauges (counts + oldest age), Caddy edge metrics, postgres_exporter with the `monitoring` role, coverage rules for service/pool/queue/connections/probe absence/TLS, `Permissions-Policy`, a 5xx body, and the messaging batch/lease/shutdown fix. Prometheus config and 18 rules validate with `promtool`; Caddy validate runs in the image build. |
-| PH-8 | owner | Passphrase-wrapped age identity, printed recovery sheet, restore drill using the paper copy. |
+| PH-8 | done (owner prints the sheet) | Passphrase-wrapped age identity, printed recovery sheet, and the restore commands updated to the wrapped identity. The drill itself remains owner-executed. |
 | PH-9 | next | Paraglide `urlPatterns`, internal links and sitemap through the localized helper. |
 | PH-10 | open | Dynamic sitemap, canonical, JSON-LD, legacy redirects. |
 | PH-11 | open | Oliumbi robots/sitemap/404/error, skip links, focus and reduced motion. |
