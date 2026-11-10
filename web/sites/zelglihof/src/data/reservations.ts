@@ -13,6 +13,6 @@ export const createReservation = createServerFn({ method: "POST" })
 function reserveProduct(input: ReservationInput) {
 	return createReservationService(
 		database,
-		process.env.ZELGLIHOF_REQUESTS_EMAIL ?? "hof@zelglihof.ch",
+		process.env.ZELGLIHOF_REQUESTS_EMAIL ?? "hof@zelglihof-maegenwil.ch",
 	).reserve(input);
 }

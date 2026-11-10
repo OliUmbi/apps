@@ -6,13 +6,16 @@ import {
 	productVariantInputFromRecord,
 	productVariantInputSchema,
 } from "@oliumbi/zelglihof-data/content/product-variant";
+import { formatTimestamp } from "../../../model/dates";
 import {
+	archiveProductVariant,
 	createProductVariant,
 	getProductVariant,
 	listProductVariants,
 	updateProductVariant,
 } from "../../../server/content/zelglihof/product-variant.functions";
 import { TextField } from "../../ui/text-field";
+import { ArchiveAction } from "../archive-action";
 import type { CollectionProps } from "../collection";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
@@ -69,7 +72,24 @@ function productVariantCollection(
 				heading: m.quantity(),
 				render: (record) => record.quantity,
 			},
+			{
+				id: "archivedAt",
+				heading: m.studio_archived(),
+				render: (record) => formatTimestamp(record.archivedAt),
+			},
 		],
+		renderActions: (record) => (
+			<ArchiveAction
+				collection="zelglihof.product_variant"
+				archivedAt={record.archivedAt}
+				archivedBy={record.archivedBy}
+				onArchive={() =>
+					archiveProductVariant({
+						data: { key: { id: record.id }, updatedAt: record.updatedAt },
+					})
+				}
+			/>
+		),
 	};
 }
 

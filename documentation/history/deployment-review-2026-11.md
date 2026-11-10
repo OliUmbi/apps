@@ -396,3 +396,34 @@ The P1 items are tracked in
 Lasting structural debt is in
 [technical debt](../work/tech-debt.md) under the `TD-*` entries referenced
 above. This review is evidence; the registers are the live checklist.
+
+## Disposition (2026-11)
+
+The code pass is complete; "real-host verify" means the implementation exists
+but the deployed behaviour has not been proven on the server.
+
+| ID | Status |
+| --- | --- |
+| DR-01 | fixed in code (executable wrapper bit) |
+| DR-02 | fixed in code (CI counts unit files only) |
+| DR-03 | fixed in code (assets image builds with the existing `users` group) |
+| DR-04 | fixed in code (roles provisioned from the vault after migrate, with per-role login check); real-host verify |
+| DR-05 | fixed in code (`/apps` traversable, configs readable, alertmanager `root:65534 0640`); real-host verify |
+| DR-06 | fixed in code (`image_tag` required, `latest` rejected) |
+| DR-07 | fixed in code (`studio.*`/`admin.*` records listed); create records and verify DNS on the host |
+| DR-08 | fixed in code (outer archive materialized and verified, atomic rename, no metric on failure); fault-inject in the restore drill |
+| DR-09 | fixed in code (no volume prune; named monitoring volumes preserved) |
+| DR-10 | fixed in code (separate app/monitoring handlers); real-host verify a monitoring restart |
+| DR-11 | fixed in code (credential-free `DATABASE_URL`, separate passwords, `no_log`) |
+| DR-12 | fixed in code (51 MB Studio body, 10 MB public forms) |
+| DR-13 | fixed in code (no-push image build job in CI); first CI run still to observe |
+| DR-14 | fixed in code (digests, action SHAs, pinned Caddy plugin and `ansible-core`) |
+| DR-15 | fixed in code (`sudo` installed with the base packages) |
+| DR-16 | fixed in code (WireGuard ordering on monitoring units); verify on reboot |
+| DR-17 | fixed in code (timers templated from the schedule variables) |
+| DR-18 | fixed in code (internal Caddy TLS probes with per-site SNI/Host); verify series on the host |
+| DR-19 | fixed in code (sshd drop-in removed when `restrict_ssh` is false); verify both directions |
+| DR-20 | fixed in code (dashboards documented as manual, volume comment corrected) |
+
+Live tracking and the remaining real-host checks are in
+[open work](../work/open-work.md#build-and-deployment-review-2026-11).

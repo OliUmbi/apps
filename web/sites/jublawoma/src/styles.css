@@ -66,7 +66,7 @@ img {
  *   `.stories-page.compact`, `.donation-item.is-selected`, `img.photo`) stay
  *   with them and preserve the unlayered precedence over utilities.
  * - `.brand`, `.site-nav`, `.page-hero`, `.stories-page`, `.split-body`,
- *   `.contact-card`, `.event-list`, `.steps`, `.status-page`, `.footer-grid`,
+ *   `.contact-card`, `.event-list`, `.status-page`, `.footer-grid`,
  *   `.story-art`, `.story-grid`, `.content-image-fallback`,
  *   `.story-detail-header`, `.story-cover`, `.media-gallery`, `.honest-empty`,
  *   `.promotion-body`, `.donation-focus`, `.donation-meta`,
@@ -287,37 +287,6 @@ img {
 	font-size: 1.05rem;
 	line-height: 1.75;
 }
-.steps {
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 1px;
-	margin-bottom: 7rem;
-	border: 1px solid var(--color-line);
-	background: var(--color-line);
-}
-.steps article {
-	min-height: 290px;
-	padding: 2rem;
-	background: white;
-}
-.steps span {
-	display: grid;
-	width: 42px;
-	height: 42px;
-	place-items: center;
-	border-radius: 50%;
-	color: white;
-	background: var(--color-moss);
-	font-weight: 900;
-}
-.steps h2 {
-	margin-top: 4rem;
-	font-size: 2rem;
-}
-.steps p {
-	color: var(--color-bark-soft);
-	line-height: 1.65;
-}
 .contact-card {
 	display: grid;
 	grid-template-columns: 0.7fr 1.3fr;
@@ -448,9 +417,6 @@ img {
 	.split-body,
 	.contact-card,
 	.stories-page {
-		grid-template-columns: 1fr;
-	}
-	.steps {
 		grid-template-columns: 1fr;
 	}
 	.page-hero {

@@ -1,0 +1,23 @@
+# Oliumbi placeholder site (Nitro, :8004). The public site is static and has
+# no database or service dependencies; Caddy routes oliumbi.ch here.
+[Unit]
+Description=Oliumbi site
+
+[Container]
+Image=ghcr.io/oliumbi/apps-oliumbi:{{ image_tag }}
+ContainerName=oliumbi
+Network=net-apps.network
+HealthCmd=wget -q --spider http://127.0.0.1:8004/
+HealthInterval=15s
+HealthTimeout=5s
+HealthRetries=10
+HealthStartPeriod=30s
+Pull=missing
+LogDriver=journald
+
+[Service]
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

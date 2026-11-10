@@ -1,17 +1,21 @@
 name: ci
 
 # Runs the verification commands from documentation/development/verification.md:
-# web `pnpm check` / `pnpm typecheck` / `pnpm test` / `pnpm build` and Java
-# `services/mvnw -f services/pom.xml test`, on the toolchain majors documented in
-# the root README (Node 24, pnpm 11 via the web/package.json packageManager pin,
-# JDK 25, Maven 3.9.12 via the services/.mvn wrapper pin). `pnpm typecheck`
-# runs `pnpm generate` first (single owner of the Paraglide message output), so
-# a clean checkout type-checks without a build. The deployment job checks what
-# the server actually runs -- the quadlet units must generate and the ansible
-# playbooks must parse; the dev compose rig is a workstation tool and CI does
-# not depend on it. publish.yml calls this workflow and only builds and pushes
-# images when it is green, so tag pushes skip the standalone trigger below and
-# are verified through that call instead.
+# web `pnpm check` / `pnpm typecheck` / `pnpm test` / `pnpm build`, Java
+# `services/mvnw -f services/pom.xml test`, and a no-push build of every image
+# with the same matrix as publish.yml (so Dockerfile/base-image breakage
+# surfaces on pull requests, DR-13).
+#
+# The toolchain majors stay as documented in the root README (Node 24, pnpm 11
+# via web/package.json, JDK 25, Maven 3.9.12 via the services wrapper). The
+# deployment job checks what the server actually runs -- the quadlet units must
+# generate and the ansible playbooks must parse; the dev compose rig is a
+# workstation tool and CI does not depend on it. publish.yml calls this workflow
+# and only builds and pushes images when it is green, so tag pushes skip the
+# standalone trigger below and are verified through that call instead.
+#
+# Inputs are pinned: actions use commit SHAs, CI tool images use tag@digest,
+# and ansible-core is an exact version (DR-14). Bump the tag and digest together.
 
 on:
   push:
@@ -41,7 +45,8 @@ jobs:
       STUDIO_TEST_ADMIN_URL: postgres://postgres:ci-postgres@127.0.0.1:5432/apps
     services:
       postgres:
-        image: postgres:18-alpine
+        # postgres:18-alpine@sha256:... -- bump tag and digest together (DR-14).
+        image: postgres:18-alpine@sha256:123b17998ccaf47e53b502e8c6a1e79afd8f579c6f3eec83c563da026f957395
         env:
           POSTGRES_DB: apps
           POSTGRES_USER: postgres
@@ -55,13 +60,13 @@ jobs:
           --health-retries 12
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
         with:
           package_json_file: web/package.json
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 24
           cache: pnpm
@@ -71,12 +76,13 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       # Apply database/migrations/ in order to the test database -- the same
-      # Flyway major that production's apps-migrate image runs.
+      # Flyway major that production's apps-migrate image runs. The image is
+      # pinned by tag@digest (DR-14).
       - name: migrate the test database
         run: >
           docker run --rm --network host
           -v "$GITHUB_WORKSPACE/database/migrations:/flyway/sql:ro"
-          flyway/flyway:13.4.0-alpine
+          flyway/flyway:13.4.0-alpine@sha256:66c0278f4398dd46b84d4108919a015b6ca03657a3d44ff2b349ad0602ace956
           -url=jdbc:postgresql://127.0.0.1:5432/apps
           -user=postgres
           -password=ci-postgres
@@ -107,9 +113,9 @@ jobs:
     name: services (mvnw test)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
         with:
           distribution: temurin
           java-version: 25
@@ -120,11 +126,69 @@ jobs:
       - name: services/mvnw -f services/pom.xml test
         run: services/mvnw -B -ntp -f services/pom.xml test
 
+  # Build only, never push: this is the PR-time guard for Dockerfile, base-image
+  # and Caddy-plugin breakage (DR-13). Same matrix as publish.yml, including the
+  # static Oliumbi placeholder. gha cache keeps the repeat cost low.
+  images:
+    name: images (build, no push)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: apps-identity
+            context: .
+            dockerfile: ./services/identity/Dockerfile
+          - image: apps-messaging
+            context: .
+            dockerfile: ./services/messaging/Dockerfile
+          - image: apps-assets
+            context: .
+            dockerfile: ./services/assets/Dockerfile
+          - image: apps-studio
+            context: .
+            dockerfile: ./web/sites/studio/Dockerfile
+          - image: apps-jublawoma
+            context: .
+            dockerfile: ./web/sites/jublawoma/Dockerfile
+          - image: apps-unclet
+            context: .
+            dockerfile: ./web/sites/unclet/Dockerfile
+          - image: apps-zelglihof
+            context: .
+            dockerfile: ./web/sites/zelglihof/Dockerfile
+          - image: apps-oliumbi
+            context: .
+            dockerfile: ./web/sites/oliumbi/Dockerfile
+          - image: apps-migrate
+            context: .
+            dockerfile: ./database/Dockerfile
+          - image: apps-caddy
+            context: .
+            dockerfile: ./infrastructure/caddy/Dockerfile
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: set up buildx
+        uses: docker/setup-buildx-action@f7ce87c1d6bead3e36075b2ce75da1f6cc28aaca # v3.9.0
+
+      - name: build (no push)
+        uses: docker/build-push-action@4f58ea79222b3b9dc2c8bbdd6debcef730109a75 # v6.9.0
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: false
+          tags: ghcr.io/oliumbi/${{ matrix.image }}:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
   deployment:
     name: deployment (units + ansible)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       # The quadlet generator is the parser that consumes the units on the
       # server: it errors on malformed files and missing required keys, and
@@ -132,17 +196,18 @@ jobs:
       # dropped by podman, so key typos surface at server verification, not
       # here.) The jinja placeholders are rendered first, the same way the
       # ansible app role does; the generator runs in the podman image so CI
-      # uses the podman 5.x generation the server requires.
+      # uses the podman 5.x generation the server requires. The image is
+      # pinned by tag@digest (DR-14).
       - name: units generate (quadlet)
         run: |
-          docker run --rm -v "$PWD/infrastructure/units:/units:ro" quay.io/podman/stable:v5.8.9 sh -c '
+          docker run --rm -v "$PWD/infrastructure/units:/units:ro" quay.io/podman/stable:v5.8.9@sha256:f7a17ef911a2b9b866ada8a9426a07e29a6e4f8109ef8c0e0b7010c2541b4e49 sh -c '
             set -eu
             mkdir -p /out
             cp -r /units /tmp/units
             sed -i "s/{{ image_tag }}/ci/g" /tmp/units/*
             sed -i "s/{{ monitoring_bind }}/127.0.0.1/g" /tmp/units/*
             QUADLET_UNIT_DIRS=/tmp/units /usr/lib/systemd/system-generators/podman-system-generator /out /out /out
-            expected=$(find /tmp/units -maxdepth 1 -type f \( -name '*.container' -o -name '*.network' -o -name '*.volume' \) | wc -l)
+            expected=$(find /tmp/units -maxdepth 1 -type f \( -name "*.container" -o -name "*.network" -o -name "*.volume" \) | wc -l)
             generated=$(ls /out | grep -c "\.service$")
             echo "generated $generated of $expected unit files"
             test "$generated" -eq "$expected"
@@ -150,11 +215,11 @@ jobs:
 
       - name: ansible playbooks syntax
         run: |
-          docker run --rm -v "$PWD/ansible:/ansible:ro" -w /ansible python:3.13-alpine sh -c '
+          docker run --rm -v "$PWD/ansible:/ansible:ro" -w /ansible python:3.13-alpine@sha256:1e1f6334529d1fb26a2ef619d7cffb30a7c7d7cc1cc7338ebee283a58d1aeaca sh -c '
             set -eu
             export ANSIBLE_ROLES_PATH=/ansible/roles
             export ANSIBLE_INVENTORY=/ansible/inventory.yml
-            pip install -q ansible-core
+            pip install -q "ansible-core==2.19.15"
             for p in playbooks/*.yml; do
               ansible-playbook --syntax-check "$p"
             done

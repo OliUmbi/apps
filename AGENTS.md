@@ -7,11 +7,12 @@ implementation details live in the README next to the code they describe.
 
 ## Project overview
 
-OliUmbi Apps is a monorepo for four websites with distinct identities
-(jublawoma.ch, uncle-t.ch, zelglihof-maegenwil.ch, and the not-yet-built
-oliumbi.ch), Studio (the shared content and account administration app), three
-Java services (Identity, Messaging, Assets), and their shared PostgreSQL
-schema. The system in `legacy/` is being replaced
+OliUmbi Apps is a monorepo for five web applications: four public websites
+with distinct identities (jublawoma.ch, uncle-t.ch, zelglihof-maegenwil.ch, and
+oliumbi.ch - currently a static English placeholder) plus Studio (the shared
+content and account administration app), three Java services (Identity,
+Messaging, Assets), and their shared PostgreSQL schema. The system in `legacy/`
+is being replaced
 ([documentation/work/migration.md](documentation/work/migration.md)).
 
 Constraints: low traffic, one primary developer. TypeScript and TanStack Start
@@ -25,7 +26,7 @@ data integrity and security first, then recoverability, then maintainability.
 
 | Path | Contents |
 | --- | --- |
-| `web/` | pnpm workspace: four sites (`sites/{studio,jublawoma,unclet,zelglihof}`) and shared packages (`packages/`: data, contracts, ui, i18n, http-client, ...) |
+| `web/` | pnpm workspace: five sites (`sites/{studio,jublawoma,unclet,zelglihof,oliumbi}`) and shared packages (`packages/`: data, contracts, ui, i18n, http-client, ...) |
 | `services/` | Maven reactor (JDK 25): `shared`, `identity`, `messaging`, `assets` |
 | `database/` | Flyway migrations - the schema source of truth (see `database/README.md`) |
 | `infrastructure/` | systemd units (podman/Quadlet), Caddy, dev compose + `.env.dev`, monitoring |
@@ -50,9 +51,9 @@ Copy-Item infrastructure/.env.dev .env   # gitignored local values
 docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d --build
 ```
 
-Sites run at localhost:8000-8003 (studio, jublawoma, unclet, zelglihof), Java
-services at 8081-8083, dev email in Mailpit at <http://localhost:8025>. For
-frontend work, keep only infrastructure in Docker
+Sites run at localhost:8000-8004 (studio, jublawoma, unclet, zelglihof,
+oliumbi), Java services at 8081-8083, dev email in Mailpit at
+<http://localhost:8025>. For frontend work, keep only infrastructure in Docker
 (`up -d postgres flyway mailpit`) and run `pnpm dev:<site>` from `web/`;
 Studio additionally needs the identity and assets services. Never commit
 secrets and never reuse the development credentials in a deployed environment.
@@ -67,7 +68,7 @@ From `web/`:
 pnpm check       # Biome style/lint - must be exit 0
 pnpm typecheck   # runs pnpm generate first; fails on stale route trees
 pnpm test        # node:test suite (tsx)
-pnpm build       # all four sites
+pnpm build       # all five sites
 pnpm --filter studio build   # REQUIRED after any web/packages/* change
 ```
 

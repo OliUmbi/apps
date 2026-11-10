@@ -7,6 +7,7 @@ import {
 	productReservationInputSchema,
 } from "@oliumbi/zelglihof-data/content/product-reservation";
 import { reservationStatusValues } from "@oliumbi/zelglihof-data/statuses";
+import { formatTimestamp } from "../../../model/dates";
 import {
 	getProductReservation,
 	listProductReservations,
@@ -19,6 +20,7 @@ import { displayStatus } from "../display";
 import { StatusField } from "../editor-controls";
 import { PageCollection } from "../page-collection";
 import { RelatedCollection } from "../related-collection";
+import { ReservationCancel } from "./reservation-cancel";
 
 // Reservations are created by customers, so the collection is editable but
 // not creatable. The unscoped list is the routed section; the scoped list is
@@ -75,36 +77,55 @@ function productReservationCollection(
 			},
 		],
 		renderActions: (record) => (
-			<RecordFields>
-				<RecordField label={m.product()}>
-					{record.productId ?? "gelöscht"}
-				</RecordField>
-				<RecordField label={m.product_variant()}>
-					{record.productVariantId ?? "gelöscht"}
-				</RecordField>
-				<RecordField label={m.studio_field_product_name()}>
-					{record.productName}
-				</RecordField>
-				<RecordField label={m.studio_field_variant_name()}>
-					{record.variantName}
-				</RecordField>
-				<RecordField label={m.studio_field_variant_description()}>
-					{record.variantDescription ?? "—"}
-				</RecordField>
-				<RecordField label={m.studio_field_variant_quantity()}>
-					{record.variantQuantity ?? "—"}
-				</RecordField>
-				<RecordField label={m.studio_field_variant_price()}>
-					{record.variantPrice}
-				</RecordField>
-				<RecordField label={m.name()}>{record.name}</RecordField>
-				<RecordField label={m.phone()}>{record.phone}</RecordField>
-				<RecordField label={m.email()}>{record.email ?? "—"}</RecordField>
-				<RecordField label={m.quantity()}>{record.quantity}</RecordField>
-				<RecordField label={m.studio_field_note()}>
-					{record.note ?? "—"}
-				</RecordField>
-			</RecordFields>
+			<div className="grid gap-4">
+				<RecordFields>
+					<RecordField label={m.product()}>
+						{record.productId ?? "gelöscht"}
+					</RecordField>
+					<RecordField label={m.product_variant()}>
+						{record.productVariantId ?? "gelöscht"}
+					</RecordField>
+					<RecordField label={m.studio_field_product_name()}>
+						{record.productName}
+					</RecordField>
+					<RecordField label={m.studio_field_variant_name()}>
+						{record.variantName}
+					</RecordField>
+					<RecordField label={m.studio_field_variant_description()}>
+						{record.variantDescription ?? "—"}
+					</RecordField>
+					<RecordField label={m.studio_field_variant_quantity()}>
+						{record.variantQuantity ?? "—"}
+					</RecordField>
+					<RecordField label={m.studio_field_variant_price()}>
+						{record.variantPrice}
+					</RecordField>
+					<RecordField label={m.name()}>{record.name}</RecordField>
+					<RecordField label={m.phone()}>{record.phone}</RecordField>
+					<RecordField label={m.email()}>{record.email ?? "—"}</RecordField>
+					<RecordField label={m.quantity()}>{record.quantity}</RecordField>
+					<RecordField label={m.studio_field_note()}>
+						{record.note ?? "—"}
+					</RecordField>
+					{record.cancelledAt ? (
+						<>
+							<RecordField label={m.studio_field_cancelled_at()}>
+								{formatTimestamp(record.cancelledAt)}
+							</RecordField>
+							<RecordField label={m.studio_field_cancelled_by()}>
+								{record.cancelledBy ?? "—"}
+							</RecordField>
+							<RecordField label={m.studio_field_cancellation_reason()}>
+								{record.cancellationReason ?? "—"}
+							</RecordField>
+							<RecordField label={m.studio_field_stock_restored()}>
+								{record.stockRestored ? m.yes() : m.no()}
+							</RecordField>
+						</>
+					) : null}
+				</RecordFields>
+				<ReservationCancel reservation={record} />
+			</div>
 		),
 	};
 }

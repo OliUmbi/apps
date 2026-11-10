@@ -17,5 +17,7 @@ route:
 receivers:
   - name: default
     webhook_configs:
-      - url: __NTFY_WEBHOOK_URL__
+      # Quoted so a token containing YAML-special characters (#, :) cannot
+      # change how the receiver URL is parsed.
+      - url: "__NTFY_WEBHOOK_URL__"
         send_resolved: true

@@ -1,6 +1,6 @@
 import { guardRepository } from "@oliumbi/contracts";
 import type { Transaction } from "@oliumbi/database";
-import { and, eq, gt } from "drizzle-orm";
+import { and, eq, gt, sql } from "drizzle-orm";
 import type { CampaignDispatch, CampaignRecipient } from "./campaign.types";
 import { campaign, subscriber } from "./schema";
 
@@ -21,6 +21,15 @@ export function createCampaignDispatchRepository(transaction: Transaction) {
 				.where(eq(campaign.id, id))
 				.for("update");
 			return record;
+		},
+		// The send bound needs the real active-audience size before a single
+		// message is queued; the count runs inside the campaign's transaction.
+		async countRecipients(): Promise<number> {
+			const [row] = await transaction
+				.select({ count: sql<number>`count(*)::int` })
+				.from(subscriber)
+				.where(eq(subscriber.status, "active"));
+			return row?.count ?? 0;
 		},
 		recipients(
 			afterId: string | null,

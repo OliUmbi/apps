@@ -4,17 +4,21 @@
 # per domain. Nothing depends on port 80 during issuance and new subdomains
 # are covered automatically.
 #
+# Per-client-IP rate limiting (public traffic and login) and a baseline
+# Content-Security-Policy are applied from the shared snippets below; the
+# custom image in this directory carries the caddy-ratelimit plugin.
+#
 # This file is baked into ghcr.io/oliumbi/apps-caddy (infrastructure/caddy),
 # so config changes ship as a new image tag like everything else.
-
 {
 	email {$ACME_EMAIL}
 	acme_dns infomaniak {env.INFOMANIAK_API_TOKEN}
 }
 
 # Shared behaviour for all sites: compression, the legacy security headers
-# (HSTS includeSubDomains is already in the wild, keep it) and a 10M body
-# limit (legacy nginx: client_max_body_size 10M).
+# (HSTS includeSubDomains is already in the wild, keep it), a baseline CSP and
+# caching for static and hashed build files. Body limits live in their own
+# snippets because the Studio host needs a larger one.
 (common) {
 	encode zstd gzip
 
@@ -23,8 +27,16 @@
 		X-Content-Type-Options "nosniff"
 		X-Frame-Options "DENY"
 		Referrer-Policy "strict-origin-when-cross-origin"
+		Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: blob:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests"
 		defer
 	}
+
+	# Vite build outputs carry a content hash in the file name, so a given
+	# name never changes and can be cached for a year. This rule must come
+	# before the fallback below: that one uses ?Cache-Control and therefore
+	# only fills in responses that do not already have the header.
+	@hashedAssets path_regexp "^/assets/.+-[A-Za-z0-9_-]{6,}[.](js|css|woff2?)$"
+	header @hashedAssets Cache-Control "public, max-age=31536000, immutable"
 
 	# Static files in public/ (pdfs, logos, fonts) are not content hashed and
 	# get replaced in place, so no long immutable caching -- only a default
@@ -32,9 +44,45 @@
 	# /api/assets/* carry their own Cache-Control + ETag and must win.
 	@static path /assets/* /images/* /fonts/*
 	header @static ?Cache-Control "public, max-age=3600"
+}
 
+# Per-client-IP rate limits. The public zone approximates 10 requests per
+# second sustained with a burst of 20 (20 events per 2s window); IPv6 clients
+# share a bucket per /64 so cycling addresses does not bypass it. The login
+# zone is stricter and must win on its path, so the public zone excludes it.
+(ratelimit) {
+	rate_limit {
+		zone public {
+			match {
+				not path /api/session/login
+			}
+			key {remote_host}
+			window 2s
+			events 20
+			ipv4_prefix 0
+			ipv6_prefix 64
+		}
+		zone login {
+			match {
+				path /api/session/login
+			}
+			key {remote_host}
+			window 1m
+			events 10
+		}
+	}
+}
+
+# Request body limits. Public sites keep the legacy nginx limit of 10M;
+# Studio accepts its upload maxima (20 MiB images plus 50 MiB PDFs).
+(public-body) {
 	request_body {
 		max_size 10MB
+	}
+}
+(studio-body) {
+	request_body {
+		max_size 51MB
 	}
 }
 
@@ -55,6 +103,8 @@ jublawoma.ch, *.jublawoma.ch {
 
 	handle {
 		import common
+		import ratelimit
+		import public-body
 		reverse_proxy jublawoma:8001
 	}
 }
@@ -75,6 +125,8 @@ uncle-t.ch, *.uncle-t.ch {
 
 	handle {
 		import common
+		import ratelimit
+		import public-body
 		reverse_proxy unclet:8002
 	}
 }
@@ -95,6 +147,8 @@ zelglihof-maegenwil.ch, *.zelglihof-maegenwil.ch {
 
 	handle {
 		import common
+		import ratelimit
+		import public-body
 		reverse_proxy zelglihof:8003
 	}
 }
@@ -106,6 +160,8 @@ oliumbi.ch, *.oliumbi.ch {
 	@studio host studio.oliumbi.ch
 	handle @studio {
 		import common
+		import ratelimit
+		import studio-body
 		reverse_proxy studio:8000
 	}
 
@@ -120,9 +176,9 @@ oliumbi.ch, *.oliumbi.ch {
 	}
 
 	handle {
-		# The new stack has no oliumbi site container yet. Placeholder so the
-		# apex is not empty at cutover; the apex decision is tracked in
-		# documentation/work/open-work.md.
-		redir https://studio.oliumbi.ch{uri} permanent
+		import common
+		import ratelimit
+		import public-body
+		reverse_proxy oliumbi:8004
 	}
 }

@@ -1,14 +1,27 @@
 ---
+# image_tag is required so every deploy is reproducible and a rollback has a
+# target (DR-06). `latest` is rejected: it is mutable and defeats both.
+- name: image tag is pinned
+  ansible.builtin.assert:
+    that:
+      - image_tag is defined
+      - image_tag is defined and image_tag | string | length > 0
+      - image_tag is defined and image_tag != 'latest'
+    fail_msg: "image_tag must be an explicit release tag (e.g. -e image_tag=2026.10.24); 'latest' is not allowed."
+    quiet: true
+
 - name: project directory
   ansible.builtin.file:
     path: "{{ project_dir }}"
     state: directory
-    mode: "0750"
+    mode: "0755"
 
-# State the backup covers lives in plain directories so backup.sh can dump and
-# tar it without container tricks (deployment-plan D12). Ownership must match
-# the container users: postgres 70:70 (its entrypoint also chowns on first
-# start), media 100:100 (uid pinned in the assets image), caddy runs as root.
+# Durable state lives in plain host directories so backup.sh can dump and tar
+# what it covers without container tricks (deployment-plan D12). Caddy's ACME
+# state sits alongside it but is deliberately re-issued instead of backed up
+# (TD-16). Ownership must match the container users: postgres 70:70 (its
+# entrypoint also chowns on first start), media 100:100 (uid pinned in the
+# assets image), caddy runs as root.
 - name: state directories
   ansible.builtin.file:
     path: "{{ item.path }}"
@@ -22,10 +35,44 @@
     - { path: "{{ state_dir }}/caddy-data", owner: root, group: root }
     - { path: "{{ state_dir }}/caddy-config", owner: root, group: root }
 
-- name: monitoring configuration
+# Monitoring containers run as unprivileged users (prometheus/alertmanager/
+# node-exporter are nobody=65534, grafana is 472), so the files must be
+# world-readable and every directory traversable (DR-05). alertmanager.yml is
+# the exception handled below because it carries the webhook secret.
+- name: monitoring configuration directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ project_dir }}/monitoring"
+    - "{{ project_dir }}/monitoring/grafana"
+    - "{{ project_dir }}/monitoring/grafana/provisioning"
+    - "{{ project_dir }}/monitoring/grafana/provisioning/datasources"
+  notify: restart monitoring
+
+- name: monitoring configuration files
   ansible.builtin.copy:
-    src: "{{ repo_root }}/infrastructure/monitoring/"
-    dest: "{{ project_dir }}/monitoring/"
+    src: "{{ repo_root }}/infrastructure/monitoring/{{ item }}"
+    dest: "{{ project_dir }}/monitoring/{{ item }}"
+    mode: "0644"
+  loop:
+    - prometheus.yml
+    - alerts.yml
+    - blackbox.yml
+    - grafana/provisioning/datasources/prometheus.yml
+  notify: restart monitoring
+
+# alertmanager runs as nobody (65534) and must read the file, but the webhook
+# URL is a capability: root:65534 0640 keeps it away from other users (DR-05).
+# The placeholder is replaced in place below, so the secret never lands in the
+# repository or the unit.
+- name: alertmanager configuration
+  ansible.builtin.copy:
+    src: "{{ repo_root }}/infrastructure/monitoring/alertmanager.yml"
+    dest: "{{ project_dir }}/monitoring/alertmanager.yml"
+    owner: root
+    group: "65534"
     mode: "0640"
   notify: restart monitoring
 
@@ -34,6 +81,17 @@
     path: "{{ project_dir }}/monitoring/alertmanager.yml"
     regexp: __NTFY_WEBHOOK_URL__
     replace: "{{ vault_ntfy_webhook_url }}"
+  no_log: true
+  notify: restart monitoring
+
+# `replace` writes in place; re-assert the narrow mode/ownership so the secret
+# stays root:65534 0640 even if the write path changed it (DR-05).
+- name: alertmanager configuration permissions
+  ansible.builtin.file:
+    path: "{{ project_dir }}/monitoring/alertmanager.yml"
+    owner: root
+    group: "65534"
+    mode: "0640"
   notify: restart monitoring
 
 - name: quadlet unit directory
@@ -44,8 +102,10 @@
 
 # The units are the production topology (infrastructure/units). They are jinja
 # templates because the image tag and the monitoring bind address are
-# per-deploy values; everything else in them is static config.
-- name: unit files
+# per-deploy values; everything else in them is static config. App/edge units
+# and monitoring units use separate handlers so a monitoring change actually
+# restarts the affected container (DR-10).
+- name: application unit files
   ansible.builtin.template:
     src: "{{ repo_root }}/infrastructure/units/{{ item }}"
     dest: "/etc/containers/systemd/{{ item }}"
@@ -63,17 +123,26 @@
     - apps-jublawoma.container
     - apps-unclet.container
     - apps-zelglihof.container
+    - apps-oliumbi.container
     - apps-studio.container
     - apps-caddy.container
+  notify: restart stack
+
+- name: monitoring unit files
+  ansible.builtin.template:
+    src: "{{ repo_root }}/infrastructure/units/{{ item }}"
+    dest: "/etc/containers/systemd/{{ item }}"
+    mode: "0644"
+  loop:
     - apps-prometheus.container
     - apps-alertmanager.container
     - apps-node-exporter.container
     - apps-blackbox.container
     - apps-grafana.container
-  notify: restart stack
+  notify: restart monitoring
 
 # One environment file per unit (0600 root) -- secrets never enter the units.
-- name: environment files
+- name: application environment files
   ansible.builtin.template:
     src: "env-{{ item }}.j2"
     dest: "/etc/default/apps-{{ item }}"
@@ -89,8 +158,18 @@
     - zelglihof
     - studio
     - caddy
-    - grafana
+  no_log: true
   notify: restart stack
+
+- name: monitoring environment files
+  ansible.builtin.template:
+    src: "env-{{ item }}.j2"
+    dest: "/etc/default/apps-{{ item }}"
+    mode: "0600"
+  loop:
+    - grafana
+  no_log: true
+  notify: restart monitoring
 
 - name: systemd reload (generate the units)
   ansible.builtin.systemd:
@@ -108,19 +187,89 @@
   loop: "{{ stack_images.stdout_lines }}"
   changed_when: true
 
-- name: units started
+# Postgres and migrations must be done before roles are provisioned and before
+# any application service starts.
+- name: database started
+  ansible.builtin.systemd:
+    name: apps-postgres.service
+    state: started
+
+# Force the one-shot migrator with the deployed image tag on every run, not
+# only when the unit file changed: a new tag can carry new migrations, and the
+# roles below must be provisioned against the new schema before apps start.
+- name: migrations run with the deployed tag
+  ansible.builtin.systemd:
+    name: apps-migrate.service
+    state: restarted
+
+# Migrations create the application roles NOLOGIN without passwords (DR-04).
+# Provision login from the vault now, before the app units start, so a fresh
+# host becomes healthy on the first deploy. The unused oliumbi role stays
+# NOLOGIN: the Oliumbi site is static and needs no database.
+- name: provision application database roles
+  ansible.builtin.command:
+    argv:
+      - podman
+      - exec
+      - -i
+      - postgres
+      - psql
+      - -v
+      - ON_ERROR_STOP=1
+      - -U
+      - "{{ vault_postgres_migrator_user }}"
+      - -d
+      - "{{ vault_postgres_db }}"
+    # The SQL is rendered from the vault; never re-expand $... in it.
+    expand_argument_vars: false
+    stdin: |
+      {% for role in app_database_roles %}
+      ALTER ROLE {{ role.user }} LOGIN PASSWORD '{{ role.password | replace("'", "''") }}';
+      {% endfor %}
+  changed_when: false
+  no_log: true
+
+# Loopback connections are trusted by the postgres image's pg_hba.conf, so a
+# localhost check would pass without the password. Connect to the container's
+# own non-loopback address to exercise the scram rule the app containers use.
+- name: application database roles can log in
+  ansible.builtin.command:
+    argv:
+      - podman
+      - exec
+      - -e
+      - "PGPASSWORD={{ item.password }}"
+      - -e
+      - "APP_DB_USER={{ item.user }}"
+      - -e
+      - "APP_DB_NAME={{ vault_postgres_db }}"
+      - postgres
+      - sh
+      - -c
+      - >-
+        psql -h "$(hostname -i | awk '{print $1}')" -U "$APP_DB_USER"
+        -d "$APP_DB_NAME" -tAc 'SELECT 1'
+    # Let the inner shell expand $APP_DB_*; do not touch the string on the
+    # controller (a password or name must never be re-expanded there).
+    expand_argument_vars: false
+  loop: "{{ app_database_roles }}"
+  loop_control:
+    label: "{{ item.user }}"
+  changed_when: false
+  no_log: true
+
+- name: application units started
   ansible.builtin.systemd:
     name: "apps-{{ item }}.service"
     state: started
   loop:
-    - postgres
-    - migrate
     - identity
     - messaging
     - assets
     - jublawoma
     - unclet
     - zelglihof
+    - oliumbi
     - studio
     - caddy
     - prometheus

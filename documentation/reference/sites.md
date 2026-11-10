@@ -12,7 +12,7 @@ changes belong in [open work](../work/open-work.md). The shared vocabulary is in
 | `zelglihof-maegenwil.ch` | farm, products, services | Primary (first vertical slice) |
 | `jublawoma.ch` | association information and member engagement | Primary |
 | `uncle-t.ch` | catering marketing and inquiries | Primary (first legacy migration) |
-| `oliumbi.ch` | personal presence and experiments | Secondary |
+| `oliumbi.ch` | personal presence and experiments; static placeholder now | Secondary |
 
 ## Shared capability map
 
@@ -91,10 +91,16 @@ Association site for members, parents and group leaders.
 
 ## Oliumbi
 
-Personal portfolio/CV for now: home/profile, projects, writing, contact,
-required legal pages. Experiments (personal tools) live behind a login and are
-explicitly out of scope for now. Legacy articles and subscribers migrate only
-with verified consent.
+The first slice is a static English placeholder: it shows the Oliumbi name, one
+line of introduction and links to GitHub and the three existing sites. It has no
+database, no data package, no i18n package and no runtime environment. It builds
+as its own deployable image on `oliumbi.ch` (port 8004), not a Studio redirect;
+launch behavior still needs verification on the real host.
+
+The full personal site comes later: portfolio/CV, projects, writing, contact and
+the required legal pages. Experiments (personal tools) live behind a login and
+stay out of scope for now. Legacy articles and subscribers migrate only with
+verified consent.
 
 ## Studio (shared administration)
 

@@ -20,7 +20,7 @@ view: what is owned, how a change moves, and which rules always hold.
 | `jublawoma` | Jublawoma | jublawoma role + studio role | jublawoma, studio |
 | `unclet` | Uncle-T | unclet role + studio role | unclet, studio |
 | `zelglihof` | Zelglihof | zelglihof role + studio role | zelglihof, studio |
-| `oliumbi` | reserved for the future site | oliumbi role + studio role | as above |
+| `oliumbi` | reserved for the future full site; `NOLOGIN` in production | - (static site; no tables) | - |
 
 Studio's role does not read identity, assets or messaging tables directly; it
 uses their HTTP contracts. A site never reads another site's schema.
@@ -35,21 +35,32 @@ uses their HTTP contracts. A site never reads another site's schema.
 | `V004__messaging.sql` | delivery state and attempt history |
 | `V005__assets.sql` | asset metadata and variants |
 | `V006__studio.sql` | Studio-owned records |
-| `V007__oliumbi.sql` | reserved Oliumbi schema |
-| `V008__jublawoma.sql` | club events, stories, members, promotions, donations and submission idempotency |
-| `V009__unclet.sql` | showcases, reviews, inquiries and submission idempotency |
-| `V010__zelglihof.sql` | articles, products, reservations, inquiries, newsletter and submission idempotency |
+| `V007__jublawoma.sql` | club events, stories, members, promotions, donations and submission idempotency |
+| `V008__unclet.sql` | showcases, reviews, inquiries and submission idempotency |
+| `V009__zelglihof.sql` | articles, products, reservations, inquiries, newsletter and submission idempotency |
+
+The old empty Oliumbi migration is gone. The `oliumbi` schema and role remain
+reserved in V001, but no tables are created and production leaves the role
+`NOLOGIN`: the first Oliumbi slice is static and needs no database.
 
 Every table ends with `created_at` and `updated_at`. Delivery records have
 independent ids; their unique `queue_id` preserves replay protection without a
 foreign key to a consumed inbox row.
 
+Lifecycle in the current schema: `zelglihof.product` and
+`zelglihof.product_variant` carry `archived_at` and `archived_by` instead of a
+delete path. `zelglihof.product_reservation` carries `cancelled_at`,
+`cancelled_by`, `cancellation_reason` and `stock_restored`; cancellation is a
+one-way transition from open work. A newsletter campaign has a 500-recipient
+bound, checked before anything is queued or the status changes.
+
 ## Migration lifecycle
 
-**Before launch (current sanction).** Migration files are edited in place and
-the local database is recreated from scratch. There is no upgrade path for an
+**Before the baseline freeze.** Migration files are edited in place and the
+local database is recreated from scratch. There is no upgrade path for an
 existing database, and no migration may contain a password literal or seed data
-that production must not have.
+that production must not have. The baseline freezes at the first accepted
+production import.
 
 **Once live data exists.** Destructive changes follow expand → backfill → verify
 → contract. Migrations run as a one-shot `apps-migrate` unit before the
@@ -62,6 +73,12 @@ another owner's table goes through that owner's contract, not a direct write.
 ## Rules that always hold
 
 - `timestamptz` in UTC; format for the browser at the edge.
+- Archive is a lifecycle column, not a status. A product, variant or other
+  managed record is retired by setting `archived_at`/`archived_by`; it is not a
+  status value and the public read hides it.
+- Cancellation is a one-way status transition with its own audit columns and,
+  where stock was reserved, exactly one stock restoration. It is never a generic
+  status edit.
 - Quantities are exact `numeric`, read and written as decimal strings; `float64`
   never touches a quantity. Arithmetic uses BigInt-scaled integers or SQL
   `numeric`/`SUM`.
@@ -77,18 +94,19 @@ another owner's table goes through that owner's contract, not a direct write.
 
 ## Roles and credentials
 
-Roles are created `NOLOGIN` without passwords. Credentials are provisioned per
-environment:
+Migrations create eight roles `NOLOGIN` without passwords. Credentials are
+provisioned per environment:
 
 - **development** - the compose stack runs migrations, then a one-shot `roles`
   service that issues `ALTER ROLE ... LOGIN PASSWORD ...` from
   `infrastructure/.env.dev`;
-- **production** - the Ansible/vault flow must provision credentials after
-  `apps-migrate` and before the services start; that step is not implemented yet
-  and blocks clean-host bootstrap (DR-04).
+- **production** - the Ansible `app` role provisions login credentials from the
+  vault after `apps-migrate` and before the application units start, then verifies
+  one connection per role. Only the seven roles that serve an application are
+  provisioned; `oliumbi` stays `NOLOGIN` because the site is static.
 
 Any credential ever committed to the repository must be rotated. See
-[open work](../../work/open-work.md) for the current provisioning checks.
+[database/README.md](../../../database/README.md) for the exact role list.
 
 ## Invariants
 
@@ -101,13 +119,13 @@ Any credential ever committed to the repository must be rotated. See
 
 ## Known gaps
 
-- Schema and migration ownership conventions are still an open decision (O-010).
-  The proposed resolution is Flyway in `database/migrations` with one schema per
-  capability; the owner has not confirmed it.
+- Schema and migration ownership follow the ratified O-010 direction: Flyway in
+  `database/migrations`, one schema per capability, edited in place until the
+  baseline freezes at the first accepted import.
 - Legacy-import validation against the new constraints is incomplete: imported
   inquiry subjects must map to `other`, and zero-quantity legacy rows are
   rejected. See [TD-14](../../work/tech-debt.md#td-14).
-- Production role provisioning must be implemented and then verified on the
-  rebuilt server (DR-04 in [open work](../../work/open-work.md)).
+- Production role provisioning is code complete but not yet verified on a clean
+  host; verify one connection per provisioned role after the first deploy.
 - A PostgreSQL major-version upgrade path is not yet documented
   ([TD-04](../../work/tech-debt.md#td-04)).

@@ -1,3 +1,8 @@
 # rendered by ansible from group_vars/vault.yml -- do not edit on the server
-DATABASE_URL=postgres://{{ vault_unclet_database_user }}:{{ vault_unclet_database_password }}@postgres:5432/{{ vault_postgres_db }}
+# Quadlet passes this file to `podman run --env-file`, which keeps values
+# literally: do not quote them (quotes would become part of the secret).
+# The database role is fixed in the app; DATABASE_URL stays free of credentials
+# and the password is supplied separately (DR-11).
+DATABASE_URL=postgresql://postgres:5432/{{ vault_postgres_db }}
+UNCLET_DATABASE_PASSWORD={{ vault_unclet_database_password }}
 UNCLET_REQUESTS_EMAIL={{ vault_unclet_requests_email }}

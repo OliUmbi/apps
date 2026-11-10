@@ -66,6 +66,8 @@ export const product = zelglihof.table("product", {
 	reservable: boolean("reservable").notNull(),
 	startsAt: isoTimestamp("starts_at"),
 	endsAt: isoTimestamp("ends_at"),
+	archivedAt: isoTimestamp("archived_at"),
+	archivedBy: text("archived_by"),
 	createdAt: isoTimestamp("created_at").notNull(),
 	updatedAt: isoTimestamp("updated_at").notNull(),
 });
@@ -78,6 +80,8 @@ export const productVariant = zelglihof.table("product_variant", {
 	imageId: uuid("image_id"),
 	price: text("price").notNull(),
 	quantity: integer("quantity"),
+	archivedAt: isoTimestamp("archived_at"),
+	archivedBy: text("archived_by"),
 	createdAt: isoTimestamp("created_at").notNull(),
 	updatedAt: isoTimestamp("updated_at").notNull(),
 });
@@ -97,7 +101,11 @@ export const productReservation = zelglihof.table("product_reservation", {
 	quantity: integer("quantity").notNull(),
 	note: text("note"),
 	status: text("status", { enum: reservationStatusValues }).notNull(),
-	// Idempotency key from the public form; unique index in V010.
+	cancelledAt: isoTimestamp("cancelled_at"),
+	cancelledBy: text("cancelled_by"),
+	cancellationReason: text("cancellation_reason"),
+	stockRestored: boolean("stock_restored").notNull().default(false),
+	// Idempotency key from the public form; unique index in V009.
 	submissionId: uuid("submission_id"),
 	createdAt: isoTimestamp("created_at").notNull(),
 	updatedAt: isoTimestamp("updated_at").notNull(),
@@ -133,7 +141,7 @@ export const inquiry = zelglihof.table("inquiry", {
 	phone: text("phone").notNull(),
 	email: text("email"),
 	message: text("message").notNull(),
-	// Idempotency key from the public form; unique index in V010.
+	// Idempotency key from the public form; unique index in V009.
 	submissionId: uuid("submission_id"),
 	createdAt: isoTimestamp("created_at").notNull(),
 	updatedAt: isoTimestamp("updated_at").notNull(),

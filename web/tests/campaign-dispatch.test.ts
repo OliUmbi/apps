@@ -3,9 +3,10 @@ import test from "node:test";
 import type { DatabasePool, Transaction } from "../packages/database/src";
 import { campaignEmail } from "../packages/zelglihof-data/src/campaign.email";
 import { createCampaignService } from "../packages/zelglihof-data/src/campaign.service";
-import type {
-	CampaignDispatch,
-	CampaignRecipient,
+import {
+	type CampaignDispatch,
+	type CampaignRecipient,
+	campaignRecipientLimit,
 } from "../packages/zelglihof-data/src/campaign.types";
 
 /*
@@ -53,7 +54,10 @@ const recipientC = {
  * recipient reads are identified by their FOR SHARE lock and answered one
  * batch per run, so the batch loop itself is observable.
  */
-function fakeDatabase(batches: Array<Array<Record<string, unknown>>>) {
+function fakeDatabase(
+	batches: Array<Array<Record<string, unknown>>>,
+	recipientCount?: number,
+) {
 	const log = { enqueued: [] as unknown[], updates: 0 };
 	let recipientRuns = 0;
 	const chain = (answer: (calls: string[], args: unknown[][]) => unknown) => {
@@ -94,8 +98,11 @@ function fakeDatabase(batches: Array<Array<Record<string, unknown>>>) {
 		return api;
 	};
 	const transaction = {
-		select: () =>
+		select: (selection?: Record<string, unknown>) =>
 			chain((calls, args) => {
+				// The send bound counts the whole active audience before batching.
+				if (selection && "count" in selection)
+					return [{ count: recipientCount ?? batches.flat().length }];
 				const terminal = calls.indexOf("for");
 				if (terminal >= 0 && args[terminal][0] === "share") {
 					recipientRuns += 1;
@@ -139,6 +146,22 @@ test("one run queues every recipient across batches exactly once", async () => {
 	);
 	// The campaign is marked queued once, after the queueing run.
 	assert.equal(run.log.updates, 1);
+});
+
+test("an over-limit send queues nothing and leaves the campaign a draft", async () => {
+	const run = fakeDatabase([[]], campaignRecipientLimit + 1);
+	const result = await createCampaignService(run.database, options).send(
+		id,
+		savedAt,
+	);
+	// A typed refusal before any queue write or status change.
+	assert.deepEqual(result, {
+		outcome: "too-large",
+		count: campaignRecipientLimit + 1,
+		limit: campaignRecipientLimit,
+	});
+	assert.deepEqual(run.log.enqueued, []);
+	assert.equal(run.log.updates, 0);
 });
 
 test("a run with no recipients still completes and marks the campaign queued", async () => {

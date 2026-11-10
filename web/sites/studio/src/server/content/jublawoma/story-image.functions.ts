@@ -13,13 +13,14 @@ import {
 	storyImageKeySchema,
 } from "@oliumbi/jublawoma-data/content/story-image";
 import { createStoryImageRepository } from "@oliumbi/jublawoma-data/content/story-image.repository";
+import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { assets } from "../../assets.server";
 import { database } from "../../database.server";
-import { createServerFn } from "@tanstack/react-start";
 import { studioAuthorization } from "../../studio-authorization";
 
-export const listStoryImages = createServerFn({ method: "GET" }).middleware([studioAuthorization("jublawoma")])
+export const listStoryImages = createServerFn({ method: "GET" })
+	.middleware([studioAuthorization("jublawoma")])
 	.validator(pageSchema.extend({ storyId: idSchema }))
 	.handler(async ({ data }) => {
 		return createStoryImageRepository(database.db).listForStory(
@@ -28,20 +29,23 @@ export const listStoryImages = createServerFn({ method: "GET" }).middleware([stu
 		);
 	});
 
-export const getStoryImage = createServerFn({ method: "GET" }).middleware([studioAuthorization("jublawoma")])
+export const getStoryImage = createServerFn({ method: "GET" })
+	.middleware([studioAuthorization("jublawoma")])
 	.validator(storyImageKeySchema)
 	.handler(async ({ data }) => {
 		return createStoryImageRepository(database.db).get(data);
 	});
 
-export const createStoryImage = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
+export const createStoryImage = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization("jublawoma")])
 	.validator(storyImageInputSchema)
 	.handler(async ({ data }) => {
 		if (data.imageId) await assets.images.get("jublawoma", data.imageId);
 		return createStoryImageRepository(database.db).create(data);
 	});
 
-export const updateStoryImage = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
+export const updateStoryImage = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization("jublawoma")])
 	.validator(
 		z.strictObject({
 			key: storyImageKeySchema,
@@ -65,7 +69,8 @@ export const updateStoryImage = createServerFn({ method: "POST" }).middleware([s
 		}
 	});
 
-export const deleteStoryImage = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
+export const deleteStoryImage = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization("jublawoma")])
 	.validator(storyImageKeySchema)
 	.handler(async ({ data }) => {
 		await createStoryImageRepository(database.db).delete(data);

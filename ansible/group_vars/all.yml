@@ -5,7 +5,7 @@
 
 # paths on the server
 project_dir: /apps
-state_dir: /var/lib/apps # durable state the backup covers (postgres, media, caddy)
+state_dir: /var/lib/apps # durable state; backup covers postgres/media, caddy re-issues (TD-16)
 textfile_dir: /var/lib/node-exporter-textfile
 
 # wireguard
@@ -17,7 +17,23 @@ wireguard_port: 51820
 restrict_ssh: false
 
 # deploy
-image_tag: "latest" # override per deploy: -e image_tag=2026.10.24
+# image_tag is required and intentionally has no default: pass the release tag
+# explicitly (`-e image_tag=2026.10.24`) to site.yml and deploy.yml. A mutable
+# "latest" default would make the deployed release and the rollback target
+# meaningless (DR-06).
+# image_tag: ""
+
+# application database roles whose login credentials are provisioned from the
+# vault after migrations (DR-04). Oliumbi is deliberately absent: the site is
+# static, so its role stays NOLOGIN.
+app_database_roles:
+  - { user: "{{ vault_identity_database_user }}", password: "{{ vault_identity_database_password }}" }
+  - { user: "{{ vault_messaging_database_user }}", password: "{{ vault_messaging_database_password }}" }
+  - { user: "{{ vault_assets_database_user }}", password: "{{ vault_assets_database_password }}" }
+  - { user: "{{ vault_studio_database_user }}", password: "{{ vault_studio_database_password }}" }
+  - { user: "{{ vault_jublawoma_database_user }}", password: "{{ vault_jublawoma_database_password }}" }
+  - { user: "{{ vault_unclet_database_user }}", password: "{{ vault_unclet_database_password }}" }
+  - { user: "{{ vault_zelglihof_database_user }}", password: "{{ vault_zelglihof_database_password }}" }
 
 # backup
 backup_dir: /var/backups/apps
@@ -33,15 +49,26 @@ monitoring_bind: "{{ wireguard_address.split('/')[0] }}"
 
 # dns: A records kept pointing at this server by the dyndns timer.
 # Create them once in the Infomaniak manager; the timer only updates them.
+# Pre-cutover the timer is installed but disabled (RV-03). The cutover run
+# explicitly enables live updates with `-e dyndns_enabled=true`.
+dyndns_enabled: false
 dyndns_records:
   - jublawoma.ch
   - www.jublawoma.ch
+  - studio.jublawoma.ch
+  - admin.jublawoma.ch
   - uncle-t.ch
   - www.uncle-t.ch
+  - studio.uncle-t.ch
+  - admin.uncle-t.ch
   - zelglihof-maegenwil.ch
   - www.zelglihof-maegenwil.ch
+  - studio.zelglihof-maegenwil.ch
+  - admin.zelglihof-maegenwil.ch
   - oliumbi.ch
   - www.oliumbi.ch
+  - studio.oliumbi.ch
+  - admin.oliumbi.ch
   - vpn.oliumbi.ch # wireguard endpoint for the laptop
 
 # repository root, for copying unit/config files to the server

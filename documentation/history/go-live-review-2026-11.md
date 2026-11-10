@@ -171,3 +171,18 @@ Use the [first go-live remediation plan](../work/go-live-remediation-plan.md).
 In particular, complete RV-03 before running `site.yml` on a parallel host, and
 use the not-yet-live replacement host as the disposable restore target after a
 meaningful import rehearsal while legacy remains live.
+
+## Disposition (2026-11)
+
+All four findings are code complete; the remaining evidence is real-host and
+owner-executed.
+
+| ID | Status |
+| --- | --- |
+| RV-01 | fixed in code (systemd collector enabled with host dbus and start-time metrics); verify both series and fire the alerts on the real host |
+| RV-02 | fixed in code (`absent()` branch, atomic textfile); test before the first backup and after an injected failure |
+| RV-03 | fixed in code (`dyndns_enabled: false`, timer installed but stopped); verify a parallel `site.yml` cannot change live DNS and enable it only at cutover |
+| RV-04 | accepted policy (first durable public write is the point of no return; export/replay or roll forward, owner sign-off and observation window); exercise it in the cutover rehearsal |
+| RV-05 | fixed earlier (maintained pages and links corrected) |
+
+Live tracking is in [open work](../work/open-work.md#first-go-live-review-2026-11).

@@ -31,8 +31,9 @@ operational work: [open work](../work/open-work.md).
 - **Pinned releases.** Images are immutable tags. Deploy and rollback are the
   same command with a different tag.
 - **Boring recovery.** State the backup covers lives in plain directories under
-  `/var/lib/apps/`: `postgres`, `media`, `caddy-data`, `caddy-config`. Backup
-  and restore are `pg_dump` and `tar`.
+  `/var/lib/apps/`: `postgres` and `media`. Backup and restore are `pg_dump` and
+  `tar`. Caddy's `caddy-data`/`caddy-config` are durable state too, but are
+  deliberately re-issued instead of backed up (D21/TD-16).
 
 ## Command reference
 
@@ -40,8 +41,9 @@ Run from `ansible/`:
 
 | Command | Does |
 | --- | --- |
-| `ansible-playbook playbooks/site.yml` | full server setup (idempotent) |
+| `ansible-playbook playbooks/site.yml -e image_tag=<tag>` | full server setup (idempotent) |
 | `ansible-playbook playbooks/deploy.yml -e image_tag=<tag>` | deploy or roll back |
+| `ansible-playbook playbooks/first-admin.yml --ask-vault-pass` | one-time first administrator |
 | `ansible-playbook playbooks/status.yml` | units, containers, disk, timers, last backup |
 | `ansible-playbook playbooks/logs.yml -e service=<name>` | read unit logs |
 | `ansible-playbook playbooks/backup.yml` | run a backup now |

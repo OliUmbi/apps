@@ -8,32 +8,36 @@ import {
 	storyKeySchema,
 } from "@oliumbi/jublawoma-data/content/story";
 import { createStoryRepository } from "@oliumbi/jublawoma-data/content/story.repository";
+import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { assets } from "../../assets.server";
 import { database } from "../../database.server";
-import { createServerFn } from "@tanstack/react-start";
 import { studioAuthorization } from "../../studio-authorization";
 
-export const listStories = createServerFn({ method: "GET" }).middleware([studioAuthorization("jublawoma")])
+export const listStories = createServerFn({ method: "GET" })
+	.middleware([studioAuthorization("jublawoma")])
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		return createStoryRepository(database.db).list(data);
 	});
 
-export const getStory = createServerFn({ method: "GET" }).middleware([studioAuthorization("jublawoma")])
+export const getStory = createServerFn({ method: "GET" })
+	.middleware([studioAuthorization("jublawoma")])
 	.validator(storyKeySchema)
 	.handler(async ({ data }) => {
 		return createStoryRepository(database.db).get(data);
 	});
 
-export const createStory = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
+export const createStory = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization("jublawoma")])
 	.validator(storyInputSchema)
 	.handler(async ({ data }) => {
 		if (data.imageId) await assets.images.get("jublawoma", data.imageId);
 		return createStoryRepository(database.db).create(data);
 	});
 
-export const updateStory = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
+export const updateStory = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization("jublawoma")])
 	.validator(
 		z.strictObject({
 			key: storyKeySchema,
@@ -57,7 +61,8 @@ export const updateStory = createServerFn({ method: "POST" }).middleware([studio
 		}
 	});
 
-export const deleteStory = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
+export const deleteStory = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization("jublawoma")])
 	.validator(storyKeySchema)
 	.handler(async ({ data }) => {
 		await createStoryRepository(database.db).delete(data);

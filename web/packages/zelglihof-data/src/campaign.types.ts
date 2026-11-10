@@ -17,7 +17,7 @@ export interface CampaignRecipient {
 export interface CampaignOptions {
 	/** sending identity for subscriber mail (newsletter@) */
 	sender: string;
-	/** human inbox replies go to (requests@) */
+	/** human inbox replies go to (requests inbox, hof@) */
 	replyTo: string;
 	publicUrl: string;
 }
@@ -28,7 +28,12 @@ export interface CampaignOptions {
 // version and would send a body nobody confirmed: the run is refused as the
 // typed stale-draft outcome. Deliberately a result, not an error: the caller
 // has a clear next step (reload/re-save) and nothing was queued.
-export type CampaignSendOutcome = "queued" | "stale-draft";
+export type CampaignSendOutcome = "queued" | "stale-draft" | "too-large";
+
+// A campaign send is bounded: past this many active recipients nothing is
+// queued and the campaign stays a draft, so one run cannot hold a transaction
+// open across an unbounded audience.
+export const campaignRecipientLimit = 500;
 
 // The plan's queue flag is a literal per outcome (a refusal cannot be planned
 // as a queue run, and callers narrow on the flag): whether to queue recipients
@@ -41,4 +46,5 @@ export type CampaignSendPlan =
 // is the saved row's updatedAt timestamp of the body that was queued.
 export type CampaignSendResult =
 	| { outcome: "queued"; count: number; savedAt: string }
-	| { outcome: "stale-draft" };
+	| { outcome: "stale-draft" }
+	| { outcome: "too-large"; count: number; limit: number };

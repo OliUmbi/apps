@@ -7,7 +7,9 @@ set -eu
 echo "housekeep: podman image gc (keep 7 days)"
 podman image prune -af --filter "until=168h"
 podman container prune -f
-podman volume prune -f
+# Named volumes (prometheus history, grafana dashboards/users) are intentionally
+# never pruned: they are not backed up and a stopped container would make them
+# look unused (DR-09).
 
 echo "housekeep: journald"
 journalctl --vacuum-size=200M

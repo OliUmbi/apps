@@ -15,7 +15,7 @@ import { z } from "zod";
 // field still parses like a human's fill.
 export const honeypotSchema = z.string().max(limits.text).optional();
 
-// The contact category vocabulary; the database domain (V010) mirrors it.
+// The contact category vocabulary; the database domain (V009) mirrors it.
 export const inquirySubjectValues = [
 	"hofladen",
 	"reservation",

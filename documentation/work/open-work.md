@@ -11,94 +11,120 @@ questions are in [decisions](../reference/decisions.md).
   it under **Owner decisions** and record the decision in
   [decisions](../reference/decisions.md).
 - A code-complete item that still needs an environment check stays open as
-  `[verify]`; do not remove it because the code landed.
+  `[verify]`; owner-executed evidence stays `[owner]`. Do not remove an item
+  because the code landed. The 2026-11 pass is code complete for the DR/RV
+  findings and the P1/P2 debt; only the evidence is outstanding.
 - The launch gate is the union of this page's **Launch gate** section, every P1
   item in [technical debt](tech-debt.md), deployment blockers DR-04–DR-07 and
-  go-live findings RV-01–RV-04.
+  go-live findings RV-01–RV-04. The DR/RV items are code complete; their
+  remaining work is real-host verification.
 - The clean-host execution order, package ownership and acceptance evidence are
   in the [first go-live remediation plan](go-live-remediation-plan.md).
 
 ## Launch gate
 
-- [ ] Replace development secrets. Enable secure Studio cookies. Keep database
-  and service ports private. Provision production role credentials after
-  `apps-migrate` and verify each service connects with its own role.
-- [ ] Verify domains, TLS, public URLs, sender DNS and SMTP delivery.
-- [ ] Confirm the backup timer and the workstation pull work on the rebuilt
-  server, and complete a restore on the dedicated machine
+- [ ] [verify] Replace development secrets and enable secure Studio cookies.
+  (`STUDIO_SECURE_COOKIES=true` is in the Studio unit and no secret is
+  committed; production secrets and real-role permissions remain owner-executed.)
+- [ ] [verify] Verify domains, TLS, public URLs, sender DNS and SMTP delivery on
+  the real host.
+- [ ] [verify] Confirm the backup timer and the workstation pull work on the
+  rebuilt server, and complete a restore on the dedicated machine
   ([backup and restore](../operations/backup-restore.md)).
-- [ ] Close every P1 item in [technical debt](tech-debt.md) - currently TD-01
-  and TD-14 - or record the owner's explicit acceptance.
-- [ ] Check site permissions and unpublished content with real roles. Verify
-  application checks on shared media and queues.
-- [ ] Deploy health checks, alerts and useful logs, and confirm an alert reaches
-  the phone ([monitoring](../operations/monitoring.md)).
-- [ ] Approve final content, photos and legal pages. Add old URL redirects, page
-  metadata and content sitemaps.
-- [ ] Run the environment integration pass: publishing, forms, reservations,
-  login, email, and one service outage. Retry a public submission and confirm it
-  returns the original outcome with no duplicate row, stock movement or email.
-  Hide unfinished features. Oliumbi is still missing.
+- [ ] Close every P1 item in [technical debt](tech-debt.md) - currently TD-14
+  only - or record the owner's explicit acceptance.
+- [ ] [verify] Check site permissions and unpublished content with real roles.
+  Provision the production roles after `apps-migrate` and verify each service
+  connects with its own role; verify application checks on shared media and
+  queues.
+- [ ] [verify] Deploy health checks, alerts and useful logs, and confirm an alert
+  reaches the phone ([monitoring](../operations/monitoring.md)).
+- [ ] [owner] Approve final content, photos and legal pages. The legal, wording
+  and founding-year decisions are resolved; real photos and final content assets
+  remain owner-executed. Add old URL redirects, page metadata and content
+  sitemaps.
+- [ ] [verify] Run the environment integration pass: publishing, forms,
+  reservations, login, email, and one service outage. Retry a public submission
+  and confirm it returns the original outcome with no duplicate row, stock
+  movement or email. Hide unfinished features. Oliumbi is a static placeholder
+  on `:8004`; it is no longer a launch blocker.
 
 ## Build and deployment review (2026-11)
 
 Evidence, commands and detail:
 [deployment review](../history/deployment-review-2026-11.md).
 DR-01 (wrapper permission), DR-02 (Quadlet count) and DR-03 (assets image) were
-fixed during the review; the remaining items are open.
+fixed during the review. DR-04 to DR-20 are code complete in the 2026-11 pass -
+verify on the real host; the remaining work is real-host verification, not
+implementation.
 
-- [ ] **DR-04** Provision the production application roles from the vault after
-  `apps-migrate` and before the services start; verify one connection per role.
-- [ ] **DR-05** Make `/apps` traversable and monitoring configs readable by the
-  actual container users; verify Prometheus and Alertmanager load config.
-- [ ] **DR-06** Remove the `image_tag: latest` default; require an explicit
-  pinned tag and reject `latest` in the deploy path.
-- [ ] **DR-07** Add `studio.oliumbi.ch` and the intended `studio.*`/`admin.*`
-  redirect names to the managed DNS records; verify resolution.
-- [ ] Harden backup and housekeeping: make the remaining outer tar/encryption
-  pipeline fail closed and remove blanket `volume prune` of unbacked monitoring
-  state (DR-08, DR-09).
-- [ ] Fix monitoring restarts, secret templating and the Studio upload body
-  limit (DR-10, DR-11, DR-12). (DR-10: monitoring containers carry
-  `Restart=always`; the deploy-path wiring for unit and env changes is still
-  open)
-- [ ] Make builds reproducible and verified before release: build images in CI
-  and pin base/tool images, the Caddy plugin and the CI Ansible package (DR-13,
-  DR-14). (Application and site images are digest-pinned; Flyway, Caddy, the
-  plugin and the CI toolchain are not)
-- [ ] **DR-15** Install `sudo` or make the bootstrap privilege prerequisite
-  explicit and verified before relying on `become_method = sudo`.
-- [ ] **DR-16** Order WireGuard-bound monitoring units after the tunnel so a
-  reboot cannot race their published addresses.
-- [ ] **DR-17** Template the backup/housekeeping schedules from their variables
-  or remove the dead configuration.
-- [ ] **DR-18** Verify public TLS probes through the router; use an internal
-  Caddy probe with the correct host header if NAT hairpin is unsupported.
-- [ ] **DR-19** Remove the WireGuard-only sshd drop-in when `restrict_ssh` is
-  false and verify that lockdown remains reversible.
-- [ ] **DR-20** Provision Grafana dashboards as code or correct the volume
-  comment and document their deliberate manual restoration. (The unit comment
-  and the manual-restoration docs are corrected; the `data-grafana.volume`
-  comment still claims provisioning)
+- [ ] [verify] **DR-04** Production roles are provisioned from the vault after
+  `apps-migrate` and before the services start, with a per-role login check.
+  Verify on the host that each service connects with its own role.
+- [ ] [verify] **DR-05** `/apps` is traversable and monitoring configs are
+  readable by the actual container users; `alertmanager.yml` stays
+  `root:65534 0640`. Verify Prometheus and Alertmanager load their config.
+- [x] **DR-06** Make the deploy tag explicit. (`image_tag` has no default and
+  `latest` is rejected by the app role.)
+- [ ] [verify] **DR-07** `studio.*` and `admin.*` names are in `dyndns_records`
+  for every domain. Create the records once in Infomaniak and verify resolution
+  after the timer runs.
+- [ ] [verify] **DR-08** The outer archive is written to a file, verified with
+  `tar tzf`, encrypted to a temporary name and renamed only after `age`
+  succeeds; checksums are relative. Inject a failing stage in the restore drill
+  and confirm no success metric is written.
+- [x] **DR-09** Housekeeping no longer runs a blanket `volume prune`; named
+  monitoring volumes are preserved.
+- [ ] [verify] **DR-10** Application and monitoring units/env files use separate
+  handlers. Verify that a monitoring change restarts the affected container on
+  the host.
+- [x] **DR-11** Secrets are safely rendered: `DATABASE_URL` carries no
+  credentials, passwords are separate environment values, and secret templates
+  use `no_log`.
+- [x] **DR-12** The Studio route accepts 51 MB; public site routes keep the 10 MB
+  limit.
+- [ ] [verify] **DR-13** CI now builds every image without pushing. Verify the
+  first CI image run is green.
+- [x] **DR-14** Base/tool images, CI actions, the Caddy plugin and `ansible-core`
+  are pinned by digest, commit SHA or exact version.
+- [x] **DR-15** `sudo` is installed with the base packages, so the documented
+  privilege method exists on a minimal Debian image.
+- [ ] [verify] **DR-16** WireGuard-bound monitoring units declare `Wants=`/`After=`
+  on `wg-quick@wg0.service`; verify a reboot still binds their published
+  addresses.
+- [x] **DR-17** Backup and housekeeping schedules are templated from
+  `backup_hour`, `housekeep_hour` and `housekeep_day`.
+- [ ] [verify] **DR-18** TLS probes target Caddy internally with per-site SNI and
+  `Host`, so they do not need NAT hairpin. Verify `probe_ssl_earliest_cert_expiry`
+  series exist on the host.
+- [ ] [verify] **DR-19** The WireGuard-only sshd drop-in is removed when
+  `restrict_ssh` is false. Verify a flip both ways remains reversible.
+- [x] **DR-20** Grafana dashboards are documented as manually imported; only the
+  Prometheus datasource is provisioned as code, and the volume comment says so.
 
 ## First go-live review (2026-11)
 
 Evidence: [first go-live review](../history/go-live-review-2026-11.md).
 Sequencing and acceptance criteria:
 [first go-live remediation plan](go-live-remediation-plan.md).
+All four findings are code complete in the 2026-11 pass - verify on the real
+host.
 
-- [ ] **RV-01** Enable and wire node-exporter's host systemd collector. Verify
+- [ ] [verify] **RV-01** Node-exporter's host systemd collector is enabled and
+  wired (dbus socket, `/run/systemd`, start-time metrics). Verify
   `node_systemd_unit_state` and `node_systemd_unit_start_time_seconds` exist on
   the real host, then fire `UnitFailing` and `UnitRestartLoop` as tests.
-- [ ] **RV-02** Alert when the backup success metric is absent as well as stale,
-  and publish the node-exporter textfile atomically. Test before the first
-  backup and after an injected backup failure.
-- [ ] **RV-03** Add an explicit pre-cutover mode so `site.yml` on a parallel
-  clean host cannot update live DNS. Keep router forwarding and live records on
-  legacy until the final import and smoke tests; enable dyndns only at cutover.
-- [ ] **RV-04** Define the cutover point of no return and how post-cutover writes
-  are exported/replayed or rolled forward before any rollback to legacy. Do not
-  switch DNS back in a way that silently strands accepted submissions.
+- [ ] [verify] **RV-02** `BackupStale` alerts on an absent success metric as well
+  as a stale one, and the node-exporter textfile is published atomically. Test
+  before the first backup and after an injected backup failure.
+- [ ] [verify] **RV-03** Pre-cutover is the safe default: `dyndns_enabled` is
+  false, only the timer unit is installed, and live updates require the explicit
+  cutover run (`-e dyndns_enabled=true`). Verify a parallel `site.yml` cannot
+  change live DNS.
+- [ ] [owner] **RV-04** The cutover runbook defines the first durable public
+  write as the point of no return. After it, export/replay the new writes or roll
+  forward; a DNS-only rollback is not data-safe. Owner sign-off and the
+  observation window must be recorded in the cutover rehearsal.
 
 ## Infrastructure and operations
 
@@ -108,112 +134,115 @@ Deployment shape: ghcr images pinned by tag, systemd units from
 [architecture](../architecture/README.md),
 [infrastructure/README.md](../../infrastructure/README.md).
 
-- [ ] Cutover from `legacy/`: freeze writes, final `pg_dump` (Postgres 17),
-  restore into Postgres 18, flip DNS. Decide whether the new migrations continue
-  the legacy history or start fresh and map the data. Delete the retired `api.*`
-  DNS records. Follow [migration](migration.md#cutover-playbook).
-- [ ] Check whether 5432/8080/8000 on the current server are reachable from the
-  internet (legacy exposure). The new stack has no host firewall by design, so
-  verify only 80/443 and UDP 51820 (WireGuard) are forwarded.
-- [ ] Bootstrap the server in the new deployment shape:
-  `ansible/playbooks/site.yml` on Debian stable (podman >= 5 with the Quadlet
-  generator), vault and WireGuard keys in place. Verify the units start in
-  dependency order, `deploy.yml -e image_tag=<tag>` deploys and rolls back,
-  `status.yml`/`logs.yml` work, and `backup.sh` produces an archive. A restore
-  playbook is still missing.
-- [ ] Backups are scripted (`ansible/files/backup.sh`, nightly timer): enable on
-  the server and confirm the workstation pull (`pull-backups.sh`).
-- [ ] Restore drill on its own machine (D14): rebuild from zero and restore a
-  pulled backup (globals, `pg_restore`, media tar), then walk Studio and every
-  site. The preferred target is the not-yet-live replacement host after a
-  meaningful import rehearsal, while legacy remains live; no third host is
-  needed for that drill. The workstation drill is retired with the compose
-  files. The draft procedure is in
-  [backup and restore](../operations/backup-restore.md#restore-untested-until-the-drill).
-- [ ] Housekeeping timer is scripted (`ansible/files/housekeep.sh`): enable on the
-  server and check the first journal output.
-- [ ] WireGuard config is templated (server role). Verify provider console/KVM
-  recovery first, then set `restrict_ssh: true` so sshd only listens on the
-  tunnel.
-- [ ] Create the A records listed in `dyndns_records`
+- [ ] [owner] Cutover from `legacy/`: freeze writes, final `pg_dump` (Postgres
+  17), restore into Postgres 18, flip routing and explicitly enable dyndns.
+  Migrations end at V009 (V007 Jublawoma, V008 Uncle-T, V009 Zelglihof); the
+  baseline freezes at the first accepted import. Delete the retired `api.*` DNS
+  records. Follow [migration](migration.md#cutover-playbook).
+- [ ] [verify] Check whether 5432/8080/8000 on the current server are reachable
+  from the internet (legacy exposure). The new stack has no host firewall by
+  design, so verify only 80/443 and UDP 51820 (WireGuard) are forwarded.
+- [ ] [verify] Bootstrap the server in the new deployment shape:
+  `ansible/playbooks/site.yml -e image_tag=<tag>` on Debian stable (podman >= 5
+  with the Quadlet generator), vault and WireGuard keys in place. Roles are
+  provisioned from the vault after migrate. Verify the units start in dependency
+  order, `deploy.yml -e image_tag=<tag>` deploys and rolls back,
+  `status.yml`/`logs.yml` work, and `backup.sh` produces an archive. Run
+  `first-admin.yml --ask-vault-pass` once. A restore playbook is still missing;
+  restore is a manual runbook until the drill.
+- [ ] [verify] Backups are scripted (`ansible/files/backup.sh`, nightly timer):
+  confirm the timer runs on the server and the workstation pull
+  (`pull-backups.sh`) receives the archive.
+- [ ] [owner] Restore drill on its own machine (D14): rebuild from zero and
+  restore a pulled backup (globals, `pg_restore`, media tar), verify relative
+  checksums, re-issue Caddy certificates, then walk Studio and every site. The
+  preferred target is the not-yet-live replacement host after a meaningful import
+  rehearsal, while legacy remains live; no third host is needed for that drill.
+  The workstation drill is retired with the compose files. The draft procedure is
+  in [backup and restore](../operations/backup-restore.md#restore-untested-until-the-drill).
+- [ ] [verify] Housekeeping timer is scripted (`ansible/files/housekeep.sh`):
+  confirm it runs on the server and check the first journal output.
+- [ ] [verify] WireGuard config is templated (server role). Verify provider
+  console/KVM recovery first, then set `restrict_ssh: true` so sshd only listens
+  on the tunnel; confirm the drop-in is removed when it is false again.
+- [ ] [verify] Create the A records listed in `dyndns_records`
   (`ansible/group_vars/all.yml`) once in the Infomaniak manager, including
-  `vpn.oliumbi.ch` for the laptop's WireGuard endpoint. The dyndns timer only
-  updates existing records.
-- [ ] Decide where the `oliumbi.ch` apex routes: the new stack has no Oliumbi
-  site yet (the Caddyfile placeholder redirects to Studio).
-- [ ] Create the ntfy alerting topic, subscribe in the phone app and store the
-  webhook URL in the vault (`vault_ntfy_webhook_url`); steps in
+  `studio.*`/`admin.*` and `vpn.oliumbi.ch` for the laptop's WireGuard endpoint.
+  The dyndns timer only updates existing records and stays disabled before
+  cutover.
+- [ ] [verify] Create the ntfy alerting topic, subscribe in the phone app and
+  store the webhook URL in the vault (`vault_ntfy_webhook_url`); steps in
   [monitoring](../operations/monitoring.md#setting-up-ntfy).
-- [ ] Deploy the monitoring stack (`apps-prometheus` ... `apps-grafana`) and
-  confirm alerts reach the phone. Then add external uptime checks and a
+- [ ] [verify] Deploy the monitoring stack (`apps-prometheus` ... `apps-grafana`)
+  and confirm alerts reach the phone. Then add external uptime checks and a
   dead-man's switch outside the box: everything current runs on the machine it
   watches.
 
 ## Product features
 
-- [ ] Connect notifications to users with site access. Choose event names and
-  initial subscribers. `studio.account_notification` has no event catalog or
-  dispatch contract yet.
-- [ ] Show campaign delivery results per recipient. Agree retry rules for failed
-  and uncertain sends.
-- [ ] Add allowed senders per site and `List-Unsubscribe` headers. The `replyTo`
-  contract field and the `*_REQUESTS_EMAIL` / `*_NEWSLETTER_EMAIL` split are
-  implemented. Set retention rules for messages, tokens and personal data.
-- [ ] Clarify image publication and retention when linked content outlives an
-  image.
 - [x] Improve image selection and previews in Studio. (resolved 2026-11 - the
   image field is a picker with thumbnails, pagination and inline upload)
+
+Remaining product features are deliberately deferred until after launch; see
+[Later](#later).
 
 ## Design and accessibility
 
 - [ ] Jubla: check final illustrations and long titles on small phones.
 - [x] Uncle-T: use one form of address throughout the site. (resolved in the
   W3-B pass - Sie -> Du across site and catalog)
-- [ ] Zelglihof: use real farm photos.
+- [ ] Zelglihof: use real farm photos. (placeholder farm counts and crop names
+  remain owner-executed; see Z-04 in the
+  [refactoring handoff](../history/refactoring-web-sites.md))
 - [ ] Studio: simplify mobile lists. (Unsaved-edit protection landed as TD-09,
-  resolved 2026-11.)
+  resolved 2026-11; the list navigation itself is still a design task.)
 - [ ] Check keyboard use, focus, contrast and mobile menus. Verify German
   customer sites and Studio translations.
 
 ## Owner decisions
 
-- [ ] Uncle-T: confirm inquiry fields, phone-only replies, statuses and reviews.
-  Decide on a Google reviews embed.
-- [ ] Zelglihof: confirm contact fields, products, quantity limits, pickup
-  statuses and reservation windows. Agree display-only CHF price wording.
-- [ ] Jubla: confirm annual dates, same-day event endings, calendar/PDF exports,
-  group names and donation units with the second developer.
-- [ ] Set up the two mail identities per domain that sends subscriber mail:
-  `newsletter@` (sending identity) plus the requests inbox
-  (`hof@`/`info@`/`scharleitung@`, recipient and Reply-To). Confirm the provider
-  SMTP may send as both addresses, and confirm the `@zelglihof.ch` mailboxes the
-  code defaults to actually exist (site domain is `zelglihof-maegenwil.ch`).
-- [ ] Content review (2026-11), Jubla: confirm the club's founding year. The
-  rewrite's hero eyebrow claim "seit 1981" had no source in legacy or jubla.ch
-  and was removed until confirmed.
-- [ ] Content review (2026-11), legal: approve restoring the paragraphs the
-  rewrite dropped - Jubla Impressum (full Haftungsausschluss including the links
-  disclaimer and the "Quelle: SwissAnwalt" credit), Uncle-T Disclaimer block,
-  Uncle-T AGB clauses on cleaning and on insurance/permits. The published legacy
-  wording is ready to restore on a go-ahead.
-- [ ] Content review (2026-11), wording decisions: "Beitreten" vs "Mitmachen",
-  the "Spende" → "Zusage" domain rebrand, the invented three-step join process
-  (Melden/Schnuppern/Entscheiden), the dropped partner descriptions (31'000
-  Mitglieder, 53 Scharen, group sizes) and the dropped delivery offer on
-  Uncle-T ("nachhause oder in die Firma geliefert").
-- [ ] Authentication and account model (O-006): local passwords vs. an external
-  provider, bootstrap/invitations, recovery, revocation, MFA. Fewer than ten
-  users; needs a decision and a short threat model. The proposed local model is
-  in [decisions](../reference/decisions.md#still-open).
-- [ ] Schema and migration ownership (O-010): schema-per-capability vs. a domain
-  split, migration tool, locking and expand/contract conventions. The proposed
-  Flyway/schema-per-capability direction is in
-  [decisions](../reference/decisions.md#still-open).
-- [ ] Collect the "detailed notes will follow" legacy site restructuring notes
-  and fold them into [sites](../reference/sites.md) and the migration inventory.
+- [x] Uncle-T: inquiry fields, phone-only replies, statuses and reviews are
+  confirmed; there is no Google reviews embed.
+- [x] Zelglihof: current contact fields, products, quantity limits, pickup
+  statuses, reservation windows and display-only CHF price wording are
+  confirmed. Real product data and photos remain owner-executed.
+- [ ] [verify] Jubla: confirm annual dates, same-day event endings, calendar/PDF
+  exports, group names and donation units with the second developer.
+- [ ] [verify] Mail identities: the code now defaults to
+  `newsletter@zelglihof-maegenwil.ch` plus the requests inbox (`hof@`) and the
+  newsletter/requests split is implemented. Confirm the provider SMTP may send
+  as both addresses and that the mailboxes exist; deliverability is provider
+  evidence, not code.
+- [x] Content review (2026-11), Jubla: the club's founding year. The rewrite's
+  hero eyebrow claim "seit 1981" had no source in legacy or jubla.ch and was
+  removed; no unverified founding year is published.
+- [x] Content review (2026-11), legal: the dropped paragraphs are restored -
+  Jubla Impressum (Haftungsausschluss including the links disclaimer and the
+  "Quelle: SwissAnwalt" credit), the Uncle-T Disclaimer block, and the Uncle-T
+  AGB clauses on cleaning and on insurance/permits.
+- [x] Content review (2026-11), wording: the owner's decisions are applied - the
+  invented three-step join process is removed, partner descriptions and the
+  Uncle-T delivery offer are restored, "Beitreten" and "Spende" are kept (the
+  "Mitmachen" and "Zusage" rebrands are reverted).
+- [ ] [owner] Collect the "detailed notes will follow" legacy site restructuring
+  notes and fold them into [sites](../reference/sites.md) and the migration
+  inventory.
 
 ## Later
 
+- [ ] After launch by the go-live plan: connect notifications to users with site
+  access. Choose event names and initial subscribers.
+  `studio.account_notification` has no event catalog or dispatch contract yet.
+- [ ] After launch by the go-live plan: show campaign delivery results per
+  recipient. Agree retry rules for failed and uncertain sends.
+- [ ] After launch by the go-live plan: add allowed senders per site and
+  `List-Unsubscribe` headers. The `replyTo` contract field and the
+  `*_REQUESTS_EMAIL` / `*_NEWSLETTER_EMAIL` split are implemented. Set retention
+  rules for messages, tokens and personal data.
+- [ ] After launch by the go-live plan: clarify image publication and retention
+  when linked content outlives an image.
+- [ ] Replace the static Oliumbi placeholder with real content when it exists;
+  the placeholder site and apex route are built.
 - [ ] Translate the remaining hard-coded labels and content in Studio and the
   public sites.
 - [ ] Check Paraglide URL translation, such as `/kontakt` and `/contact`. Use

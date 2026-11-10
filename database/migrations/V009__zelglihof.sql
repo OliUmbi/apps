@@ -47,6 +47,10 @@ CREATE TABLE zelglihof.product
     reservable  boolean     NOT NULL,
     starts_at   timestamptz,
     ends_at     timestamptz,
+    -- Products are retired by archiving, never hard-deleted: the reservation
+    -- history keeps its parent reference and public reads hide archived rows.
+    archived_at timestamptz,
+    archived_by text,
     created_at  timestamptz NOT NULL,
     updated_at  timestamptz NOT NULL,
     -- An open side of the window means "unbounded"; a closed window must run forward.
@@ -62,6 +66,10 @@ CREATE TABLE zelglihof.product_variant
     image_id    uuid NULL REFERENCES assets.image (id) ON DELETE SET NULL,
     price       text        NOT NULL,
     quantity    integer,
+    -- Variants are retired by archiving too: their stock row and reservation
+    -- snapshots must survive, while public reads hide archived variants.
+    archived_at timestamptz,
+    archived_by text,
     created_at  timestamptz NOT NULL,
     updated_at  timestamptz NOT NULL,
     -- NULL quantity is unlimited stock; zero is a sold-out variant, never negative.
@@ -84,13 +92,23 @@ CREATE TABLE zelglihof.product_reservation
     quantity            integer     NOT NULL,
     note                text,
     status              text        NOT NULL,
+    -- Cancellation is an explicit, irreversible transition with its own audit
+    -- columns; the generic status editor never writes it.
+    cancelled_at        timestamptz,
+    cancelled_by        text,
+    cancellation_reason text,
+    -- Whether the cancellation returned the reserved quantity to a tracked
+    -- variant; false records a variant that was missing or unlimited.
+    stock_restored      boolean     NOT NULL DEFAULT false,
     -- Nullable for non-public rows; one reservation and stock movement per form fill.
     submission_id       uuid,
     created_at          timestamptz NOT NULL,
     updated_at          timestamptz NOT NULL,
     CONSTRAINT product_reservation_status_domain CHECK (status IN ('new', 'in-progress', 'completed', 'cancelled')),
     CONSTRAINT product_reservation_quantity_positive CHECK (quantity > 0),
-    CONSTRAINT product_reservation_variant_quantity_nonnegative CHECK (variant_quantity IS NULL OR variant_quantity >= 0)
+    CONSTRAINT product_reservation_variant_quantity_nonnegative CHECK (variant_quantity IS NULL OR variant_quantity >= 0),
+    CONSTRAINT product_reservation_cancelled_metadata CHECK (cancelled_at IS NULL OR status = 'cancelled'),
+    CONSTRAINT product_reservation_stock_restored_cancelled CHECK (NOT stock_restored OR status = 'cancelled')
 );
 
 CREATE UNIQUE INDEX product_reservation_submission_id_idx ON zelglihof.product_reservation (submission_id);

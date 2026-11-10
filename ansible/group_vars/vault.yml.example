@@ -54,6 +54,17 @@ vault_zelglihof_newsletter_email: ""
 # age public key of the workstation that pulls the backups
 vault_age_recipient: ""
 
+# ---- first admin (one-time bootstrap) ----
+# Used by playbooks/first-admin.yml after the stack is healthy. The account is
+# deliberately NOT seeded by migrations (the first administrator is an
+# operational bootstrap step, not schema). Run the playbook once, then delete
+# these values if you prefer.
+vault_first_admin_name: ""
+vault_first_admin_email: ""
+# Identity requires >= 10 characters with an uppercase letter, a lowercase
+# letter and a number, and at most 72 UTF-8 bytes.
+vault_first_admin_password: ""
+
 # ---- monitoring ----
 # alertmanager receiver: the ntfy topic url, e.g.
 # https://ntfy.sh/oliumbi-alerts-<random> (optionally with topic protection:

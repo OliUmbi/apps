@@ -14,7 +14,7 @@ development rig and deliberately not a mirror of this (finding DP-09).
 | `apps-postgres.container` | `apps-postgres.service` | state in `/var/lib/apps/postgres` (bind mount) |
 | `apps-migrate.container` | `apps-migrate.service` | `Type=oneshot` Flyway run before the apps |
 | `apps-identity/-messaging/-assets` | same name | Java services on 8081–8083; assets stores media in `/var/lib/apps/media` |
-| `apps-jublawoma/-unclet/-zelglihof/-studio` | same name | Nitro SSR sites on 8000–8003 |
+| `apps-jublawoma/-unclet/-zelglihof/-oliumbi/-studio` | same name | Nitro sites on 8000–8004 |
 | `apps-caddy` | `apps-caddy.service` | the only unit that publishes ports (80/443, 443/udp) |
 | `apps-prometheus/-alertmanager/-node-exporter/-blackbox/-grafana` | same name | monitoring; ports bound to `monitoring_bind` (WireGuard) |
 | `data-prometheus.volume`, `data-grafana.volume` | — | named volumes for state the backup does not cover |
@@ -39,20 +39,23 @@ units themselves.
 
 ## State and ownership
 
-Everything the backup covers is a plain directory under `/var/lib/apps/`
-(`postgres`, `media`, `caddy-data`, `caddy-config`) — backup and restore are
-`pg_dump` and `tar` on the host. Deterministic ownership matters because
-these are bind mounts: the assets image pins `app` to uid/gid 100 (its
-`/media` mount is chowned 100:100), the postgres image runs as uid 70 and
-chowns its directory on first start, caddy runs as root.
+Everything durable is a plain directory under `/var/lib/apps/` (`postgres`,
+`media`, `caddy-data`, `caddy-config`). The backup covers postgres and media;
+Caddy's ACME state is deliberately re-issued instead of backed up (TD-16).
+Backup and restore are `pg_dump` and `tar` on the host. Deterministic ownership
+matters because these are bind mounts: the assets image pins `app` to uid/gid
+100 (its `/media` mount is chowned 100:100), the postgres image runs as uid 70
+and chowns its directory on first start, caddy runs as root.
 
 ## Deploy and rollback
 
 `ansible-playbook playbooks/deploy.yml -e image_tag=<tag>` renders the units
 with the tag, pulls, and restarts in dependency order (postgres → migrate →
-apps → caddy). Rollback is the same command with the previous tag. Images are
-pinned: app images by immutable release tag, upstream images by `tag@digest`
-(same convention as the Dockerfiles — bump both together).
+provision application database roles from the vault → apps → caddy). Rollback
+is the same command with the previous tag. `image_tag` has no default and
+`latest` is rejected. Images are pinned: app images by immutable release tag,
+upstream images by `tag@digest` (same convention as the Dockerfiles — bump both
+together).
 
 ## Commands
 

@@ -2,9 +2,10 @@
 
 > **Current readiness (2026-11):** the
 > [build and deployment review](../history/deployment-review-2026-11.md) found
-> P1 blockers in database role provisioning, monitoring permissions, the
-> `latest` deploy default and DNS. Do not treat the deploy path as ready until
-> they are closed.
+> P1 blockers in database role provisioning, monitoring permissions, the deploy
+> tag default and DNS. The code is complete in the 2026-11 pass; the remaining
+> work is real-host verification. Do not treat the deploy path as accepted until
+> those checks and the restore drill have evidence.
 
 The release model is deliberately boring: CI builds immutable images on a
 version tag, and the maintainer deploys that tag with one command. Rollback is
@@ -21,6 +22,7 @@ change lands on main
       │
       ▼
 CI (ci.yml): web checks, Java tests, deployment-input checks
+             + a no-push build of every image (DR-13)
       │
       ▼
 version tag (e.g. 2026.10.24)
@@ -34,26 +36,34 @@ ansible-playbook playbooks/deploy.yml -e image_tag=2026.10.24
       │
       ▼
 render units with the tag → pull → restart in order
-postgres → migrate → services/sites → caddy
+postgres → migrate → roles → services/sites → caddy
 ```
 
-`latest` is published for convenience but is never a deployment source. Every
-unit pins an immutable tag. The last week of images stays on the server as
+`latest` is published for convenience but is rejected by the deploy path.
+Every unit pins an immutable tag, and the app role asserts that `image_tag` is
+present and not `latest`. The last week of images stays on the server as
 rollback candidates; the last few tags stay in ghcr.
 
 ## Before deploying
 
 1. **CI is green on the tag.** `publish.yml` calls `ci.yml` as a hard gate, so a
-   pushed image already passed web checks, Java tests and deployment-input
-   checks. If you are unsure, check the workflow run, not the image.
+   pushed image already passed web checks, Java tests, deployment-input checks
+   and the no-push image build. If you are unsure, check the workflow run, not
+   the image.
 2. **The migration is compatible with the previous application tag.** Rollback
    deploys the previous tag; it never runs a down-migration. A destructive
    schema change must follow expand → backfill → verify → contract across
-   releases.
+   releases. The current pre-launch baseline head is V009 (V007 Jublawoma,
+   V008 Uncle-T, V009 Zelglihof).
 3. **Secrets are in the vault.** A new environment variable needs a vault key and
-   the per-service template before the deploy that reads it.
-4. **You know the current tag.** Record it before deploying. This is the rollback
-   target.
+   the per-service template before the deploy that reads it. Production roles are
+   provisioned from the vault after migrate; `STUDIO_SECURE_COOKIES=true` is in
+   the Studio unit.
+4. **DNS is ready.** Every `studio.*`/`admin.*` name is in `dyndns_records` and
+   created once in Infomaniak. On a parallel host the dyndns timer stays disabled
+   (the default) until cutover.
+5. **You know the current tag.** Record it before deploying. This is the rollback
+   target. Never pass `latest`: it is rejected.
 
 ## Deploy
 
@@ -67,15 +77,30 @@ The playbook:
 
 1. renders `infrastructure/units/` with `{{ image_tag }}` and the monitoring bind
    address into `/etc/containers/systemd/`;
-2. renders the per-service `/etc/default/apps-*` environment files;
+2. renders the per-service `/etc/default/apps-*` environment files (secret
+   templates run with `no_log`);
 3. reloads systemd and pulls every image referenced by the units;
-4. starts the units in dependency order: postgres → migrate → identity,
-   messaging, assets → sites and Studio → caddy, then the monitoring units.
+4. starts postgres and the one-shot migrate unit, then provisions each
+   application database role from the vault and checks that it can log in;
+5. starts the application units in dependency order: identity, messaging, assets
+   → sites (including the static Oliumbi placeholder) and Studio → caddy, then
+   the monitoring units.
 
 Migrations are a one-shot `apps-migrate` unit. The application units `Require`
-it, so migrations always run before the code that needs them. Do not restart
-`apps-migrate` by hand: a manual restart propagates a stop to the apps. Use the
-deploy playbook instead.
+it, so migrations always run before the code that needs them. Role provisioning
+runs after migrate and before the apps, so a fresh host becomes healthy on the
+first deploy. Do not restart `apps-migrate` by hand: a manual restart propagates
+a stop to the apps. Use the deploy playbook instead.
+
+The first administrator is not a migration seed. After the stack is healthy, run
+the one-time playbook once:
+
+```sh
+ansible-playbook playbooks/first-admin.yml --ask-vault-pass
+```
+
+It creates the account through identity's authenticated internal endpoint and
+grants `studio.admin`; it fails rather than duplicating an existing account.
 
 ## Verify after deploying
 
@@ -92,7 +117,13 @@ Run these before declaring the deploy done:
 5. One durable write on the changed workflow, if the release touched a form:
    submit, confirm the durable row and the queued email, then clean up test data
    if the environment is not production.
-6. Check the alert channel is quiet and the blackbox probes recover.
+6. Confirm the session cookie is `__Host-studio_session` with `Secure`,
+   `HttpOnly` and `SameSite=Lax` over HTTPS, and that the baseline CSP header is
+   present.
+7. Burst the public limit (>20 requests in 2s) and confirm a 429; confirm login
+   is limited to 10/min.
+8. Check the alert channel is quiet and the blackbox probes recover. If the
+   release touched Caddy or DNS, confirm certificate issuance or re-issuance.
 
 A release is not done until the verification result is known. Record source
 revision, image tag, migration version and verification result in the
@@ -128,7 +159,16 @@ investigate afterwards.
 
 A new machine is built with `playbooks/site.yml`; the full sequence (router,
 DNS, vault, WireGuard, verification, SSH lockdown) is in
-[access and security](access-and-security.md).
+[access and security](access-and-security.md). Three details are part of the
+release contract:
+
+- `image_tag` is required, for example
+  `ansible-playbook playbooks/site.yml -e image_tag=2026.10.24`; `latest` is
+  rejected.
+- Live dyndns stays disabled until cutover. Pass `-e dyndns_enabled=true` only
+  in the cutover run.
+- After the stack is healthy, run `playbooks/first-admin.yml --ask-vault-pass`
+  once. Credentials come from `vault_first_admin_*`, never from a migration.
 
 ## Related
 

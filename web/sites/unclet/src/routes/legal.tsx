@@ -35,6 +35,12 @@ function LegalPageContent() {
 				<h2>{m.copyright_title()}</h2>
 				<p>{m.unclet_legal_copyright_body()}</p>
 			</section>
+			<section>
+				<h2>{m.unclet_legal_disclaimer_title()}</h2>
+				<p className="whitespace-pre-line">
+					{m.unclet_legal_disclaimer_body()}
+				</p>
+			</section>
 		</LegalPage>
 	);
 }

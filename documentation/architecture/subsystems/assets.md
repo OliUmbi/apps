@@ -41,7 +41,8 @@ tracking is process-local.
 
 ## Flow: upload
 
-1. Studio sends the file with the internal token and the site.
+1. Studio sends the file with the internal token and the site. Studio accepts
+   20 MiB images and 50 MiB PDFs; Caddy allows 51 MB on the Studio host.
 2. Assets rejects a known oversize at request time (413) and enforces a streaming
    limit during staging as defense in depth.
 3. Images are validated by container, decoded within a pixel bound, normalized,
@@ -54,8 +55,8 @@ tracking is process-local.
 1. A site server function calls the public assets endpoint without management
    credentials. Assets checks visibility, then returns the rendition with a
    content-derived `ETag` and explicit `Cache-Control`.
-3. A conditional request returns 304.
-4. Unknown ids and mismatched sites return 404 everywhere, including deletion.
+2. A conditional request returns 304.
+3. Unknown ids and mismatched sites return 404 everywhere, including deletion.
 
 ## Limits
 
@@ -64,6 +65,10 @@ tracking is process-local.
 | image upload | 20 MiB, 40 megapixels, 12,000 px maximum side |
 | PDF | 50 MiB |
 | variants | configured widths, qualities and byte budgets |
+
+The edge body limit on the Studio host is 51 MB, just above the 50 MiB PDF
+maximum and the 20 MiB image maximum. Public sites keep the 10 MB body limit and
+do not accept uploads.
 
 Content is immutable: changing visibility is allowed, replacing content creates a
 new asset. When presets clamp to the same width, later sizes reuse the first
@@ -88,8 +93,9 @@ lock so uploads are never blocked. This closed R18.
 
 ## Known gaps
 
-- Windows junction containment is hardened in code (symbolic-link roots and
-  ancestors are rejected) and awaits a one-time junction verification; see
-  [TD-05](../../work/tech-debt.md#td-05).
+- Windows junctions are now rejected like symbolic links: the storage root,
+  ancestors and cleanup traversal treat NTFS reparse points as links and never
+  descend into them. The behavior is covered by tests (TD-05 is code complete;
+  verify the Windows-host run before closing it).
 - Image publication and retention when linked content outlives an image is still
   an open product decision ([open work](../../work/open-work.md)).

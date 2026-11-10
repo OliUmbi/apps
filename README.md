@@ -1,6 +1,6 @@
 # OliUmbi Apps
 
-Monorepo for four web applications, three supporting Java services, and their
+Monorepo for five web applications, three supporting Java services, and their
 shared PostgreSQL schema.
 
 ## Applications
@@ -11,9 +11,14 @@ shared PostgreSQL schema.
 | Jublawoma | Club website | <http://localhost:8001> |
 | Uncle-T | Catering website | <http://localhost:8002> |
 | Zelglihof | Farm website | <http://localhost:8003> |
+| Oliumbi | Static English placeholder for oliumbi.ch | <http://localhost:8004> |
 | Identity | Accounts, sessions, and permissions | <http://localhost:8081> |
 | Messaging | Email queue and delivery history | <http://localhost:8082> |
 | Assets | Image and document storage | <http://localhost:8083> |
+
+Oliumbi is a static placeholder in its first slice: it has no database package,
+no `oliumbi-data` package and no runtime environment. The full personal site is
+later work; see [documentation/reference/sites.md](documentation/reference/sites.md).
 
 Start with [documentation/README.md](documentation/README.md) for the reading
 order. The web workspace is documented in
@@ -32,7 +37,7 @@ Copy-Item infrastructure/.env.dev .env
 docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d --build
 ```
 
-Sites and Studio run at localhost:8000-8003, the services at 8081-8083, and
+Sites and Studio run at localhost:8000-8004, the services at 8081-8083, and
 Mailpit at <http://localhost:8025>. The full workflow, including the
 frontend-only setup and environment rules, is in
 [documentation/development/local-setup.md](documentation/development/local-setup.md).
@@ -40,8 +45,9 @@ frontend-only setup and environment rules, is in
 ## Database
 
 Flyway migrations in `database/migrations/` are the schema source of truth.
-During development they are edited in place, so recreate the local database
-after a migration changes. See [database/README.md](database/README.md).
+Until the baseline freezes at the first accepted production import they are
+edited in place, so recreate the local database after a migration changes. See
+[database/README.md](database/README.md).
 
 ## Verification
 

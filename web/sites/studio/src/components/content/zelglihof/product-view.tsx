@@ -8,6 +8,7 @@ import {
 } from "@oliumbi/zelglihof-data/content/product";
 import { formatTimestamp } from "../../../model/dates";
 import {
+	archiveProduct,
 	createProduct,
 	getProduct,
 	listProducts,
@@ -15,6 +16,7 @@ import {
 } from "../../../server/content/zelglihof/product.functions";
 import { DateField } from "../../ui/date-field";
 import { TextField } from "../../ui/text-field";
+import { ArchiveAction } from "../archive-action";
 import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { CheckboxField } from "../editor-controls";
@@ -77,7 +79,24 @@ export function ProductsView() {
 					heading: m.studio_field_starts_at(),
 					render: (record) => formatTimestamp(record.startsAt),
 				},
+				{
+					id: "archivedAt",
+					heading: m.studio_archived(),
+					render: (record) => formatTimestamp(record.archivedAt),
+				},
 			]}
+			renderActions={(record) => (
+				<ArchiveAction
+					collection="zelglihof.product"
+					archivedAt={record.archivedAt}
+					archivedBy={record.archivedBy}
+					onArchive={() =>
+						archiveProduct({
+							data: { key: { id: record.id }, updatedAt: record.updatedAt },
+						})
+					}
+				/>
+			)}
 			renderRelated={(record) => (
 				<div className="grid gap-4">
 					<ProductVariantsRelated

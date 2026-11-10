@@ -1,2 +1,4 @@
 # rendered by ansible from group_vars/vault.yml -- do not edit on the server
+# Quadlet passes this file to `podman run --env-file`, which keeps values
+# literally: do not quote them (quotes would become part of the secret).
 GF_SECURITY_ADMIN_PASSWORD={{ vault_grafana_admin_password }}

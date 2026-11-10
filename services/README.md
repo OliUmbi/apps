@@ -53,9 +53,15 @@ test`). `mvn` is not necessarily on the PATH — the wrapper `./mvnw` needs no
 local install; otherwise install Maven or use the IDE's bundled Maven. The
 command stays the same.
 
-Remaining follow-ups: integration tests against a real PostgreSQL and Java
-style checks. The reactor's checks run in CI (`.github/workflows/ci.yml`, via
-`services/mvnw`) alongside the web checks.
+`mvn test` (and the CI `services` job) also runs Checkstyle through
+`services/checkstyle.xml`. The configuration is the single style gate for every
+module and covers main and test sources; it enforces the conventions the code
+already follows without formatting-only rewrites. The reactor's checks run in CI
+(`.github/workflows/ci.yml`, via `services/mvnw`) alongside the web checks.
+
+There is still no integration suite against a real PostgreSQL. The service
+boundaries are exercised through unit and controller tests; a database-backed
+suite is accepted post-launch debt ([TD-13](../documentation/work/tech-debt.md#td-13)).
 
 ## Containers
 

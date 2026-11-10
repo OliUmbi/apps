@@ -46,6 +46,14 @@ test("a stale-draft send keeps the dialog on its reload action", () => {
 		campaignSendFeedback({ failed: false, result: { outcome: "queued" } }),
 		"queued",
 	);
+	// An over-limit send queued nothing and names the audience bound.
+	assert.equal(
+		campaignSendFeedback({
+			failed: false,
+			result: { outcome: "too-large", count: 501, limit: 500 },
+		}),
+		"too-large",
+	);
 	assert.equal(campaignSendFeedback({ failed: true, result: null }), "failed");
 	assert.equal(campaignSendFeedback({ failed: false, result: null }), "idle");
 });

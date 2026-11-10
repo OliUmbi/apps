@@ -1,6 +1,7 @@
 ---
 # Full server setup: base system, wireguard, dns timer, the app stack, backup
-# and housekeeping timers. Idempotent; run it any time.
+# and housekeeping timers. Idempotent; run it any time. image_tag is required:
+#   ansible-playbook playbooks/site.yml -e image_tag=<tag>
 - name: server
   hosts: server
   roles:

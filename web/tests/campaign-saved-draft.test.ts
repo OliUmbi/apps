@@ -40,10 +40,15 @@ const sendOutcomes: Record<CampaignSendOutcome, CampaignSendResult["outcome"]> =
 	{
 		queued: "queued",
 		"stale-draft": "stale-draft",
+		"too-large": "too-large",
 	};
 
 test("a send refuses any token that is not the saved version", () => {
-	assert.deepEqual(Object.keys(sendOutcomes).sort(), ["queued", "stale-draft"]);
+	assert.deepEqual(Object.keys(sendOutcomes).sort(), [
+		"queued",
+		"stale-draft",
+		"too-large",
+	]);
 	assert.deepEqual(
 		decideCampaignSend({
 			expectedUpdatedAt: savedAt,
@@ -102,8 +107,11 @@ function fakeDatabase(
 		return api;
 	};
 	const transaction = {
-		select: () =>
+		select: (selection?: Record<string, unknown>) =>
 			chain((calls, args) => {
+				// The send bound counts the active audience before any batch read.
+				if (selection && "count" in selection)
+					return [{ count: recipients.length }];
 				const terminal = calls.indexOf("for");
 				if (terminal >= 0 && args[terminal][0] === "share") {
 					recipientRuns += 1;

@@ -21,27 +21,28 @@ debt: it is listed so it is not rediscovered as a surprise.
 
 | ID | Area | Severity | Status |
 | --- | --- | --- | --- |
-| [TD-01](#td-01) | Edge: proxy rate limiting | P1 | decision-gated |
-| [TD-02](#td-02) | Edge: Content-Security-Policy | P2 | open |
-| [TD-03](#td-03) | Edge: static asset caching | P3 | open |
-| [TD-04](#td-04) | Data: PostgreSQL major upgrade path | P2 | open |
-| [TD-05](#td-05) | Assets: Windows junction containment | P2 | in progress |
+| [TD-01](#td-01) | Edge: proxy rate limiting | P1 | resolved |
+| [TD-02](#td-02) | Edge: Content-Security-Policy | P2 | resolved |
+| [TD-03](#td-03) | Edge: static asset caching | P3 | resolved |
+| [TD-04](#td-04) | Data: PostgreSQL major upgrade path | P2 | resolved |
+| [TD-05](#td-05) | Assets: Windows junction containment | P2 | resolved |
 | [TD-06](#td-06) | Studio/identity: profile field ownership | P1 | resolved |
 | [TD-07](#td-07) | Studio: upload vs. save state | P2 | resolved |
-| [TD-08](#td-08) | Studio: deletion and stock-restoration policy | P2 | decision-gated |
+| [TD-08](#td-08) | Studio: deletion and stock-restoration policy | P2 | resolved |
 | [TD-09](#td-09) | Studio: dirty editor navigation | P2 | resolved |
 | [TD-10](#td-10) | Studio: per-handler authorization convention | P3 | resolved |
 | [TD-11](#td-11) | Data: queue privileges exceed the producer interface | P2 | resolved |
-| [TD-12](#td-12) | Messaging: unbounded campaign batch | P3 | decision-gated |
-| [TD-13](#td-13) | Services: integration tests and Java style check | P3 | open |
+| [TD-12](#td-12) | Messaging: unbounded campaign batch | P3 | resolved |
+| [TD-13](#td-13) | Services: integration tests and Java style check | P3 | accepted |
 | [TD-14](#td-14) | Data: legacy import validation | P1 | open |
-| [TD-15](#td-15) | Identity: plaintext unsubscribe tokens | P2 | decision-gated |
-| [TD-16](#td-16) | Operations: Caddy state outside the backup | P2 | decision-gated |
-| [TD-17](#td-17) | Operations: backup checksum manifest is not portable | P3 | open |
+| [TD-15](#td-15) | Identity: plaintext unsubscribe tokens | P2 | accepted |
+| [TD-16](#td-16) | Operations: Caddy state outside the backup | P2 | accepted |
+| [TD-17](#td-17) | Operations: backup checksum manifest is not portable | P3 | resolved |
 
-Open counts: 2 P1, 6 P2, 4 P3. The 2026-10 refactor resolved most findings in the
-[code quality review](../history/code-quality-review.md); their dispositions
-remain there as evidence and are not repeated here.
+Open counts: 1 P1, 0 P2, 0 P3. Accepted: TD-13 (P3), TD-15 (P2) and TD-16 (P2);
+accepted debt stays listed. Every other entry is resolved. The 2026-10 refactor
+resolved most findings in the [code quality review](../history/code-quality-review.md);
+their dispositions remain there as evidence and are not repeated here.
 
 ## P1 - before relying or launching
 
@@ -56,6 +57,13 @@ currently limited only by application behavior.
   and accepting the gap explicitly. If accepted, write the reason and the
   compensating controls in this entry.
 - **Source:** old open-work technical debt.
+
+*Disposition (2026-11): fixed (TD-01) - the caddy image pins `caddy-ratelimit`
+  (`5625512`, because the v0.1.0 tag predates Caddy 2.10). The public zone allows
+  20 events per 2s per client IP (about 10 r/s sustained with a burst of 20) and
+  groups IPv6 clients by /64; login is limited to 10 per minute. Both zones run
+  before the application handlers, so the application honeypot is no longer the
+  only brake.*
 
 ### TD-06
 
@@ -88,7 +96,7 @@ are rejected. An unchecked manual copy can fail mid-run or silently drop rows.
 
 *Update (2026-11): the manual checklist is complete
 ([manual-migration-checklist](manual-migration-checklist.md)); executing the
-rehearsal and reconciliation is the open work.*
+rehearsal and reconciliation is the open work. This is the only open P1.*
 
 ## P2 - next focused cleanup
 
@@ -102,6 +110,13 @@ are present at Caddy.
   exceptions), test embeds and inline styles, then ship it with the caddy image.
 - **Source:** old open-work technical debt.
 
+*Disposition (2026-11): fixed (TD-02) - a baseline CSP ships with the shared site
+  headers in the Caddyfile: self-only defaults, `frame-ancestors 'none'`,
+  `form-action 'self'`, image/font/connect/worker restrictions and
+  `upgrade-insecure-requests`. Scripts and styles still allow inline code, so
+  this is a baseline policy rather than a nonce-based strict policy; revisit if
+  an embed needs more than the current policy allows.*
+
 ### TD-04
 
 **The PostgreSQL major-version upgrade path is undocumented.** Images stay pinned,
@@ -111,6 +126,13 @@ data loss.
 - **Next action:** write and exercise a dump/restore or `pg_upgrade` procedure in
   a drill, including extensions, roles and media consistency.
 - **Source:** old open-work technical debt.
+
+*Disposition (2026-11): fixed (TD-04) - the dump/restore major-version procedure
+  is documented in [backup and restore](../operations/backup-restore.md#postgresql-major-version-upgrade):
+  stop the app units, `pg_dumpall --globals-only` plus `pg_dump -Fc`, move to the
+  new data directory and major, restore, reconcile role passwords from the
+  vault, run the migrate unit, verify and re-enable backups. It has not been
+  exercised on a real major upgrade; the restore drill is the next evidence.*
 
 ### TD-05
 
@@ -122,10 +144,12 @@ Linux, so this is a development-host risk.
   reparse points or accept the gap and document why. Owner decision.
 - **Source:** old open-work technical debt.
 
-*Disposition (2026-11): hardened in code - `StorageFiles.checkPath` rejects a
-symbolic-link storage root and walks every ancestor rejecting symbolic links on
-all path entry points; the JDK reports NTFS junctions as symlinks. Remaining:
-verify once against a real Windows junction, then close.*
+*Disposition (2026-11): fixed (TD-05) - `StorageFiles.checkPath` rejects a
+  symbolic-link storage root and walks every ancestor rejecting links/reparse
+  points on all path entry points. The Windows junction tests now pass where the
+  host can create a junction (`mklink /J`), and the filesystem walk leaves an
+  outside target untouched when a junction is inside the directory being
+  removed.*
 
 ### TD-07
 
@@ -151,6 +175,17 @@ defined.
 - **Next action:** decide the lifecycle policy first, then implement deletion and
   cancellation as explicit state transitions with an audit trail.
 - **Source:** R09.
+
+*Disposition (2026-11): fixed (TD-08) - products and variants are retired by
+  archiving (`archived_at`/`archived_by`) and never hard-deleted, so stock rows
+  and reservation snapshots survive. Reservations are never hard-deleted and are
+  cancelled only through an explicit one-time transition from `new`/`in-progress`
+  that locks the reservation and variant, restores tracked stock once, and
+  records `cancelled_at`/`cancelled_by`/`cancellation_reason`/`stock_restored`.
+  Queued campaigns are irreversible; only drafts are deletable, because queued
+  mail has no cancellation contract. Covered by
+  `web/tests/zelglihof-lifecycle.test.ts` and the PostgreSQL-gated repository
+  suites.*
 
 ### TD-09
 
@@ -192,8 +227,17 @@ the Zelglihof data package and was deferred in the 2026-10 pass.
 - **Source:** D10; old open-work technical debt.
 
 *Update (2026-11): confirmation tokens are hashed at rest; unsubscribe tokens
-are still plaintext and are looked up by equality, so the token-contract
-decision (including migration of existing links) remains open.*
+are still plaintext and are looked up by equality.*
+
+*Disposition (2026-11): accepted (TD-15) - unsubscribe tokens stay plaintext for
+  launch (D20). The value is a random per-subscriber token, and it is also copied
+  into queued message bodies, so hashing the column alone would not remove the
+  exposure. The risk is low-severity integrity: a leaked queue/body copy could
+  unsubscribe one address; it grants no read access and exposes no personal data
+  beyond the subscriber address. Controls: HTTPS-only delivery, hashed
+  confirmation tokens, seven-day sessions, an idempotent single-purpose endpoint
+  and fewer than ten accounts. Revisit when newsletter volume or public accounts
+  grow.*
 
 ### TD-16
 
@@ -207,6 +251,14 @@ Encrypt rate limits.
   DNS/token procedure.
 - **Source:** D12 vs. `ansible/files/backup.sh`.
 
+*Disposition (2026-11): accepted (TD-16) - ACME state is deliberately excluded
+  (D21). A rebuilt host re-issues through DNS-01 with
+  `vault_infomaniak_api_token` and `vault_acme_email`; the Caddyfile is baked
+  into the image, `CertificateExpiringSoon` warns 14 days ahead, and the
+  re-issuance step is part of the restore drill. The accepted consequence is
+  dependence on the vault token and Let's Encrypt rate limits during recovery;
+  the procedure is in [backup and restore](../operations/backup-restore.md#caddy-acme-state-and-re-issuance).*
+
 ## P3 - smaller or later
 
 ### TD-03
@@ -217,6 +269,11 @@ not content-hashed, so they cannot be cached immutably.
 - **Next action:** content-hash public assets, then raise the cache lifetime for
   hashed paths. App-owned `/api/assets/*` headers already win.
 - **Source:** old open-work technical debt.
+
+*Disposition (2026-11): fixed (TD-03) - Vite build assets with a content hash
+  under `/assets/` are `public, max-age=31536000, immutable`; unhashed public
+  files (PDFs, logos, fonts) keep the one-hour default. Uploaded images under
+  `/api/assets/*` keep their own cache headers.*
 
 ### TD-10
 
@@ -245,9 +302,11 @@ not bounded by campaign size. A very large campaign holds a long transaction.
   cursor. Decision-gated on expected volume.
 - **Source:** R19.
 
-*Update (2026-11): recipients are now paged with a keyset cursor, but the whole
-send still runs in one transaction and is not resumable; the bound/resumable
-decision remains open.*
+*Disposition (2026-11): fixed (TD-12) - a campaign is bounded at 500 active
+  recipients (`campaignRecipientLimit`). The count runs inside the campaign
+  transaction before anything is queued; an over-limit run returns the typed
+  `too-large` outcome and leaves the draft unchanged. Recipients are still paged
+  with a keyset cursor inside that bound.*
 
 ### TD-13
 
@@ -259,6 +318,15 @@ CI.
   boundaries, then a formatter/check that matches the project style.
 - **Source:** R33 partial; `services/README.md`.
 
+*Disposition (2026-11): partially resolved / accepted (TD-13) - Checkstyle now
+  runs in `mvn test` (configuration in `services/checkstyle.xml`, main and test
+  sources, errors fail the build), so the style gate is closed. A real-PostgreSQL
+  Java integration suite is accepted post-launch debt: service boundaries are
+  covered by unit tests, the data layer has PostgreSQL-gated web suites, and a
+  second Java database fixture would duplicate the migration setup for little
+  launch value at this volume. Revisit when a service boundary changes or an
+  integration regression appears.*
+
 ### TD-17
 
 **The backup checksum manifest is not portable.** `backup.sh` runs
@@ -269,6 +337,10 @@ find the files; verification is manual and easy to skip.
 - **Next action:** write relative names (`cd "$WORK" && sha256sum * > SHA256SUMS`)
   so the archive verifies with `sha256sum -c SHA256SUMS` after extraction.
 - **Source:** `ansible/files/backup.sh`; restore procedure.
+
+*Disposition (2026-11): fixed (TD-17) - the manifest is written from the work
+  directory with relative names, so `sha256sum -c SHA256SUMS` verifies the
+  extracted archive on another machine.*
 
 ## Accepted limitations (not debt)
 
@@ -282,7 +354,7 @@ defects. Revisit only when the stated condition changes.
 | No host firewall | The router forwards and unit bind addresses are the boundary; a host firewall would not stop published ports. |
 | No CDN; media on disk | Private server, small audience; the assets service owns cache headers. |
 | Journald only, no Loki | One host and a 200 MB cap are enough until log volume or query needs grow. |
-| Monitoring state is not backed up | Prometheus/Grafana history is disposable; application data is not. |
+| Monitoring state is not backed up | Prometheus/Grafana history is disposable; application data is not. Dashboards are restored by hand. |
 | Dev compose is not a production mirror | The server runs podman/Quadlet; mirroring it would add a second topology to maintain. |
 | No payments on Zelglihof | The product is a preorder intent, not a shop; adding payments is a new decision. |
 | No universal CMS, page builder or tenant model | Sites are custom and independent; shared code moves only after a second consumer. |

@@ -31,22 +31,26 @@ function assetSite(data: unknown) {
 	return parsed.data.site;
 }
 
-export const listAssets = createServerFn({ method: "GET" }).middleware([studioAuthorization(assetSite)])
+export const listAssets = createServerFn({ method: "GET" })
+	.middleware([studioAuthorization(assetSite)])
 	.validator(listAssetInput)
 	.handler(async ({ data }) => {
 		return assets[data.kind].list(data.site, data.page, data.size);
 	});
-export const setAssetVisibility = createServerFn({ method: "POST" }).middleware([studioAuthorization(assetSite)])
+export const setAssetVisibility = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization(assetSite)])
 	.validator(visibilityInput)
 	.handler(async ({ data }) => {
 		await assets[data.kind].visibility(data.site, data.id, data.visible);
 	});
-export const deleteAsset = createServerFn({ method: "POST" }).middleware([studioAuthorization(assetSite)])
+export const deleteAsset = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization(assetSite)])
 	.validator(deleteAssetInput)
 	.handler(async ({ data }) => {
 		await assets[data.kind].delete(data.site, data.id);
 	});
-export const uploadAsset = createServerFn({ method: "POST" }).middleware([studioAuthorization(assetSite)])
+export const uploadAsset = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization(assetSite)])
 	.validator((input: unknown) => input as FormData)
 	.handler(async ({ data }) =>
 		// One boundary: the handler-level schema reads leave typed as validation

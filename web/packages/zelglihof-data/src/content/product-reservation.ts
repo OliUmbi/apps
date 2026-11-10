@@ -26,6 +26,10 @@ export interface ProductReservation {
 	quantity: number;
 	note: string | null;
 	status: ReservationStatus;
+	cancelledAt: string | null;
+	cancelledBy: string | null;
+	cancellationReason: string | null;
+	stockRestored: boolean;
 	submissionId: string | null;
 	createdAt: string;
 	updatedAt: string;
@@ -49,5 +53,30 @@ export function productReservationInputFromRecord(
 ): ProductReservationInput {
 	return {
 		status: record.status,
+	};
+}
+
+// Cancellation is an explicit transition: only open work can be cancelled, and
+// stock is restored only when the reservation was created against a tracked
+// variant that still exists with tracked stock. A missing or unlimited variant
+// cancels without a stock change (the reservation records that fact).
+export type ReservationCancellationPlan =
+	| { allowed: true; restoreStock: boolean }
+	| { allowed: false };
+
+export function decideReservationCancellation(input: {
+	status: ReservationStatus;
+	variantQuantity: number | null;
+	variantExists: boolean;
+	variantCurrentQuantity: number | null;
+}): ReservationCancellationPlan {
+	if (input.status !== "new" && input.status !== "in-progress")
+		return { allowed: false };
+	return {
+		allowed: true,
+		restoreStock:
+			input.variantQuantity !== null &&
+			input.variantExists &&
+			input.variantCurrentQuantity !== null,
 	};
 }

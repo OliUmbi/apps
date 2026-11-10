@@ -1,1 +1,0 @@
--- Reserved for the future Oliumbi site. No schema is defined until its product model is agreed.

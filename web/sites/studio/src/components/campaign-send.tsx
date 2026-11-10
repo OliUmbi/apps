@@ -80,9 +80,15 @@ export function CampaignSend({ id }: { id: string }) {
 						<Alert tone="error">
 							{feedback === "stale-draft"
 								? m.studio_campaign_send_stale()
-								: feedback === "failed"
-									? m.studio_campaign_send_error()
-									: null}
+								: feedback === "too-large" &&
+										mutation.data?.outcome === "too-large"
+									? m.studio_campaign_send_too_large({
+											count: mutation.data.count,
+											limit: mutation.data.limit,
+										})
+									: feedback === "failed"
+										? m.studio_campaign_send_error()
+										: null}
 						</Alert>
 						{feedback === "stale-draft" ? (
 							<Button

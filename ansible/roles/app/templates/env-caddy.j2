@@ -1,3 +1,5 @@
 # rendered by ansible from group_vars/vault.yml -- do not edit on the server
+# Quadlet passes this file to `podman run --env-file`, which keeps values
+# literally: do not quote them (quotes would become part of the secret).
 ACME_EMAIL={{ vault_acme_email }}
 INFOMANIAK_API_TOKEN={{ vault_infomaniak_api_token }}

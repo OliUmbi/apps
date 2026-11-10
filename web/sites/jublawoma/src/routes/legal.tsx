@@ -32,8 +32,15 @@ function Imprint() {
 					? leadership.map((member) => member.name).join(" · ")
 					: m.jublawoma_legal_leadership_names()}
 			</p>
-			<h2>{m.jublawoma_legal_liability_copyright_title()}</h2>
-			<p>{m.jublawoma_legal_liability_copyright_body()}</p>
+			<h2>{m.jublawoma_legal_liability_title()}</h2>
+			<p className="whitespace-pre-line">
+				{m.jublawoma_legal_liability_body()}
+			</p>
+			<h2>{m.jublawoma_legal_liability_links_title()}</h2>
+			<p>{m.jublawoma_legal_liability_links_body()}</p>
+			<h2>{m.jublawoma_legal_copyright_title()}</h2>
+			<p>{m.jublawoma_legal_copyright_body()}</p>
+			<p>{m.jublawoma_legal_source()}</p>
 		</section>
 	);
 }

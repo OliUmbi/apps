@@ -8,11 +8,15 @@ production system stays authoritative until a feature's cutover is complete;
 
 **Current position (2026-11).** The legacy stack is still live and authoritative.
 The replacement exists and passes its local gates, but no site has been cut over.
-The complete launch gate includes deployment/bootstrap, application P1 debt,
-restore and import rehearsals, and content/legal approval; see
-[open work](open-work.md) and the [remediation plan](go-live-remediation-plan.md).
-Deploy mechanics are in [deployment](../operations/deployment.md); the cutover
-sequence is below.
+Oliumbi is now a static placeholder on `:8004` with its apex route, so it is no
+longer a missing site. The complete launch gate includes deployment/bootstrap,
+application P1 debt, restore and import rehearsals, and content/legal approval;
+see [open work](open-work.md) and the
+[remediation plan](go-live-remediation-plan.md). Migrations end at V009 (V007
+Jublawoma, V008 Uncle-T, V009 Zelglihof); the old empty Oliumbi placeholder
+migration is removed and its schema/role stays reserved in V001. Deploy
+mechanics are in [deployment](../operations/deployment.md); the cutover sequence
+is below.
 
 ## Phases
 
@@ -21,13 +25,14 @@ sequence is below.
 3. **Shared migration capabilities** — publication/archive/revision behavior, media import with deterministic derivatives, editor management, the owner-led manual mapping and reconciliation checklist (D16), and redirect/sitemap conventions.
 4. **First legacy site (Uncle-T first: lower scope and risk)** — build against sanitized data, rehearse imports repeatedly, owner acceptance in a production-like environment, then freeze writes briefly, final export/import/reconcile, cut over with monitoring and a rollback window, keep legacy protected until acceptance.
 5. **Second legacy site (Jublawoma)** — reuse proven contracts, not the first site's page components. Decide articles, events, documents, donations, points and youth-privacy handling.
-6. **Oliumbi and experiments** — small MVP after the primary sites operate; experiments get explicit boundaries so they cannot destabilize client sites.
+6. **Oliumbi and experiments** — the static placeholder operates at the apex; real content is post-launch. Experiments get explicit boundaries so they cannot destabilize client sites.
 7. **Retire legacy** — all domains and consumers on the replacement, reconciliation reports accepted, redirect/access-log review clean, final encrypted archives created and restore-tested, retention dates recorded, observation window stable, rollback independent of the old stack. Then decommission containers, credentials, DNS records and volumes; remove `legacy/` only once its useful knowledge lives here.
 
 ## Data migration method
 
 Use the [owner-led manual migration checklist](manual-migration-checklist.md)
-(D16); no importer will be built.
+(D16); no importer will be built. The replacement schema is at the V009 baseline
+until the first accepted production import freezes it.
 
 - **Discover**: row counts, invalid references, status values, duplicates,
   timestamps, encodings, orphaned media; identify personal data.
@@ -63,11 +68,15 @@ rollback criteria agreed. Then:
 4. run the final migration and reconciliation;
 5. deploy database-compatible application versions;
 6. internal and external smoke tests;
-7. switch proxy routing or DNS;
+7. switch proxy routing or DNS, then explicitly enable live dyndns
+   (`-e dyndns_enabled=true`). Before this run the timer is installed but stopped,
+   so a parallel host cannot change live records;
 8. verify TLS, redirects, forms, login, admin permissions, media, logs, health
    and message delivery;
-9. owner runs a short acceptance script;
-10. observe closely for the agreed window.
+9. owner runs a short acceptance script and records the first durable public
+   write (the point of no return);
+10. observe closely for the agreed window; the owner signs off before legacy is
+    retired.
 
 Rollback triggers are objective: inaccessible primary routes, lost or corrupt
 submissions, unsafe authorization, broken admin workflow, invalid TLS, or error
@@ -77,7 +86,10 @@ version; down-migrations are never the default recovery.
 **Cutover data gap (RV-04):** routing back to legacy after the replacement has
 accepted writes can strand those submissions on the new database. Before public
 forms open, define the point of no return and the new-write export/replay or
-roll-forward procedure. A DNS rollback alone is not a data-safe rollback.
+roll-forward procedure. The first durable public write is that point (D23). After
+it, a DNS rollback alone is not a data-safe rollback: export/replay the accepted
+writes or roll forward, and keep the owner's sign-off and observation window in
+the record.
 
 ## Roadmap rules
 

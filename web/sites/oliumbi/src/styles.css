@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+	--color-canvas: #f7f4ee;
+	--color-ink: #1c1b18;
+	--color-muted: #5f5a51;
+	--color-line: #ded8cc;
+	--color-accent: #2f5d50;
+	--font-display: ui-serif, Georgia, "Times New Roman", serif;
+	--font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Base element styles: not expressible as utilities. */
+:root {
+	color: var(--color-ink);
+	background: var(--color-canvas);
+	font-family: var(--font-sans);
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+}
+
+a,
+button {
+	-webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible {
+	outline: 3px solid var(--color-accent);
+	outline-offset: 4px;
+}
+
+::selection {
+	color: var(--color-canvas);
+	background: var(--color-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		transition-duration: 0.01ms;
+		animation-duration: 0.01ms;
+		animation-iteration-count: 1;
+	}
+}

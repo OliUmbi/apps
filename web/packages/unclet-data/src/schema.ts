@@ -45,7 +45,7 @@ export const review = unclet.table("review", {
 	name: text("name").notNull(),
 	description: text("description").notNull(),
 	visible: boolean("visible").notNull(),
-	// Idempotency key from the public form; unique index in V009.
+	// Idempotency key from the public form; unique index in V008.
 	submissionId: uuid("submission_id"),
 	createdAt: isoTimestamp("created_at").notNull(),
 	updatedAt: isoTimestamp("updated_at").notNull(),
@@ -61,7 +61,7 @@ export const inquiry = unclet.table("inquiry", {
 	location: text("location"),
 	guestCount: integer("guest_count"),
 	note: text("note"),
-	// Idempotency key from the public form; unique index in V009.
+	// Idempotency key from the public form; unique index in V008.
 	submissionId: uuid("submission_id"),
 	createdAt: isoTimestamp("created_at").notNull(),
 	updatedAt: isoTimestamp("updated_at").notNull(),

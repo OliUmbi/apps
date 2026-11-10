@@ -29,6 +29,7 @@ scrape_configs:
           - http://jublawoma:8001/
           - http://unclet:8002/
           - http://zelglihof:8003/
+          - http://oliumbi:8004/
           - http://studio:8000/
     relabel_configs:
       - source_labels: [__address__]
@@ -52,21 +53,37 @@ scrape_configs:
       - target_label: __address__
         replacement: blackbox:9115
 
-  # certificate expiry, probed from the inside
+  # TLS and certificate expiry, probed against Caddy on the app network. Each
+  # target uses a per-site module that sends the public name as SNI and Host,
+  # so the probe never depends on NAT hairpin (DR-18). instance stays the public
+  # hostname, which the cert-expiry alert reports.
   - job_name: tls
     metrics_path: /probe
-    params:
-      module: [http_2xx]
     static_configs:
-      - targets:
-          - https://jublawoma.ch
-          - https://uncle-t.ch
-          - https://zelglihof-maegenwil.ch
-          - https://studio.oliumbi.ch
+      - targets: ["https://caddy:443/"]
+        labels:
+          public_host: jublawoma.ch
+          probe_module: https_jublawoma
+      - targets: ["https://caddy:443/"]
+        labels:
+          public_host: uncle-t.ch
+          probe_module: https_unclet
+      - targets: ["https://caddy:443/"]
+        labels:
+          public_host: zelglihof-maegenwil.ch
+          probe_module: https_zelglihof
+      - targets: ["https://caddy:443/"]
+        labels:
+          public_host: studio.oliumbi.ch
+          probe_module: https_studio
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
-      - source_labels: [__param_target]
+      - source_labels: [probe_module]
+        target_label: __param_module
+      - source_labels: [public_host]
         target_label: instance
       - target_label: __address__
         replacement: blackbox:9115
+      - regex: public_host|probe_module
+        action: labeldrop

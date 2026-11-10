@@ -24,7 +24,7 @@ are in [database/README.md](../../database/README.md).
 
 | Term | Meaning |
 | --- | --- |
-| **Content item** | A managed record with a lifecycle (draft, published, archived). |
+| **Content item** | A managed record with a lifecycle. Visibility and archive are columns, not one shared status vocabulary. |
 | **Article / announcement** | Editorial content. Zelglihof calls the seasonal ones "posts". |
 | **Media asset** | An original file plus metadata and derived renditions. Content is immutable; replacing it creates a new asset. |
 | **Product offer** | A sellable item with availability and optional variants. |
@@ -35,7 +35,10 @@ are in [database/README.md](../../database/README.md).
 | **Donation campaign** | A Jublawoma fundraising window with items and commitments. |
 | **Donation commitment** | A donor's promised quantity against a donation item. It is not a payment. |
 | **Subscriber** | A newsletter contact with a pending/active/unsubscribed state and consent. |
-| **Campaign** | A newsletter send to confirmed subscribers. |
+| **Campaign** | A newsletter send to confirmed subscribers. Editable while `draft`; irreversible once `queued`, and bounded at 500 recipients. |
+| **Archive** | Retiring a managed record by setting `archived_at`/`archived_by`. It is a lifecycle column, not a status; the row and its history stay, public reads hide it. |
+| **Cancellation** | A one-way transition from open work to `cancelled`, with audit columns and, where stock was reserved, exactly one stock restoration. It is not a generic status edit. |
+| **Static placeholder** | The first Oliumbi slice: fixed English wording, no database or service dependency. |
 
 ## Per-workflow states
 
@@ -47,13 +50,15 @@ Shared spelling is not shared meaning: each workflow owns its states.
 | Inquiry (Uncle-T event request) | `new`, `in-progress`, `completed`, `cancelled` |
 | Product reservation | `new`, `in-progress`, `completed`, `cancelled` |
 | Newsletter subscriber | `pending`, `active`, `unsubscribed` |
-| Newsletter campaign | `draft`, `queued` |
+| Newsletter campaign | `draft`, `queued` (queued is irreversible) |
 | Review moderation | no status column; `visible = false` is pending, `true` is published |
 | Message delivery | `PENDING`, `PROCESSING`, `SENT`, `FAILED` |
 | Message attempt | `SENT`, `RETRY`, `FAILED`, `ABANDONED`, `REJECTED` |
 
 The database enforces these domains with CHECK constraints. Request validation
-remains for useful feedback; it is not the enforcement mechanism.
+remains for useful feedback; it is not the enforcement mechanism. Archive is not
+part of this vocabulary: it is a lifecycle column, never a status value.
+Cancellation is the only path to `cancelled`.
 
 ## Naming rules
 

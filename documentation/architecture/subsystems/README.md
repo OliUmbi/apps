@@ -6,7 +6,7 @@ gaps affect it. Deep local detail stays in the README next to the code.
 
 | Subsystem | Owns | Runs as | Read this when |
 | --- | --- | --- | --- |
-| [Web apps](web-apps.md) | public SSR sites, shared web packages | `apps-jublawoma`, `apps-unclet`, `apps-zelglihof` | changing a public page, form or shared web package |
+| [Web apps](web-apps.md) | public SSR sites, the static Oliumbi placeholder, shared web packages | `apps-jublawoma`, `apps-unclet`, `apps-zelglihof`, `apps-oliumbi` | changing a public page, form or shared web package |
 | [Studio](studio.md) | administration UI, content editing, authorization boundary | `apps-studio` | changing admin behavior, permissions or content editing |
 | [Identity](identity.md) | accounts, sessions, permissions | `apps-identity` | changing sign-in, passwords, sessions or authorization data |
 | [Messaging](messaging.md) | queue intake, email delivery, history | `apps-messaging` | changing notifications, retries or delivery visibility |

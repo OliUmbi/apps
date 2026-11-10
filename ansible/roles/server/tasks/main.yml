@@ -8,6 +8,7 @@
       - gnupg
       - jq
       - rsync
+      - sudo
       - unattended-upgrades
       - wireguard
     update_cache: true
@@ -76,4 +77,14 @@
       ListenAddress {{ wireguard_address.split('/')[0] }}
       PasswordAuthentication no
   when: restrict_ssh | bool
+  notify: restart sshd
+
+# Keeping the drop-in when restrict_ssh flips back to false would leave SSH
+# bound to the tunnel forever. Removing it makes the restriction reversible
+# (DR-19).
+- name: sshd listens on all interfaces again
+  ansible.builtin.file:
+    path: /etc/ssh/sshd_config.d/60-wireguard.conf
+    state: absent
+  when: not (restrict_ssh | bool)
   notify: restart sshd

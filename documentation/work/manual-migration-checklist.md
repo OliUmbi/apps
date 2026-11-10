@@ -12,7 +12,8 @@ content. Keep source extracts, mapping notes and production values outside git.
       **migrate / replace / archive / drop** with owner approval.
 - [ ] Real email is disabled for rehearsal. Historical records will not create
       queue rows or notifications.
-- [ ] The replacement schema is at the accepted pinned migration baseline.
+- [ ] The replacement schema is at the accepted pinned migration baseline (V009
+      before the first accepted import).
 
 ## Map before copying
 
@@ -82,10 +83,16 @@ final acceptance.
 - [ ] Repeat this checklist into PostgreSQL 18; do not improvise a different
       mapping during the cutover window.
 - [ ] Complete both reconciliation tables with zero unexplained failures.
-- [ ] Run internal smoke tests before switching router forwarding/DNS.
+- [ ] Run internal smoke tests before switching router forwarding/DNS. Keep
+      dyndns disabled before cutover; enable it only in the cutover run
+      (`-e dyndns_enabled=true`).
+- [ ] Record the first durable public write as the point of no return. Before it,
+      routing may return to legacy; after it, export/replay the new writes or
+      roll forward. A DNS-only rollback is not data-safe.
 - [ ] Take and pull a fresh replacement backup immediately after cutover.
 - [ ] Keep legacy protected through the observation window; apply RV-04 before
-      any rollback that could strand new writes.
+      any rollback that could strand new writes. Record the owner's sign-off and
+      the observation window.
 - [ ] After acceptance, retain final encrypted archives and record the retention
       dates before decommissioning legacy.
 

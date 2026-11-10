@@ -6,15 +6,18 @@ What is unfinished, and where each kind of unfinished thing lives.
 
 - **Launch blockers** - the **Launch gate** section of [open work](open-work.md),
   all P1 debt, DR-04–DR-07 and RV-01–RV-04. Execution order and acceptance:
-  [first go-live remediation plan](go-live-remediation-plan.md).
-- **P1 debt** - [TD-01](tech-debt.md#td-01) proxy rate limiting and
-  [TD-14](tech-debt.md#td-14) legacy import validation.
+  [first go-live remediation plan](go-live-remediation-plan.md). The DR/RV
+  findings are code complete; their remaining work is real-host verification.
+- **P1 debt** - [TD-14](tech-debt.md#td-14) legacy import validation. TD-01 is
+  resolved and the other P1 items are closed.
 - **Deployment P1 blockers** - DR-04 to DR-07 in
   [open work](open-work.md#build-and-deployment-review-2026-11): role
-  provisioning, monitoring permissions, the `latest` default and Studio DNS.
-- **Owner choices** - O-006 (account model) and O-010 (schema ownership) in
-  [decisions](../reference/decisions.md#still-open), plus the content, legal and
-  wording decisions under **Owner decisions** in [open work](open-work.md).
+  provisioning, monitoring permissions, the pinned tag and Studio DNS are
+  implemented and need host evidence.
+- **Owner choices** - the resolved directions are in
+  [decisions](../reference/decisions.md), plus the remaining content, photo and
+  deliverability items under **Owner decisions** in [open work](open-work.md).
+  O-006 and O-010 are ratified.
 
 | Register | Holds | Use it when |
 | --- | --- | --- |

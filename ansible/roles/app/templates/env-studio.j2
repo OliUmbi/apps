@@ -1,5 +1,10 @@
 # rendered by ansible from group_vars/vault.yml -- do not edit on the server
-DATABASE_URL=postgres://{{ vault_studio_database_user }}:{{ vault_studio_database_password }}@postgres:5432/{{ vault_postgres_db }}
+# Quadlet passes this file to `podman run --env-file`, which keeps values
+# literally: do not quote them (quotes would become part of the secret).
+# The database role is fixed in the app; DATABASE_URL stays free of credentials
+# and the password is supplied separately (DR-11).
+DATABASE_URL=postgresql://postgres:5432/{{ vault_postgres_db }}
+STUDIO_DATABASE_PASSWORD={{ vault_studio_database_password }}
 ASSETS_INTERNAL_AUTHORIZATION_TOKEN={{ vault_assets_internal_authorization_token }}
 MESSAGING_INTERNAL_AUTHORIZATION_TOKEN={{ vault_messaging_internal_authorization_token }}
 IDENTITY_INTERNAL_AUTHORIZATION_TOKEN={{ vault_identity_internal_authorization_token }}

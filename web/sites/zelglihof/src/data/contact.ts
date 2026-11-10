@@ -13,6 +13,6 @@ export const sendContactInquiry = createServerFn({ method: "POST" })
 function saveContactInquiry(input: ContactInput) {
 	return createInquiryService(
 		database,
-		process.env.ZELGLIHOF_REQUESTS_EMAIL ?? "hof@zelglihof.ch",
+		process.env.ZELGLIHOF_REQUESTS_EMAIL ?? "hof@zelglihof-maegenwil.ch",
 	).submit(input);
 }

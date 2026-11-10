@@ -1,4 +1,5 @@
 import { AppError, idSchema } from "@oliumbi/contracts";
+import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import {
 	newAccountSchema,
@@ -6,43 +7,50 @@ import {
 	permissionSchema,
 	updateAccountSchema,
 } from "../model/accounts";
-import { createServerFn } from "@tanstack/react-start";
 import { identity } from "./identity.server";
 import { studioAuthorization } from "./studio-authorization";
 
-export const listAccounts = createServerFn({ method: "GET" }).middleware([studioAuthorization()]).handler(async () => {
-	return identity.listAccounts();
-});
-export const getAccount = createServerFn({ method: "GET" }).middleware([studioAuthorization()])
+export const listAccounts = createServerFn({ method: "GET" })
+	.middleware([studioAuthorization()])
+	.handler(async () => {
+		return identity.listAccounts();
+	});
+export const getAccount = createServerFn({ method: "GET" })
+	.middleware([studioAuthorization()])
 	.validator(idSchema)
 	.handler(async ({ data }) => {
 		return identity.getAccount(data);
 	});
-export const createAccount = createServerFn({ method: "POST" }).middleware([studioAuthorization()])
+export const createAccount = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization()])
 	.validator(newAccountSchema)
 	.handler(async ({ data }) => {
 		return identity.createAccount(data);
 	});
-export const updateAccount = createServerFn({ method: "POST" }).middleware([studioAuthorization()])
+export const updateAccount = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization()])
 	.validator(updateAccountSchema)
 	.handler(async ({ data, context }) => {
 		if (data.id === context.actor.id && !data.enabled)
 			throw new AppError("forbidden", "Cannot disable your own account");
 		return identity.updateAccount(data.id, data);
 	});
-export const deleteAccount = createServerFn({ method: "POST" }).middleware([studioAuthorization()])
+export const deleteAccount = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization()])
 	.validator(idSchema)
 	.handler(async ({ data, context }) => {
 		if (data === context.actor.id)
 			throw new AppError("forbidden", "Cannot delete your own account");
 		await identity.deleteAccount(data);
 	});
-export const changePassword = createServerFn({ method: "POST" }).middleware([studioAuthorization()])
+export const changePassword = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization()])
 	.validator(z.object({ id: idSchema, password: passwordSchema }))
 	.handler(async ({ data }) => {
 		await identity.changePassword(data.id, data.password);
 	});
-export const setPermission = createServerFn({ method: "POST" }).middleware([studioAuthorization()])
+export const setPermission = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization()])
 	.validator(
 		z.object({
 			id: idSchema,

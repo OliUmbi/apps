@@ -6,8 +6,8 @@ reachable from the internet.
 ## Responsibility
 
 Terminate TLS, route each hostname to the owning application, apply baseline
-security headers and limits, and keep the managed DNS records pointed at the
-current public IP.
+security headers, CSP, per-client rate limits and body limits, and keep the
+managed DNS records pointed at the current public IP.
 
 ## Components
 
@@ -18,18 +18,22 @@ current public IP.
 
 The Caddyfile is baked into the caddy image (`infrastructure/caddy/Dockerfile`),
 so a routing or header change ships as a new image tag like every other change.
+The image itself is pinned by `tag@digest`; the `caddy-ratelimit` plugin is
+pinned to a commit because the v0.1.0 tag predates Caddy 2.10 and lacks the
+config-reload fix.
 
 ## Routing
 
 | Public name | Destination |
 | --- | --- |
-| `jublawoma.ch`, `*.jublawoma.ch` | `jublawoma:8001` |
-| `uncle-t.ch`, `*.uncle-t.ch` | `unclet:8002` |
-| `zelglihof-maegenwil.ch`, `*.zelglihof-maegenwil.ch` | `zelglihof:8003` |
+| `jublawoma.ch` (and non-admin `*.jublawoma.ch`) | `jublawoma:8001` |
+| `uncle-t.ch` (and non-admin `*.uncle-t.ch`) | `unclet:8002` |
+| `zelglihof-maegenwil.ch` (and non-admin `*.zelglihof-maegenwil.ch`) | `zelglihof:8003` |
+| `oliumbi.ch` apex | `oliumbi:8004` (static placeholder) |
 | `studio.oliumbi.ch` | `studio:8000` |
 | `studio.*` and `admin.*` on customer domains | permanent redirect to `studio.oliumbi.ch` |
+| `admin.oliumbi.ch` | permanent redirect to `studio.oliumbi.ch` |
 | `www.*` | permanent redirect to the apex |
-| `oliumbi.ch` apex | placeholder redirect to Studio until the Oliumbi site exists |
 
 The old `api.*` style is retired: there are no redirects, and the DNS records
 are deleted at cutover. Hostnames are defined in one place,
@@ -54,11 +58,23 @@ Every site route inherits:
 - `X-Content-Type-Options: nosniff`;
 - `X-Frame-Options: DENY`;
 - `Referrer-Policy: strict-origin-when-cross-origin`;
-- a 10 MB request-body limit.
+- a baseline Content-Security-Policy: same-origin scripts, styles, fonts and
+  connections, inline styles/scripts as the sites currently require,
+  `data:`/`blob:` images, `frame-ancestors 'none'` and `object-src 'none'`;
+- a 10 MB request-body limit; the Studio host raises this to 51 MB so its
+  20 MiB images and 50 MiB PDFs fit.
+
+Rate limits are per client IP. The public zone allows 20 events per 2-second
+window (roughly 10 r/s with a burst of 20) and shares one bucket per IPv6 /64 so
+cycling addresses does not bypass it. The login zone is stricter and wins on its
+path: 10 requests per minute to `/api/session/login`, the dedicated Studio login
+route.
 
 Static files under `/assets/*`, `/images/*` and `/fonts/*` get a one-hour cache
-default only when the app set no header. Uploaded images under `/api/assets/*`
-carry their own `Cache-Control` and `ETag` and always win.
+default only when the app set no header. Hashed Vite build outputs under
+`/assets/` carry a content hash and are cached for a year as immutable.
+Uploaded images under `/api/assets/*` carry their own `Cache-Control` and `ETag`
+and always win.
 
 ## Exposure model
 
@@ -79,9 +95,9 @@ publishes a public port.
 
 ## Known gaps
 
-- Proxy-level rate limiting is absent; standard Caddy has none. See
-  [TD-01](../../work/tech-debt.md#td-01).
-- No Content-Security-Policy is sent; the legacy nginx sent one that referenced
-  `api.*`. See [TD-02](../../work/tech-debt.md#td-02).
-- Static asset caching remains a one-hour default until `public/` files are
-  content-hashed. See [TD-03](../../work/tech-debt.md#td-03).
+- Rate limiting, the CSP, hashed-asset caching and the custom image are code
+  complete; verify limits, CSP behavior and certificate renewal on the real host
+  before trusting a launch.
+- The dyndns timer is installed but disabled until cutover, so a parallel host
+  cannot change live A records. Enable it explicitly on the cutover run. See
+  [ansible/README.md](../../../ansible/README.md).

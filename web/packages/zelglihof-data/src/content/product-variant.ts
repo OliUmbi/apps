@@ -17,6 +17,8 @@ export interface ProductVariant {
 	imageId: string | null;
 	price: string;
 	quantity: number | null;
+	archivedAt: string | null;
+	archivedBy: string | null;
 	createdAt: string;
 	updatedAt: string;
 }

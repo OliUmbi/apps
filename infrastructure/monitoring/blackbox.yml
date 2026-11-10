@@ -9,3 +9,51 @@ modules:
   tcp_connect:
     prober: tcp
     timeout: 5s
+
+  # Internal TLS probes: connect to Caddy on the app network and present the
+  # public hostname as SNI and Host, so the probe never depends on NAT hairpin
+  # (DR-18). The certificate is the same one Caddy serves publicly, so
+  # probe_ssl_earliest_cert_expiry still covers it.
+  https_jublawoma:
+    prober: http
+    timeout: 10s
+    http:
+      valid_status_codes: [200]
+      preferred_ip_protocol: ip4
+      tls_config:
+        server_name: jublawoma.ch
+      headers:
+        Host: jublawoma.ch
+
+  https_unclet:
+    prober: http
+    timeout: 10s
+    http:
+      valid_status_codes: [200]
+      preferred_ip_protocol: ip4
+      tls_config:
+        server_name: uncle-t.ch
+      headers:
+        Host: uncle-t.ch
+
+  https_zelglihof:
+    prober: http
+    timeout: 10s
+    http:
+      valid_status_codes: [200]
+      preferred_ip_protocol: ip4
+      tls_config:
+        server_name: zelglihof-maegenwil.ch
+      headers:
+        Host: zelglihof-maegenwil.ch
+
+  https_studio:
+    prober: http
+    timeout: 10s
+    http:
+      valid_status_codes: [200]
+      preferred_ip_protocol: ip4
+      tls_config:
+        server_name: studio.oliumbi.ch
+      headers:
+        Host: studio.oliumbi.ch

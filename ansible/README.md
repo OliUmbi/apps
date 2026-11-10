@@ -19,8 +19,8 @@ these playbooks, run from the workstation over WireGuard. Context:
 
 - **Roles are concerns**: `server` (base system, podman, wireguard), `app`
   (systemd units + environment files), `dyndns`, `backup`, `housekeep`.
-- **Playbooks are actions**: `site` (everything), `deploy`, `backup`,
-  `housekeep`, `status`, `logs`.
+- **Playbooks are actions**: `site` (everything), `deploy`, `first-admin`,
+  `backup`, `housekeep`, `status`, `logs`.
 - **Server-side naming is `apps-<concern>`**: scripts in
   `/usr/local/sbin/apps-<concern>.sh`, units `apps-<concern>.service/.timer`,
   config `/etc/default/apps-<concern>`. The repo copies in `files/` drop the
@@ -31,13 +31,26 @@ these playbooks, run from the workstation over WireGuard. Context:
 ## quick reference
 
 ```sh
-ansible-playbook playbooks/site.yml                          # full setup
+ansible-playbook playbooks/site.yml -e image_tag=<tag>       # full setup
 ansible-playbook playbooks/deploy.yml -e image_tag=<tag>     # deploy/rollback
+ansible-playbook playbooks/first-admin.yml                    # one-time first Studio admin
 ansible-playbook playbooks/status.yml                        # what is going on
 ansible-playbook playbooks/logs.yml -e service=<name>        # read logs
 ansible-playbook playbooks/backup.yml                        # backup now
 ansible-playbook playbooks/housekeep.yml                     # housekeeping now
 ```
+
+`image_tag` has no default and `latest` is rejected: pass the release tag
+explicitly. `first-admin.yml` uses the vault's `vault_first_admin_*` values and
+must not be replaced by seeding an account in migrations.
+
+The `app` role starts postgres and `apps-migrate`, provisions the seven
+application database roles from the vault, verifies one login per role, and only
+then starts the application units. The reserved `oliumbi` role stays `NOLOGIN`
+because the site is static. The backup and housekeeping timers are templated from
+`backup_hour`, `housekeep_day` and `housekeep_hour`. The dyndns timer is installed
+but disabled before cutover (`dyndns_enabled: false`); enable it explicitly on
+the cutover run.
 
 Secrets: `ansible-vault create group_vars/vault.yml` (start from the
 example). Nothing secret is ever committed.

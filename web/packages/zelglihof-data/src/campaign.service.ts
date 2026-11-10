@@ -9,6 +9,7 @@ import type {
 	CampaignSendPlan,
 	CampaignSendResult,
 } from "./campaign.types";
+import { campaignRecipientLimit } from "./campaign.types";
 import { createCampaignRepository } from "./content/campaign.repository";
 
 const RECIPIENT_BATCH_SIZE = 100;
@@ -75,6 +76,16 @@ export function createCampaignService(
 						savedUpdatedAt: saved.updatedAt,
 					});
 					if (!plan.queue) return { outcome: plan.outcome };
+					// The bound is checked before anything is queued or the status
+					// changes: an over-limit run is a typed refusal that leaves the
+					// draft exactly as it was.
+					const recipientCount = await repository.countRecipients();
+					if (recipientCount > campaignRecipientLimit)
+						return {
+							outcome: "too-large",
+							count: recipientCount,
+							limit: campaignRecipientLimit,
+						};
 					const count = await queueRecipients(transaction, campaign, options);
 					await repository.markQueued(id, new Date());
 					return { outcome: "queued", count, savedAt: saved.updatedAt };

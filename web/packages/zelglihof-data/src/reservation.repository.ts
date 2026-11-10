@@ -1,6 +1,6 @@
 import { guardRepository } from "@oliumbi/contracts";
 import type { Transaction } from "@oliumbi/database";
-import { and, eq, isNotNull, sql } from "drizzle-orm";
+import { and, eq, isNotNull, isNull, sql } from "drizzle-orm";
 import type { ReservationInput } from "./forms";
 import type { ReservableVariant } from "./reservation.types";
 import { product, productReservation, productVariant } from "./schema";
@@ -33,6 +33,8 @@ export function createReservationRepository(transaction: Transaction) {
 					and(
 						eq(product.id, input.productId),
 						eq(productVariant.id, input.variantId),
+						isNull(product.archivedAt),
+						isNull(productVariant.archivedAt),
 					),
 				)
 				.for("update");

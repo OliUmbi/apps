@@ -373,3 +373,12 @@ Additional per-change checks:
 Total: ~13 tasks, 3 parallel waves plus gated tail. Every write set is exclusive; the
 only shared mutable file across parallel tasks is `de-CH.json` (serialized) and
 `documentation/*` (D6 only).
+
+## Disposition (2026-11)
+
+- **Z-04** — dead re-exports are gone; the placeholder farm counts and crop names
+  remain. Real numbers and names are owner-executed content, not a code task.
+- **Z-16** — fixed in code: the Zelglihof mail defaults now use
+  `hof@zelglihof-maegenwil.ch` and `newsletter@zelglihof-maegenwil.ch`; the
+  owner confirmed the newsletter/requests split. Provider deliverability and
+  mailbox existence remain verification evidence.

@@ -41,7 +41,9 @@ web/sites/studio/src/
 
 ## Authentication and authorization
 
-1. The sign-in form posts to a Studio server function.
+1. The sign-in form POSTs to the dedicated route `/api/session/login` (not a
+   server function), so Caddy can apply the 10-per-minute login rate limit to
+   that exact path.
 2. Studio calls identity's session endpoint with the internal bearer token and
    receives a session token plus actor.
 3. Studio sets an HTTP-only, `SameSite=Lax` cookie. `__Host-` and `Secure` are
@@ -70,11 +72,20 @@ clears the cookie only after identity confirms success.
    save returns a conflict outcome; Studio reports it and offers reload instead
    of silently overwriting another edit.
 4. A successful save returns the new record and timestamp.
-5. Publishing and archiving change explicit states; deletion is a separate,
-   confirmed action (see [TD-08](../../work/tech-debt.md#td-08) for the policy gap).
+5. Products and product variants retire by archiving, not deletion: the row and
+   its reservation history stay, `archived_at`/`archived_by` record the action,
+   and public reads hide it. Archiving is confirmed and one-way in Studio.
+6. Product reservations cancel as an explicit, irreversible transition that
+   restores reserved stock exactly once when a tracked variant still exists; a
+   missing or unlimited variant cancels without a stock change and records that
+   fact. Reservation history cannot be deleted.
+7. Draft campaigns can be edited or deleted; once queued, a campaign is
+   irreversible (queued mail has no cancellation contract). The send is bounded
+   at 500 recipients before anything is queued.
 
-Uploads are handled by the assets service. The editor tracks upload readiness
-and blocks saving while an upload runs (TD-07, fixed 2026-11).
+Uploads are handled by the assets service. Studio accepts 20 MiB images and
+50 MiB PDFs; Caddy allows 51 MB on the Studio host. The editor tracks upload
+readiness and blocks saving while an upload runs (TD-07, fixed 2026-11).
 
 ## Invariants
 
@@ -92,6 +103,8 @@ and blocks saving while an upload runs (TD-07, fixed 2026-11).
 Required: identity and assets service URLs plus their internal authorization
 tokens. Delivery history also needs messaging. `STUDIO_SECURE_COOKIES=true` over
 HTTPS. Site public URLs and owner email addresses are per-site settings.
+`/api/session/login` is the public sign-in path; the proxy rate limit depends on
+that route remaining stable.
 
 Health is `GET /`; the container health check uses it. Logs go to journald in
 production. Local setup is in [development/local-setup.md](../../development/local-setup.md).
@@ -103,3 +116,5 @@ production. Local setup is in [development/local-setup.md](../../development/loc
 - Mobile lists are design work in [open work](../../work/open-work.md). A
   related collection's panel navigation still bypasses the unsaved-edit warning
   (TD-09 residual).
+- Archive, cancellation and queued-campaign behavior are code complete; verify
+  the stock-restoration and archive paths on the real host with live-shaped data.

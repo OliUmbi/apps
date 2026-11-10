@@ -6,7 +6,7 @@
     mode: "0750"
 
 - name: backup units
-  ansible.builtin.copy:
+  ansible.builtin.template:
     src: "{{ repo_root }}/ansible/files/{{ item }}"
     dest: "/etc/systemd/system/{{ item }}"
     mode: "0644"

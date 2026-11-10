@@ -1,6 +1,8 @@
 # First go-live remediation plan
 
-**Status:** PROPOSED, 2026-11-06. No implementation package is complete.
+**Status:** IN PROGRESS, 2026-11-09. The code packages (G0-A to G0-D) are
+complete; no package is acceptance-complete without real-host, DNS, SMTP, backup
+or restore evidence.
 **Context:** `legacy/` is the currently deployed and authoritative system. The
 replacement will boot on a clean host for its first go-live. Keep legacy running
 and untouched until the rehearsed cutover; do not develop in `legacy/`.
@@ -28,6 +30,10 @@ identity/Studio paths, data contracts and migration tooling.
 - No remote CI run, deployed host, DNS, SMTP, backup pull or restore was
   exercised. Green local gates are not production readiness.
 
+*2026-11 update: the Windows junction tests now pass where the host can create a
+junction, Checkstyle runs in `mvn test`, and the migration head is V009. No
+remote/real-host evidence has been produced yet.*
+
 ## New review findings
 
 | ID | Finding | Required disposition |
@@ -49,14 +55,20 @@ not live only in frozen review evidence.
 3. Use only unique production secrets from the vault. The committed legacy
    values were placeholders and are already handled, so no legacy rotation task
    remains.
-4. Finish O-006 and O-010 before freezing the production baseline. The proposed
-   local-account and Flyway/schema-per-capability models are already implemented;
-   ratify them or deliberately change course before live data exists.
+4. O-006 and O-010 are ratified (2026-11). The local-account model (BCrypt
+   password hashes, hashed session tokens, internal bearer tokens) and the
+   Flyway/schema-per-capability model are the baseline; do not change course
+   after live data exists without a new decision.
 5. Pre-launch migrations may be edited in place only until the first accepted
-   production import. Tag that baseline; afterwards use append-only
-   expand/backfill/verify/contract migrations.
+   production import. The current head is V009 (V007 Jublawoma, V008 Uncle-T,
+   V009 Zelglihof); the empty Oliumbi placeholder migration is removed and its
+   schema/role stays reserved in V001. Tag that baseline; afterwards use
+   append-only expand/backfill/verify/contract migrations.
 6. Do not retire legacy until reconciliation, the observation window, final
    encrypted archives and restore evidence are accepted.
+7. The cutover point of no return is the first durable public write. Before it,
+   routing may return to legacy; after it, export/replay the new writes or roll
+   forward, never a DNS-only rollback (D23/RV-04).
 
 ## Packages and exclusive file ownership
 
@@ -122,33 +134,36 @@ Land in this order:
    stop claiming they are provisioned. Prove systemd metrics exist and a real
    alert/recovery reaches the phone. Add external uptime and dead-man coverage
    before final acceptance.
-5. **Edge security:** TD-01 and TD-02. Prefer implementing Caddy rate limiting
-   over accepting unbounded login/form abuse; use separate login and public-form
-   policies. Roll out a tested per-site CSP without breaking required embeds.
-   TD-03 caching can wait until after launch.
+5. **Edge security:** TD-01, TD-02 and TD-03. Caddy rate limiting is in place
+   (public 20 events/2s per IP, login 10/min, IPv6 /64 grouping) and a baseline
+   CSP ships with the shared headers. Static assets are cached by hash. Verify
+   the header and a 429 response on the real host.
 
-**Exit:** from an empty host, one pinned command provisions roles, starts every
-unit and bootstraps the first admin; only Caddy is public; secure cookies work;
-all running image tags match the request; monitoring has real series and tested
-alerts; valid uploads pass; repeated bootstrap is idempotent and leaks no secret.
+**Exit:** from an empty host, one pinned command provisions roles and starts
+every unit, and the one-time first-admin playbook then creates the
+administrator; only Caddy is public; secure cookies work; all running image tags
+match the request; monitoring has real series and tested alerts; valid uploads
+pass; repeated bootstrap is idempotent and leaks no secret.
 
 ### G0-C — Prove backup and restore before trusting them
 
-1. Finish DR-08: the media tar is already materialized, but the outer archive
-   pipeline must also fail closed. Verify tar contents before encryption and do
-   not write a success metric after any failed stage.
-2. Fix TD-17 with relative checksums and verify them after extraction. Complete
-   RV-02 with atomic textfile publication and missing-metric alert coverage.
-3. Remove blanket volume pruning (DR-09); preserve monitoring volumes across a
-   stopped-container housekeeping run. Apply DR-17 without duplicating timer
-   ownership in G0-B.
-4. Resolve TD-16 before repeated rebuilds. Prefer including Caddy's ACME state
-   in the encrypted archive; otherwise rehearse and accept a rate-limit-safe
-   re-issuance procedure explicitly.
-5. Implement a restore playbook/runbook that handles existing roles/globals,
-   credential reconciliation, database creation, media ownership and a stopped
-   write path. Document PostgreSQL major upgrades (TD-04) from the same tested
-   dump/restore primitives.
+1. Finish DR-08: the outer archive is written to a file, verified with
+   `tar tzf`, encrypted to a temporary name and renamed only after `age`
+   succeeds; checksums are relative. Fault-inject a failing stage and confirm no
+   success metric is written.
+2. TD-17 is fixed (relative checksums). Complete RV-02's host tests: atomic
+   textfile publication and missing-metric alert coverage before the first
+   backup and after an injected failure.
+3. Blanket volume pruning is removed (DR-09); monitoring volumes are never
+   pruned. DR-17 is applied without duplicating timer ownership in G0-B.
+4. TD-16 is accepted: Caddy's ACME state is deliberately excluded and re-issued
+   through DNS-01 with the vault token and ACME email. Verify re-issuance and the
+   certificate-expiry alert in the restore drill; do not add the state to the
+   archive.
+5. The restore runbook handles existing roles/globals, credential
+   reconciliation, database creation, media ownership and a stopped write path;
+   it is still manual (no restore playbook exists). Document PostgreSQL major
+   upgrades (TD-04) from the same tested dump/restore primitives.
 6. After a meaningful G0-E rehearsal import, use the **not-yet-live replacement
    host** as the disposable restore target: backup, rebuild from zero, restore,
    and verify row counts, roles, media hashes, Studio and every site. Legacy is
@@ -157,8 +172,8 @@ alerts; valid uploads pass; repeated bootstrap is idempotent and leaks no secret
 
 **Exit:** fault-injected backup stages fail visibly; checksums verify on another
 machine; housekeeping preserves named state; a pulled archive restores onto a
-from-zero host with working credentials, database, media and Caddy state; the
-workstation pull and a fresh post-restore backup pass.
+from-zero host with working credentials, database, media and re-issued Caddy
+certificates; the workstation pull and a fresh post-restore backup pass.
 
 ### G0-D — Close application/data defects before freezing the schema
 
@@ -178,11 +193,13 @@ workstation pull and a fresh post-restore backup pass.
    across subscriber storage, campaign generation, queued message bodies,
    existing links and retention; hashing one column alone is not a complete fix.
    Decide whether to harden or explicitly accept the Windows-only TD-05 risk.
-5. **Regression strength:** TD-13 adds real-PostgreSQL service integration tests
-   and Java style checks. Keep PostgreSQL-gated web tests non-skipping in CI.
-   Complete TD-10's typed authorization guard and TD-12's campaign bound/paging
-   when touching those boundaries; these two may ship after go-live only if the
-   affected behavior remains within the documented low-volume limits.
+5. **Regression strength:** TD-13's Checkstyle gate runs in `mvn test`; the
+   real-PostgreSQL Java integration suite is accepted post-launch debt with the
+   reason recorded in [tech-debt](tech-debt.md#td-13). Keep PostgreSQL-gated web
+   tests non-skipping in CI. TD-10's typed authorization guard is an accepted
+   deviation (middleware is mandatory by convention and the residual risk is
+   recorded); TD-12's campaign bound is implemented at 500 active recipients
+   with the typed `too-large` outcome.
 
 **Exit:** every P1 application item is closed; no exposed Studio action can lose
 an upload/edit or silently corrupt stock/campaign state; privilege tests run as
@@ -219,8 +236,9 @@ and media reconciliation are accepted. No importer is built or maintained.
 
 1. Finish owner content/legal/wording/mailbox decisions, real photos, final
    illustrations, display prices, reservation/donation rules and retention.
-   Set the Oliumbi apex expectation explicitly; its absence must not be an
-   accidental redirect discovered at launch.
+   Legal, wording and mailbox defaults are resolved; real photos and final
+   content assets remain owner-executed. Oliumbi is a static placeholder on
+   `:8004`; the apex route exists and is not an accidental redirect.
 2. Verify real role permissions, unpublished content, shared media and queues.
    Complete keyboard/focus/contrast/mobile checks and the German content pass.
 3. Add one-hop legacy redirects, canonical hosts, metadata, social previews,
@@ -258,18 +276,18 @@ the per-site launch checklists are signed.
 
 | ID | Status | Notes |
 | --- | --- | --- |
-| G0-A | planned | Immediate legacy exposure check and RV-03 should precede `site.yml`; legacy placeholders are already handled. |
-| G0-B | planned | DR-04–DR-07, DR-10–DR-16, DR-18–DR-20, RV-01/02, TD-01/02/03; DR-17 is G0-C. |
-| G0-C | planned | Code first; data-bearing restore drill follows a G0-E rehearsal. |
-| G0-D | in progress | TD-06/07/09/11 landed; TD-05 hardened, awaits one junction verification; open: TD-08, TD-15, TD-13, TD-10 deviation. TD-14 execution is G0-E. |
-| G0-E | planned | Owner-led manual migration (D16); no importer will be built. |
-| G0-F | planned | Owner input can be gathered earlier; final acceptance is last. |
-| Cutover | blocked | Requires every preceding exit gate. |
+| G0-A | code complete; evidence outstanding | O-006/O-010 are ratified, RV-03 defaults dyndns off and RV-04 is in the migration/runbook text. Owner must still verify legacy exposure and that a parallel host cannot change live DNS. |
+| G0-B | code complete; real-host verify | DR-04–DR-07, DR-10–DR-16, DR-18–DR-20, RV-01/02 and TD-01/02/03 are implemented. Outstanding: role provisioning/config readability, DNS records, TLS probe series, monitoring restarts, the first CI image run and the SSH toggle on the host. |
+| G0-C | code complete; drill outstanding | Fail-closed outer archive, relative checksums, atomic textfile, no volume prune and templated timers are in place. The data-bearing restore drill and ACME re-issuance verification are still outstanding; restore remains a manual runbook, not a playbook. |
+| G0-D | code complete; TD-14 execution remains | TD-05/06/07/08/09/11/12/17 are fixed. TD-13's Checkstyle gate is closed and the real-PG suite is accepted post-launch; TD-14 execution belongs to G0-E. |
+| G0-E | owner-led, not executed | Manual migration (D16); no importer will be built. Needs a sanitized rehearsal, mappings and reconciliation evidence. |
+| G0-F | owner acceptance | Owner content/legal decisions are resolved; real photos, redirects, sitemaps and the environment integration pass remain. |
+| Cutover | blocked | Requires real-host, DNS/SMTP, backup/restore and G0-E evidence. The Oliumbi placeholder is present; the first durable public write is the point of no return. |
 
 ## After launch
 
-Only after the launch gate: TD-03 static caching, low-volume TD-12 refinements if
-not already done, notification routing, per-recipient campaign results, allowed
-senders/List-Unsubscribe, image-picker UX, remaining translations/URL decisions,
-and the explicitly deferred public-account features. Revisit accepted limitations
-only when their stated conditions change; do not turn them into launch blockers.
+Only after the launch gate: notification routing, per-recipient campaign results,
+allowed senders/List-Unsubscribe, image publication retention, the remaining
+translations/URL decisions, real Oliumbi content, and the explicitly deferred
+public-account features. Revisit accepted limitations only when their stated
+conditions change; do not turn them into launch blockers.

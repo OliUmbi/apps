@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiAssetsIdRouteImport } from './routes/api.assets.$id'
+import { Route as ApiSessionLoginRouteImport } from './routes/api.session.login'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const ApiAssetsIdRoute = ApiAssetsIdRouteImport.update({
   path: '/api/assets/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSessionLoginRoute = ApiSessionLoginRouteImport.update({
+  id: '/api/session/login',
+  path: '/api/session/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/assets/$id': typeof ApiAssetsIdRoute
+  '/api/session/login': typeof ApiSessionLoginRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/assets/$id': typeof ApiAssetsIdRoute
+  '/api/session/login': typeof ApiSessionLoginRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/assets/$id': typeof ApiAssetsIdRoute
+  '/api/session/login': typeof ApiSessionLoginRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/assets/$id'
+  fullPaths: '/' | '/api/assets/$id' | '/api/session/login'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/assets/$id'
-  id: '__root__' | '/' | '/api/assets/$id'
+  to: '/' | '/api/assets/$id' | '/api/session/login'
+  id: '__root__' | '/' | '/api/assets/$id' | '/api/session/login'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiAssetsIdRoute: typeof ApiAssetsIdRoute
+  ApiSessionLoginRoute: typeof ApiSessionLoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAssetsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/session/login': {
+      id: '/api/session/login'
+      path: '/api/session/login'
+      fullPath: '/api/session/login'
+      preLoaderRoute: typeof ApiSessionLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiAssetsIdRoute: ApiAssetsIdRoute,
+  ApiSessionLoginRoute: ApiSessionLoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

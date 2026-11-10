@@ -8,24 +8,27 @@ import {
 	inquiryKeySchema,
 } from "@oliumbi/zelglihof-data/content/inquiry";
 import { createInquiryRepository } from "@oliumbi/zelglihof-data/content/inquiry.repository";
+import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { database } from "../../database.server";
-import { createServerFn } from "@tanstack/react-start";
 import { studioAuthorization } from "../../studio-authorization";
 
-export const listInquiries = createServerFn({ method: "GET" }).middleware([studioAuthorization("zelglihof")])
+export const listInquiries = createServerFn({ method: "GET" })
+	.middleware([studioAuthorization("zelglihof")])
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		return createInquiryRepository(database.db).list(data);
 	});
 
-export const getInquiry = createServerFn({ method: "GET" }).middleware([studioAuthorization("zelglihof")])
+export const getInquiry = createServerFn({ method: "GET" })
+	.middleware([studioAuthorization("zelglihof")])
 	.validator(inquiryKeySchema)
 	.handler(async ({ data }) => {
 		return createInquiryRepository(database.db).get(data);
 	});
 
-export const updateInquiry = createServerFn({ method: "POST" }).middleware([studioAuthorization("zelglihof")])
+export const updateInquiry = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization("zelglihof")])
 	.validator(
 		z.strictObject({
 			key: inquiryKeySchema,
@@ -47,7 +50,8 @@ export const updateInquiry = createServerFn({ method: "POST" }).middleware([stud
 		}
 	});
 
-export const deleteInquiry = createServerFn({ method: "POST" }).middleware([studioAuthorization("zelglihof")])
+export const deleteInquiry = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization("zelglihof")])
 	.validator(inquiryKeySchema)
 	.handler(async ({ data }) => {
 		await createInquiryRepository(database.db).delete(data);

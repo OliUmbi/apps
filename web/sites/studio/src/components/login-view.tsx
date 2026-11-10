@@ -2,8 +2,6 @@ import { Form } from "@base-ui/react/form";
 import { m } from "@oliumbi/i18n/messages";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { loginToStudio } from "../server/session.functions";
 import { Alert } from "./ui/alert";
 import { Button } from "./ui/button";
 import { GradientPanel } from "./ui/gradient-panel";
@@ -13,9 +11,16 @@ import { TextField } from "./ui/text-field";
 
 export function LoginView() {
 	const router = useRouter();
-	const login = useServerFn(loginToStudio);
 	const mutation = useMutation({
-		mutationFn: login,
+		mutationFn: async (credentials: { username: string; password: string }) => {
+			const response = await fetch("/api/session/login", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(credentials),
+			});
+			if (!response.ok) throw new Error("Login failed");
+			return response.json();
+		},
 		onSuccess: () => router.invalidate(),
 	});
 	return (
@@ -33,10 +38,8 @@ export function LoginView() {
 					if (mutation.isPending) return;
 					const form = new FormData(event.currentTarget);
 					mutation.mutate({
-						data: {
-							username: String(form.get("username")),
-							password: String(form.get("password")),
-						},
+						username: String(form.get("username")),
+						password: String(form.get("password")),
 					});
 				}}
 			>

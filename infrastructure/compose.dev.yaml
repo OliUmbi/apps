@@ -129,6 +129,13 @@ services:
     depends_on:
       roles:
         condition: service_completed_successfully
+  oliumbi:
+    build:
+      context: ..
+      dockerfile: web/sites/oliumbi/Dockerfile
+    ports:
+      - "8004:8004"
+
   zelglihof:
     build:
       context: ..
@@ -139,8 +146,8 @@ services:
       DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-10}
       MESSAGING_SERVICE_URL: http://messaging:8082
       ZELGLIHOF_PUBLIC_URL: ${ZELGLIHOF_PUBLIC_URL:-http://localhost:8003}
-      ZELGLIHOF_REQUESTS_EMAIL: ${ZELGLIHOF_REQUESTS_EMAIL:-hof@zelglihof.ch}
-      ZELGLIHOF_NEWSLETTER_EMAIL: ${ZELGLIHOF_NEWSLETTER_EMAIL:-newsletter@zelglihof.ch}
+      ZELGLIHOF_REQUESTS_EMAIL: ${ZELGLIHOF_REQUESTS_EMAIL:-hof@zelglihof-maegenwil.ch}
+      ZELGLIHOF_NEWSLETTER_EMAIL: ${ZELGLIHOF_NEWSLETTER_EMAIL:-newsletter@zelglihof-maegenwil.ch}
     ports:
       - "8003:8003"
     depends_on:
@@ -190,8 +197,8 @@ services:
       DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-10}
       STUDIO_SECURE_COOKIES: ${STUDIO_SECURE_COOKIES:-false}
       ZELGLIHOF_PUBLIC_URL: ${ZELGLIHOF_PUBLIC_URL:-http://localhost:8003}
-      ZELGLIHOF_REQUESTS_EMAIL: ${ZELGLIHOF_REQUESTS_EMAIL:-hof@zelglihof.ch}
-      ZELGLIHOF_NEWSLETTER_EMAIL: ${ZELGLIHOF_NEWSLETTER_EMAIL:-newsletter@zelglihof.ch}
+      ZELGLIHOF_REQUESTS_EMAIL: ${ZELGLIHOF_REQUESTS_EMAIL:-hof@zelglihof-maegenwil.ch}
+      ZELGLIHOF_NEWSLETTER_EMAIL: ${ZELGLIHOF_NEWSLETTER_EMAIL:-newsletter@zelglihof-maegenwil.ch}
       ASSETS_SERVICE_URL: http://assets:8083
       ASSETS_INTERNAL_AUTHORIZATION_TOKEN: ${ASSETS_INTERNAL_AUTHORIZATION_TOKEN:-dev_assets_internal_authorization}
       MESSAGING_INTERNAL_AUTHORIZATION_TOKEN: ${MESSAGING_INTERNAL_AUTHORIZATION_TOKEN:-dev_messaging_internal_authorization}

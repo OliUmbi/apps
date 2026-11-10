@@ -134,10 +134,15 @@ deleting it when retention allows. Never share an account between people.
 ## TLS or certificate problem
 
 1. Read caddy logs. Distinguish ACME/DNS failure from a serving problem.
-2. Verify the Infomaniak token and the DNS records (`dyndns` timer logs).
+2. Verify the Infomaniak token and the DNS records (`dyndns` timer logs). The
+   timer is disabled before cutover; enable it only in the cutover run.
 3. Do not delete `/var/lib/apps/caddy-data`: it holds the ACME account and
    certificates, and re-issuing hits rate limits.
-4. After a fix, confirm the certificate chain and expiry with an HTTPS probe.
+4. If the state is lost on a rebuilt host, re-issue through DNS-01 with the vault
+   token and ACME email; respect Let's Encrypt rate limits and do not restart in
+   a loop ([backup and restore](backup-restore.md#caddy-acme-state-and-re-issuance)).
+5. After a fix, confirm the certificate chain and expiry with an HTTPS probe and
+   watch `CertificateExpiringSoon`.
 
 ## Add or change a domain
 
@@ -177,3 +182,24 @@ The legacy cutover has its own sequence (freeze, final export, reconcile, deploy
 switch routing, verify, observe). Follow
 [migration](../work/migration.md#cutover-playbook); do not improvise it during a
 deploy window.
+
+The pre-cutover default is `dyndns_enabled: false`. Enable live updates only in
+the cutover run with `-e dyndns_enabled=true`.
+
+**Point of no return (RV-04):** the first durable public write on the new
+system. Before it, routing may return to legacy. After it, a DNS-only rollback
+would strand accepted submissions; export/replay them or roll forward, then get
+owner sign-off and keep the observation window. Record the write boundary and
+the decision in the cutover notes.
+
+## First administrator
+
+After the stack is healthy, run once from `ansible/`:
+
+```sh
+ansible-playbook playbooks/first-admin.yml --ask-vault-pass
+```
+
+It creates the account through identity's authenticated endpoint and grants
+`studio.admin`; a second run fails instead of duplicating the account. The first
+admin is never a migration seed.

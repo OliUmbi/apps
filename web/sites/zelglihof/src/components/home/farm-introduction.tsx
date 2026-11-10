@@ -1,6 +1,10 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Egg, Sprout, Wheat } from "lucide-react";
+
+// Owner item "real farm facts": the hen and crop counts below are placeholder
+// values until the farm confirms them. "Seit 1906" comes from the farm history
+// block and is not a placeholder count.
 export function FarmIntroduction() {
 	return (
 		<section className="shell grid gap-5 py-24 md:grid-cols-[1.15fr_0.85fr] md:py-32">

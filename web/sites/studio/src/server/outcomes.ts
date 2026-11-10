@@ -17,17 +17,29 @@ export function correctionFeedback(input: {
 	return "idle";
 }
 
-export type CampaignSendFeedback = "idle" | "queued" | "stale-draft" | "failed";
+export type CampaignSendFeedback =
+	| "idle"
+	| "queued"
+	| "stale-draft"
+	| "too-large"
+	| "failed";
 
-// A send that resolves to "stale-draft" queued nothing: the confirmation
-// dialog stays open with its reload/re-save action instead of closing like a
-// queued run.
+// A refusal that queued nothing keeps the confirmation dialog open: a
+// stale-draft send offers a reload, an over-limit send names the audience bound.
 export function campaignSendFeedback(input: {
 	failed: boolean;
-	result: { outcome: "queued" | "stale-draft" } | null | undefined;
+	result:
+		| {
+				outcome: "queued" | "stale-draft" | "too-large";
+				count?: number;
+				limit?: number;
+		  }
+		| null
+		| undefined;
 }): CampaignSendFeedback {
 	if (input.failed) return "failed";
 	if (input.result?.outcome === "stale-draft") return "stale-draft";
+	if (input.result?.outcome === "too-large") return "too-large";
 	if (input.result?.outcome === "queued") return "queued";
 	return "idle";
 }

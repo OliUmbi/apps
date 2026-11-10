@@ -1,0 +1,73 @@
+---
+# One-time bootstrap of the first Studio administrator (O-006).
+#
+# The account is created through identity's authenticated internal API, not
+# seeded by migrations: the first administrator is an operational step and no
+# password belongs in schema or seed data. Run this once after the stack is
+# healthy:
+#
+#   ansible-playbook playbooks/first-admin.yml --ask-vault-pass
+#
+# A second run fails at POST /account because the name/email already exists.
+- name: first admin
+  hosts: server
+  gather_facts: false
+  vars:
+    identity_url: http://identity:8081
+    first_admin_permission: studio.admin
+    first_admin_curl_image: "docker.io/curlimages/curl:8.16.0@sha256:463eaf6072688fe96ac64fa623fe73e1dbe25d8ad6c34404a669ad3ce1f104b6"
+  tasks:
+    - name: first admin values are present
+      ansible.builtin.assert:
+        that:
+          - vault_first_admin_name is defined
+          - vault_first_admin_name is defined and vault_first_admin_name | length > 0
+          - vault_first_admin_email is defined
+          - vault_first_admin_email is defined and vault_first_admin_email | length > 0
+          - vault_first_admin_password is defined
+          - vault_first_admin_password is defined and vault_first_admin_password | length > 0
+        fail_msg: "Set vault_first_admin_name, vault_first_admin_email and vault_first_admin_password in group_vars/vault.yml."
+        quiet: true
+
+    - name: install the first-admin helper
+      ansible.builtin.copy:
+        src: "{{ repo_root }}/ansible/files/first-admin.sh"
+        dest: /usr/local/sbin/apps-first-admin.sh
+        # The curl image runs as an unprivileged user and must read the mounted
+        # helper. It carries no secret (values arrive as environment variables).
+        mode: "0755"
+
+    - name: create the first admin and grant studio.admin
+      ansible.builtin.command:
+        argv:
+          - podman
+          - run
+          - --rm
+          - --network
+          # Quadlet prefixes the network name; the generated app units use
+          # `--network systemd-net-apps`.
+          - systemd-net-apps
+          - -e
+          - "IDENTITY_URL={{ identity_url }}"
+          - -e
+          - "IDENTITY_TOKEN={{ vault_identity_internal_authorization_token }}"
+          - -e
+          - "ADMIN_ACCOUNT_JSON={{ first_admin_account | to_json }}"
+          - -e
+          - "ADMIN_PERMISSION_JSON={{ {'permission': first_admin_permission} | to_json }}"
+          - -v
+          - /usr/local/sbin/apps-first-admin.sh:/first-admin.sh:ro
+          - --entrypoint
+          - /bin/sh
+          - "{{ first_admin_curl_image }}"
+          - /first-admin.sh
+        # The JSON contains the password; never expand $... in it on the
+        # controller. Podman passes the values through unchanged.
+        expand_argument_vars: false
+      vars:
+        first_admin_account:
+          name: "{{ vault_first_admin_name }}"
+          email: "{{ vault_first_admin_email }}"
+          password: "{{ vault_first_admin_password }}"
+      no_log: true
+      changed_when: true

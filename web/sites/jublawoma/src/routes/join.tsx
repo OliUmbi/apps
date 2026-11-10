@@ -18,35 +18,11 @@ function Join() {
 			<section className="page-hero shell">
 				<div>
 					<p className="kicker">{m.jublawoma_join_eyebrow()}</p>
-					<h1>
-						{m.jublawoma_join_title_discover()}
-						<br />
-						<span className="font-serif font-normal italic text-moss">
-							{m.jublawoma_join_title_participate()}
-						</span>
-						<br />
-						{m.jublawoma_join_title_belong()}
-					</h1>
+					<h1>{m.jublawoma_navigation_join()}</h1>
 					<p>{m.jublawoma_join_description()}</p>
+					<p>{m.jublawoma_join_welcome_body()}</p>
 				</div>
 				<img src="/assets/images/doodles/dog.svg" alt="" />
-			</section>
-			<section className="shell steps">
-				<article>
-					<span>1</span>
-					<h2>{m.jublawoma_join_contact_title()}</h2>
-					<p>{m.jublawoma_join_contact_body()}</p>
-				</article>
-				<article>
-					<span>2</span>
-					<h2>{m.jublawoma_join_trial_title()}</h2>
-					<p>{m.jublawoma_join_trial_body()}</p>
-				</article>
-				<article>
-					<span>3</span>
-					<h2>{m.jublawoma_join_register_title()}</h2>
-					<p>{m.jublawoma_join_register_body()}</p>
-				</article>
 			</section>
 			<section className="contact-card shell">
 				<img src="/assets/images/doodles/groovy-sitting.svg" alt="" />

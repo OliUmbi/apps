@@ -18,7 +18,9 @@ function TermsPage() {
 			m.unclet_terms_infrastructure_title(),
 			m.unclet_terms_infrastructure_body(),
 		],
+		[m.unclet_terms_cleaning_title(), m.unclet_terms_cleaning_body()],
 		[m.unclet_terms_material_title(), m.unclet_terms_material_body()],
+		[m.unclet_terms_insurance_title(), m.unclet_terms_insurance_body()],
 		[m.unclet_terms_payment_title(), m.unclet_terms_payment_body()],
 		[m.unclet_terms_law_title(), m.unclet_terms_law_body()],
 	] as const;

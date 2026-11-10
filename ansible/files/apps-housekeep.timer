@@ -2,7 +2,7 @@
 Description=Weekly OliUmbi apps housekeeping
 
 [Timer]
-OnCalendar=Sun *-*-* 04:00:00
+OnCalendar={{ housekeep_day | capitalize }} *-*-* {{ "%02d:00:00" | format(housekeep_hour | int) }}
 RandomizedDelaySec=30m
 Persistent=true
 

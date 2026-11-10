@@ -24,6 +24,8 @@ export interface Product {
 	reservable: boolean;
 	startsAt: string | null;
 	endsAt: string | null;
+	archivedAt: string | null;
+	archivedBy: string | null;
 	createdAt: string;
 	updatedAt: string;
 }

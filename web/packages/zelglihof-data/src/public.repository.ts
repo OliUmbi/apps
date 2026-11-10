@@ -8,6 +8,7 @@ import {
 	getTableColumns,
 	gte,
 	inArray,
+	isNull,
 	lte,
 	sql,
 } from "drizzle-orm";
@@ -60,7 +61,12 @@ async function stockByProduct(
 			quantity: productVariant.quantity,
 		})
 		.from(productVariant)
-		.where(inArray(productVariant.productId, [...productIds]));
+		.where(
+			and(
+				inArray(productVariant.productId, [...productIds]),
+				isNull(productVariant.archivedAt),
+			),
+		);
 	const byProduct = new Map<string, (number | null)[]>();
 	for (const row of rows) {
 		const quantities = byProduct.get(row.productId) ?? [];
@@ -132,7 +138,7 @@ export function createPublicRepository(db: DatabaseExecutor) {
 						windowOpen: reservationWindowOpen,
 					})
 					.from(product)
-					.where(eq(product.visible, true))
+					.where(and(eq(product.visible, true), isNull(product.archivedAt)))
 					.orderBy(desc(product.createdAt), product.id)
 					.$dynamic(),
 				pageSchema.parse({ page, size }),
@@ -158,13 +164,24 @@ export function createPublicRepository(db: DatabaseExecutor) {
 					windowOpen: reservationWindowOpen,
 				})
 				.from(product)
-				.where(and(eq(product.id, id), eq(product.visible, true)))
+				.where(
+					and(
+						eq(product.id, id),
+						eq(product.visible, true),
+						isNull(product.archivedAt),
+					),
+				)
 				.limit(1);
 			if (!record) return null;
 			const variants = await db
 				.select()
 				.from(productVariant)
-				.where(eq(productVariant.productId, record.id))
+				.where(
+					and(
+						eq(productVariant.productId, record.id),
+						isNull(productVariant.archivedAt),
+					),
+				)
 				.orderBy(productVariant.createdAt, productVariant.id);
 			return {
 				product: availableProduct(

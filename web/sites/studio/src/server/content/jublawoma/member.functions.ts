@@ -8,32 +8,36 @@ import {
 	memberKeySchema,
 } from "@oliumbi/jublawoma-data/content/member";
 import { createMemberRepository } from "@oliumbi/jublawoma-data/content/member.repository";
+import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { assets } from "../../assets.server";
 import { database } from "../../database.server";
-import { createServerFn } from "@tanstack/react-start";
 import { studioAuthorization } from "../../studio-authorization";
 
-export const listMembers = createServerFn({ method: "GET" }).middleware([studioAuthorization("jublawoma")])
+export const listMembers = createServerFn({ method: "GET" })
+	.middleware([studioAuthorization("jublawoma")])
 	.validator(pageSchema)
 	.handler(async ({ data }) => {
 		return createMemberRepository(database.db).list(data);
 	});
 
-export const getMember = createServerFn({ method: "GET" }).middleware([studioAuthorization("jublawoma")])
+export const getMember = createServerFn({ method: "GET" })
+	.middleware([studioAuthorization("jublawoma")])
 	.validator(memberKeySchema)
 	.handler(async ({ data }) => {
 		return createMemberRepository(database.db).get(data);
 	});
 
-export const createMember = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
+export const createMember = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization("jublawoma")])
 	.validator(memberInputSchema)
 	.handler(async ({ data }) => {
 		if (data.imageId) await assets.images.get("jublawoma", data.imageId);
 		return createMemberRepository(database.db).create(data);
 	});
 
-export const updateMember = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
+export const updateMember = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization("jublawoma")])
 	.validator(
 		z.strictObject({
 			key: memberKeySchema,
@@ -57,7 +61,8 @@ export const updateMember = createServerFn({ method: "POST" }).middleware([studi
 		}
 	});
 
-export const deleteMember = createServerFn({ method: "POST" }).middleware([studioAuthorization("jublawoma")])
+export const deleteMember = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization("jublawoma")])
 	.validator(memberKeySchema)
 	.handler(async ({ data }) => {
 		await createMemberRepository(database.db).delete(data);

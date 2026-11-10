@@ -1,14 +1,15 @@
 # Access and security
 
 The host is managed from the workstation over WireGuard with Ansible. There is no
-reason to log into the machine, and SSH is never public.
+reason to log into the machine, and SSH is not public once the tunnel has been
+proven.
 
 ## Access model
 
 | Item | Value |
 | --- | --- |
 | Host access | `deploy` user over WireGuard, sudo for Ansible |
-| SSH | public only until `restrict_ssh: true`; then tunnel only |
+| SSH | public only until `restrict_ssh: true`; then tunnel only, and the drop-in is removed again when it is false |
 | Recovery | physical access to the machine (screen/keyboard); no provider console needed |
 | Admin UIs | Grafana `:3000`, Prometheus `:9090`, Alertmanager `:9093`, bound to the WireGuard address |
 | Secrets | `ansible/group_vars/vault.yml` (Ansible vault) |
@@ -24,11 +25,12 @@ WireGuard address.
 
 For a clean machine; the legacy box stays untouched until cutover.
 
-> **Parallel-host safeguard:** the current `site.yml` enables dyndns for live
-> production names. Complete RV-03 in [open work](../work/open-work.md) before
-> running it on a parallel host, and keep router forwarding/live DNS on legacy
-> until the rehearsed cutover. Otherwise the new host can redirect production
-> traffic before it is ready.
+> **Parallel-host safeguard:** pre-cutover is now the safe default.
+> `dyndns_enabled` is false, so `site.yml` installs the timer but leaves it
+> stopped and a parallel clean host cannot update live DNS (RV-03). Keep router
+> forwarding and live records on legacy until the final import and smoke tests;
+> enable live updates only in the cutover run with
+> `-e dyndns_enabled=true`.
 
 1. **Workstation prep.** Ansible installed, `age-keygen` for the backup key,
    `wg genkey` for both WireGuard keys, an Infomaniak API token with
@@ -37,19 +39,31 @@ For a clean machine; the legacy box stays untouched until cutover.
    **UDP 51820** (WireGuard), nothing else. Without the UDP forward the VPN only
    works inside the LAN.
 3. **Server.** Install Debian stable, create the `deploy` user with your SSH key
-   and sudo. First login is over the LAN.
+   and sudo. First login is over the LAN. `sudo` is installed by the server role,
+   so a minimal Debian image no longer breaks `become_method = sudo`.
 4. **DNS.** Create the A records listed in `dyndns_records`
-   (`ansible/group_vars/all.yml`) once in the Infomaniak manager. The timer keeps
-   their values current. `vpn.oliumbi.ch` is the laptop's WireGuard endpoint.
-5. **Vault.** Fill `ansible/group_vars/vault.yml` from the example.
-6. **Run** `ansible-playbook playbooks/site.yml`. It installs podman, WireGuard
-   and the timers, renders the units, and starts the stack from ghcr. Publish a
-   version tag first so the images exist.
-7. **Verify.** `status.yml`, `logs.yml`, a `backup.yml` run pulled with
-   `pull-backups.ps1`, Grafana over the tunnel, issued certificates, and
-   `apps-dyndns.timer` logs showing current records.
-8. **Lock down** (`restrict_ssh: true`) only after WireGuard works from the
-   laptop both over the LAN and from outside.
+   (`ansible/group_vars/all.yml`) once in the Infomaniak manager, including
+   `studio.*`, `admin.*` and `vpn.oliumbi.ch` for the laptop's WireGuard
+   endpoint. The timer keeps their values current only when it is enabled.
+5. **Vault.** Fill `ansible/group_vars/vault.yml` from the example, including
+   `vault_acme_email`, `vault_infomaniak_api_token`, the per-role database
+   passwords and `vault_first_admin_*`.
+6. **Run** `ansible-playbook playbooks/site.yml -e image_tag=<tag>`. `latest` is
+   rejected. The play installs podman, WireGuard and the timers, renders the
+   units, starts postgres and the one-shot migrate unit, provisions each
+   application role from the vault, checks that it can log in, and starts the
+   stack from ghcr. Publish a version tag first so the images exist.
+7. **First administrator.** After the stack is healthy, run
+   `ansible-playbook playbooks/first-admin.yml --ask-vault-pass` once. The first
+   admin is created through identity's authenticated endpoint, not by a
+   migration seed.
+8. **Verify.** `status.yml`, `logs.yml`, a `backup.yml` run pulled with
+   `pull-backups.ps1`, Grafana over the tunnel, issued certificates, secure
+   Studio cookies (`__Host-studio_session`), the CSP header, a 429 on the public
+   rate limit, and `apps-dyndns.timer` **stopped** before cutover.
+9. **Lock down** (`restrict_ssh: true`) only after WireGuard works from the
+   laptop both over the LAN and from outside. Setting it back to `false` removes
+   the drop-in again.
 
 ## Secrets
 
@@ -81,20 +95,35 @@ the existing records listed in `dyndns_records`. It never creates or deletes
 records. New names must be created once in the Infomaniak manager and added to
 the list.
 
+The timer is installed but **stopped and disabled** by default
+(`dyndns_enabled: false`), so a parallel host cannot change live DNS before
+cutover (RV-03). The cutover run enables it explicitly with
+`-e dyndns_enabled=true`; verify the first run updates the expected records.
+Caddy's ACME state is not backed up; a rebuilt host re-issues with the vault
+token and ACME email ([backup and restore](backup-restore.md#caddy-acme-state-and-re-issuance)).
+
 ## Security baseline
 
-- HTTP-only, same-site session cookies; `Secure` and `__Host-` over HTTPS.
-- CSRF protection on state-changing requests.
+- Session cookies are `HttpOnly`, `SameSite=Lax`, and `Secure` with the
+  `__Host-` prefix in production (`STUDIO_SECURE_COOKIES=true`). There is no
+  separate CSRF token: `SameSite=Lax` plus server-side actor checks is the
+  accepted model for fewer than ten Studio users; the residual risk is recorded
+  in the [O-006 threat model](../reference/decisions.md#o-006-threat-model-accepted-2026-11).
 - Authorization enforced server-side per site and capability.
-- Public forms validated and honeypot-protected. Proxy rate limiting is still a
-  gap ([TD-01](../work/tech-debt.md#td-01)).
+- Public forms validated and honeypot-protected; Caddy rate-limits public
+  traffic (20 events/2s per IP, IPv6 /64) and login (10/min). A 429 is the only
+  edge-visible refusal.
+- A baseline Content-Security-Policy is sent from Caddy with the shared headers;
+  script/style inline code is still allowed, so treat it as a baseline rather
+  than a nonce-based strict policy.
 - Output escaped by default; rich content sanitized narrowly.
 - Uploads validated by bytes and dimensions and stored away from executable
   paths.
 - Secrets only in the vault; logs redacted (no passwords, tokens, message bodies
-  or personal form data).
-- Security headers at the proxy; a per-site Content-Security-Policy is still
-  missing ([TD-02](../work/tech-debt.md#td-02)).
+  or personal form data). Secret-rendering tasks use `no_log`.
+- Certificates are re-issued through DNS-01 on a rebuilt host; the vault token
+  and ACME email are the recovery inputs, and `CertificateExpiringSoon` warns
+  before expiry.
 - Dependencies and base images are pinned; automated security updates run on the
   host, and a full upgrade is part of the quarterly drill.
 - Before launch, document for every form what is collected, its purpose,
@@ -112,10 +141,13 @@ When an editor leaves or changes role:
 
 ## Known gaps
 
-- WireGuard and SSH lockdown are not yet verified on the rebuilt server
-  ([open work](../work/open-work.md)).
-- Restore drill on the not-yet-live replacement host before cutover
+- WireGuard and SSH lockdown are code complete and reversible; both still need
+  verification on the rebuilt server ([open work](../work/open-work.md)).
+- Restore drill on the not-yet-live replacement host before cutover, including
+  database/media and Caddy certificate re-issuance
   ([open work](../work/open-work.md)).
 - External uptime and dead-man's-switch monitoring ([open work](../work/open-work.md)).
 - Legacy exposure check: confirm 5432/8080/8000 are not reachable from the
   internet ([open work](../work/open-work.md)).
+- Real-host role provisioning, monitoring config readability, DNS resolution and
+  SMTP deliverability are verified only when the deploy runs on the server.

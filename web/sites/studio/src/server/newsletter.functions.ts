@@ -7,17 +7,20 @@ import {
 import { createCampaignService } from "@oliumbi/zelglihof-data/campaign.service";
 import { createNewsletterService } from "@oliumbi/zelglihof-data/newsletter.service";
 import { createSubscriberService } from "@oliumbi/zelglihof-data/subscriber.service";
-import { z } from "zod";
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { database } from "./database.server";
 import { studioAuthorization } from "./studio-authorization";
 
 const options = () => ({
 	publicUrl: process.env.ZELGLIHOF_PUBLIC_URL ?? "http://localhost:8003",
-	sender: process.env.ZELGLIHOF_NEWSLETTER_EMAIL ?? "newsletter@zelglihof.ch",
-	replyTo: process.env.ZELGLIHOF_REQUESTS_EMAIL ?? "hof@zelglihof.ch",
+	sender:
+		process.env.ZELGLIHOF_NEWSLETTER_EMAIL ??
+		"newsletter@zelglihof-maegenwil.ch",
+	replyTo: process.env.ZELGLIHOF_REQUESTS_EMAIL ?? "hof@zelglihof-maegenwil.ch",
 });
-export const sendCampaign = createServerFn({ method: "POST" }).middleware([studioAuthorization("zelglihof")])
+export const sendCampaign = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization("zelglihof")])
 	.validator(z.object({ id: idSchema, updatedAt: timestampSchema }))
 	.handler(async ({ data }) => {
 		// One boundary: typed outcomes (queued / stale-draft) leave as clean
@@ -29,21 +32,24 @@ export const sendCampaign = createServerFn({ method: "POST" }).middleware([studi
 			);
 		});
 	});
-export const requestSubscriberConfirmation = createServerFn({ method: "POST" }).middleware([studioAuthorization("zelglihof")])
+export const requestSubscriberConfirmation = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization("zelglihof")])
 	.validator(z.object({ email: emailSchema }))
 	.handler(async ({ data }) => {
 		return mapErrors(async () => {
 			return createNewsletterService(database, options()).request(data.email);
 		});
 	});
-export const unsubscribeSubscriber = createServerFn({ method: "POST" }).middleware([studioAuthorization("zelglihof")])
+export const unsubscribeSubscriber = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization("zelglihof")])
 	.validator(z.object({ id: idSchema }))
 	.handler(async ({ data }) => {
 		return mapErrors(async () => {
 			return createSubscriberService(database, options()).unsubscribe(data.id);
 		});
 	});
-export const correctSubscriberEmail = createServerFn({ method: "POST" }).middleware([studioAuthorization("zelglihof")])
+export const correctSubscriberEmail = createServerFn({ method: "POST" })
+	.middleware([studioAuthorization("zelglihof")])
 	.validator(z.object({ id: idSchema, email: emailSchema }))
 	.handler(async ({ data }) => {
 		// Typed outcome as a clean value: { outcome: "corrected" | "conflict" }.

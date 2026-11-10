@@ -38,6 +38,7 @@ for container health checks.
 | `GET /account/{id}` | account plus permission records |
 | `POST /account` | create an enabled account |
 | `PUT /account/{id}` | replace `name`, `email`, `enabled` |
+| `PUT /account/{id}/profile` | update the account's own `name` and `email` |
 | `PUT /account/{id}/password` | change password |
 | `DELETE /account/{id}` | delete account, sessions and permissions |
 | `PUT /account/{accountId}/permission` | grant a permission (idempotent) |
@@ -48,6 +49,11 @@ revocation. Their two 401 details are deliberately distinguishable: a broken
 integration credential versus an expired, revoked or unknown session token.
 
 ## Authentication model
+
+The account model is O-006, ratified: local password accounts for fewer than ten
+users, no external provider. The short threat model is in
+[decisions](../../reference/decisions.md#o-006-threat-model-accepted-2026-11).
+Recovery, invitations and MFA stay out of scope until public accounts exist.
 
 - **Internal callers** authenticate with a shared bearer token from the
   environment. There is no public identity API.
@@ -60,11 +66,15 @@ integration credential versus an expired, revoked or unknown session token.
   so response shape and timing do not reveal whether an account exists.
 - **Permissions** are strings on accounts (`studio.admin`, `<site>.manage`, ...).
   There is no separate role catalog yet. Grant and revoke are idempotent.
-- **Sessions** are random 256-bit tokens. Identity stores only their SHA-256
-  hashes. Revoking is idempotent; an unknown, expired or already-revoked token
-  still returns 204. `lastSeenAt` writes are throttled to one per five minutes.
-  An hourly purge deletes sessions past `expires_at` plus a 30-day retention
-  window.
+- **Sessions** are random 256-bit tokens, valid for seven days. Identity stores
+  only their SHA-256 hashes and revokes them server-side on password change or
+  account disable. Revoking is idempotent; an unknown, expired or already-revoked
+  token still returns 204. `lastSeenAt` writes are throttled to one per five
+  minutes. An hourly purge deletes sessions past `expires_at` plus a 30-day
+  retention window.
+- **Login abuse** is bounded by a login-specific rate limit at the edge: 10
+  requests per minute per client IP on Studio's `/api/session/login` route. The
+  route exists so the proxy can target that exact path.
 
 ## Locking and consistency
 
@@ -86,9 +96,11 @@ parameters or credentials.
 ## Data
 
 Schema `identity`: accounts, sessions, permissions. Accounts are created without
-a hardcoded bootstrap password; the first account is created through the
-authenticated account endpoint. The schema and constraints are owned by Flyway;
-see [data and schema](data-and-schema.md) and
+a hardcoded bootstrap password. The first administrator is a one-time
+operational step: `ansible/playbooks/first-admin.yml` creates the account through
+the authenticated internal API and grants `studio.admin`. It is deliberately not
+a migration seed, so no password enters schema or seed data. The schema and
+constraints are owned by Flyway; see [data and schema](data-and-schema.md) and
 [database/README.md](../../../database/README.md).
 
 ## Invariants
@@ -101,7 +113,7 @@ see [data and schema](data-and-schema.md) and
 
 ## Known gaps
 
-- The account model is still an open decision (O-006): local passwords versus an
-  external provider, bootstrap/invitation, recovery, MFA. The proposed local
-  model is recorded in [decisions](../../reference/decisions.md); the owner has
-  not confirmed it.
+- Recovery, invitations, MFA and public accounts are deliberately out of scope
+  until the owner needs them; O-006 is otherwise settled.
+- The first-admin playbook and the login rate limit are code complete; verify
+  them on the real host after the first clean deploy.

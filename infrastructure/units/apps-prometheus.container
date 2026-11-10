@@ -2,6 +2,10 @@
 # app containers directly (see infrastructure/monitoring/prometheus.yml).
 [Unit]
 Description=Prometheus
+# It publishes on the WireGuard address; wait for the tunnel so a plain reboot
+# cannot race the bind (DR-16).
+Wants=wg-quick@wg0.service
+After=wg-quick@wg0.service
 
 [Container]
 Image=docker.io/prom/prometheus:v3.16.0@sha256:e04987641b57704f408e31f6373ba4138ecf27cb4a165d24aabb6c38fddd0f06

@@ -110,7 +110,7 @@ export const donationCommitment = jublawoma.table("donation_commitment", {
 	phone: text("phone").notNull(),
 	quantity: numeric("quantity", { mode: "string" }).notNull(),
 	note: text("note"),
-	// Idempotency key from the public form; unique index in V008.
+	// Idempotency key from the public form; unique index in V007.
 	submissionId: uuid("submission_id"),
 	createdAt: isoTimestamp("created_at").notNull(),
 	updatedAt: isoTimestamp("updated_at").notNull(),

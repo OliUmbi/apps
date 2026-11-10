@@ -7,15 +7,16 @@ Workflows live in `.github/workflows/`:
 
 | Workflow | Trigger | Purpose |
 | --- | --- | --- |
-| `ci.yml` | every branch push (tags excluded), pull request, and called by publish | verify web, Java and deployment inputs |
+| `ci.yml` | every branch push (tags excluded), pull request, and called by publish | verify web, Java, image builds and deployment inputs |
 | `publish.yml` | version tag `*.*`, or manual dispatch | re-run CI, build and push every image |
 
 ## `ci.yml`
 
 | Job | Checks |
 | --- | --- |
-| `web` | PostgreSQL 18 service + Flyway migrate, `pnpm install --frozen-lockfile`, `pnpm check`, `pnpm typecheck`, `pnpm test`, `pnpm build` |
-| `java` | JDK 25, `services/mvnw -B -ntp -f services/pom.xml test` |
+| `web` | PostgreSQL 18 service + Flyway migrate, `pnpm install --frozen-lockfile`, `pnpm check`, `pnpm typecheck`, `pnpm test`, `pnpm build` (five sites) |
+| `java` | JDK 25, `services/mvnw -B -ntp -f services/pom.xml test` (includes Checkstyle) |
+| `images` | build-only, same matrix as publish; no push. Catches Dockerfile, base-image and Caddy-plugin breakage on pull requests |
 | `deployment` | every Quadlet unit generates a `.service` under podman 5.8.9; every Ansible playbook passes `--syntax-check` |
 
 Details that matter:
@@ -25,6 +26,9 @@ Details that matter:
 - `STUDIO_TEST_ADMIN_URL` points at the CI database, so the PostgreSQL-gated
   suites run. A guard step fails the job if any suite reports skipped.
 - pnpm is pinned by `web/package.json`; Node is 24; Maven by the wrapper; JDK 25.
+- Inputs are pinned: GitHub Actions by commit SHA, CI tool images
+  (`postgres`, `flyway`, podman, Python) by `tag@digest`, and `ansible-core` by
+  an exact version. Bump the tag and digest together.
 - The deployment job renders the Jinja placeholders before running the Quadlet
   generator, the same way the Ansible app role does. Unknown unit keys are
   silently dropped by podman, so key typos surface during server verification,
@@ -43,7 +47,7 @@ Every image builds with the repository root as its context and the single root
 | Image | Dockerfile |
 | --- | --- |
 | `apps-identity`, `apps-messaging`, `apps-assets` | `services/<name>/Dockerfile` |
-| `apps-studio`, `apps-jublawoma`, `apps-unclet`, `apps-zelglihof` | `web/sites/<name>/Dockerfile` |
+| `apps-studio`, `apps-jublawoma`, `apps-unclet`, `apps-zelglihof`, `apps-oliumbi` | `web/sites/<name>/Dockerfile` |
 | `apps-migrate` | `database/Dockerfile` |
 | `apps-caddy` | `infrastructure/caddy/Dockerfile` |
 
@@ -60,19 +64,24 @@ The workflow uses GitHub Actions cache for layer reuse and `GITHUB_TOKEN` with
 
 ```text
 merge to main
-  → ci.yml green
+  → ci.yml green (including the build-only image job)
   → tag the commit with a version (e.g. 2026.10.24) and push the tag
   → publish.yml re-runs CI, builds and pushes all images
   → deploy from the workstation: deploy.yml -e image_tag=2026.10.24
+  → migrate, provision database roles from the vault, then start the apps
   → verify, then record the release
 ```
 
-Rollback is the previous tag. See [deployment](../operations/deployment.md).
+`image_tag` is mandatory and `latest` is rejected. Rollback is the previous
+tag. See [deployment](../operations/deployment.md).
 
 ## Adding a site or a deployable
 
-1. Add its Dockerfile and a matrix entry in `publish.yml`.
+1. Add its Dockerfile and a matrix entry in both `publish.yml` and the CI
+   `images` job.
 2. Add a unit in `infrastructure/units/` (image pinned, health check, ordering).
+   If it needs a database role, add it to `app_database_roles` so the deploy
+   provisions login before the app starts.
 3. Add the hostname to `infrastructure/caddy/Caddyfile`.
 4. Add its environment template and vault keys in `ansible/`.
 5. Add the migration schema and the app role.
@@ -84,8 +93,8 @@ Rollback is the previous tag. See [deployment](../operations/deployment.md).
 - The 2026-11 [build and deployment review](../history/deployment-review-2026-11.md)
   found remaining deployment blockers; see
   [open work](../work/open-work.md#build-and-deployment-review-2026-11).
-- No Java style check; integration tests against a real PostgreSQL are still a
-  follow-up ([TD-13](../work/tech-debt.md#td-13)).
+- Checkstyle runs as part of `mvn test`; integration tests against a real
+  PostgreSQL are still a follow-up ([TD-13](../work/tech-debt.md#td-13)).
 - CI checks that units generate, not that their behavior is correct on the
   server. A deploy still verifies the running stack.
 - The dev compose rig is not validated by CI; it is validated locally with

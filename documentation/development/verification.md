@@ -23,7 +23,7 @@ From `web/`:
 pnpm check       # Biome style/lint - must be exit 0
 pnpm typecheck   # runs pnpm generate first; fails on a stale route tree
 pnpm test        # node:test suite (tsx)
-pnpm build       # all four sites, serialized
+pnpm build       # all five sites, serialized
 pnpm --filter studio build   # REQUIRED after any web/packages/* change
 ```
 
@@ -38,8 +38,9 @@ What they mean:
   silently when `STUDIO_TEST_ADMIN_URL` is unset. CI points it at a migrated
   database and fails if anything skips; locally, set it if you touched a
   repository or workflow.
-- `build` builds all four sites. Studio is the broadest consumer of shared
-  packages, which is why it has its own required build.
+- `build` builds all five sites (including the static Oliumbi placeholder).
+  Studio is the broadest consumer of shared packages, which is why it has its
+  own required build.
 
 ## Java services
 
@@ -53,16 +54,18 @@ From `services/`, `./mvnw test` or `mvn test` is equivalent. The wrapper pins
 Maven 3.9.12, the same version CI uses. The suites run without a database or SMTP
 server.
 
-Java integration tests against a real PostgreSQL and a Java style check are still
-follow-ups ([TD-13](../work/tech-debt.md#td-13)).
+`mvn test` also runs Checkstyle through `services/checkstyle.xml`, so a style
+violation fails the gate the same way a test failure does. There is still no
+integration suite against a real PostgreSQL; that is accepted post-launch debt
+([TD-13](../work/tech-debt.md#td-13)).
 
 ## Database
 
 CI applies `database/migrations/` in order to a fresh PostgreSQL 18 for the web
-suite. Integration tests run against a real PostgreSQL: empty-database
-migration, constraints, authorization at server boundaries, queue creation
-alongside the domain write, and duplicate submissions. Tests never send live
-email or touch production. Locally:
+suite. The PostgreSQL-gated web suites run against that real database:
+empty-database migration, constraints, authorization at server boundaries,
+queue creation alongside the domain write, and duplicate submissions. Tests
+never send live email or touch production. Locally:
 
 1. recreate the database (`down -v`, then `up -d --build` with the dev compose
    stack), or apply the migrations to a fresh database;
@@ -83,10 +86,14 @@ The unit files and playbooks are checked in CI, not locally:
 
 - every `infrastructure/units/*.container` must generate a `.service` under the
   podman 5.x Quadlet generator;
-- every `ansible/playbooks/*.yml` must pass `ansible-playbook --syntax-check`.
+- every `ansible/playbooks/*.yml` must pass `ansible-playbook --syntax-check`;
+- the CI `images` job builds every image without pushing, using the same matrix
+  as publish.
 
 Unit behavior is verified on the rebuilt server, because the workstation cannot
-run the generator the same way.
+run the generator the same way. CI pins GitHub Actions by commit SHA, tool
+images by `tag@digest` and `ansible-core` by exact version; bump the tag and
+digest together.
 
 ## PowerShell caveat
 

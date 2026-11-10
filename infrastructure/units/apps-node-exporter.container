@@ -1,17 +1,27 @@
 # Node exporter. Host metrics plus the textfile collector directory that the
-# backup script writes its freshness metrics into.
+# backup script writes its freshness metrics into. The systemd collector is
+# disabled by default in node_exporter; UnitFailing/UnitRestartLoop need it,
+# and the start-time flag is the one that emits
+# node_systemd_unit_start_time_seconds (RV-01).
 [Unit]
 Description=Node exporter
+# It publishes on the WireGuard address; wait for the tunnel so a plain reboot
+# cannot race the bind (DR-16).
+Wants=wg-quick@wg0.service
+After=wg-quick@wg0.service
 
 [Container]
 Image=docker.io/prom/node-exporter:v1.12.1@sha256:1b4e4438faca4dd7e001dd445d161a4a2091b0fededa84093b3a8dfeae1f1be0
 ContainerName=node-exporter
 Network=net-monitoring.network
-Exec=--path.procfs=/host/proc --path.sysfs=/host/sys --path.rootfs=/rootfs --collector.textfile --collector.textfile.directory=/textfile
+Exec=--path.procfs=/host/proc --path.sysfs=/host/sys --path.rootfs=/rootfs --collector.textfile --collector.textfile.directory=/textfile --collector.systemd --collector.systemd.enable-start-time-metrics
 Volume=/proc:/host/proc:ro
 Volume=/sys:/host/sys:ro
 Volume=/:/rootfs:ro
 Volume=/var/lib/node-exporter-textfile:/textfile:ro
+# Host systemd access for --collector.systemd (dbus + private socket path).
+Volume=/run/dbus/system_bus_socket:/run/dbus/system_bus_socket:ro
+Volume=/run/systemd:/run/systemd:ro
 PublishPort={{ monitoring_bind }}:9100:9100
 Pull=missing
 LogDriver=journald

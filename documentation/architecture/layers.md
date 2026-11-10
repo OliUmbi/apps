@@ -45,8 +45,9 @@ site's data package; a site may not import Studio.
 
 Caddy is the only process reachable from the internet. It terminates TLS with
 DNS-01 wildcard certificates, routes by hostname, adds baseline security
-headers, limits request bodies and sets a modest cache default for static
-files. It does not know about content, sessions or the database.
+headers plus a CSP, applies per-client public and login rate limits, limits
+request bodies and sets cache policy for hashed and unhashed static files. It
+does not know about content, sessions or the database.
 
 `apps-dyndns.timer` runs independently of request traffic: it updates existing
 Infomaniak A records for the managed names. It never creates or deletes records.
@@ -142,9 +143,11 @@ See [data and schema](subsystems/data-and-schema.md) and
 
 GitHub Actions verifies every change and publishes immutable images on a
 version tag. The host runs one systemd unit per workload, rendered from
-`infrastructure/units/` by Ansible and pinned to an image tag. Migrations run as
-a one-shot unit before the apps. The maintainer workstation drives the host over
-WireGuard; Ansible is the only operational entry point.
+`infrastructure/units/` by Ansible and pinned to an explicit image tag
+(`latest` is rejected). Migrations run as a one-shot unit before the apps, and
+Ansible then provisions the application database roles from the vault before
+starting them. The maintainer workstation drives the host over WireGuard;
+Ansible is the only operational entry point.
 
 This layer configures and observes the others. No application code knows how it
 is deployed. See [CI/CD](../development/ci-cd.md) and

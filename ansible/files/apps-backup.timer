@@ -2,7 +2,7 @@
 Description=Daily OliUmbi apps backup
 
 [Timer]
-OnCalendar=*-*-* 03:00:00
+OnCalendar=*-*-* {{ "%02d:00:00" | format(backup_hour | int) }}
 RandomizedDelaySec=15m
 Persistent=true
 

@@ -54,11 +54,11 @@ old one; do not silently rewrite history.
 | O-003 | Logic mostly in TanStack site servers; split out only non-trivial operations (messaging is the prime candidate). |
 | O-004 | CRUD stays in TanStack servers; where separate services are warranted, Java (Spring) is preferred. |
 | O-005 | Administration is one app at `studio.oliumbi.ch`, all site `studio.*` names redirect there; mobile support needed. (The name "studio" replaces "admin".) |
-| O-006 | **Open** — see below. |
+| O-006 | **Ratified 2026-11.** Local password accounts: identity stores only BCrypt hashes, session tokens are random 256-bit values stored as SHA-256 hashes, and services use internal bearer tokens from the environment. Sessions last seven days and are revoked server-side on password change or account disable. No MFA, recovery or invitations until public accounts exist. The first administrator is a one-time Ansible playbook (`ansible/playbooks/first-admin.yml`), never a migration seed. Threat model under [launch decisions](#launch-decisions-2026-11). |
 | O-007 | Content is site-specific and custom-built; explicitly not a generic CMS. Scope in [sites](sites.md). |
 | O-008 | Private server, media on disk, no CDN; reasonable default limits; revisit when relevant. |
 | O-009 | Email via SMTP from the domain provider, deliberately simple now. Two mail identities per domain: a **requests** inbox (`hof@`, `info@`, `scharleitung@`) for form notifications and Reply-To, and a **newsletter@** sending identity for subscriber mail — separated so bulk mail cannot damage the deliverability of confirmations, and replies still reach a human. Strategy reviewed later. |
-| O-010 | **Open** — see below. |
+| O-010 | **Ratified 2026-11.** Flyway owns schema and constraints; migrations live in `database/migrations`; one schema per capability as defined in V001. Pre-launch migration files are edited in place and the local database is recreated. Freeze the baseline at the first accepted production import; afterwards use expand → backfill → verify → contract. The one-shot migrator runs before the apps on every deploy, so no two migrators race. |
 | O-011 | Requirements were low (monthly backups, up to a day to recover); now superseded: daily backups, pull to workstation, restore drills ([operations](../operations/README.md)). |
 | O-012 | Low availability requirements; now superseded: monitoring + alerting exist ([operations](../operations/README.md)). |
 | O-013 | Superseded: certbot/nginx plan replaced by containerized Caddy with DNS-01 wildcards; dynamic DNS handled by a server-side timer. |
@@ -102,8 +102,8 @@ Adopted to move the server off Docker Engine ([deployment plan](../history/deplo
 - **D12 — Backed-up state lives in plain directories** under `/var/lib/apps/`
   (`postgres`, `media`, `caddy`); backup and restore are `pg_dump` and `tar`.
   Monitoring state stays on named volumes and is not backed up. *(2026-11 note:
-  the nightly `backup.sh` currently archives database and media only; Caddy's
-  ACME state is re-issuable but outside the archive — see
+  the nightly `backup.sh` archives database and media only; Caddy's ACME state is
+  deliberately excluded and re-issued — see D21 and
   [TD-16](../work/tech-debt.md#td-16).)*
 - **D13 — Deploy stays manual and pinned by image tag.** Ansible renders the
   units with the tag, pulls, and restarts the stack in dependency order
@@ -114,8 +114,9 @@ Adopted to move the server off Docker Engine ([deployment plan](../history/deplo
   replacement host after an import rehearsal while legacy remains live; the
   drill remains open in [open work](../work/open-work.md).)*
 - **D15 — cAdvisor is dropped** (docker-coupled); node-exporter's systemd
-  collector plus blackbox cover the host and the apps. *(2026-11: the systemd
-  collector is not yet enabled/wired in the container unit; see RV-01.)*
+  collector plus blackbox cover the host and the apps. *(2026-11: the
+  node-exporter unit now enables the systemd collector and mounts host dbus and
+  `/run/systemd`; verify the series and alerts on the real host — RV-01.)*
 - **D16 — Legacy migration is manual and owner-led.** The owner will migrate the
   small data set by hand; no importer will be built. A sanitized rehearsal,
   explicit mappings, disabled historical notifications and source/migrated/
@@ -124,41 +125,68 @@ Adopted to move the server off Docker Engine ([deployment plan](../history/deplo
   legacy rotation task remains; production still uses only unique vault secrets.
 - **D17 — The pre-launch Flyway baseline stays consolidated.** Owning migration
   files are edited in place until the first accepted production import, and local
-  volumes may be rebuilt from zero. Submission idempotency lives in V008–V010
-  with the tables it protects; the separate V011 patch is removed. Once live data
+  volumes may be rebuilt from zero. The current head is V009: V007 is Jublawoma,
+  V008 Uncle-T and V009 Zelglihof; the old empty Oliumbi placeholder migration is
+  removed and the Oliumbi schema/role stays reserved in V001. Submission
+  idempotency lives in V007–V009 with the tables it protects. Once live data
   exists, new changes are append-only expand/contract migrations.
-
-## Still open
-
-Both items are owner decisions; actionable tracking is under **Owner decisions**
-in [open work](../work/open-work.md). The proposals below are not adopted until
-the owner confirms them.
-
-- **O-006 — authentication and account model.** Fewer than ten users; local
-  passwords vs. an external provider, bootstrap/invitations, recovery,
-  revocation, session duration, MFA need a decision and a short threat model.
-  "External dependencies or simple self-built solutions could be realistic."
-  Proposed resolution (owner to confirm): local password accounts — identity
-  stores only BCrypt password hashes, session tokens are random 256-bit values
-  kept only as SHA-256 hashes, and services authenticate to each other with
-  internal bearer tokens from the environment. Fewer than ten users make an
-  external provider unnecessary; sessions expire after seven days and are
-  revoked server-side on password change or account disable. Recovery,
-  invitations and MFA stay out until public accounts exist.
-- **O-010 — schema and migration ownership.** No satisfactory approach found
-  yet: schema-per-capability vs. domain split, migration tool and directory
-  convention, locking, expand/contract procedure. Proposals wanted.
-  Proposed resolution (owner to confirm): Flyway owns the schema; migrations
-  live in `database/migrations`, one schema per capability as defined in V001
-  (`queue`, `identity`, `messaging`, `assets`, `studio` and the site schemas).
-  While the system is pre-launch, migration files are edited in place and the
-  database is recreated from scratch (the sanction in `database/README.md`);
-  once live data exists, destructive changes follow expand → backfill → verify
-  → contract. The one-shot migrate container runs before the apps on every
-  deploy, so no two migrators race.
 
 Also closed: the Zelglihof domain is `zelglihof-maegenwil.ch` (the application
 code had it right; documentation and infrastructure did not).
+
+## Launch decisions (2026-11)
+
+Adopted for the first go-live pass. These close the remaining contract questions
+and set the recovery and cutover boundaries.
+
+- **D18 — Archive-only lifecycle.** Products, variants and reservations are never
+  hard-deleted. Products and variants carry `archived_at`/`archived_by`; public
+  reads hide archived rows while reservation history keeps its references.
+  Reservations are cancelled only through an explicit, one-time transition from
+  `new`/`in-progress`, with guarded stock restoration and
+  `cancelled_at`/`cancelled_by`/`cancellation_reason`/`stock_restored`. Queued
+  campaigns are irreversible; only drafts are deletable. Consequence: no delete
+  action destroys history or restores stock twice.
+- **D19 — Campaigns are bounded at 500 active recipients.** A larger send is
+  refused with the typed `too-large` outcome before anything is queued; the
+  campaign stays a draft. Consequence: one run cannot hold a transaction across
+  an unbounded audience.
+- **D20 — Unsubscribe tokens stay plaintext for launch.** The token is an
+  unguessable per-subscriber value and the endpoint is idempotent; raw tokens
+  also appear in queued message bodies, so hashing the column alone would not
+  remove the exposure. This is a low-severity integrity risk (a leaked
+  queue/body copy could unsubscribe one address), accepted for the launch data
+  set. Compensating controls: HTTPS-only delivery, no personal data beyond the
+  subscriber address, a single-purpose endpoint, hashed confirmation tokens and
+  seven-day sessions. Revisit when newsletter volume or public accounts grow.
+- **D21 — Caddy's ACME state is excluded from backup and re-issued.** Backups
+  cover database and media only. A rebuilt host re-issues through DNS-01 with
+  `vault_infomaniak_api_token` and `vault_acme_email`; `CertificateExpiringSoon`
+  alerts 14 days ahead, and re-issuance is verified in the restore drill.
+  Consequence: recovery depends on the vault DNS token, not on a copied
+  certificate store.
+- **D22 — Edge rate limiting and a baseline CSP are implemented.** Caddy applies
+  a per-client-IP public zone (20 events per 2s, IPv6 grouped by /64) and a
+  stricter login zone (10/min); a baseline Content-Security-Policy ships with
+  the shared site headers. Consequence: abuse resistance sits at the edge before
+  application logic, and new embeds must fit the policy.
+- **D23 — The cutover point of no return is the first durable public write.**
+  Before that write, routing may return to legacy. After it, rollback must
+  export/replay the new writes or roll forward; a DNS-only switch back is not
+  data-safe. The observation window and owner sign-off decide when the point is
+  crossed.
+
+### O-006 threat model (accepted 2026-11)
+
+Fewer than ten known users, one origin and no public registration. Session
+cookies are `HttpOnly`, `SameSite=Lax`, and `Secure` with the `__Host-` prefix in
+production. There is no separate CSRF token: `SameSite=Lax` blocks cross-site
+form posts and every Studio handler re-checks the actor server-side; that
+residual risk is accepted at this scale. Login is rate-limited at the proxy
+(10/min per IP); internal service calls use bearer tokens from the environment
+and never reach the browser. Passwords are BCrypt hashes; session and
+confirmation tokens are stored as SHA-256 hashes. Accepted for launch: no MFA,
+no recovery flow, no per-device session list and no CSRF token.
 
 ## Adopted for the 2026-10 refactoring pass
 

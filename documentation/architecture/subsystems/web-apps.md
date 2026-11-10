@@ -6,10 +6,13 @@ separate subsystem with a different authorization boundary. Local detail lives i
 
 ## Responsibility
 
-Serve the three public sites - `jublawoma.ch`, `uncle-t.ch` and
-`zelglihof-maegenwil.ch` - as independent TanStack Start applications. Each site
-owns its routes, content tables, forms, visual language, build and release. No
-site imports another site's implementation or tables.
+Serve the four public sites - `jublawoma.ch`, `uncle-t.ch`,
+`zelglihof-maegenwil.ch` and `oliumbi.ch` - as independent TanStack Start
+applications. Each site owns its routes, visual language, build and release; the
+three data-backed sites also own their content tables and forms. No site imports
+another site's implementation or tables. Oliumbi is currently a static English
+placeholder: its first slice has no content tables, no data package and no
+runtime environment.
 
 ## Inside
 
@@ -17,7 +20,8 @@ site imports another site's implementation or tables.
 web/
   sites/
     jublawoma/  unclet/  zelglihof/   one deployable per site
-    studio/                            separate subsystem
+    oliumbi/                          static placeholder; no data package
+    studio/                           separate subsystem
   packages/
     contracts/                 shared validation, site ids, links, page contracts
     ui/                        shared behavior only where two sites need it
@@ -26,7 +30,7 @@ web/
     identity/ assets/ messaging/  typed clients for the Java services
     queue/                     insert one prepared message in the caller's transaction
     database/                  Drizzle connections, transaction types, column helpers
-    *-data/                    site domain packages (jublawoma, unclet, zelglihof)
+    *-data/                    site domain packages (jublawoma, unclet, zelglihof; no oliumbi-data)
     environment/               Vite environment loading
 ```
 
@@ -77,7 +81,8 @@ vocabulary and constraints.
 - Metadata, canonicals, sitemaps, redirects and 404s are part of each route's
   contract, not an afterthought.
 - German customer sites; English source routes are canonical, without German
-  route wrapper files. Only Swiss German is currently configured.
+  route wrapper files. Only Swiss German is currently configured. Oliumbi is
+  English-only and keeps its placeholder wording directly in the route.
 
 ## Generated code
 
@@ -104,17 +109,26 @@ vocabulary and constraints.
 
 ## Verification
 
-From `web/`: `pnpm check`, `pnpm typecheck`, `pnpm test`, `pnpm build`, and
-`pnpm --filter studio build` after any `web/packages/*` change. The full gate is
-in [verification](../../development/verification.md); CI parity is in
-[CI/CD](../../development/ci-cd.md).
+From `web/`: `pnpm check`, `pnpm typecheck`, `pnpm test`, `pnpm build` (all five
+sites), and `pnpm --filter studio build` after any `web/packages/*` change. The
+full gate is in [verification](../../development/verification.md); CI parity is
+in [CI/CD](../../development/ci-cd.md).
+
+## Edge behavior that affects a site
+
+Caddy applies the shared baseline: a per-client-IP public rate limit (20 events
+per 2-second window, roughly 10 r/s with a burst of 20; IPv6 shares a bucket per
+/64), a stricter login limit (10 per minute on `/api/session/login`), a baseline
+Content-Security-Policy, a 10 MB request body, and caching rules. Hashed Vite
+assets under `/assets/` are immutable for a year; unhashed `public/` files keep
+a one-hour default. See [edge](edge.md).
 
 ## Known gaps
 
-- Proxy-level rate limiting is not implemented; forms rely on application
-  honeypots. See [TD-01](../../work/tech-debt.md#td-01).
-- Static asset caching still uses Caddy's one-hour default. See
-  [TD-03](../../work/tech-debt.md#td-03).
+- Proxy-level rate limiting and the baseline CSP are code complete; verify them
+  on the real host before trusting a launch.
 - Some hard-coded labels and content remain to be translated, and German URL
   translation is unverified. See [open work](../../work/open-work.md).
 - Staging environments and end-to-end suites are deliberately deferred.
+- The Oliumbi placeholder links to GitHub and the three existing sites; the full
+  personal site is later work, not a hidden part of this slice.

@@ -2,6 +2,10 @@
 # by the ansible app role.
 [Unit]
 Description=Alertmanager
+# It publishes on the WireGuard address; wait for the tunnel so a plain reboot
+# cannot race the bind (DR-16).
+Wants=wg-quick@wg0.service
+After=wg-quick@wg0.service
 
 [Container]
 Image=docker.io/prom/alertmanager:v0.34.2@sha256:39d8bb3966c694a124428a3a88fbcffd40bd069129ecd47c059f8a3f17c55f3b

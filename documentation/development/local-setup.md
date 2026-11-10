@@ -41,6 +41,7 @@ docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d --build
 | Jublawoma | <http://localhost:8001> |
 | Uncle-T | <http://localhost:8002> |
 | Zelglihof | <http://localhost:8003> |
+| Oliumbi (static placeholder) | <http://localhost:8004> |
 | Identity | <http://localhost:8081> |
 | Messaging | <http://localhost:8082> |
 | Assets | <http://localhost:8083> |
@@ -57,12 +58,13 @@ Keep infrastructure in Docker and run the web app natively:
 ```powershell
 docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d postgres flyway roles mailpit
 cd web
-pnpm dev:studio        # or dev:jublawoma, dev:unclet, dev:zelglihof
+pnpm dev:studio        # or dev:jublawoma, dev:unclet, dev:zelglihof, dev:oliumbi
 ```
 
 Studio also needs identity and assets; delivery history needs messaging. Run
 them in Docker or in the IDE. Public images need assets; queued email needs
-messaging.
+messaging. Oliumbi is static and needs no database or service; it is the
+smallest way to check the shared Vite/Tailwind setup.
 
 ```powershell
 docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d identity assets messaging
@@ -76,9 +78,10 @@ From `web/`, after `pnpm build`:
 node --env-file=../.env sites/studio/.output/server/index.mjs
 ```
 
-Replace `studio` with another site as needed. Node loads the root `.env`; shell
-variables win. Production builds do not load `.env`; `pnpm --filter studio start`
-expects variables to be supplied externally.
+Replace `studio` with another site as needed. Oliumbi reads no runtime
+environment, so it also runs without the `--env-file` flag. Node loads the root
+`.env`; shell variables win. Production builds do not load `.env`;
+`pnpm --filter studio start` expects variables to be supplied externally.
 
 ## Database
 
@@ -91,10 +94,11 @@ docker compose -f infrastructure/compose.dev.yaml --env-file .env down -v
 docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d --build
 ```
 
-Application roles are created `NOLOGIN`; the compose `roles` service provisions
-their development passwords after migration. If you created a database without
-compose, run the documented `ALTER ROLE ... LOGIN PASSWORD ...` statements once;
-see [database/README.md](../../database/README.md).
+Migrations V001–V009 create eight roles `NOLOGIN`; the compose `roles` service
+provisions their development passwords after migration. Oliumbi is a static
+site, so its reserved role is not used by any app. If you created a database
+without compose, run the documented `ALTER ROLE ... LOGIN PASSWORD ...`
+statements once; see [database/README.md](../../database/README.md).
 
 Never use the migrator's credentials for a web application. Each app configures a
 fixed database role independently of its connection URL.

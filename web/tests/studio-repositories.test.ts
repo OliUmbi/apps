@@ -765,7 +765,7 @@ test("explicit Studio repositories against PostgreSQL migrations", {
 					assert.equal(updated.name, record.name);
 					await assert.rejects(
 						store.update(key, { status: "cancelled" }, updated.updatedAt),
-						/cancellation is not available/,
+						/dedicated cancellation action/,
 					);
 					await assert.rejects(
 						store.delete(key),

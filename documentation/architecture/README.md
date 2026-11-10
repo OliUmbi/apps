@@ -1,9 +1,10 @@
 # Architecture
 
-Three public websites - `jublawoma.ch`, `uncle-t.ch` and
-`zelglihof-maegenwil.ch` - plus one administration application (Studio), served
-from a single Linux host with a single PostgreSQL database. A fourth site,
-`oliumbi.ch`, is planned but not built yet. This page is the system map. The
+Four public websites - `jublawoma.ch`, `uncle-t.ch`,
+`zelglihof-maegenwil.ch` and `oliumbi.ch` - plus one administration application
+(Studio), served from a single Linux host with a single PostgreSQL database.
+The Oliumbi site is currently a static English placeholder; its full content
+comes later. This page is the system map. The
 [layer view](layers.md) explains the dependency rules inside it, and the
 [subsystem pages](subsystems/README.md) explain each part in depth.
 
@@ -14,9 +15,10 @@ For why the system is shaped this way, read [principles](../principles.md) and
 
 ## Drivers
 
-Low traffic, one maintainer, four distinct sites, private administration and
-durable data. The repository is shared for discovery and coordinated change.
-Each site application is independently buildable and deployable. Capabilities
+Low traffic, one maintainer, five distinct web applications, private
+administration and durable data. The repository is shared for discovery and
+coordinated change. Each site application is independently buildable and
+deployable. Capabilities
 have explicit ownership and contracts. A capability becomes its own process only
 when that makes the whole system simpler or safer.
 
@@ -28,7 +30,7 @@ when that makes the whole system simpler or safer.
                               ▼
  ┌──────────────────────────────────────────────────────────────┐
  │                        the managed host                       │
- │  Caddy (TLS, host routing) → sites / Studio → services → DB    │
+ │  Caddy (TLS, routing) → sites / Studio → services → DB        │
  └───────┬───────────────────────────────────────────┬──────────┘
          │                                           │
          │ DNS-01 + A-record updates                 │ SMTP
@@ -52,7 +54,7 @@ are pulled to.
     │
     ▼
  ┌─ edge ───────────────────────────────────────────────────────┐
- │ caddy    TLS (DNS-01 wildcards), host routing, headers       │
+ │ caddy    TLS (DNS-01 wildcards), routing, headers, limits    │
  │ dyndns   systemd timer: keeps Infomaniak A records current    │
  │          [infrastructure/]                                    │
  └────┬─────────────────────────────────────────────────────────┘
@@ -60,7 +62,8 @@ are pulled to.
  ┌─ web/ ───────────────────────────────────────────────────────┐
  │ TanStack Start (React, Vite, Nitro), SSR on Node             │
  │ jublawoma :8001   unclet :8002   zelglihof :8003             │
- │ studio     :8000  (administration for all sites)             │
+ │ oliumbi   :8004 (static placeholder)                         │
+ │ studio    :8000 (administration for all sites)               │
  └────┬─────────────────────────────────────────────────────────┘
       │
  ┌─ services/ ──────────────────────────────────────────────────┐
@@ -81,9 +84,10 @@ are pulled to.
 
 | Component | Purpose | Owns | Detail |
 | --- | --- | --- | --- |
-| caddy | TLS via DNS-01, hostname routing, security headers, body limit | certificates in `/var/lib/apps/caddy-data` | [edge](subsystems/edge.md) |
+| caddy | TLS via DNS-01, hostname routing, security headers, CSP, rate limits, body limits | certificates in `/var/lib/apps/caddy-data` | [edge](subsystems/edge.md) |
 | dyndns | timer that keeps the Infomaniak A records on the dynamic IP | - | [edge](subsystems/edge.md) |
 | sites (jublawoma, unclet, zelglihof) | public SSR websites; own routes, content and forms | their own schema | [web apps](subsystems/web-apps.md) |
+| oliumbi | static English placeholder; no database or service dependencies | its own route wording | [web apps](subsystems/web-apps.md) |
 | studio | admin UI for all sites; one hostname so sessions survive | - | [studio](subsystems/studio.md) |
 | identity | accounts, sessions, permissions | `identity` schema | [identity](subsystems/identity.md) |
 | messaging | email queue intake, delivery, history | `messaging` schema | [messaging](subsystems/messaging.md) |
@@ -107,10 +111,13 @@ are pulled to.
   postgres.
 - **Email** - site or Studio server function → `queue.message` in its
   transaction → messaging worker → SMTP → delivery history.
-- **Sign-in** - Studio → identity (internal bearer token) → session cookie
-  (HTTP-only, same-site) → Studio authorization checks on every server call.
-- **Release** - version tag → CI verifies and publishes images → the maintainer
-  runs the deploy playbook with that tag → migrate → apps → caddy. See
+- **Sign-in** - browser POSTs to Studio's `/api/session/login` route → identity
+  (internal bearer token) → session cookie (HTTP-only, same-site) → Studio
+  authorization checks on every server call. Caddy applies a stricter login
+  rate limit to that path.
+- **Release** - version tag → CI verifies, builds and publishes images → the
+  maintainer runs the deploy playbook with an explicit pinned tag → migrate →
+  provision database roles → apps → caddy. See
   [deployment](../operations/deployment.md).
 
 The exact call chains and allowed dependencies are in the
@@ -146,7 +153,7 @@ Seed data stays outside production migrations.
 | --- | --- | --- |
 | runtime | `infrastructure/compose.dev.yaml` (Docker Desktop) | systemd units from `infrastructure/units/` (podman/Quadlet) |
 | config | root `.env` (gitignored; template `infrastructure/.env.dev`) | per-service `/etc/default/apps-*` rendered from the vault |
-| images | built locally | `ghcr.io/oliumbi/apps-*` pinned by `image_tag` |
+| images | built locally | `ghcr.io/oliumbi/apps-*` pinned by an explicit `image_tag` (`latest` rejected) |
 | migrations | bind mount, edited in place | baked into `apps-migrate:<tag>` |
 | email | Mailpit | real SMTP |
 | TLS | none | caddy, DNS-01 wildcards |
@@ -173,13 +180,15 @@ documented once in [development/local-setup.md](../development/local-setup.md).
   ignored; values live in the Ansible vault).
 - Each app owns its schema; no cross-app SQL. Shared behavior lives in shared
   packages/modules, never in another site's code.
-- Ports: sites `8000-8003`, services `8081-8083`. Nothing else is published.
+- Ports: sites and Studio `8000-8004`, services `8081-8083`. Nothing else is
+  published. Oliumbi is `8004`.
 - Public hostnames are defined in one place, `infrastructure/caddy/Caddyfile`:
-  `jublawoma.ch`, `uncle-t.ch`, `zelglihof-maegenwil.ch`, `studio.oliumbi.ch`.
-  Other `admin.*`/`studio.*`/`www.*` names redirect. The old `api.*` style is
-  retired, not redirected.
-- Cache headers belong to the app (it knows what is immutable); caddy only sets
-  a modest default for static files.
+  `jublawoma.ch`, `uncle-t.ch`, `zelglihof-maegenwil.ch`, `oliumbi.ch`,
+  `studio.oliumbi.ch`. Other `admin.*`/`studio.*`/`www.*` names redirect. The
+  old `api.*` style is retired, not redirected.
+- Cache headers belong to the app (it knows what is immutable). Caddy caches
+  hashed Vite assets for a year as immutable and gives unhashed `public/` files
+  a one-hour default only when the app set no header.
 - Deploys are boring on purpose: pinned tags, one command, manual.
 - Every image builds with the repository root as its context. The single root
   `.dockerignore` governs what enters a build context; there are no

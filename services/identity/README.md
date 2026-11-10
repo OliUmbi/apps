@@ -17,11 +17,16 @@ that profile the documentation endpoints are disabled.
 - `GET /account/{id}`: read `{account, permissions}`, with permission records.
 - `POST /account`: create an enabled account with `name`, `email` and `password`.
 - `PUT /account/{id}`: replace `name`, `email` and `enabled`.
+- `PUT /account/{id}/profile`: update the account's own `name` and `email` without
+  touching permissions or `enabled`.
 - `PUT /account/{id}/password`: change the password with `{"password":"..."}`.
 - `DELETE /account/{id}`: delete the account and its sessions and permissions.
 
 Create the initial account through the authenticated account endpoint; no hardcoded bootstrap
-password is installed. Names and emails are trimmed and lowercased. Request fields are bounded:
+password is installed. On the server, the one-time
+`ansible/playbooks/first-admin.yml` creates the first Studio administrator and
+grants `studio.admin`; it is deliberately not a migration seed. Names and emails
+are trimmed and lowercased. Request fields are bounded:
 name and permission at 255 characters, email at 320 characters (applied before trimming);
 oversized input returns 400 with field-level validation detail. Passwords are encoded using
 the configured BCrypt encoder and limited to 72 UTF-8 bytes. New passwords must contain at least
@@ -67,6 +72,13 @@ and permission normalization. Session validity is checked in `SessionService`; `
 fetches the session and its account with one `JOIN FETCH` query (the `@EntityGraph` belongs to
 `findDetailedById` on accounts). Repository lookups use derived methods; bulk revocation remains an explicit
 update query to avoid loading and saving every session.
+
+The account model is O-006, ratified: local BCrypt accounts, hashed session tokens and internal
+bearer tokens between services. Sessions last seven days. Recovery, invitations and MFA stay out
+of scope until public accounts exist; the short threat model lives in
+[decisions](../../documentation/reference/decisions.md#o-006-threat-model-accepted-2026-11).
+Studio's login path is rate-limited at
+the edge (10 requests per minute per client IP on `/api/session/login`).
 
 Session lifecycle: revoking a token is idempotent — an unknown, expired or already-revoked token
 is a no-op and still returns 204, so a retried sign-out after a timeout succeeds. `lastSeenAt`
