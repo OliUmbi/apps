@@ -64,7 +64,7 @@ Data packages use `<feature>.<role>.ts`, such as `donation.repository.ts` and `r
 
 ## Development
 
-Use Node.js 24 or newer (declared in the root `package.json` `engines` and matching the container runtime) and the pinned pnpm version from `package.json`. Install from `web` with `pnpm install --frozen-lockfile`. Apply the repository's database migrations before running the applications. Supply `DATABASE_URL` without a username plus the site's `*_DATABASE_PASSWORD`, or supply that site's role and password in the URL. Never use the migrator's credentials for a web application.
+Use Node.js 26 or newer (declared in the root `package.json` `engines` and matching the container runtime) and the pinned pnpm version from `package.json`. Install from `web` with `pnpm install --frozen-lockfile`. Apply the repository's database migrations before running the applications. Supply `DATABASE_URL` without a username plus the site's `*_DATABASE_PASSWORD`, or supply that site's role and password in the URL. Never use the migrator's credentials for a web application.
 
 Copy `infrastructure/.env.dev` to the repository root as `.env` (gitignored); it contains development-only defaults. The Vite development servers for the four data-backed apps load the root `.env` automatically, regardless of which site you start; Oliumbi reads no runtime environment. Site-local files override root values, and shell/IDE environment variables override both. Only `VITE_` variables are exposed to browser code. Restart the dev process after changing environment files, and never reuse the development credentials in a deployed environment.
 
