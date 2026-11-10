@@ -3,6 +3,9 @@
 FROM maven:3.9.12-eclipse-temurin-25-alpine@sha256:91fbbf32cc5076b6142ed98405f3a1a21e102d876eafa5eaf359b5591e8e3fd8 AS build
 WORKDIR /workspace
 COPY services/pom.xml .
+# Checkstyle runs in the validate phase, so the build image needs the shared
+# configuration at the multi-module root (${maven.multiModuleProjectDirectory}).
+COPY services/checkstyle.xml .
 COPY services/shared/pom.xml shared/pom.xml
 COPY services/identity/pom.xml identity/pom.xml
 COPY services/messaging/pom.xml messaging/pom.xml
