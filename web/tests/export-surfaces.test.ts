@@ -124,6 +124,7 @@ const runtimePackages = [
 	"messaging",
 	"queue",
 	"query",
+	"seo",
 	"ui",
 	"unclet-data",
 	"zelglihof-data",

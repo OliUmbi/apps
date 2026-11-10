@@ -15,6 +15,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CropsRouteImport } from './routes/crops'
 import { Route as LegalRouteImport } from './routes/legal'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as LatestIndexRouteImport } from './routes/latest.index'
 import { Route as LatestSlugRouteImport } from './routes/latest.$slug'
@@ -54,6 +55,11 @@ const LegalRoute = LegalRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/crops': typeof CropsRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/latest/$slug': typeof LatestSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/crops': typeof CropsRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/latest/$slug': typeof LatestSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
@@ -153,6 +161,7 @@ export interface FileRoutesById {
   '/crops': typeof CropsRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/latest/$slug': typeof LatestSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
@@ -173,6 +182,7 @@ export interface FileRouteTypes {
     | '/crops'
     | '/legal'
     | '/privacy'
+    | '/sitemap.xml'
     | '/terms'
     | '/latest/$slug'
     | '/products/$productId'
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/crops'
     | '/legal'
     | '/privacy'
+    | '/sitemap.xml'
     | '/terms'
     | '/latest/$slug'
     | '/products/$productId'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/crops'
     | '/legal'
     | '/privacy'
+    | '/sitemap.xml'
     | '/terms'
     | '/latest/$slug'
     | '/products/$productId'
@@ -228,6 +240,7 @@ export interface RootRouteChildren {
   CropsRoute: typeof CropsRoute
   LegalRoute: typeof LegalRoute
   PrivacyRoute: typeof PrivacyRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   LatestSlugRoute: typeof LatestSlugRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
@@ -282,6 +295,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -364,6 +384,7 @@ const rootRouteChildren: RootRouteChildren = {
   CropsRoute: CropsRoute,
   LegalRoute: LegalRoute,
   PrivacyRoute: PrivacyRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   LatestSlugRoute: LatestSlugRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,

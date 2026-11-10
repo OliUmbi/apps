@@ -16,6 +16,7 @@ Each site owns its routes, page components, styling and public server functions.
 | `messaging` | Typed access to delivery history and attempts |
 | `queue` | Insert one prepared message in the caller's transaction |
 | `analytics` | Anonymous per-navigation route counting and the site/Studio read model |
+| `seo` | Canonical links, structured data and sitemap serialisation |
 | `http-client` | Authentication, HTTP errors, response validation and pagination |
 | `query` | React Query provider and shared cache defaults |
 | `ui` | Shared rendering and form behavior, including images, Markdown and paginated lists |

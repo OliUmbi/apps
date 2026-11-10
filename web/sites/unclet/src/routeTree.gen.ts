@@ -16,6 +16,7 @@ import { Route as LegalRouteImport } from './routes/legal'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ReviewRouteImport } from './routes/review'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ShowcasesIndexRouteImport } from './routes/showcases.index'
 import { Route as ShowcasesSlugRouteImport } from './routes/showcases.$slug'
@@ -57,6 +58,11 @@ const ServicesRoute = ServicesRouteImport.update({
   path: '/services',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/review': typeof ReviewRoute
   '/services': typeof ServicesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/showcases/$slug': typeof ShowcasesSlugRoute
   '/showcases/': typeof ShowcasesIndexRoute
@@ -105,6 +112,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/review': typeof ReviewRoute
   '/services': typeof ServicesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/showcases/$slug': typeof ShowcasesSlugRoute
   '/showcases': typeof ShowcasesIndexRoute
@@ -120,6 +128,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/review': typeof ReviewRoute
   '/services': typeof ServicesRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/showcases/$slug': typeof ShowcasesSlugRoute
   '/showcases/': typeof ShowcasesIndexRoute
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/review'
     | '/services'
+    | '/sitemap.xml'
     | '/terms'
     | '/showcases/$slug'
     | '/showcases/'
@@ -150,6 +160,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/review'
     | '/services'
+    | '/sitemap.xml'
     | '/terms'
     | '/showcases/$slug'
     | '/showcases'
@@ -164,6 +175,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/review'
     | '/services'
+    | '/sitemap.xml'
     | '/terms'
     | '/showcases/$slug'
     | '/showcases/'
@@ -179,6 +191,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ReviewRoute: typeof ReviewRoute
   ServicesRoute: typeof ServicesRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   ShowcasesSlugRoute: typeof ShowcasesSlugRoute
   ShowcasesIndexRoute: typeof ShowcasesIndexRoute
@@ -237,6 +250,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -283,6 +303,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ReviewRoute: ReviewRoute,
   ServicesRoute: ServicesRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   ShowcasesSlugRoute: ShowcasesSlugRoute,
   ShowcasesIndexRoute: ShowcasesIndexRoute,

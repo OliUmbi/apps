@@ -11,6 +11,7 @@ import type { ReactNode } from "react";
 import { Footer } from "../components/footer";
 import { Header } from "../components/header";
 import { NotFound } from "../components/not-found";
+import { SiteSeo } from "../components/site-seo";
 import "../styles.css";
 
 export const Route = createRootRoute({
@@ -44,6 +45,7 @@ export const Route = createRootRoute({
 function RootComponent() {
 	return (
 		<QueryProvider>
+			<SiteSeo />
 			<Outlet />
 		</QueryProvider>
 	);
@@ -56,8 +58,14 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 				<HeadContent />
 			</head>
 			<body>
+				<a
+					className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-black focus:px-4 focus:py-2 focus:text-white"
+					href="#main"
+				>
+					{m.skip_to_content()}
+				</a>
 				<Header />
-				<main>{children}</main>
+				<main id="main">{children}</main>
 				<Footer />
 				<Scripts />
 			</body>

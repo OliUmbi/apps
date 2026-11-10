@@ -16,6 +16,7 @@
     "@oliumbi/database": "workspace:*",
     "@oliumbi/i18n": "workspace:*",
     "@oliumbi/query": "workspace:*",
+    "@oliumbi/seo": "workspace:*",
     "@oliumbi/ui": "workspace:*",
     "@oliumbi/unclet-data": "workspace:*",
     "@tailwindcss/vite": "catalog:",

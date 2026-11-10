@@ -42,8 +42,8 @@ evidence exists and the registers are updated.
 | PH-7 | in progress | Micrometer on the three services, queue gauges (counts + oldest age), Caddy edge metrics, postgres_exporter with the `monitoring` role, coverage rules for service/pool/queue/connections/probe absence/TLS, `Permissions-Policy`, a 5xx body, and the messaging batch/lease/shutdown fix. Prometheus config and 18 rules validate with `promtool`; Caddy validate runs in the image build. |
 | PH-8 | done (owner prints the sheet) | Passphrase-wrapped age identity, printed recovery sheet, and the restore commands updated to the wrapped identity. The drill itself remains owner-executed. |
 | PH-9 | partial | German public paths shipped (D32) with a test and updated sitemaps. The remaining hard-coded TSX labels are still open. |
-| PH-10 | open | Dynamic sitemap, canonical, JSON-LD, legacy redirects. |
-| PH-11 | open | Oliumbi robots/sitemap/404/error, skip links, focus and reduced motion. |
+| PH-10 | partial | Canonical links, LocalBusiness/Organization JSON-LD and dynamic `/sitemap.xml` routes (static pages + articles/products/showcases/stories) ship. The legacy redirect map needs the migration URL inventory. |
+| PH-11 | partial | Oliumbi has robots, sitemap, branded 404/error and a check test; the three German sites have skip links and a `main` target. Focus after submit, `aria-describedby` and reduced motion remain. |
 | PH-12 | done (first remote run pending) | `gitleaks` + report-only Trivy in CI, blocking weekly `security.yml` (Trivy, gitleaks, `pnpm audit --prod`), a dev-placeholder allowlist, and the 10-step monthly refresh checklist. |
 | PH-13 | in progress | Decisions D25-D32, both registers, the plan and the V012 head are updated. Trimming the component READMEs to structure only remains. |
 

@@ -16,6 +16,7 @@
     "@oliumbi/i18n": "workspace:*",
     "@oliumbi/jublawoma-data": "workspace:*",
     "@oliumbi/query": "workspace:*",
+    "@oliumbi/seo": "workspace:*",
     "@oliumbi/ui": "workspace:*",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/react-query": "catalog:",
