@@ -59,9 +59,14 @@ module and covers main and test sources; it enforces the conventions the code
 already follows without formatting-only rewrites. The reactor's checks run in CI
 (`.github/workflows/ci.yml`, via `services/mvnw`) alongside the web checks.
 
-There is still no integration suite against a real PostgreSQL. The service
-boundaries are exercised through unit and controller tests; a database-backed
-suite is accepted post-launch debt ([TD-13](../documentation/work/tech-debt.md#td-13)).
+There is a narrow PostgreSQL persistence suite in every module
+(`IdentityPersistenceTest`, `MessagingPersistenceTest`,
+`AssetsPersistenceTest`). It validates the entity mappings against the migrated
+schema, exercises the native queue/delivery/permission queries and the
+lifecycle CHECK constraints, and proves `FOR UPDATE SKIP LOCKED` hands a row to
+one worker only. It is disabled without `STUDIO_TEST_ADMIN_URL`; CI migrates a
+database and sets it. Broader service-boundary integration remains accepted
+post-launch debt ([TD-13](../documentation/work/tech-debt.md#td-13)).
 
 ## Containers
 
