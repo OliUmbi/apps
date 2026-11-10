@@ -17,6 +17,19 @@ test("studio search parses documented deep links", () => {
 	});
 });
 
+test("a valid record id survives the deep-link round-trip", () => {
+	const record = "6f9619ff-8b86-4d01-b42d-00cf4fc964ff";
+	const search = studioSearchSchema.parse({
+		site: "zelglihof",
+		area: "site",
+		section: "zelglihof.product",
+		mode: "detail",
+		record,
+	});
+	assert.equal(search.record, record);
+	assert.equal(search.mode, "detail");
+});
+
 test("malformed record ids degrade to no selection instead of throwing", () => {
 	const search = studioSearchSchema.parse({
 		site: "zelglihof",

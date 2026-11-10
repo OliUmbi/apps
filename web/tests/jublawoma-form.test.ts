@@ -44,20 +44,56 @@ function renderForm() {
 	return renderToStaticMarkup(createElement(QueryProvider, null, form));
 }
 
+/** The rendered tag of one control, independent of attribute order. */
+function controlTag(html: string, tag: "input" | "textarea", name: string) {
+	const tags = html.match(new RegExp(`<${tag}\\b[^>]*>`, "g")) ?? [];
+	const match = tags.find((candidate) =>
+		new RegExp(`\\bname="${name}"`).test(candidate),
+	);
+	assert.ok(match, `no <${tag}> named ${name} rendered`);
+	return match;
+}
+
+function attribute(tag: string, name: string) {
+	const match = new RegExp(`\\b${name}="([^"]*)"`).exec(tag);
+	assert.ok(match, `${name} is missing from ${tag}`);
+	return match[1];
+}
+
 test("the commitment form renders typed fields with their layout hooks", () => {
 	const html = renderForm();
 	assert.match(html, /class="form-control-wrap/);
 	assert.match(html, /<label[^>]*>Name<\/label>/);
 	assert.match(html, /<label[^>]*>Menge \(kg\)<\/label>/);
+
 	// A decimal-string quantity keeps a numeric control with its bounds (D2).
-	assert.match(html, /type="number" min="0.5" max="10" step="0.5"/);
-	assert.match(html, /name="quantity"/);
-	assert.match(html, /<textarea rows="2"[^>]*name="note"/);
-	assert.match(html, /type="tel"[^>]*name="phone"|name="phone"/);
+	const quantity = controlTag(html, "input", "quantity");
+	assert.equal(attribute(quantity, "type"), "number");
+	assert.equal(attribute(quantity, "min"), "0.5");
+	assert.equal(attribute(quantity, "max"), "10");
+	assert.equal(attribute(quantity, "step"), "0.5");
+
+	const phone = controlTag(html, "input", "phone");
+	assert.equal(attribute(phone, "type"), "tel");
+	assert.equal(attribute(phone, "name"), "phone");
+
+	const note = controlTag(html, "textarea", "note");
+	assert.equal(attribute(note, "rows"), "2");
+});
+
+test("the form renders the hidden honeypot a bot must not notice", () => {
+	const honeypot = controlTag(renderForm(), "input", "website");
+	assert.equal(attribute(honeypot, "type"), "text");
+	assert.equal(attribute(honeypot, "aria-hidden"), "true");
+	// React renders the tabIndex prop as the HTML attribute `tabindex`.
+	assert.equal(attribute(honeypot, "tabindex"), "-1");
+	assert.equal(attribute(honeypot, "class"), "sr-only");
 });
 
 test("the form reserves one feedback slot and one submit control", () => {
 	const html = renderForm();
-	assert.match(html, /role="alert" aria-live="assertive"/);
+	const count = (pattern: RegExp) => html.match(pattern)?.length ?? 0;
+	assert.equal(count(/role="alert"/g), 1);
+	assert.equal(count(/type="submit"/g), 1);
 	assert.match(html, /type="submit"[^>]*>Zusage senden</);
 });

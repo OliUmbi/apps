@@ -5,6 +5,7 @@ import {
 	setResponseHeader,
 } from "@tanstack/react-start/server";
 import { identity } from "./identity.server";
+import { mayManage } from "./roles";
 
 const secure = process.env.STUDIO_SECURE_COOKIES === "true";
 const cookieName = secure ? "__Host-studio_session" : "studio_session";
@@ -67,10 +68,8 @@ export async function currentActor() {
 
 export async function requireActor(site?: SiteId) {
 	const actor = await requireAuthenticatedActor();
-	const allowed = actor.permissions.some(
-		(value) => value === "studio.admin" || (site && value === `${site}.manage`),
-	);
-	if (!allowed) throw new AppError("forbidden", "Not authorized");
+	if (!mayManage(actor.permissions, site))
+		throw new AppError("forbidden", "Not authorized");
 	return actor;
 }
 

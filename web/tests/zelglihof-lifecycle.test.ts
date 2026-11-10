@@ -25,7 +25,6 @@ const variantId = "22222222-2222-4222-8222-222222222222";
 function fakeTransaction(options: {
 	reservation?: Fields | null;
 	variant?: Fields | null;
-	updatedReservation?: Fields;
 	archivedProduct?: Fields;
 }) {
 	const log = {
@@ -89,10 +88,38 @@ function fakeTransaction(options: {
 					return [options.archivedProduct ?? values];
 				}
 				log.reservationSets.push(values);
-				return [options.updatedReservation ?? values];
+				return [values];
 			}),
 	};
 	return { transaction: transaction as unknown as DatabaseExecutor, log };
+}
+
+type SqlChunk = { name?: string; table?: unknown; value?: unknown } | number;
+
+/** Asserts the stock update adds the reservation quantity to the column. */
+function assertIncrementedBy(write: Fields, addend: number) {
+	const chunks = (write.quantity as { queryChunks: SqlChunk[] }).queryChunks;
+	const at = chunks.findIndex(
+		(chunk) =>
+			typeof chunk === "object" &&
+			chunk.table === productVariant &&
+			chunk.name === "quantity",
+	);
+	assert.ok(at >= 0, "the stock update targets the variant's quantity column");
+	const tail = chunks.slice(at + 1);
+	assert.ok(
+		tail.some(
+			(chunk) =>
+				typeof chunk === "object" &&
+				Array.isArray(chunk.value) &&
+				chunk.value.join("").includes("+"),
+		),
+		"the stock update adds, never overwrites",
+	);
+	assert.ok(
+		tail.some((chunk) => chunk === addend),
+		`the addend is the reservation quantity (${addend})`,
+	);
 }
 
 test("cancellation is allowed only from new or in-progress", () => {
@@ -168,32 +195,28 @@ test("cancelling a tracked reservation restores stock once and records who and w
 		productVariantId: variantId,
 		quantity: 2,
 	};
-	const cancelled = {
-		...reservation,
-		status: "cancelled",
-		stockRestored: true,
-	};
 	const { transaction, log } = fakeTransaction({
 		reservation,
 		variant: { quantity: 3 },
-		updatedReservation: cancelled,
 	});
-	const result = await createProductReservationRepository(transaction).cancel(
+	await createProductReservationRepository(transaction).cancel(
 		{ id: reservationId },
 		savedAt,
 		"olive",
 		"Customer called",
 	);
-	assert.equal(result.status, "cancelled");
+	// The write payloads are the contract, not the fake's echoed result row.
 	assert.equal(log.variantSets.length, 1);
-	assert.ok(log.variantSets[0].quantity, "the variant stock is incremented");
+	assertIncrementedBy(log.variantSets[0], 2);
+	assert.equal(typeof log.variantSets[0].updatedAt, "string");
 	assert.equal(log.reservationSets.length, 1);
 	const write = log.reservationSets[0];
 	assert.equal(write.status, "cancelled");
 	assert.equal(write.cancelledBy, "olive");
 	assert.equal(write.cancellationReason, "Customer called");
 	assert.equal(write.stockRestored, true);
-	assert.equal(typeof write.cancelledAt, "string");
+	assert.match(String(write.cancelledAt), /^\d{4}-\d{2}-\d{2}T.*Z$/);
+	assert.equal(write.cancelledAt, write.updatedAt);
 });
 
 test("completed and already-cancelled reservations cannot be cancelled", async () => {
@@ -260,7 +283,6 @@ test("cancellation with a missing variant records that no stock was restored", a
 	const { transaction, log } = fakeTransaction({
 		reservation,
 		variant: null,
-		updatedReservation: { ...reservation, status: "cancelled" },
 	});
 	await createProductReservationRepository(transaction).cancel(
 		{ id: reservationId },
@@ -270,25 +292,25 @@ test("cancellation with a missing variant records that no stock was restored", a
 	);
 	assert.deepEqual(log.variantSets, []);
 	assert.equal(log.reservationSets[0].stockRestored, false);
+	assert.equal(log.reservationSets[0].cancelledBy, "olive");
 });
 
 test("archiving an active product stamps the actor and keeps the row", async () => {
-	const archived = {
-		id: reservationId,
-		name: "Review product",
-		archivedAt: "2026-02-01T10:00:00.000Z",
-		archivedBy: "olive",
-	};
-	const { transaction, log } = fakeTransaction({ archivedProduct: archived });
-	const result = await createProductRepository(transaction).archive(
+	const { transaction, log } = fakeTransaction({
+		archivedProduct: { id: reservationId },
+	});
+	await createProductRepository(transaction).archive(
 		{ id: reservationId },
 		savedAt,
 		"olive",
 	);
-	assert.equal(result, archived);
 	assert.equal(log.productSets.length, 1);
 	assert.equal(log.productSets[0].archivedBy, "olive");
-	assert.equal(typeof log.productSets[0].archivedAt, "string");
+	assert.match(
+		String(log.productSets[0].archivedAt),
+		/^\d{4}-\d{2}-\d{2}T.*Z$/,
+	);
+	assert.equal(log.productSets[0].archivedAt, log.productSets[0].updatedAt);
 });
 
 test("archive and cancellation metadata stay distinct from the row identity", () => {

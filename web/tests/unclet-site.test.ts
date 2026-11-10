@@ -69,7 +69,9 @@ test("the date input carries today's min boundary (U-10)", () => {
 
 test("the form reserves one feedback slot and one submit control", () => {
 	const html = renderForm();
-	assert.match(html, /role="alert" aria-live="assertive"/);
+	const count = (pattern: RegExp) => html.match(pattern)?.length ?? 0;
+	assert.equal(count(/role="alert"/g), 1);
+	assert.equal(count(/type="submit"/g), 1);
 	assert.match(html, /type="submit"[^>]*>Anlass anfragen</);
 });
 
@@ -84,8 +86,10 @@ test("a review card always shows five star slots (U-19)", () => {
 			},
 		}),
 	);
-	assert.match(html, /3 von 5 Sternen/);
-	// Three filled and two outline stars: the rating never reads ambiguously.
-	assert.equal(html.match(/fill="currentColor"/g)?.length, 3);
-	assert.equal(html.match(/width="16"/g)?.length, 5);
+	assert.match(html, /aria-label="3 von 5 Sternen"/);
+	const rating = /<p role="img"[^>]*>(.*?)<\/p>/.exec(html);
+	assert.ok(rating, "the rating paragraph renders");
+	// Three filled and two outline slots: the rating never reads ambiguously.
+	assert.equal((rating[1].match(/<svg\b/g) ?? []).length, 5);
+	assert.equal((rating[1].match(/text-brass\/35/g) ?? []).length, 2);
 });

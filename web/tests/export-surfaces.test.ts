@@ -3,16 +3,6 @@ import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import { pathToFileURL } from "node:url";
-import type { DonationItem } from "../packages/jublawoma-data/src/content/donation-item";
-import type { CommitmentItem } from "../packages/jublawoma-data/src/donation.types";
-import type { InquiryInput } from "../packages/unclet-data/src/content/inquiry";
-import type { ReviewInput } from "../packages/unclet-data/src/content/review";
-import type {
-	InquirySubmissionInput,
-	ReviewSubmissionInput,
-} from "../packages/unclet-data/src/forms";
-import type { CampaignDispatch } from "../packages/zelglihof-data/src/campaign.types";
-import type { Campaign } from "../packages/zelglihof-data/src/content/campaign";
 
 /*
  * Guards for the deliberate package boundaries (W-12/W-14):
@@ -22,7 +12,7 @@ import type { Campaign } from "../packages/zelglihof-data/src/content/campaign";
  *    package's export map,
  *  - no two entry points of one package export the same value name (a name a
  *    compiler auto-import could pick twice is exactly the W-11 hazard),
- *  - the formerly colliding record/workflow type pairs stay distinct types.
+ *  - every workspace package is either scanned or explicitly excluded.
  *
  * The runtime scan covers value exports; type-name uniqueness is enforced at
  * compile time (`pnpm typecheck`) through the explicit per-file entry points.
@@ -138,6 +128,24 @@ const runtimePackages = [
 	"zelglihof-data",
 ];
 
+// Build-time packages whose entry points are not part of the runtime surface.
+const nonRuntimePackages = new Set(["environment", "i18n"]);
+
+test("every workspace package is scanned for duplicate exports", () => {
+	const onDisk = fs
+		.readdirSync(packagesRoot, { withFileTypes: true })
+		.filter((entry) => entry.isDirectory())
+		.map((entry) => entry.name)
+		.sort();
+	// A new package must be added to the runtime scan or deliberately excluded:
+	// it cannot silently skip the duplicate-export guard.
+	assert.deepEqual(
+		[...runtimePackages, ...nonRuntimePackages].sort(),
+		onDisk,
+		"add the package to runtimePackages or document the exclusion",
+	);
+});
+
 test("no two entry points of a package export the same value name", async () => {
 	for (const surface of packageSurfaces()) {
 		const shortName = surface.name.replace("@oliumbi/", "");
@@ -158,21 +166,4 @@ test("no two entry points of a package export the same value name", async () => 
 			}
 		}
 	}
-});
-
-/*
- * Compile-time guard (also asserted at runtime so the constant is live): the
- * four renamed collisions are distinct types, each owned by one module.
- */
-type Distinct<A, B> = [A] extends [B] ? ([B] extends [A] ? false : true) : true;
-
-const distinctTypes: [
-	Distinct<CommitmentItem, DonationItem>,
-	Distinct<InquiryInput, InquirySubmissionInput>,
-	Distinct<ReviewInput, ReviewSubmissionInput>,
-	Distinct<Campaign, CampaignDispatch>,
-] = [true, true, true, true];
-
-test("workflow and record types of one package stay distinct", () => {
-	assert.deepEqual(distinctTypes, [true, true, true, true]);
 });

@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import type { DatabasePool, Transaction } from "../packages/database/src";
 import { confirmSubscription } from "../packages/zelglihof-data/src/newsletter.confirm";
 import { requestSubscription } from "../packages/zelglihof-data/src/newsletter.subscribe";
 import {
@@ -9,13 +8,21 @@ import {
 	resendDelayMs,
 } from "../packages/zelglihof-data/src/newsletter.tokens";
 import { unsubscribeByToken } from "../packages/zelglihof-data/src/newsletter.unsubscribe";
+import {
+	type FakeDatabaseLog,
+	fakeDatabase,
+	queuedEmails,
+	type SelectRun,
+} from "./support/fake-db";
 
 /*
  * The subscription decision table (decideSubscription) and the confirm paths
  * are decided per row; these tests cover the flows around that table: which
  * branch writes and queues what, that every refusal is a typed verdict with
  * zero side effects, and that the delivered confirm link cannot be replayed
- * from the stored secret (the row keeps a hash, never the token).
+ * from the stored secret (the row keeps a hash, never the token). Each writer
+ * must also take the row lock (and the advisory address lock on subscribe), so
+ * a concurrent signup cannot race the check-then-write.
  */
 
 const options = {
@@ -63,104 +70,17 @@ const unsubscribedRow = {
 	unsubscribeToken: "stored-unsub",
 };
 
-/*
- * The fake stands in at the drizzle seam like honeypot.test.ts: one
- * transaction, every operation recorded, selects answered in turn - so
- * "nothing was written and nothing was queued" is observable per branch.
- */
-function fakeDatabase(selectAnswers: unknown[][] = []) {
-	const log = {
-		transactions: 0,
-		operations: [] as string[],
-		inserts: [] as unknown[][],
-		updates: 0,
-	};
-	let selectRun = 0;
-	const chain = (finish: (values: unknown[]) => unknown) => {
-		const values: unknown[] = [];
-		const api: Record<string, unknown> = {};
-		const step =
-			(name: string) =>
-			(...input: unknown[]) => {
-				if (name === "values") values.push(input[0]);
-				return api;
-			};
-		for (const name of [
-			"select",
-			"insert",
-			"update",
-			"execute",
-			"from",
-			"where",
-			"orderBy",
-			"limit",
-			"set",
-			"values",
-			"for",
-			"onConflictDoNothing",
-			"onConflictDoUpdate",
-			"returning",
-		])
-			api[name] = step(name);
-		// biome-ignore lint/suspicious/noThenProperty: the fake is deliberately a thenable: awaiting it runs the recorded query
-		api.then = (
-			resolve: (value: unknown) => unknown,
-			reject: (error: unknown) => unknown,
-		) =>
-			Promise.resolve()
-				.then(() => finish(values))
-				.then(resolve, reject);
-		return api;
-	};
-	const transaction = {
-		select: () => {
-			log.operations.push("select");
-			const answer = selectAnswers[selectRun++] ?? [];
-			return chain(() => answer);
-		},
-		insert: () => {
-			log.operations.push("insert");
-			return chain((values) => {
-				log.inserts.push(values);
-				return [{ id: `row-${log.inserts.length}` }];
-			});
-		},
-		update: () => {
-			log.operations.push("update");
-			log.updates += 1;
-			return chain(() => undefined);
-		},
-		execute: () => {
-			log.operations.push("execute");
-			return chain(() => undefined);
-		},
-	} as unknown as Transaction;
-	const database = {
-		role: "postgres",
-		db: transaction,
-		transaction: <T>(work: (inner: Transaction) => Promise<T>) => {
-			log.transactions += 1;
-			return work(transaction);
-		},
-		close: async () => {},
-	} as unknown as DatabasePool;
-	return { database, log };
+function rowLocked(run: SelectRun | undefined) {
+	assert.equal(run?.calls.at(-1), "for", "the row select takes a lock");
+	assert.deepEqual(run?.args.at(-1), ["update"], "the lock is FOR UPDATE");
 }
 
-function isEmail(payload: unknown) {
-	return (payload as { type?: string }).type === "email";
+function advisoryLocks(log: FakeDatabaseLog) {
+	return log.operations.filter((operation) => operation === "execute").length;
 }
 
-function queued(log: { inserts: unknown[][] }) {
-	return log.inserts.filter((values) => isEmail(values[0]));
-}
-
-function untouched(log: {
-	inserts: unknown[][];
-	updates: number;
-	operations: string[];
-}) {
-	assert.deepEqual(queued(log), []);
+function untouched(log: FakeDatabaseLog) {
+	assert.deepEqual(queuedEmails(log), []);
 	assert.equal(log.updates, 0);
 	assert.deepEqual(
 		log.operations.filter((op) => op === "insert" || op === "update"),
@@ -175,6 +95,8 @@ test("an active subscriber's signup is suppressed and touches nothing", async ()
 		{ outcome: "suppressed" },
 	);
 	untouched(run.log);
+	rowLocked(run.log.selects[0]);
+	assert.equal(advisoryLocks(run.log), 1);
 });
 
 test("a pending address inside the resend delay is not re-mailed", async () => {
@@ -183,6 +105,8 @@ test("a pending address inside the resend delay is not re-mailed", async () => {
 		outcome: "suppressed",
 	});
 	untouched(run.log);
+	rowLocked(run.log.selects[0]);
+	assert.equal(advisoryLocks(run.log), 1);
 });
 
 test("a resend past the delay stores a fresh request and queues a confirmation", async () => {
@@ -192,6 +116,8 @@ test("a resend past the delay stores a fresh request and queues a confirmation",
 	});
 	assert.equal(run.log.updates, 0);
 	assert.equal(run.log.inserts.length, 2);
+	rowLocked(run.log.selects[0]);
+	assert.equal(advisoryLocks(run.log), 1);
 	const [stored, message] = run.log.inserts.map((values) => values[0]) as [
 		Record<string, unknown>,
 		Record<string, unknown>,
@@ -214,6 +140,8 @@ test("a re-subscribe keeps the stored unsubscribe token, a new signup gets a fre
 		outcome: "confirmation-sent",
 	});
 	assert.equal(again.log.inserts.length, 2);
+	rowLocked(again.log.selects[0]);
+	assert.equal(advisoryLocks(again.log), 1);
 	const [stored] = again.log.inserts.map((values) => values[0]) as [
 		Record<string, unknown>,
 	];
@@ -224,6 +152,8 @@ test("a re-subscribe keeps the stored unsubscribe token, a new signup gets a fre
 		outcome: "confirmation-sent",
 	});
 	assert.equal(fresh.log.inserts.length, 2);
+	rowLocked(fresh.log.selects[0]);
+	assert.equal(advisoryLocks(fresh.log), 1);
 	const [created] = fresh.log.inserts.map((values) => values[0]) as [
 		Record<string, unknown>,
 	];
@@ -248,6 +178,7 @@ test("confirming an unknown token is typed invalid and writes nothing", async ()
 		outcome: "invalid",
 	});
 	untouched(run.log);
+	rowLocked(run.log.selects[0]);
 });
 
 test("confirming an already-active subscriber is a no-op, not a new welcome", async () => {
@@ -256,6 +187,7 @@ test("confirming an already-active subscriber is a no-op, not a new welcome", as
 		outcome: "already-confirmed",
 	});
 	untouched(run.log);
+	rowLocked(run.log.selects[0]);
 });
 
 test("confirming an unsubscribed row is invalid, never a silent re-subscribe", async () => {
@@ -264,6 +196,7 @@ test("confirming an unsubscribed row is invalid, never a silent re-subscribe", a
 		outcome: "invalid",
 	});
 	untouched(run.log);
+	rowLocked(run.log.selects[0]);
 });
 
 test("a confirmation past its lifetime is expired and queues no welcome", async () => {
@@ -272,6 +205,7 @@ test("a confirmation past its lifetime is expired and queues no welcome", async 
 		outcome: "expired",
 	});
 	untouched(run.log);
+	rowLocked(run.log.selects[0]);
 });
 
 test("a fresh confirmation activates the row and queues the welcome with the stored unsubscribe link", async () => {
@@ -281,10 +215,11 @@ test("a fresh confirmation activates the row and queues the welcome with the sto
 	});
 	assert.equal(run.log.updates, 1);
 	assert.equal(run.log.inserts.length, 1);
+	rowLocked(run.log.selects[0]);
 	const [message] = run.log.inserts.map((values) => values[0]) as [
 		Record<string, unknown>,
 	];
-	assert.equal(isEmail(message), true);
+	assert.equal(queuedEmails(run.log).length, 1);
 	assert.equal(message.recipient, email);
 	// The welcome carries the stored unsubscribe token: links already delivered
 	// to this subscriber keep working.
@@ -299,18 +234,21 @@ test("unsubscribing by token covers invalid, repeat and fresh verdicts", async (
 		outcome: "invalid",
 	});
 	untouched(unknown.log);
+	rowLocked(unknown.log.selects[0]);
 
 	const again = fakeDatabase([[unsubscribedRow]]);
 	assert.deepEqual(await unsubscribeByToken(again.database, "tok"), {
 		outcome: "already-unsubscribed",
 	});
 	untouched(again.log);
+	rowLocked(again.log.selects[0]);
 
 	const fresh = fakeDatabase([[activeRow]]);
 	assert.deepEqual(await unsubscribeByToken(fresh.database, "tok"), {
 		outcome: "unsubscribed",
 	});
 	assert.equal(fresh.log.updates, 1);
-	assert.deepEqual(queued(fresh.log), []);
+	rowLocked(fresh.log.selects[0]);
+	assert.deepEqual(queuedEmails(fresh.log), []);
 	assert.deepEqual(fresh.log.inserts, []);
 });

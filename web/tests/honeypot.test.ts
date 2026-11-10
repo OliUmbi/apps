@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import type { DatabasePool, Transaction } from "../packages/database/src";
 import { createDonationService } from "../packages/jublawoma-data/src/donation.service";
 import * as jublawomaForms from "../packages/jublawoma-data/src/forms";
 import { commitmentSchema } from "../packages/jublawoma-data/src/forms";
@@ -20,6 +19,7 @@ import {
 import { createInquiryService as createZelglihofInquiryService } from "../packages/zelglihof-data/src/inquiry.service";
 import { requestSubscription } from "../packages/zelglihof-data/src/newsletter.subscribe";
 import { createReservationService } from "../packages/zelglihof-data/src/reservation.service";
+import { expectNoWrites, fakeDatabase, queuedEmails } from "./support/fake-db";
 
 /*
  * Abuse-resistance baseline (X-04 / J-10 / U-12 / Z-20): every public form
@@ -155,87 +155,6 @@ test("the review plan drops a filled honeypot silently", () => {
 	});
 });
 
-/*
- * The fake stands in at the drizzle seam like campaign-saved-draft.test.ts:
- * every operation through the one transaction is recorded, so "nothing was
- * written, decremented or queued" is observable, and each select can be
- * answered in turn (lock, replay lookup, totals).
- */
-function fakeDatabase(selectAnswers: unknown[][] = []) {
-	const log = {
-		transactions: 0,
-		operations: [] as string[],
-		inserts: [] as unknown[][],
-		updates: 0,
-	};
-	let selectRun = 0;
-	const chain = (finish: (values: unknown[]) => unknown) => {
-		const values: unknown[] = [];
-		const api: Record<string, unknown> = {};
-		const step =
-			(name: string) =>
-			(...input: unknown[]) => {
-				if (name === "values") values.push(input[0]);
-				return api;
-			};
-		for (const name of [
-			"select",
-			"insert",
-			"update",
-			"execute",
-			"from",
-			"innerJoin",
-			"where",
-			"orderBy",
-			"limit",
-			"set",
-			"values",
-			"for",
-			"onConflictDoNothing",
-			"onConflictDoUpdate",
-			"returning",
-		])
-			api[name] = step(name);
-		// biome-ignore lint/suspicious/noThenProperty: the fake is deliberately a thenable: awaiting it runs the recorded query
-		api.then = (resolve: (value: unknown) => unknown) =>
-			Promise.resolve(finish(values)).then(resolve);
-		return api;
-	};
-	const transaction = {
-		select: () => {
-			log.operations.push("select");
-			const answer = selectAnswers[selectRun++] ?? [];
-			return chain(() => answer);
-		},
-		insert: () => {
-			log.operations.push("insert");
-			return chain((values) => {
-				log.inserts.push(values);
-				return [{ id: `row-${log.inserts.length}` }];
-			});
-		},
-		update: () => {
-			log.operations.push("update");
-			log.updates += 1;
-			return chain(() => undefined);
-		},
-		execute: () => {
-			log.operations.push("execute");
-			return chain(() => undefined);
-		},
-	} as unknown as Transaction;
-	const database = {
-		role: "postgres",
-		db: transaction,
-		transaction: <T>(work: (inner: Transaction) => Promise<T>) => {
-			log.transactions += 1;
-			return work(transaction);
-		},
-		close: async () => {},
-	} as unknown as DatabasePool;
-	return { database, transaction, log };
-}
-
 test("a filled honeypot writes no row, moves no stock and queues no email", async () => {
 	const reference = referenceFor(submissionId);
 
@@ -282,12 +201,9 @@ test("a filled honeypot writes no row, moves no stock and queues no email", asyn
 		zelglihofInquiry,
 		reservationRun,
 	]) {
-		assert.deepEqual(run.log, {
-			transactions: 0,
-			operations: [],
-			inserts: [],
-			updates: 0,
-		});
+		assert.equal(run.log.transactions, 0);
+		assert.deepEqual(run.log.operations, []);
+		expectNoWrites(run.log);
 	}
 });
 
@@ -313,18 +229,11 @@ test("a filled honeypot review or signup reports success and touches nothing", a
 	);
 
 	for (const run of [reviewRun, signupRun]) {
-		assert.deepEqual(run.log, {
-			transactions: 0,
-			operations: [],
-			inserts: [],
-			updates: 0,
-		});
+		assert.equal(run.log.transactions, 0);
+		assert.deepEqual(run.log.operations, []);
+		expectNoWrites(run.log);
 	}
 });
-
-function isEmail(payload: unknown) {
-	return (payload as { type?: string }).type === "email";
-}
 
 test("an empty honeypot leaves every normal flow unchanged", async () => {
 	const reference = referenceFor(submissionId);
@@ -372,8 +281,7 @@ test("an empty honeypot leaves every normal flow unchanged", async () => {
 		(uncletInquiry.log.inserts[0][0] as { submissionId?: string }).submissionId,
 		submissionId,
 	);
-	assert.equal(isEmail(uncletInquiry.log.inserts[1][0]), true);
-	assert.equal(isEmail(uncletInquiry.log.inserts[2][0]), true);
+	assert.equal(queuedEmails(uncletInquiry.log).length, 2);
 
 	// The zelglihof inquiry stores one row and queues one notification email.
 	const zelglihofInquiry = fakeDatabase([[]]);
@@ -390,7 +298,7 @@ test("an empty honeypot leaves every normal flow unchanged", async () => {
 			.submissionId,
 		submissionId,
 	);
-	assert.equal(isEmail(zelglihofInquiry.log.inserts[1][0]), true);
+	assert.equal(queuedEmails(zelglihofInquiry.log).length, 1);
 
 	// The review stores its row moderation-hidden (`visible: false`).
 	const reviewRun = fakeDatabase();
@@ -435,7 +343,7 @@ test("an empty honeypot leaves every normal flow unchanged", async () => {
 			.submissionId,
 		submissionId,
 	);
-	assert.equal(isEmail(reservationRun.log.inserts[1][0]), true);
+	assert.equal(queuedEmails(reservationRun.log).length, 1);
 
 	// The signup stores one subscriber and queues one confirmation email.
 	const signupRun = fakeDatabase([[]]);
@@ -454,7 +362,7 @@ test("an empty honeypot leaves every normal flow unchanged", async () => {
 			.confirmationTokenHash !== undefined,
 		true,
 	);
-	assert.equal(isEmail(signupRun.log.inserts[1][0]), true);
+	assert.equal(queuedEmails(signupRun.log).length, 1);
 	assert.equal(
 		signupRun.log.operations.filter((op) => op === "execute").length,
 		1,

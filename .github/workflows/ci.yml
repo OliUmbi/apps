@@ -38,10 +38,10 @@ jobs:
         shell: bash
         working-directory: web
     env:
-      # tests/studio-repositories.test.ts and tests/db-invariants.test.ts are
-      # PostgreSQL-gated and skip silently when this is unset. CI points it at
-      # the migrated test database so the suites run on every change, and the
-      # guard step below fails the job if anything skips anyway.
+      # The PostgreSQL-gated suites under tests/integration/ skip when this is
+      # unset. CI points it at the migrated test database so the suites run on
+      # every change, and the guard step below fails the job if anything skips
+      # anyway (the harness itself also throws when CI is set without a URL).
       STUDIO_TEST_ADMIN_URL: postgres://postgres:ci-postgres@127.0.0.1:5432/apps
     services:
       postgres:

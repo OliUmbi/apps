@@ -123,6 +123,18 @@ test("a product the query does not surface reads as absent", async () => {
 	assert.equal(await repository.findProduct(productId), null);
 });
 
+test("a product outside its reservation window reads as off-season", async () => {
+	const repository = createPublicRepository(
+		fakeDatabase([[productRow({ windowOpen: false })], variants]),
+	);
+	const result = await repository.findProduct(productId);
+	assert.ok(result);
+	assert.deepEqual(result.product.availability, {
+		state: "off-season",
+		labelKey: "zelglihof_availability_off_season",
+	});
+});
+
 test("availability on the payload follows the stock join, not the row alone", async () => {
 	const repository = createPublicRepository(
 		fakeDatabase([[productRow()], [variants[1]]]),

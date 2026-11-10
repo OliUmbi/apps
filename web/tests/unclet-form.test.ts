@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { m } from "../packages/i18n/src/paraglide/messages";
 import { submissionErrors } from "../packages/ui/src/submission-types";
 import {
 	type InquirySubmissionInput,
@@ -57,11 +56,14 @@ test("an event date is empty or has not passed yet (U-10)", () => {
 	);
 });
 
-test("the schema boundary and the input's min attribute agree", () => {
-	assert.match(todayDateInput(), /^\d{4}-\d{2}-\d{2}$/);
+test("today is the first accepted event date, in local calendar parts", () => {
+	const today = todayDateInput();
+	assert.match(today, /^\d{4}-\d{2}-\d{2}$/);
+	// The schema boundary has teeth: today passes, yesterday does not.
+	assert.equal(inquirySchema.safeParse(inquiryWith(today)).success, true);
 	assert.equal(
-		inquirySchema.safeParse(inquiryWith(todayDateInput())).success,
-		true,
+		inquirySchema.safeParse(inquiryWith(dayOffset(-1))).success,
+		false,
 	);
 });
 
@@ -78,18 +80,28 @@ test("the list teaser is plain text, markup-free and bounded (U-07)", () => {
 	assert.equal(showcaseExcerpt("**kurz**"), "kurz");
 });
 
-test("inquiry emails carry catalog copy and the stable reference (U-02)", () => {
+test("inquiry emails carry the submitted details and the stable reference (U-02)", () => {
+	const input = inquiryWith("2027-05-20");
 	const [notification, confirmation] = inquiryEmails(
 		"info@uncle-t.ch",
-		inquiryWith(""),
+		input,
 		"A1B2C3D4E5F6",
 	);
-	assert.equal(notification.subject, m.unclet_inquiry_email_admin_subject());
-	assert.equal(confirmation.subject, m.unclet_inquiry_email_customer_subject());
-	assert.equal(
-		confirmation.text,
-		m.unclet_inquiry_email_customer_body({ reference: "A1B2C3D4E5F6" }),
-	);
+	for (const expected of [
+		"Anna Meier",
+		"a@b.ch",
+		"079 123 45 67",
+		"2027-05-20",
+		"12",
+		"A1B2C3D4E5F6",
+	]) {
+		assert.ok(
+			notification.text.includes(expected),
+			`the notification body lacks ${expected}`,
+		);
+	}
+	assert.equal(notification.recipient, "info@uncle-t.ch");
+	assert.equal(confirmation.recipient, input.email);
 	assert.match(confirmation.text, /A1B2C3D4E5F6/);
 });
 

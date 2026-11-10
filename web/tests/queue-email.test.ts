@@ -35,10 +35,17 @@ test("a message carries its identity and defaults reply-to to none", () => {
 	);
 });
 
-test("two messages never share an id", () => {
-	const first = emailMessage("s", "from", "to", "subject", "text");
-	const second = emailMessage("s", "from", "to", "subject", "text");
-	assert.notEqual(first.id, second.id);
+test("message ids are distinct version-4 UUIDs across a batch", () => {
+	const ids = Array.from(
+		{ length: 50 },
+		() => emailMessage("s", "from", "to", "subject", "text").id,
+	);
+	assert.equal(new Set(ids).size, ids.length, "every queued id is unique");
+	for (const id of ids)
+		assert.match(
+			id,
+			/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+		);
 });
 
 test("the text is kept verbatim and the HTML part escapes and breaks lines", () => {
@@ -69,7 +76,24 @@ test("the queue client stores the message under the email envelope in the caller
 			return api;
 		},
 	} as unknown as Transaction;
-	const message = emailMessage("s", "from", "to", "subject", "text");
+	const message = emailMessage(
+		"zelglihof",
+		"newsletter@zelglihof.ch",
+		"ana@example.com",
+		"Frühling",
+		"Hallo",
+	);
 	await createQueueClient(transaction).enqueue(message);
-	assert.deepEqual(stored, [{ ...message, type: "email" }]);
+	assert.equal(stored.length, 1);
+	const envelope = stored[0] as Record<string, unknown>;
+	// The explicit envelope contract, independent of how emailMessage is built.
+	assert.equal(envelope.type, "email");
+	assert.match(String(envelope.id), uuid);
+	assert.equal(envelope.site, "zelglihof");
+	assert.equal(envelope.sender, "newsletter@zelglihof.ch");
+	assert.equal(envelope.recipient, "ana@example.com");
+	assert.equal(envelope.subject, "Frühling");
+	assert.equal(envelope.text, "Hallo");
+	assert.equal(envelope.html, "<p>Hallo</p>");
+	assert.equal(envelope.replyTo, null);
 });
