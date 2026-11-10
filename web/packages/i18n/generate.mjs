@@ -11,18 +11,23 @@ import { compile } from "@inlang/paraglide-js";
 import { outdir, paraglideOptions } from "./config.mjs";
 import { withGenerationLock } from "./lock.mjs";
 
-// Mirrors the compiler's on-disk hashing so an existing output tree seeds the
-// incremental compile: only changed files are rewritten and files for removed
-// messages are deleted, without wiping the directory out from under readers.
-async function hashExistingOutput(directory) {
+// Seeds the compile state from disk for this fresh process. Paraglide 3
+// derives its incremental write plan from the previousCompilation state
+// object instead of accepting raw hashes (upstream seeds it internally with
+// seedPreviousCompilationFromOutdir, which is not publicly exported). The
+// hash formula matches the compiler's own hashDirectory - sha256 of content
+// plus absolute path - so unchanged files skip the write, files for removed
+// messages are deleted, and concurrent readers never see the shared output
+// directory emptied or rewritten.
+async function seedPreviousCompilation() {
 	try {
-		if (!(await stat(directory)).isDirectory()) {
+		if (!(await stat(outdir)).isDirectory()) {
 			return undefined;
 		}
 	} catch {
 		return undefined;
 	}
-	const hashes = {};
+	const outputHashes = {};
 	async function walk(currentDirectory, prefix) {
 		for (const entry of await readdir(currentDirectory, {
 			withFileTypes: true,
@@ -35,21 +40,22 @@ async function hashExistingOutput(directory) {
 					resolve(currentDirectory, entry.name),
 					"utf-8",
 				);
-				hashes[key] = createHash("sha256")
-					.update(content + resolve(directory, key))
+				outputHashes[key] = createHash("sha256")
+					.update(content + resolve(outdir, key))
 					.digest("hex");
 			}
 		}
 	}
-	await walk(directory, "");
-	return hashes;
+	await walk(outdir, "");
+	return { outputHashes };
 }
 
 await withGenerationLock(async () => {
+	const previousCompilation = await seedPreviousCompilation();
 	const { outputHashes } = await compile({
 		...paraglideOptions,
 		cleanOutdir: false,
-		previousCompilation: { outputHashes: await hashExistingOutput(outdir) },
+		...(previousCompilation ? { previousCompilation } : {}),
 	});
 	const files = Object.keys(outputHashes ?? {}).length;
 	console.log(`Generated ${files} files in ${outdir}`);
