@@ -597,6 +597,7 @@ img {
 .story-cover {
 	max-width: 1120px;
 }
+/* biome-ignore lint/style/noDescendingSpecificity: This selector is unrelated to the story-grid article rule. */
 .story-cover > img,
 .story-cover > .content-image-fallback {
 	width: 100%;
@@ -648,6 +649,7 @@ img {
 	gap: 1rem;
 	padding-bottom: 8rem;
 }
+/* biome-ignore lint/style/noDescendingSpecificity: This selector is unrelated to the story-grid article rule. */
 .media-gallery > img,
 .media-gallery > .content-image-fallback {
 	width: 100%;
