@@ -15,5 +15,5 @@ CREATE TABLE analytics.view_daily
 
 -- SELECT is part of the upsert contract, not a read feature: PostgreSQL checks
 -- it on the conflict target and on every column read by DO UPDATE.
-GRANT SELECT, INSERT, UPDATE ON analytics.view_daily TO jublawoma, unclet, zelglihof;
+GRANT SELECT, INSERT, UPDATE ON analytics.view_daily TO jublawoma, unclet, zelglihof, oliumbi;
 GRANT SELECT ON analytics.view_daily TO studio;

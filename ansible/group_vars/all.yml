@@ -24,8 +24,8 @@ restrict_ssh: false
 # image_tag: ""
 
 # application database roles whose login credentials are provisioned from the
-# vault after migrations (DR-04). Oliumbi is deliberately absent: the site is
-# static, so its role stays NOLOGIN.
+# vault after migrations (DR-04). Oliumbi is included for the anonymous
+# analytics counter; its content schema stays empty.
 app_database_roles:
   - { user: "{{ vault_identity_database_user }}", password: "{{ vault_identity_database_password }}" }
   - { user: "{{ vault_messaging_database_user }}", password: "{{ vault_messaging_database_password }}" }
@@ -34,6 +34,7 @@ app_database_roles:
   - { user: "{{ vault_jublawoma_database_user }}", password: "{{ vault_jublawoma_database_password }}" }
   - { user: "{{ vault_unclet_database_user }}", password: "{{ vault_unclet_database_password }}" }
   - { user: "{{ vault_zelglihof_database_user }}", password: "{{ vault_zelglihof_database_password }}" }
+  - { user: "{{ vault_oliumbi_database_user }}", password: "{{ vault_oliumbi_database_password }}" }
   - { user: "monitoring", password: "{{ vault_monitoring_database_password }}" }
 
 # backup

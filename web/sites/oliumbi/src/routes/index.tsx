@@ -39,6 +39,10 @@ function HomePage() {
 					))}
 				</ul>
 			</nav>
+			<p className="mt-8 max-w-md text-xs leading-relaxed text-muted">
+				Page views are counted anonymously on this server, without cookies,
+				identifiers or third-party analytics.
+			</p>
 		</div>
 	);
 }

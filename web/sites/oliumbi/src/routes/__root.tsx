@@ -1,3 +1,4 @@
+import { usePageView } from "@oliumbi/analytics";
 import {
 	createRootRoute,
 	HeadContent,
@@ -34,6 +35,7 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
+	usePageView();
 	return <Outlet />;
 }
 

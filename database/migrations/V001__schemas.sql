@@ -11,7 +11,8 @@ CREATE SCHEMA jublawoma;
 CREATE SCHEMA unclet;
 CREATE SCHEMA zelglihof;
 
--- reserved for the future Oliumbi database; the current site is static
+-- reserved for the future Oliumbi content schema; the role writes only the
+-- shared analytics counter
 CREATE SCHEMA oliumbi;
 
 -- roles
@@ -69,8 +70,8 @@ GRANT USAGE ON SCHEMA queue, zelglihof, analytics TO zelglihof;
 ALTER DEFAULT PRIVILEGES IN SCHEMA zelglihof GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO zelglihof;
 ALTER DEFAULT PRIVILEGES IN SCHEMA queue GRANT INSERT ON TABLES TO zelglihof;
 
--- oliumbi is reserved for the static site; it has no application connection
-GRANT USAGE ON SCHEMA queue, oliumbi TO oliumbi;
+-- oliumbi is static but writes the shared analytics counter
+GRANT USAGE ON SCHEMA queue, oliumbi, analytics TO oliumbi;
 ALTER DEFAULT PRIVILEGES IN SCHEMA oliumbi GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO oliumbi;
 ALTER DEFAULT PRIVILEGES IN SCHEMA queue GRANT INSERT ON TABLES TO oliumbi;
 

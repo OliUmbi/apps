@@ -430,28 +430,31 @@ test("a site role can upsert its counter and Studio can read it", {
 	skip,
 }, async () => {
 	assert.ok(admin);
+	const sites = ["jublawoma", "unclet", "zelglihof", "oliumbi"] as const;
 	await rolledBack(admin, async (transaction) => {
-		const analytics = createAnalytics(
-			joinedDatabase(transaction),
-			"jublawoma",
-			["/about"],
-		);
-		// The second call is the ON CONFLICT path: PostgreSQL checks SELECT on the
-		// conflict target and every column the DO UPDATE expression reads.
-		await asRole(transaction, "jublawoma", async () => {
-			await analytics.record("/about");
-			await analytics.record("/about");
-		});
+		for (const site of sites) {
+			const analytics = createAnalytics(joinedDatabase(transaction), site, [
+				"/page",
+			]);
+			// The second call is the ON CONFLICT path: PostgreSQL checks SELECT on
+			// the conflict target and every column the DO UPDATE expression reads.
+			await asRole(transaction, site, async () => {
+				await analytics.record("/page");
+				await analytics.record("/page");
+			});
+		}
 
-		let views: number | undefined;
-		await asRole(transaction, "studio", async () => {
-			const [row] = await transaction
-				.select({ views: viewDaily.views })
-				.from(viewDaily)
-				.where(eq(viewDaily.site, "jublawoma"));
-			views = row?.views;
-		});
-		assert.equal(views, 2);
+		for (const site of sites) {
+			let views: number | undefined;
+			await asRole(transaction, "studio", async () => {
+				const [row] = await transaction
+					.select({ views: viewDaily.views })
+					.from(viewDaily)
+					.where(eq(viewDaily.site, site));
+				views = row?.views;
+			});
+			assert.equal(views, 2, site);
+		}
 	});
 });
 

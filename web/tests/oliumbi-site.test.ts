@@ -33,3 +33,19 @@ test("the router keeps the branded status boundaries", () => {
 	assert.match(router, /defaultErrorComponent: PageError/);
 	assert.match(rootRoute, /notFoundComponent: NotFound/);
 });
+
+test("the placeholder uses the shared anonymous counter", () => {
+	const rootRoute = fs.readFileSync(
+		path.join(root, "src", "routes", "__root.tsx"),
+		"utf8",
+	);
+	const page = fs.readFileSync(
+		path.join(root, "src", "routes", "index.tsx"),
+		"utf8",
+	);
+	assert.match(rootRoute, /usePageView/);
+	assert.match(page, /counted anonymously/i);
+	assert.ok(
+		fs.existsSync(path.join(root, "src", "routes", "api.analytics.view.ts")),
+	);
+});

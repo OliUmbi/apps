@@ -9,6 +9,8 @@
     "start": "node .output/server/index.mjs"
   },
   "dependencies": {
+    "@oliumbi/analytics": "workspace:*",
+    "@oliumbi/database": "workspace:*",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-start": "catalog:",
@@ -17,6 +19,7 @@
     "tailwindcss": "catalog:"
   },
   "devDependencies": {
+    "@oliumbi/environment": "workspace:*",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",

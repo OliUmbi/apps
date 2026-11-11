@@ -133,8 +133,14 @@ services:
     build:
       context: ..
       dockerfile: web/sites/oliumbi/Dockerfile
+    environment:
+      DATABASE_URL: postgres://${OLIUMBI_DATABASE_USER:-oliumbi}:${OLIUMBI_DATABASE_PASSWORD:-oliumbi_password}@postgres:5432/${POSTGRES_DB:-apps}
+      DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-10}
     ports:
       - "8004:8004"
+    depends_on:
+      roles:
+        condition: service_completed_successfully
 
   zelglihof:
     build:

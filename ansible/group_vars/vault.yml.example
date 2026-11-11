@@ -31,6 +31,8 @@ vault_unclet_database_user: "unclet"
 vault_unclet_database_password: ""
 vault_zelglihof_database_user: "zelglihof"
 vault_zelglihof_database_password: ""
+vault_oliumbi_database_user: "oliumbi"
+vault_oliumbi_database_password: ""
 vault_studio_database_user: "studio"
 vault_studio_database_password: ""
 # Read-only statistics role for postgres_exporter (pg_monitor).

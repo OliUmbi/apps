@@ -9,7 +9,7 @@ import { viewDaily } from "./schema";
  * "other" and the table cannot be grown with arbitrary keys.
  */
 
-export type AnalyticsSite = "jublawoma" | "unclet" | "zelglihof";
+export type AnalyticsSite = "jublawoma" | "unclet" | "zelglihof" | "oliumbi";
 
 export function routeIds(tree: unknown): string[] {
 	const ids: string[] = [];
