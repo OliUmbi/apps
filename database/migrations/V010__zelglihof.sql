@@ -85,7 +85,7 @@ CREATE TABLE zelglihof.product_reservation
     variant_name        text        NOT NULL,
     variant_description text,
     variant_quantity    integer,
-    variant_price          text        NOT NULL,
+    variant_price       text        NOT NULL,
     name                text        NOT NULL,
     phone               text        NOT NULL,
     email               text,

@@ -27,6 +27,9 @@ CREATE TABLE messaging.message
         )
 );
 
+CREATE INDEX messaging_message_pending_idx ON messaging.message (available_at, created_at, id) WHERE status = 'PENDING';
+CREATE INDEX messaging_message_processing_idx ON messaging.message (locked_at) WHERE status = 'PROCESSING';
+
 CREATE TABLE messaging.message_attempt
 (
     id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -47,6 +50,3 @@ CREATE TABLE messaging.message_attempt
             ))
         )
 );
-
-CREATE INDEX messaging_message_pending_idx ON messaging.message (available_at, created_at, id) WHERE status = 'PENDING';
-CREATE INDEX messaging_message_processing_idx ON messaging.message (locked_at) WHERE status = 'PROCESSING';

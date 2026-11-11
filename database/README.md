@@ -14,19 +14,19 @@ database. The baseline freezes at the first accepted production import. After th
 destructive changes follow expand → backfill → verify → contract, and new
 changes are append-only migrations.
 
-V001 defines schemas, roles and default permissions. V002 defines the producer
+V001 defines schemas, roles (including the read-only `monitoring` role), the
+`pg_monitor` grant and default permissions. V002 defines the producer
 inbox. V003 defines identity. V004 defines messaging's delivery state and
 attempt history. V005 defines assets. V006 defines the studio schema, including
 the append-only `studio.audit_event` history. V007 is intentionally unused: it
 has no migration file and no table, so a future Oliumbi table set starts at
-V013 rather than becoming an out-of-order migration after the baseline freezes.
+V012 rather than becoming an out-of-order migration after the baseline freezes.
 V008–V010 define the three site schemas (jublawoma, unclet, zelglihof), including
 nullable `submission_id` idempotency keys and unique indexes on the five
 public-submission tables. V011 adds the anonymous `analytics.view_daily`
-counter; V012 adds the read-only `monitoring` role (`pg_monitor`) for
-postgres_exporter. Every table carries `created_at` and `updated_at`, except the
-append-only `studio.audit_event` (`created_at` only) and the pre-aggregated
-`analytics.view_daily` (`day` is its date).
+counter in the V001 `analytics` schema. Every table carries `created_at` and
+`updated_at`, except the append-only `studio.audit_event` (`created_at` only)
+and the pre-aggregated `analytics.view_daily` (`day` is its date).
 
 V001 still reserves the `oliumbi` schema and role, but there is no Oliumbi
 migration and no table: the first Oliumbi slice is a static site with no
@@ -38,14 +38,13 @@ consumed inbox row.
 
 ## Roles and credentials (RS-E1)
 
-The migrations create eight application roles as `NOLOGIN` roles **without
-passwords**: `identity`, `messaging`, `assets`, `studio`, `jublawoma`, `unclet`,
-`zelglihof` and the reserved `oliumbi`. Credentials are provisioned per
-environment after `V001` has run; no password literal lives in this directory.
-Seven roles are provisioned in production; `oliumbi` stays `NOLOGIN` because the
-static site has no database client. V012 adds a separate read-only `monitoring`
-role (`pg_monitor`) for postgres_exporter, provisioned the same way. The first
-Studio administrator is likewise
+The migrations create nine roles as `NOLOGIN` roles **without passwords**:
+`identity`, `messaging`, `assets`, `studio`, `jublawoma`, `unclet`, `zelglihof`,
+the reserved `oliumbi`, and the read-only `monitoring` role (`pg_monitor`).
+Credentials are provisioned per environment after `V001` has run; no password
+literal lives in this directory. The seven application roles and `monitoring`
+are provisioned in production; `oliumbi` stays `NOLOGIN` because the static site
+has no database client. The first Studio administrator is likewise
 an operational step (`ansible/playbooks/first-admin.yml`), not a migration seed.
 
 - **Development** — the documented entry path is the dev compose stack:
@@ -70,8 +69,8 @@ an operational step (`ansible/playbooks/first-admin.yml`), not a migration seed.
 - **Production** — provisioning is part of the deployment flow, not the
   migrations: the Ansible `app` role runs `ALTER ROLE … LOGIN PASSWORD …` from
   the vault after `apps-migrate` and before the application units start, then
-  verifies one connection per role. The seven application roles are provisioned;
-  `oliumbi` stays `NOLOGIN`. Rotate any real credential that was ever committed
+  verifies one connection per role. The seven application roles and `monitoring`
+  are provisioned; `oliumbi` stays `NOLOGIN`. Rotate any real credential that was ever committed
   to this repository; non-secret placeholders are not credentials.
 
 ## Constraint list (RS-E2 / R07, plan decision D3)

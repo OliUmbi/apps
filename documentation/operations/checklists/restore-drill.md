@@ -14,7 +14,7 @@ Keep the source archive and this record together.
 | Source archive | `apps-<stamp>.tar.gz.age` |
 | Archive age on drill day | |
 | Image tag in `manifest.txt` | |
-| Migration head expected | V012 (or current) |
+| Migration head expected | V011 (or current) |
 | Recovery identity used | printed sheet / password manager |
 | Workstation archive copy | |
 

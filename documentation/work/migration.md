@@ -12,9 +12,9 @@ Oliumbi is now a static placeholder on `:8004` with its apex route, so it is no
 longer a missing site. The complete launch gate includes deployment/bootstrap,
 application P1 debt, restore and import rehearsals, and content/legal approval;
 see [open work](open-work.md) and the
-[remediation plan](go-live-remediation-plan.md). Migrations end at V012 (V008
-Jublawoma, V009 Uncle-T, V010 Zelglihof, V011 analytics and V012 the monitoring
-role); V007 is intentionally unused, and the old empty Oliumbi placeholder
+[remediation plan](go-live-remediation-plan.md). Migrations end at V011 (V008
+Jublawoma, V009 Uncle-T, V010 Zelglihof and V011 analytics; the monitoring role
+is in V001); V007 is intentionally unused, and the old empty Oliumbi placeholder
 migration is removed with its schema/role reserved in V001. Deploy mechanics are
 in [deployment](../operations/deployment.md); the cutover sequence is below.
 
@@ -31,7 +31,7 @@ in [deployment](../operations/deployment.md); the cutover sequence is below.
 ## Data migration method
 
 Use the [owner-led manual migration checklist](manual-migration-checklist.md)
-(D16); no importer will be built. The replacement schema is at the V012 baseline
+(D16); no importer will be built. The replacement schema is at the V011 baseline
 until the first accepted production import freezes it.
 
 - **Discover**: row counts, invalid references, status values, duplicates,

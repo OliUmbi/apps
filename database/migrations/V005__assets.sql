@@ -7,6 +7,8 @@ CREATE TABLE assets.image
     updated_at timestamptz NOT NULL
 );
 
+CREATE INDEX image_site_created_idx ON assets.image (site, created_at DESC, id DESC);
+
 CREATE TABLE assets.image_variant
 (
     id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -35,5 +37,4 @@ CREATE TABLE assets.document
     updated_at timestamptz NOT NULL
 );
 
-CREATE INDEX image_site_created_idx ON assets.image (site, created_at DESC, id DESC);
 CREATE INDEX document_site_created_idx ON assets.document (site, created_at DESC, id DESC);

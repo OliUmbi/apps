@@ -102,7 +102,7 @@ in place and keep the commit.
   source/migrated/skipped/failed counts and media hashes; historical rows sent no
   notifications.
   Evidence:
-- [ ] **Baseline** Flyway reports V012; the next change starts at V013 and the
+- [ ] **Baseline** Flyway reports V011; the next change starts at V012 and the
   schema is ready to freeze.
   Evidence:
 

@@ -51,8 +51,9 @@ provisioning runs after migrate and before the apps, so a fresh host becomes
 healthy on the first deploy. Do not restart `apps-migrate` by hand: a manual
 restart propagates a stop to the apps.
 
-The pre-launch baseline head is V012 (V007 intentionally unused; V008 Jublawoma,
-V009 Uncle-T, V010 Zelglihof, V011 analytics and V012 monitoring role). Until the
+The pre-launch baseline head is V011 (V007 intentionally unused; V008 Jublawoma,
+V009 Uncle-T, V010 Zelglihof and V011 analytics; the monitoring role is in
+V001). Until the
 first accepted production import, migrations are edited in place and the local
 database is rebuilt. After the freeze, new changes are append-only:
 expand → backfill → verify → contract across releases. Rollback never runs a

@@ -31,7 +31,7 @@ identity/Studio paths, data contracts and migration tooling.
   exercised. Green local gates are not production readiness.
 
 *2026-11 update: the Windows junction tests now pass where the host can create a
-junction, Checkstyle runs in `mvn test`, and the migration head is V012. No
+junction, Checkstyle runs in `mvn test`, and the migration head is V011. No
 remote/real-host evidence has been produced yet.*
 
 ## New review findings
@@ -60,12 +60,12 @@ not live only in frozen review evidence.
    Flyway/schema-per-capability model are the baseline; do not change course
    after live data exists without a new decision.
 5. Pre-launch migrations may be edited in place only until the first accepted
-   production import. The current head is V012 (V007 intentionally unused;
-   V008 Jublawoma, V009 Uncle-T, V010 Zelglihof, V011 analytics and V012
-   monitoring role); the empty Oliumbi placeholder migration is removed and its
-   schema/role stays reserved in V001. The next pre-launch change starts at
-   V013, never as an out-of-order V007. Tag that baseline; afterwards use
-   append-only expand/backfill/verify/contract migrations.
+   production import. The current head is V011 (V007 intentionally unused;
+   V008 Jublawoma, V009 Uncle-T, V010 Zelglihof and V011 analytics; the
+   monitoring role is in V001); the empty Oliumbi placeholder migration is
+   removed and its schema/role stays reserved in V001. The next pre-launch
+   change starts at V012, never as an out-of-order V007. Tag that baseline;
+   afterwards use append-only expand/backfill/verify/contract migrations.
 6. Do not retire legacy until reconciliation, the observation window, final
    encrypted archives and restore evidence are accepted.
 7. The cutover point of no return is the first durable public write. Before it,

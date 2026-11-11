@@ -125,11 +125,12 @@ Adopted to move the server off Docker Engine ([deployment plan](../history/deplo
   legacy rotation task remains; production still uses only unique vault secrets.
 - **D17 — The pre-launch Flyway baseline stays consolidated.** Owning migration
   files are edited in place until the first accepted production import, and local
-  volumes may be rebuilt from zero. The current head is V012: V006 is Studio
-  (with the audit history), V007 is intentionally unused (no file, so a future
-  Oliumbi table set starts at the then-current head, never as an out-of-order
-  V007), V008 Jublawoma, V009 Uncle-T and V010 Zelglihof, V011 analytics and
-  V012 the monitoring role; the Oliumbi schema/role stays reserved in V001.
+  volumes may be rebuilt from zero. The current head is V011: V001 owns the
+  schemas, roles (including the read-only `monitoring` role) and default
+  privileges; V006 is Studio (with the audit history), V007 is intentionally
+  unused (no file, so a future Oliumbi table set starts at the then-current
+  head, never as an out-of-order V007), V008 Jublawoma, V009 Uncle-T, V010
+  Zelglihof and V011 analytics. The Oliumbi schema/role stays reserved in V001.
   Submission idempotency lives in V008–V010 with the tables it protects. Once
   live data exists, new changes are append-only expand/contract migrations.
 

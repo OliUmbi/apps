@@ -141,10 +141,10 @@ Deployment shape: ghcr images pinned by tag, systemd units from
 
 - [ ] [owner] Cutover from `legacy/`: freeze writes, final `pg_dump` (Postgres
   17), restore into Postgres 18, flip routing and explicitly enable dyndns.
-  Migrations end at V012 (V007 intentionally unused, V008 Jublawoma, V009
-  Uncle-T, V010 Zelglihof, V011 analytics and V012 monitoring role); the
-  baseline freezes at the first accepted import. Delete the retired `api.*` DNS
-  records. Follow [migration](migration.md#cutover-playbook).
+  Migrations end at V011 (V007 intentionally unused, V008 Jublawoma, V009
+  Uncle-T, V010 Zelglihof and V011 analytics; the monitoring role is in V001);
+  the baseline freezes at the first accepted import. Delete the retired `api.*`
+  DNS records. Follow [migration](migration.md#cutover-playbook).
 - [x] Check whether 5432/8080/8000 on the current server are reachable from the
   internet (legacy exposure). (checked 2026-11-11 - not reachable; the new stack
   also has no host firewall by design, so keep verifying that only 80/443 and

@@ -107,9 +107,9 @@ docker compose -f infrastructure/compose.dev.yaml --env-file .env down -v
 docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d --build
 ```
 
-Migrations create the application roles `NOLOGIN` (eight in V001, plus the
-read-only `monitoring` role in V012); the compose `roles` service
-provisions their development passwords after migration. Oliumbi is a static
+Migrations create the roles `NOLOGIN` (nine in V001: the application roles plus
+the read-only `monitoring` role); the compose `roles` service provisions the
+application roles' development passwords after migration. Oliumbi is a static
 site, so its reserved role is not used by any app. If you created a database
 without compose, run the documented `ALTER ROLE ... LOGIN PASSWORD ...`
 statements once; see [database/README.md](../../database/README.md).

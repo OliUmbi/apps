@@ -39,10 +39,9 @@ uses their HTTP contracts. A site never reads another site's schema.
 | `V009__unclet.sql` | showcases, reviews, inquiries and submission idempotency |
 | `V010__zelglihof.sql` | articles, products, reservations, inquiries, newsletter and submission idempotency |
 | `V011__analytics.sql` | anonymous daily page-view counters |
-| `V012__monitoring_role.sql` | read-only `monitoring` role for postgres_exporter |
 
 V007 is intentionally unused (no migration file) because the first Oliumbi
-table set is post-launch; it will start at the then-current head (V013 or
+table set is post-launch; it will start at the then-current head (V012 or
 later), never as an out-of-order V007. The old empty Oliumbi migration is gone.
 The `oliumbi` schema and role remain reserved in V001, but no tables are created
 and production leaves the role `NOLOGIN`: the first Oliumbi slice is static and
@@ -101,9 +100,9 @@ another owner's table goes through that owner's contract, not a direct write.
 
 ## Roles and credentials
 
-Migrations create nine roles `NOLOGIN` without passwords: the eight V001 roles
-(seven application roles plus the reserved `oliumbi`) and the read-only
-`monitoring` role in V012. Credentials are provisioned per environment:
+Migrations create nine roles `NOLOGIN` without passwords in V001: the seven
+application roles, the reserved `oliumbi`, and the read-only `monitoring` role.
+Credentials are provisioned per environment:
 
 - **development** - the compose stack runs migrations, then a one-shot `roles`
   service that issues `ALTER ROLE ... LOGIN PASSWORD ...` from
