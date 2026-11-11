@@ -25,21 +25,13 @@ from the vault (`../ansible/roles/app/templates/`).
 
 ## deploying
 
-From the workstation:
-
-```sh
-cd ansible
-ansible-playbook playbooks/deploy.yml -e image_tag=2026.10.24
-```
-
-`image_tag` is required: omit it or pass `latest` and the playbook fails. This
-renders `units/` into `/etc/containers/systemd/`, pulls the images, and restarts
-the stack in dependency order (postgres → migrate → provision roles → apps →
-caddy). Rollback: same command with the previous tag. The app units `Require`
-`apps-migrate`, so migrations always run first; the Ansible `app` role then
-provisions the seven application database roles from the vault before any
-application unit starts. `oliumbi` stays `NOLOGIN` because the site is static.
-There is no compose and no container daemon on the server.
+Production deploy, rollback and the verification checklist are the
+[release runbook](../documentation/operations/runbooks/release.md).
+`image_tag` is required and `latest` is rejected. The app role renders `units/`
+into `/etc/containers/systemd/`, pulls the images, provisions the seven
+application roles and the read-only `monitoring` role from the vault, and starts
+the stack in dependency order. `oliumbi` stays `NOLOGIN` because the site is
+static. There is no compose and no container daemon on the server.
 
 ## routing
 
@@ -58,7 +50,8 @@ headers. Per-client rate limits are 20 events per 2-second window publicly
 `/api/session/login`. Body limits are 10 MB on public sites and 55 MB on the
 Studio host. Hashed Vite assets under `/assets/` are immutable for a year;
 unhashed `public/` files keep a one-hour default. See
-[edge](../documentation/architecture/subsystems/edge.md).
+[edge](../documentation/architecture/subsystems/edge.md) and the complete
+[network surfaces](../documentation/operations/network-surfaces.md).
 
 ## notes
 
@@ -78,5 +71,6 @@ unhashed `public/` files keep a one-hour default. See
 - Logging: everything goes to journald (capped at 200M); housekeeping prunes
   images older than a week, keeping rollback candidates.
 - Day-to-day operations (deploy, backups, logging, monitoring) are documented
-  in [documentation/operations/README.md](../documentation/operations/README.md). Ansible
-  drives all of it from `../ansible/`.
+  in [documentation/operations/README.md](../documentation/operations/README.md);
+  the runbooks own the procedures and [network surfaces](../documentation/operations/network-surfaces.md)
+  lists every listener. Ansible drives all of it from `../ansible/`.

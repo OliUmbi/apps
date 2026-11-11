@@ -72,6 +72,9 @@ user with lingering user units, low-port handling for 80/443, subuid ownership
 for the postgres and media bind mounts, backup/housekeep through `podman exec`
 as that user, and Ansible switched to user units.
 
+Every listener and its exposure is listed in
+[network surfaces](../../documentation/operations/network-surfaces.md).
+
 ## Deploy and rollback
 
 `ansible-playbook playbooks/deploy.yml -e image_tag=<tag>` renders the units

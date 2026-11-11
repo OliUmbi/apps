@@ -47,6 +47,7 @@ evidence here.
 | [Monitoring](monitoring.md) | logs, metrics, alert rules, ntfy, dashboards |
 | [Access and security](access-and-security.md) | access model, secrets, DNS policy, security baseline |
 | [Housekeeping](housekeeping.md) | retention policy and what must never be deleted |
+| [Network surfaces](network-surfaces.md) | every host and container listener, bind address and exposure |
 | [Migration](../work/migration.md) | replacing the legacy stack; cutover playbook |
 
 Architecture context: [architecture](../architecture/README.md). Unfinished
@@ -55,8 +56,8 @@ operational work: [open work](../work/open-work.md).
 ## The operating model
 
 - **One host.** Debian stable, podman/Quadlet systemd units, one PostgreSQL.
-- **One entry point.** Ansible over WireGuard. SSH is never public once
-  `restrict_ssh` is on; recovery is physical access to the machine.
+- **One entry point.** Ansible over WireGuard. The router does not forward SSH;
+  `restrict_ssh` binds it to the tunnel.
 - **One direction for secrets.** The Ansible vault renders per-service
   `/etc/default/apps-<service>` files (root, `0600`). Nothing secret is
   committed, and the server holds no workstation credentials.

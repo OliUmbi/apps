@@ -13,14 +13,15 @@ access model, the secret policy and the security baseline.
 | Item | Value |
 | --- | --- |
 | Host access | `deploy` user over WireGuard, sudo for Ansible |
-| SSH | public only until `restrict_ssh: true`; then tunnel only. Key authentication is the only method from the first run; the drop-in is removed again when `restrict_ssh` is false |
+| SSH | LAN only (the router does not forward 22); bound to the WireGuard address when `restrict_ssh: true` |
 | Recovery | physical access to the machine (screen/keyboard) |
 | Admin UIs | Grafana `:3000`, Prometheus `:9090`, Alertmanager `:9093`, bound to the WireGuard address |
 | Secrets | `ansible/group_vars/vault.yml` (Ansible vault) |
 | Rendered secrets | `/etc/default/apps-<service>`, root-owned `0600` |
 | Backup archives | `age`-encrypted; pulled to the workstation; the server has no credentials for it |
 
-The router forwards only TCP 80/443 and UDP 51820 (WireGuard). There is no host
+The router forwards only TCP 80/443 and UDP 51820 (WireGuard); UDP 443 (HTTP/3)
+is published by Caddy but not forwarded by default. There is no host
 firewall on purpose: published container ports bypass it anyway, so what a unit
 publishes and which address it binds is the exposure decision. Keep admin
 interfaces on the WireGuard address. The legacy exposure check is done: the old

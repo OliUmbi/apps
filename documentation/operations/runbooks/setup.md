@@ -54,8 +54,11 @@ forwarding or enables live DNS.
    `site.yml` installs the timer.
 
 2. **Router.** Reserve a LAN address for the server and forward **TCP 80 and
-   443** and **UDP 51820** (WireGuard). Forward nothing else. Keep both pointed
-   at the legacy host until the cutover run.
+   443** and **UDP 51820** (WireGuard). Forward nothing else. UDP 443 (HTTP/3) is
+   published by Caddy but not forwarded by default; add it only if you want
+   HTTP/3 from the internet. Keep the forwards pointed at the legacy host until
+   the cutover run. The full listener inventory is
+   [network surfaces](../network-surfaces.md).
 
 3. **Server.** Install Debian stable, create the `deploy` user with your SSH key
    and sudo, and confirm the first login over the LAN. The `server` role installs
