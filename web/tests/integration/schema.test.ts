@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test, { after } from "node:test";
-import { type SQL, sql } from "drizzle-orm";
+import { eq, type SQL, sql } from "drizzle-orm";
+import { viewDaily } from "../../packages/analytics/src/schema";
+import { createAnalytics } from "../../packages/analytics/src/server";
 import { createDonationCommitmentRepository } from "../../packages/jublawoma-data/src/content/donation-commitment.repository";
 import { createQueueClient } from "../../packages/queue/src";
 import { emailMessage } from "../../packages/queue/src/email";
@@ -11,6 +13,7 @@ import {
 	asRole,
 	databaseEnabled,
 	expectRejected,
+	joinedDatabase,
 	rolledBack,
 	type SiteRole,
 } from "../support/database";
@@ -421,6 +424,35 @@ test("queue producers can enqueue but cannot read", { skip }, async () => {
 			});
 		});
 	}
+});
+
+test("a site role can upsert its counter and Studio can read it", {
+	skip,
+}, async () => {
+	assert.ok(admin);
+	await rolledBack(admin, async (transaction) => {
+		const analytics = createAnalytics(
+			joinedDatabase(transaction),
+			"jublawoma",
+			["/about"],
+		);
+		// The second call is the ON CONFLICT path: PostgreSQL checks SELECT on the
+		// conflict target and every column the DO UPDATE expression reads.
+		await asRole(transaction, "jublawoma", async () => {
+			await analytics.record("/about");
+			await analytics.record("/about");
+		});
+
+		let views: number | undefined;
+		await asRole(transaction, "studio", async () => {
+			const [row] = await transaction
+				.select({ views: viewDaily.views })
+				.from(viewDaily)
+				.where(eq(viewDaily.site, "jublawoma"));
+			views = row?.views;
+		});
+		assert.equal(views, 2);
+	});
 });
 
 test("duplicate queue ids fail closed", { skip }, async () => {

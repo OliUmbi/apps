@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { readdirSync } from "node:fs";
+import { join } from "node:path";
 import test from "node:test";
 import {
 	deLocalizeUrl,
@@ -66,5 +68,56 @@ test("system routes are never localized", () => {
 		"/api/analytics/view",
 	]) {
 		assert.equal(deLocalizeUrl(origin + path).pathname, path);
+	}
+});
+
+/*
+ * The path table above is the contract; this test makes the route tree obey it.
+ * A new page route without a urlPattern would otherwise ship an English URL on
+ * a German site while the hand-maintained list stayed green. System routes are
+ * the only exemptions and must stay explicit.
+ */
+const sites = ["jublawoma", "unclet", "zelglihof"];
+const unlocalized = [/^\/$/, /^\/api\//, /^\/sitemap\.xml$/, /^\/newsletter\//];
+
+function routeFiles(site: string): string[] {
+	const routes = join(
+		import.meta.dirname,
+		"..",
+		"sites",
+		site,
+		"src",
+		"routes",
+	);
+	return readdirSync(routes, { recursive: true })
+		.map((entry) => String(entry).replaceAll("\\", "/"))
+		.filter((entry) => entry.endsWith(".tsx") || entry.endsWith(".ts"));
+}
+
+// TanStack file naming: dots separate segments, `[.]` is a literal dot and a
+// trailing `index` is the parent path.
+function routePath(file: string): string | null {
+	const name = file.replace(/\.(ts|tsx)$/, "");
+	if (name === "__root" || name.endsWith("/__root")) return null;
+	const segments = name
+		.replaceAll("[.]", "\u0000")
+		.split(".")
+		.map((segment) => segment.replaceAll("\u0000", "."));
+	if (segments.at(-1) === "index") segments.pop();
+	return `/${segments.join("/")}`.replace(/\/$/, "") || "/";
+}
+
+test("every file route has a German path or an explicit exemption", () => {
+	for (const site of sites) {
+		for (const file of routeFiles(site)) {
+			const route = routePath(file);
+			if (!route) continue;
+			const german = localizeUrl(origin + route, { locale: "de-CH" }).pathname;
+			const exempt = unlocalized.some((pattern) => pattern.test(route));
+			assert.ok(
+				german !== route || exempt,
+				`${site}/${file} (${route}) has no German urlPattern - add one or exempt the route`,
+			);
+		}
 	}
 });
