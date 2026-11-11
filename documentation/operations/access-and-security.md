@@ -24,8 +24,9 @@ The router forwards only TCP 80/443 and UDP 51820 (WireGuard); UDP 443 (HTTP/3)
 is published by Caddy but not forwarded by default. There is no host
 firewall on purpose: published container ports bypass it anyway, so what a unit
 publishes and which address it binds is the exposure decision. Keep admin
-interfaces on the WireGuard address. The legacy exposure check is done: the old
-5432/8080/8000 ports are not reachable.
+interfaces on the WireGuard address. Every listener and its exposure is listed
+in [network surfaces](network-surfaces.md). The legacy exposure check is done:
+the old 5432/8080/8000 ports are not reachable.
 
 ## Secrets
 
