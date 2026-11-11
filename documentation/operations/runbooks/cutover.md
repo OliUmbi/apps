@@ -32,7 +32,9 @@ playbook is [migration: cutover](../../work/migration.md#cutover-playbook).
    Pre-cutover, `dyndns_enabled` is `false`; do not enable it earlier, even on a
    parallel host (RV-03). `site.yml` owns the dyndns role; `deploy.yml` does not,
    so this is the run that flips live updates. Passing the tag again is
-   idempotent.
+   idempotent. **After cutover, keep passing `-e dyndns_enabled=true` to every
+   later `site.yml` run**; omitting it stops and disables the timer and the A
+   records stop following the address.
 6. Verify TLS, redirects, forms, Studio permissions, media, logs, health and
    mail. Take a fresh backup and pull it.
 7. Record the release, the observation window and the owner sign-off.

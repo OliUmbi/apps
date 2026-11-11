@@ -13,7 +13,7 @@ access model, the secret policy and the security baseline.
 | Item | Value |
 | --- | --- |
 | Host access | `deploy` user over WireGuard, sudo for Ansible |
-| SSH | public only until `restrict_ssh: true`; then tunnel only, and the drop-in is removed again when it is false |
+| SSH | public only until `restrict_ssh: true`; then tunnel only. Key authentication is the only method from the first run; the drop-in is removed again when `restrict_ssh` is false |
 | Recovery | physical access to the machine (screen/keyboard) |
 | Admin UIs | Grafana `:3000`, Prometheus `:9090`, Alertmanager `:9093`, bound to the WireGuard address |
 | Secrets | `ansible/group_vars/vault.yml` (Ansible vault) |

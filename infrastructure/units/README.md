@@ -48,6 +48,30 @@ matters because these are bind mounts: the assets image pins `app` to uid/gid
 100 (its `/media` mount is chowned 100:100), the postgres image runs as uid 70
 and chowns its directory on first start, caddy runs as root.
 
+## Privileges
+
+The units are **rootful system units**: systemd starts podman and conmon as
+root. That is the host boundary. The container processes are not all root:
+
+| Workload | Process user |
+| --- | --- |
+| the three services and five sites | `app` (uid 100; the assets image pins it for `/media`) |
+| postgres | 70 (the entrypoint drops from root after init/chown) |
+| caddy | root (the official image default; it binds 80/443 and writes `/data`) |
+| migrate | the Flyway image default |
+| monitoring | the image defaults (nobody/grafana) |
+
+Check a running container with `podman inspect --format '{{.Config.User}}'
+<name>` and `podman exec <name> id`. The eight application/site units drop all
+capabilities and set `NoNewPrivileges=true`; postgres, caddy and the migrator
+keep what their entrypoints need.
+
+A full rootless stack is a post-launch project
+([TD-23](../../documentation/work/tech-debt.md#td-23)): it needs a dedicated
+user with lingering user units, low-port handling for 80/443, subuid ownership
+for the postgres and media bind mounts, backup/housekeep through `podman exec`
+as that user, and Ansible switched to user units.
+
 ## Deploy and rollback
 
 `ansible-playbook playbooks/deploy.yml -e image_tag=<tag>` renders the units

@@ -58,7 +58,8 @@ forwarding or enables live DNS.
 3. **Server.** Install Debian stable, create the `deploy` user with your SSH key
    and sudo, and confirm the first login over the LAN. The `server` role installs
    `sudo`, podman and WireGuard; the app, dyndns, backup and housekeep roles
-   install the units and timers.
+   install the units and timers. Password authentication is disabled from the
+   first run, so verify the key works before running `site.yml`.
 
 4. **DNS.** Create the A records listed in `dyndns_records`
    (`ansible/group_vars/all.yml`) once in the Infomaniak manager, including

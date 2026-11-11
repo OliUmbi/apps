@@ -31,3 +31,4 @@
     - node-exporter
     - blackbox
     - grafana
+    - postgres-exporter

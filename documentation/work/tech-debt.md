@@ -40,9 +40,11 @@ debt: it is listed so it is not rediscovered as a surprise.
 | [TD-17](#td-17) | Operations: backup checksum manifest is not portable | P3 | resolved |
 | [TD-18](#td-18) | Services: bearer check runs after request binding | P3 | open |
 | [TD-22](#td-22) | Operations: retention runs in the housekeeping shell script | P3 | accepted |
+| [TD-23](#td-23) | Operations: rootful Quadlet services | P2 | accepted |
 
-Open counts: 1 P1, 0 P2, 1 P3. Accepted: TD-13 (P3), TD-15 (P2), TD-16 (P2) and
-TD-22 (P3); accepted debt stays listed. Every other entry is resolved. The 2026-10 refactor
+Open counts: 1 P1, 0 P2, 1 P3. Accepted: TD-13 (P3), TD-15 (P2), TD-16 (P2),
+TD-22 (P3) and TD-23 (P2); accepted debt stays listed. Every other entry is
+resolved. The 2026-10 refactor
 resolved most findings in the [code quality review](../history/code-quality-review.md);
 their dispositions remain there as evidence and are not repeated here.
 
@@ -260,6 +262,27 @@ Encrypt rate limits.
   re-issuance step is part of the restore drill. The accepted consequence is
   dependence on the vault token and Let's Encrypt rate limits during recovery;
   the procedure is in [edge](../operations/runbooks/edge.md#certificate-re-issuance).*
+
+### TD-23
+
+**The Quadlet services run rootful.** Systemd starts podman and conmon as root,
+so a podman/conmon or bind-mount mistake has host-root impact. The application
+images already run as their own unprivileged `app` user (uid 100), postgres
+drops to uid 70, and the eight app units drop all capabilities with
+`NoNewPrivileges=true`; Caddy and the Flyway migrator keep their image defaults.
+
+- **Next action:** evaluate rootless podman on a spare host after launch. Keep
+  Caddy (80/443) and node-exporter (host `/proc`, dbus) in the test. The change
+  needs a dedicated user with lingering user units, low-port handling, subuid
+  ownership for the postgres and media bind mounts, backup/housekeep through
+  `podman exec` as that user, and Ansible switched to user units.
+- **Source:** 2026-11 privilege-model review.
+
+*Disposition (2026-11): accepted (TD-23) - one tenant, only Caddy publishes
+ports, and the application processes are already unprivileged. The alternative
+is a full deployment-shape migration that cannot be validated before go-live.
+Revisit on a second tenant, an exposed container escape, or a podman CVE whose
+mitigation requires rootless.*
 
 ## P3 - smaller or later
 

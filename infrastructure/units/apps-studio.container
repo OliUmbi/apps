@@ -23,6 +23,10 @@ HealthInterval=15s
 HealthTimeout=5s
 HealthRetries=10
 HealthStartPeriod=30s
+# The image already runs as its own unprivileged user; no capabilities
+# are needed (see infrastructure/units/README.md).
+DropCapability=ALL
+NoNewPrivileges=true
 Pull=missing
 LogDriver=journald
 

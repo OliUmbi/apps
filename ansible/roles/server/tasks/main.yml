@@ -56,6 +56,8 @@
     src: wg0.conf.j2
     dest: /etc/wireguard/wg0.conf
     mode: "0600"
+  # The template renders the server private key.
+  no_log: true
   notify: restart wireguard
 
 - name: wireguard up
@@ -69,13 +71,23 @@
 # what the units publish and where they bind decides exposure. See
 # documentation/operations/access-and-security.md.
 
+# Password authentication is disabled from the first boot and stays disabled
+# when restrict_ssh is flipped back. Key access is the only method; the setup
+# runbook adds the deploy key before the first run.
+- name: sshd disables password authentication
+  ansible.builtin.copy:
+    dest: /etc/ssh/sshd_config.d/50-no-passwords.conf
+    mode: "0644"
+    content: |
+      PasswordAuthentication no
+  notify: restart sshd
+
 - name: sshd listens on wireguard only
   ansible.builtin.copy:
     dest: /etc/ssh/sshd_config.d/60-wireguard.conf
     mode: "0644"
     content: |
       ListenAddress {{ wireguard_address.split('/')[0] }}
-      PasswordAuthentication no
   when: restrict_ssh | bool
   notify: restart sshd
 

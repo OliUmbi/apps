@@ -50,7 +50,8 @@ then starts the application units. The reserved `oliumbi` role stays `NOLOGIN`
 because the site is static. The backup and housekeeping timers are templated from
 `backup_hour`, `housekeep_day` and `housekeep_hour`. The dyndns timer is installed
 but disabled before cutover (`dyndns_enabled: false`); enable it explicitly on
-the cutover run.
+the cutover run and keep passing `-e dyndns_enabled=true` to every later
+`site.yml` run, or it stops live DNS updates.
 
 Secrets: `ansible-vault create group_vars/vault.yml` (start from the
 example). Nothing secret is ever committed.
