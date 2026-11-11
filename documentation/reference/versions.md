@@ -4,7 +4,8 @@ The register of everything this repository takes from the outside world, and
 where each dependency is pinned. The pin policy is D24 with DR-14: container
 images and CI actions pin exact bytes (`tag@digest`, commit SHA or exact
 version), a digest change is always a deliberate commit, and the digests are
-refreshed monthly (open work, Infrastructure and operations).
+refreshed monthly (D24; [dependency update
+runbook](../operations/runbooks/dependencies.md)).
 
 This page records versions and majors to keep track of. It is the map, not
 the mirror: exact ranges and digests live in the owning files below and stay
@@ -88,37 +89,11 @@ lombok 1.18.
 | nitro stable 3.x | upstream stable release | catalog |
 | caddy-ratelimit release tag | upstream tag newer than `5625512f` | caddy Dockerfile; open work, Later |
 
-## Monthly refresh (D24)
+## Refresh and upgrades
 
-Do this once a month, in daylight, on a branch. It is a deliberate commit, not
-an automation: the point is that someone looks at what changed.
+The monthly digest refresh (D24), runtime version bumps and scan handling are the
+[dependency update runbook](../operations/runbooks/dependencies.md). The steps are
+not repeated here: this page records what is pinned and why, the runbook owns how
+to change it.
 
-1. **Record the starting point.** Note the date, the current `image_tag`, and the
-   digests in the table above (or read them from the owning files).
-2. **Look up every current digest.**
-   `docker buildx imagetools inspect <name>:<tag>` for each image in the table
-   (the multi-arch manifest-list digest), or the Docker Hub tag API
-   (`/v2/repositories/<repo>/tags/<tag>`). A digest change means the same tag
-   was rebuilt upstream.
-3. **Update tag and digest together** in the owning file. Never change a tag
-   without checking its digest, and never leave a digest from the old tag.
-   Runtime version bumps (Caddy, Node, temurin, ...) are separate, deliberate
-   commits; this pass only picks up silent base rebuilds.
-4. **Update the CI actions.** Check the latest release of every action listed
-   above, update the SHA and the version comment together.
-5. **Update the two scan tools** (`trivy`, `gitleaks`) the same way, including
-   their digests in both workflows.
-6. **Run the gate:** `pnpm check`, `pnpm typecheck`, `pnpm test` (with a migrated
-   database), `pnpm build`, `services\mvnw.cmd -f services/pom.xml test`, and
-   `docker compose -f infrastructure/compose.dev.yaml --env-file .env config`.
-7. **Run the blocking scans locally** (or read the weekly workflow):
-   `trivy fs --severity HIGH,CRITICAL web services database` and `gitleaks detect`.
-   A HIGH or CRITICAL with a fix available is a finding to address, not a reason
-   to skip the refresh.
-8. **Before a release, scan the built images** (manual, not in CI):
-   `trivy image ghcr.io/oliumbi/apps-<name>:<tag> --severity HIGH,CRITICAL`.
-   The images are pinned by digest, so this measures the bytes you deploy.
-9. **Commit** as `chore: refresh pinned digests (D24)`, push, and confirm the
-   `security` workflow and the image build are green.
-10. **Record the run** in the release notes table (`releases.md`): date, tag,
-    which digests changed, gate result. If a step was skipped, say so.
+Held majors are deliberate; the next action for each is in the table above.

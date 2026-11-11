@@ -34,7 +34,7 @@ questions are in [decisions](../reference/decisions.md).
 - [ ] [owner] Generate the backup recovery identity, keep the passphrase-wrapped
   key in the password manager and print the recovery sheet; restore from the
   printed sheet in the drill
-  ([key handling](../operations/backup-restore.md#key-handling-once-then-treat-it-as-done)).
+  ([key handling](../operations/runbooks/backup.md#key-handling-once-then-treat-it-as-done)).
 - [ ] Close every P1 item in [technical debt](tech-debt.md) - currently TD-14
   only - or record the owner's explicit acceptance.
 - [ ] [verify] Check site permissions and unpublished content with real roles.
@@ -144,9 +144,10 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   Uncle-T, V010 Zelglihof, V011 analytics and V012 monitoring role); the
   baseline freezes at the first accepted import. Delete the retired `api.*` DNS
   records. Follow [migration](migration.md#cutover-playbook).
-- [ ] [verify] Check whether 5432/8080/8000 on the current server are reachable
-  from the internet (legacy exposure). The new stack has no host firewall by
-  design, so verify only 80/443 and UDP 51820 (WireGuard) are forwarded.
+- [x] Check whether 5432/8080/8000 on the current server are reachable from the
+  internet (legacy exposure). (checked 2026-11-11 - not reachable; the new stack
+  also has no host firewall by design, so keep verifying that only 80/443 and
+  UDP 51820 (WireGuard) are forwarded.)
 - [ ] [verify] Bootstrap the server in the new deployment shape:
   `ansible/playbooks/site.yml -e image_tag=<tag>` on Debian stable (podman >= 5
   with the Quadlet generator), vault and WireGuard keys in place. Roles are
@@ -164,7 +165,7 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   preferred target is the not-yet-live replacement host after a meaningful import
   rehearsal, while legacy remains live; no third host is needed for that drill.
   The workstation drill is retired with the compose files. The draft procedure is
-  in [backup and restore](../operations/backup-restore.md#restore-untested-until-the-drill).
+  in [restore](../operations/runbooks/restore.md).
 - [ ] [verify] Housekeeping timer is scripted (`ansible/files/housekeep.sh`):
   confirm it runs on the server and check the first journal output.
 - [ ] [verify] WireGuard config is templated (server role). Verify provider

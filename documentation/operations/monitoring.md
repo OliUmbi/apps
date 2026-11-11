@@ -51,20 +51,21 @@ depend on router NAT hairpin (DR-18), and `probe_ssl_earliest_cert_expiry` still
 reflects the public certificate.
 
 Alert rules live in `infrastructure/monitoring/alerts.yml`. Each maps to an
-action:
+action: the [incidents runbook](runbooks/incidents.md) turns a firing alert into
+a procedure.
 
 | Alert | Meaning | First action |
 | --- | --- | --- |
-| `SiteProbeFailing` | a site is not answering for 5 minutes | check caddy and the site unit; see [runbooks](runbooks.md#site-unavailable) |
+| `SiteProbeFailing` | a site is not answering for 5 minutes | check caddy and the site unit; see [incidents](runbooks/incidents.md#site-unavailable) |
 | `ProbeSeriesMissing` | a blackbox probe series disappeared | blackbox or the scrape is down; check the exporter unit |
 | `ServiceDown` | a service stopped exposing metrics | `logs.yml` for that service |
 | `ScrapeTargetDown` | Caddy or postgres_exporter stopped exposing metrics | check that unit and its journal; capacity alerts are blind without it |
 | `TlsProbeFailing` | the TLS handshake or route fails | Caddy logs, DNS and the certificate state |
 | `Edge5xxRate` | more than 1% of edge responses are 5xx | correlate with `Service5xxRate` and site logs |
-| `Service5xxRate` | a service returns more than 1% 5xx | `logs.yml`, then the service runbook |
+| `Service5xxRate` | a service returns more than 1% 5xx | `logs.yml`, then [incidents](runbooks/incidents.md) |
 | `DbPoolSaturated` | a service pool is above 90% | look for a slow query or a stuck request |
 | `PostgresConnectionsHigh` | above 80% of `max_connections` | check pools and long transactions |
-| `MessageFailed` | a message reached FAILED | inspect the attempt history in Studio; see [messaging](runbooks.md#email-not-delivered) |
+| `MessageFailed` | a message reached FAILED | inspect the attempt history in Studio; see [incidents](runbooks/incidents.md#missing-message) |
 | `QueueStalled` | the oldest pending message is over 30 minutes old | check the messaging unit and SMTP reachability |
 | `QueueIntakeStalled` | the oldest unconsumed email inbox row is over 30 minutes old | intake is not consuming; read the messaging journal (the row is never expired by housekeeping) |
 | `PostgresNotAnswering` | postgres rejects connections | check the postgres unit and disk; do not restart blindly |
@@ -92,15 +93,9 @@ application rows are not.
 
 ## Edge policy: rate limiting and CSP
 
-Rate limiting and the Content-Security-Policy are edge behaviour, not metrics.
-After an edge change:
-
-- confirm the CSP and `Permissions-Policy` headers with `curl -I https://<site>/`
-  and load one page with every embed the site uses;
-- burst more than 20 requests in two seconds from one address and confirm a 429,
-  then confirm login is limited to 10 per minute on `/api/session/login`;
-- read Caddy logs for rejected requests. There is no CSP report endpoint or
-  alert; a broken policy shows up as a browser error or a missing asset.
+Rate limiting and the Content-Security-Policy are edge behaviour, not metrics;
+their checks live in [security](runbooks/security.md#edge-checks) and their
+change procedure in [edge](runbooks/edge.md#change-caddy-behaviour).
 
 ## Setting up ntfy
 

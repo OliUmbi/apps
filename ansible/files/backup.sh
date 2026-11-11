@@ -14,8 +14,9 @@ set -eu
 # certificates are not part of the archive.
 #
 # PostgreSQL major-version upgrades (dump/restore) are a documented procedure,
-# not part of this nightly job: see documentation/operations/backup-restore.md
-# and TD-04 in documentation/work/tech-debt.md.
+# not part of this nightly job: see
+# documentation/operations/runbooks/restore.md#postgresql-major-upgrade and
+# TD-04 in documentation/work/tech-debt.md.
 
 [ -f /etc/default/apps-backup ] && . /etc/default/apps-backup
 

@@ -1,7 +1,10 @@
-# Housekeeping and updates
+# Housekeeping policy
 
 Recurring cleanup keeps disk bounded and leaves a week of images for rollback.
 It runs on the server as a systemd timer, never from the workstation.
+
+**Procedure:** [maintenance](runbooks/maintenance.md#weekly-housekeeping). This
+page owns what is expired and what must never be deleted.
 
 ## Weekly timer
 
@@ -32,18 +35,6 @@ The timer schedule is templated from `housekeep_day` and `housekeep_hour` in
 `ansible/group_vars/all.yml`; the backup timer is templated the same way from
 `backup_hour`. Change the variable and redeploy, not the unit on the server.
 
-The retention job is a shell script today because it is a handful of deletes on
-one host. If the policy grows (per-table windows, anonymization, a staging or
-export path), move it into a scheduled job owned by the service that owns the
-data instead of expanding the script. Recorded as [TD-22](../work/tech-debt.md#td-22).
-
-Run it manually when needed:
-
-```sh
-ansible-playbook playbooks/housekeep.yml
-ansible-playbook playbooks/logs.yml -e service=housekeep
-```
-
 ## What not to clean
 
 - `/var/lib/apps/postgres`, `/var/lib/apps/media`, `/var/lib/apps/caddy-*` are
@@ -58,27 +49,10 @@ ansible-playbook playbooks/logs.yml -e service=housekeep
   Prometheus datasource is provisioned as code. Losing the volume loses history
   and dashboards, not application data.
 
-## Updates
+## The shell job
 
-- **Security updates** run automatically through `unattended-upgrades`.
-- **A full `apt upgrade`** is part of the quarterly drill, not an unattended
-  action. Read the changelog for podman and the kernel, then reboot in a known
-  window and verify the stack.
-- **Application and base images** are updated by changing the pinned tag or
-  digest, running CI, and deploying. Upstream monitoring images are pinned by
-  `tag@digest`; bump both together.
-- **PostgreSQL major upgrades** are not automated. The dump/restore procedure is
-  documented in
-  [backup and restore](backup-restore.md#postgresql-major-version-upgrade).
-
-## Quarterly drill
-
-At least once a quarter:
-
-1. Run a full `apt upgrade`, reboot, and confirm every unit and probe recovers.
-2. Confirm housekeeping ran and disk is stable.
-3. Confirm the backup timer and the workstation pull both ran.
-4. Exercise one restore path as far as the available hardware allows, including
-   Caddy certificate re-issuance.
-5. Review expiring certificates and DNS records.
-6. Review access: accounts, permissions and any credential that should rotate.
+The retention job is a shell script because it is a handful of deletes on one
+host. If the policy grows (per-table windows, anonymization, a staging or export
+path), move it into a scheduled job owned by the service that owns the data
+instead of expanding the script. Recorded as
+[TD-22](../work/tech-debt.md#td-22).

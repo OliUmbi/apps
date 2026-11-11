@@ -54,7 +54,7 @@ vault_zelglihof_newsletter_email: ""
 
 # ---- backups ----
 # age public key of the recovery identity that decrypts pulled backups
-# (the private half is passphrase-wrapped; see operations/backup-restore.md)
+# (the private half is passphrase-wrapped; see operations/runbooks/backup.md)
 vault_age_recipient: ""
 
 # ---- first admin (one-time bootstrap) ----

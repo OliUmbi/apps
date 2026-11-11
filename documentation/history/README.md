@@ -18,6 +18,7 @@ now, use [architecture](../architecture/README.md).
 | [Services handoff](refactoring-services.md) | 2026-10-25 | historical evidence, superseded by the plan |
 | [Deployment plan](deployment-plan.md) | executed 2026-11 | complete |
 | [Build and deployment review](deployment-review-2026-11.md) | 2026-11 | review complete; P1 blockers open |
+| [Pre-launch hardening plan](pre-launch-hardening-plan-2026-11.md) | 2026-11 | closed; host/CI evidence and the PH-9/PH-10/PH-11 remainder are tracked in the registers |
 | [First go-live review](go-live-review-2026-11.md) | 2026-11 | review complete; RV-01–RV-04 open, RV-05 fixed |
 
 ## Rules

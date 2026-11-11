@@ -25,7 +25,6 @@ What is unfinished, and where each kind of unfinished thing lives.
 | [Technical debt](tech-debt.md) | structural debt with severity, status and next action | you need to judge risk or plan a cleanup |
 | [Decisions](../reference/decisions.md) | adopted direction and open questions | a task is blocked on a choice |
 | [Migration](migration.md) | legacy replacement phases, data method, cutover | you are planning or executing a cutover |
-| [Pre-launch hardening](pre-launch-hardening-plan.md) | package sequence, ownership and execution log for the 2026-11 pass | you are picking up one of its packages |
 | [History](../history/README.md) | frozen reviews and completed plans | you need evidence, not a task list |
 
 ## The rules

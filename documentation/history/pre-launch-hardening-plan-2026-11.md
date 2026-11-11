@@ -2,9 +2,9 @@
 
 **Status:** CLOSED, 2026-11. PH-1 to PH-8, PH-12 and PH-13 are code complete
 (host and CI evidence stays in the registers). PH-9, PH-10 and PH-11 shipped
-their planned slice; the remainder is in [open work](open-work.md). The
-registers remain the issue checklist; this file owns sequencing, file ownership
-and acceptance evidence.
+their planned slice; the remainder is in
+[open work](../work/open-work.md). The registers remain the issue checklist;
+this file keeps the sequencing, file ownership and acceptance evidence.
 
 **Context:** the go-live remediation plan closed the review findings. This plan
 lands the decisions taken in the pre-launch review: the small correctness and

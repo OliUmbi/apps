@@ -35,8 +35,8 @@ the subsystem ([identity](architecture/subsystems/identity.md),
 [data](architecture/subsystems/data-and-schema.md)) → [CI/CD](development/ci-cd.md)
 → [deployment](operations/deployment.md).
 
-**Operating or releasing** - [operations index](operations/README.md) →
-[deployment](operations/deployment.md) → [runbooks](operations/runbooks.md).
+**Operating or releasing** - start at the [operations index](operations/README.md)
+and follow the runbook for the task (setup, release, backup, incidents).
 
 **Planning what comes next** - [open work](work/open-work.md) →
 [technical debt](work/tech-debt.md) → [decisions](reference/decisions.md) →
@@ -78,7 +78,8 @@ link instead of repeating.
 
 Place it where a reader would look for it:
 
-- a new operational procedure → `operations/` and add it to the runbook index;
+- a new operational procedure → a page under `operations/runbooks/` and a row in
+  the [runbook index](operations/README.md#runbooks);
 - a new subsystem → `architecture/subsystems/` and add it to the subsystem index;
 - a new decision → `reference/decisions.md`;
 - new unfinished work → `work/open-work.md` or `work/tech-debt.md`;

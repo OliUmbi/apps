@@ -1,21 +1,42 @@
 # Operations
 
-How the running system is operated. Every procedure here is driven from the
-maintainer workstation over WireGuard; there is no reason to log into the host.
+How the running system is operated. Routine changes go through Ansible from the
+maintainer workstation over WireGuard; the same tunnel carries the host commands
+used during a restore. There is no reason to reach the machine any other way.
 
-Start with the [runbook index](runbooks.md) for a symptom or task. The pages
-below own the detail.
+Start with the runbook for what you are doing. The reference pages own the policy
+and the detail; a runbook owns the steps and the stop rules.
+
+## Runbooks
+
+| Runbook | Use for |
+| --- | --- |
+| [Server setup](runbooks/setup.md) | empty host → healthy stack, first admin, SSH lockdown |
+| [Release](runbooks/release.md) | deploy, verify, roll back, failed migration |
+| [Backup](runbooks/backup.md) | run and verify a backup, pull it, key handling |
+| [Restore](runbooks/restore.md) | disaster restore, drill, PostgreSQL major upgrade |
+| [Maintenance](runbooks/maintenance.md) | weekly housekeeping, quarterly drill, host updates |
+| [Dependencies](runbooks/dependencies.md) | monthly digest refresh, runtime bumps, held upgrades |
+| [Security](runbooks/security.md) | scan triage, secret rotation, access review, data deletion |
+| [Edge](runbooks/edge.md) | domains, certificates, Caddy behaviour |
+| [Incidents](runbooks/incidents.md) | a site, the database, mail, TLS or the host is broken |
+| [Cutover](runbooks/cutover.md) | legacy cutover and retirement |
+
+Local development setup is in
+[development/local-setup.md](../development/local-setup.md); it is a workstation
+concern, not a server runbook.
+
+## Reference pages
 
 | Page | Owns |
 | --- | --- |
-| [Deployment](deployment.md) | release model, deploy, verify, rollback, migration coupling |
-| [Release log](releases.md) | what is running, what was verified, and the rollback target |
-| [Backup and restore](backup-restore.md) | what is backed up, retention, pull, restore drill |
-| [Monitoring](monitoring.md) | logs, metrics, alerts, ntfy, first response |
-| [Access and security](access-and-security.md) | WireGuard, provisioning from zero, secrets, DNS, security baseline |
-| [Housekeeping](housekeeping.md) | image and journal retention, updates, quarterly drill |
-| [Runbooks](runbooks.md) | concise procedures for common failures and changes |
-| [Migration and cutover](../work/migration.md) | replacing the legacy stack |
+| [Deployment](deployment.md) | release model, migration coupling, rollback policy |
+| [Release log](releases.md) | what is running, what was verified, the rollback target |
+| [Backup and restore](backup-restore.md) | archive contents, key policy, freshness, ACME policy |
+| [Monitoring](monitoring.md) | logs, metrics, alert rules, ntfy, dashboards |
+| [Access and security](access-and-security.md) | access model, secrets, DNS policy, security baseline |
+| [Housekeeping](housekeeping.md) | retention policy and what must never be deleted |
+| [Migration](../work/migration.md) | replacing the legacy stack; cutover playbook |
 
 Architecture context: [architecture](../architecture/README.md). Unfinished
 operational work: [open work](../work/open-work.md).
@@ -62,5 +83,20 @@ server's WireGuard address and are reachable only inside the tunnel.
 - No `UnitFailing` or `UnitRestartLoop` alert is firing.
 - The newest pulled archive on the workstation is recent.
 
-If any of these is false, open [runbooks](runbooks.md) before changing
+If any of these is false, open [incidents](runbooks/incidents.md) before changing
 anything.
+
+## Conventions
+
+- **A runbook is executable.** It starts with when to use it, lists exact
+  commands, and ends with "done when" and "if it fails". If you change a
+  procedure, change the runbook, not a copied snippet elsewhere.
+- **Verify the target first.** Every destructive command names the host,
+  directory or database it touches. When recovery and diagnosis conflict, restore
+  service first and investigate afterwards.
+- **Record evidence.** A release goes in the [release log](releases.md). A drill
+  or host check that closes a register item is noted with that item. An incident
+  that reveals a defect becomes an entry in [open work](../work/open-work.md) or
+  [technical debt](../work/tech-debt.md), never only a chat log.
+- **One fact, one owner.** The reference pages hold policy; the runbooks hold
+  steps; the registers hold status.

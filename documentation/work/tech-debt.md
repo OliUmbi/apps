@@ -130,7 +130,7 @@ data loss.
 - **Source:** old open-work technical debt.
 
 *Disposition (2026-11): fixed (TD-04) - the dump/restore major-version procedure
-  is documented in [backup and restore](../operations/backup-restore.md#postgresql-major-version-upgrade):
+  is documented in [restore](../operations/runbooks/restore.md#postgresql-major-upgrade):
   stop the app units, `pg_dumpall --globals-only` plus `pg_dump -Fc`, move to the
   new data directory and major, restore, reconcile role passwords from the
   vault, run the migrate unit, verify and re-enable backups. It has not been
@@ -259,7 +259,7 @@ Encrypt rate limits.
   into the image, `CertificateExpiringSoon` warns 14 days ahead, and the
   re-issuance step is part of the restore drill. The accepted consequence is
   dependence on the vault token and Let's Encrypt rate limits during recovery;
-  the procedure is in [backup and restore](../operations/backup-restore.md#caddy-acme-state-and-re-issuance).*
+  the procedure is in [edge](../operations/runbooks/edge.md#certificate-re-issuance).*
 
 ## P3 - smaller or later
 

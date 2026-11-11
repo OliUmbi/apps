@@ -80,7 +80,9 @@ merge to main
 ```
 
 `image_tag` is mandatory and `latest` is rejected. Rollback is the previous
-tag. See [deployment](../operations/deployment.md).
+tag. The step-by-step procedure is the
+[release runbook](../operations/runbooks/release.md); the model is in
+[deployment](../operations/deployment.md).
 
 ## Adding a site or a deployable
 
@@ -100,8 +102,9 @@ tag. See [deployment](../operations/deployment.md).
 - The 2026-11 [build and deployment review](../history/deployment-review-2026-11.md)
   found remaining deployment blockers; see
   [open work](../work/open-work.md#build-and-deployment-review-2026-11).
-- Checkstyle runs as part of `mvn test`; integration tests against a real
-  PostgreSQL are still a follow-up ([TD-13](../work/tech-debt.md#td-13)).
+- Checkstyle runs as part of `mvn test`; the narrow Java persistence suites cover
+  the JPA slice against the migrated schema, and broader HTTP+JPA integration is
+  accepted post-launch ([TD-13](../work/tech-debt.md#td-13)).
 - CI checks that units generate, not that their behavior is correct on the
   server. A deploy still verifies the running stack.
 - The dev compose rig is not validated by CI; it is validated locally with
