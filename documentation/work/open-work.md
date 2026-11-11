@@ -13,7 +13,8 @@ questions are in [decisions](../reference/decisions.md).
 - A code-complete item that still needs an environment check stays open as
   `[verify]`; owner-executed evidence stays `[owner]`. Do not remove an item
   because the code landed. The 2026-11 pass is code complete for the DR/RV
-  findings and the P1/P2 debt; only the evidence is outstanding.
+  findings and the P1/P2 debt; only the evidence is outstanding. Record the
+  evidence in the [go-live checklist](../operations/checklists/go-live.md).
 - The launch gate is the union of this page's **Launch gate** section, every P1
   item in [technical debt](tech-debt.md), deployment blockers DR-04–DR-07 and
   go-live findings RV-01–RV-04. The DR/RV items are code complete; their

@@ -26,6 +26,17 @@ Local development setup is in
 [development/local-setup.md](../development/local-setup.md); it is a workstation
 concern, not a server runbook.
 
+## Checklists
+
+These are records, not procedures: run the matching runbook and write the
+evidence here.
+
+| Checklist | Use for |
+| --- | --- |
+| [Go-live evidence](checklists/go-live.md) | every launch-gate, DR, RV and TD check |
+| [Restore drill record](checklists/restore-drill.md) | one from-zero restore |
+| [Quarterly drill record](checklists/quarterly.md) | the recurring quarter |
+
 ## Reference pages
 
 | Page | Owns |
@@ -94,8 +105,8 @@ anything.
 - **Verify the target first.** Every destructive command names the host,
   directory or database it touches. When recovery and diagnosis conflict, restore
   service first and investigate afterwards.
-- **Record evidence.** A release goes in the [release log](releases.md). A drill
-  or host check that closes a register item is noted with that item. An incident
+- **Record evidence.** A release goes in the [release log](releases.md); a launch
+  check or drill goes in the [checklists](checklists/go-live.md). An incident
   that reveals a defect becomes an entry in [open work](../work/open-work.md) or
   [technical debt](../work/tech-debt.md), never only a chat log.
 - **One fact, one owner.** The reference pages hold policy; the runbooks hold

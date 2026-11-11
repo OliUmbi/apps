@@ -80,6 +80,8 @@ Place it where a reader would look for it:
 
 - a new operational procedure → a page under `operations/runbooks/` and a row in
   the [runbook index](operations/README.md#runbooks);
+- a launch or drill record → `operations/checklists/` and a row in the
+  [checklist index](operations/README.md#checklists);
 - a new subsystem → `architecture/subsystems/` and add it to the subsystem index;
 - a new decision → `reference/decisions.md`;
 - new unfinished work → `work/open-work.md` or `work/tech-debt.md`;
