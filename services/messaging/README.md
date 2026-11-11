@@ -126,7 +126,8 @@ ON CONFLICT (id) DO NOTHING;
 Bind parameters in the producer's database library, ideally in its business transaction.
 Text and HTML are separate alternatives of the same email, so the type does not replace either.
 Templates and localization remain producer responsibilities.
-Existing legacy web clients/adapters still need migration to this contract.
+All current producers (the site data packages) use this contract; no other
+adapter writes to the queue.
 
 The service consumes **`type = 'email'` rows only** — the current channel is an allow-list, not a
 default. Rows with another `type` (for example a future `sms`) are left untouched in `queue.message`

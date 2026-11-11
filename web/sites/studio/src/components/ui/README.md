@@ -74,9 +74,8 @@ single one-off — a view can carry a layout utility instead.
 
 ## Shared `@oliumbi/ui`
 
-`@oliumbi/ui` is the leaf layer for the public sites. Studio uses its
-behaviour helpers (`FormFeedback` today — those consumers move to `Alert` in a
-later package, not here) but does not re-export its styled leaves.
+`@oliumbi/ui` is the leaf layer for the public sites. Studio keeps its own
+styled leaves and does not import the shared styled components.
 
 **Why `alert.tsx` stays studio-local.** The shared `@oliumbi/ui/alert` already
 carries the same contract — a reserved 40px slot, `role="alert"`/`status`, and
@@ -86,6 +85,6 @@ inner slot grows with wrapped text), which matches neither studio's token
 vocabulary (2px radii, a fixed 40px slot) nor can be overridden from outside.
 Re-exporting it would move studio's visual detail out of this folder — the one
 rule this layer exists to enforce — and a wrapped error message would then
-shift the form beneath it. The two implementations can converge when
-`FormFeedback` is retired and the shared primitive takes its geometry from its
-site; until then both reserve 40px and render the same tones.
+shift the form beneath it. The two implementations can converge when the shared
+primitive takes its geometry from its site; both already reserve 40px and render
+the same tones.

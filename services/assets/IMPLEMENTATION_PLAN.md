@@ -27,8 +27,8 @@ Keep existing Spring/shared dependencies and add Boot's validation starter. Mana
 | Library | Recommendation |
 | --- | --- |
 | net.coobird:thumbnailator:0.4.21 | Resizing and JPEG quality control; avoids hand-written scaling. Keep it as the single resizing library. [Upstream](https://github.com/coobird/thumbnailator). |
-| com.twelvemonkeys.imageio:imageio-jpeg:3.15.0 | Robust JPEG decoding, including less conventional color encodings. Use only the JPEG module; JDK ImageIO supplies PNG support. Enforce the JPEG/PNG allowlist even if other readers are present on the classpath. [Formats](https://github.com/haraldk/TwelveMonkeys), [release](https://github.com/haraldk/TwelveMonkeys/releases/tag/twelvemonkeys-3.15.0). |
-| com.drewnoakes:metadata-extractor:2.19.0 | Read orientation before decoding/normalizing once for all sizes. It reads metadata; fresh image encoding removes it. Test orientation for every enabled input format rather than assuming all readers handle it identically. [Upstream](https://github.com/drewnoakes/metadata-extractor). |
+| com.twelvemonkeys.imageio:imageio-jpeg:3.15.3 | Robust JPEG decoding, including less conventional color encodings. Use only the JPEG module; JDK ImageIO supplies PNG support. Enforce the JPEG/PNG allowlist even if other readers are present on the classpath. [Formats](https://github.com/haraldk/TwelveMonkeys), [release](https://github.com/haraldk/TwelveMonkeys/releases/tag/twelvemonkeys-3.15.3). |
+| com.drewnoakes:metadata-extractor:2.22.0 | Read orientation before decoding/normalizing once for all sizes. It reads metadata; fresh image encoding removes it. Test orientation for every enabled input format rather than assuming all readers handle it identically. [Upstream](https://github.com/drewnoakes/metadata-extractor). |
 
 Use JDK Files/Path and Spring FileSystemResource for storage/downloads. No PDF library, broker, generic media framework or native codec dependency initially. Additional codecs can be considered if the accepted formats expand later.
 
@@ -66,7 +66,7 @@ Public PDF downloads use public, no-cache with ETags because slug URLs may event
 
 ## Database and lifecycle
 
-The schema is open to expansion. Start with image, image_variant and document tables: site, visibility, MIME type, byte count, checksum; image dimensions and per-variant details; globally unique document slug. Store sanitized master dimensions, format, byte count and checksum as well. Keep created_at/updated_at last. Use enums for known variants/formats. No deletion state machine is needed.
+The schema is open to expansion. Start with image, image_variant and document tables: site, visibility, MIME type, byte count, checksum; image dimensions and per-variant details; globally unique document slug. Store sanitized master dimensions, format, byte count and checksum as well. Keep created_at/updated_at last. Known variant/format values are service-side constants; the columns stay `text` so a new rendition does not need a migration. No deletion state machine is needed.
 
 Creation: stage and process outside a DB transaction, publish the completed directory, then commit metadata. Remove unpublished files on confirmed failure; reconcile uncertain commits before removing files.
 
