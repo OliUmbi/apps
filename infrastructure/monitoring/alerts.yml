@@ -47,6 +47,17 @@ groups:
         annotations:
           summary: "{{ $labels.instance }} is not exposing metrics"
 
+      # Caddy and postgres-exporter have no blackbox equivalent for their own
+      # scrape endpoint. Their capacity alerts simply disappear if the scrape
+      # target does, so absence itself has to alert (D29).
+      - alert: ScrapeTargetDown
+        expr: up{job=~"caddy|postgres"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.job }} metrics target {{ $labels.instance }} is down"
+
       - alert: TlsProbeFailing
         expr: probe_success{job="tls"} == 0
         for: 10m
@@ -166,6 +177,16 @@ groups:
           severity: critical
         annotations:
           summary: "the oldest pending message is more than 30 minutes old"
+
+      - alert: QueueIntakeStalled
+        # Housekeeping never expires an unprocessed inbox row (PH-5), so an
+        # intake stall has to surface here instead of disappearing in cleanup.
+        expr: messaging_queued_oldest_age_seconds > 1800
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "the oldest unconsumed email inbox row is more than 30 minutes old"
 
       # Caddy's ACME state is deliberately outside the backup (TD-16): a rebuilt
       # host re-issues. This alert makes sure re-issuance actually happens

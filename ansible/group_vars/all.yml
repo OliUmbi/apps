@@ -45,6 +45,8 @@ backup_hour: 3
 housekeep_hour: 4
 housekeep_day: sun
 # Retention for operational copies only. Product data is never deleted here.
+# An inbox row is only expired when its delivery record is terminal; a row the
+# worker has not taken up is never deleted by age.
 queue_retention_days: 30
 message_retention_days: 365
 audit_retention_days: 548 # 18 months

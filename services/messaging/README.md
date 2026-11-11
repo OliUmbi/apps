@@ -60,6 +60,8 @@ Intake locks one inbox row using `SKIP LOCKED`, inserts a delivery record if its
 and removes the inbox row in the same transaction. The delivery ID is independently generated.
 The unique `queue_id` preserves replay protection after the source row is consumed; it is not a
 foreign key to a deleted row. Producers must reuse their request UUID after an uncertain commit.
+A surviving inbox row therefore means intake did not commit: housekeeping never expires it by age,
+and `QueueIntakeStalled` alerts when the oldest unconsumed email row is over 30 minutes old.
 
 A claim and its new attempt commit together before SMTP starts. Completion finishes the attempt
 and applies the next state in another transaction. Database failures roll back together.

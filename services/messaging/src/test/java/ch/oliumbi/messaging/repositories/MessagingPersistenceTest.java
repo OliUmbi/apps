@@ -149,6 +149,15 @@ class MessagingPersistenceTest {
     }
 
     @Test
+    void queuedAgeReportsTheOldestUnconsumedEmailRow() {
+        insertQueued("email", now.minusSeconds(120));
+        insertQueued("email", now.minusSeconds(30));
+        insertQueued("sms", now.minusSeconds(600));
+
+        assertThat(queue.oldestQueuedAgeSeconds()).isBetween(100.0, 180.0);
+    }
+
+    @Test
     void intakePersistsTheMessageAndConsumesTheQueueRow() {
         var queuedId = insertQueued("email", now);
         var service = new MessageIntakeService(queue, messages, Clock.systemUTC());

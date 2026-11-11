@@ -2,6 +2,7 @@ package ch.oliumbi.messaging.metrics;
 
 import ch.oliumbi.messaging.domain.MessageStatus;
 import ch.oliumbi.messaging.repositories.MessageRepository;
+import ch.oliumbi.messaging.repositories.QueuedMessageRepository;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,7 @@ import java.util.Locale;
 @Component
 public class MessageMetrics {
 
-    public MessageMetrics(MeterRegistry registry, MessageRepository messages) {
+    public MessageMetrics(MeterRegistry registry, MessageRepository messages, QueuedMessageRepository queue) {
         for (MessageStatus status : MessageStatus.values()) {
             Gauge.builder("messaging_messages", messages, repository -> repository.countByStatus(status))
                 .description("Delivery rows by lifecycle state")
@@ -24,6 +25,9 @@ public class MessageMetrics {
         }
         Gauge.builder("messaging_oldest_pending_age_seconds", messages, MessageRepository::oldestPendingAgeSeconds)
             .description("Age of the oldest PENDING message, in seconds")
+            .register(registry);
+        Gauge.builder("messaging_queued_oldest_age_seconds", queue, QueuedMessageRepository::oldestQueuedAgeSeconds)
+            .description("Age of the oldest unconsumed email inbox row, in seconds")
             .register(registry);
     }
 }

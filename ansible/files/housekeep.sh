@@ -30,10 +30,16 @@ POSTGRES_DB=$(podman exec postgres printenv POSTGRES_DB)
 echo "housekeep: expired delivery history, inbox rows and audit events"
 # SENT/FAILED only: a PENDING or PROCESSING message is still owned by the
 # worker. message_attempt rows cascade with their message.
+#
+# An inbox row is removed by intake in the same transaction that creates its
+# delivery record, so any surviving queue row is unprocessed work: deleting it
+# by age would silently drop a message the worker never took up. The EXISTS
+# branch only cleans a row whose terminal delivery record survived (a defensive
+# no-op today); `QueueIntakeStalled` alerts when intake stops consuming.
 podman exec postgres psql -v ON_ERROR_STOP=1 \
 	-U "$POSTGRES_USER" -d "$POSTGRES_DB" \
 	-c "DELETE FROM messaging.message WHERE status IN ('SENT', 'FAILED') AND created_at < now() - interval '${MESSAGE_RETENTION_DAYS} days';" \
-	-c "DELETE FROM queue.message WHERE created_at < now() - interval '${QUEUE_RETENTION_DAYS} days';" \
+	-c "DELETE FROM queue.message q WHERE q.created_at < now() - interval '${QUEUE_RETENTION_DAYS} days' AND EXISTS (SELECT 1 FROM messaging.message m WHERE m.queue_id = q.id AND m.status IN ('SENT', 'FAILED'));" \
 	-c "DELETE FROM studio.audit_event WHERE created_at < now() - interval '${AUDIT_RETENTION_DAYS} days';" \
 	-c "DELETE FROM analytics.view_daily WHERE day < current_date - make_interval(days => ${ANALYTICS_RETENTION_DAYS});"
 

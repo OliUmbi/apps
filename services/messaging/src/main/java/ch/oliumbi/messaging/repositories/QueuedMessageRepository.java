@@ -11,6 +11,18 @@ import java.util.UUID;
 public interface QueuedMessageRepository extends CrudRepository<QueuedMessage, UUID> {
 
     /**
+     * Age of the oldest unconsumed email inbox row. A normal row lives for
+     * milliseconds because intake removes it in the same transaction; a lasting
+     * row means intake stopped consuming, and housekeeping never expires it.
+     */
+    @Query(value = """
+            SELECT COALESCE(EXTRACT(EPOCH FROM now() - MIN(created_at))::double precision, 0)
+            FROM queue.message
+            WHERE type = 'email'
+            """, nativeQuery = true)
+    double oldestQueuedAgeSeconds();
+
+    /**
      * Only the current channel is consumed; rows for future channels stay untouched in the queue.
      * The run-scoped skip list arrives as a delimited UUID string because native-query
      * collection binding is not portable; the text comparison is exact for canonical UUIDs.
