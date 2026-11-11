@@ -48,8 +48,10 @@ forwarding or enables live DNS.
    ```
 
    The backup identity is generated once by the
-   [backup runbook](backup.md#key-handling-once-then-treat-it-as-done); if this
-   is the first host, do that before the first backup.
+   [backup runbook](backup.md#key-handling-once-then-treat-it-as-done). If this
+   is the first host, do it **before filling the vault** (step 5): the vault
+   needs the public recipient, and the first backup starts as soon as
+   `site.yml` installs the timer.
 
 2. **Router.** Reserve a LAN address for the server and forward **TCP 80 and
    443** and **UDP 51820** (WireGuard). Forward nothing else. Keep both pointed
