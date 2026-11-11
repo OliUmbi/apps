@@ -63,7 +63,10 @@ This is the most failure-sensitive path in the web layer.
      original outcome,
    - locks the affected stock or donation-capacity row,
    - writes the durable row with its snapshot and status,
-   - inserts the notification into `queue.message` in the same transaction.
+   - inserts the notification into `queue.message` in the same transaction when
+     the workflow sends one (Zelglihof inquiries, reservations and newsletter,
+     Uncle-T inquiries); Jublawoma donation commitments and public reviews
+     persist without an email.
 4. The response carries a stable reference derived from the submission id.
 5. A retry after a timeout or refresh cannot duplicate the row, decrement stock
    twice or send a second email.

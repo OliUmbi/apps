@@ -24,8 +24,9 @@ V008–V010 define the three site schemas (jublawoma, unclet, zelglihof), includ
 nullable `submission_id` idempotency keys and unique indexes on the five
 public-submission tables. V011 adds the anonymous `analytics.view_daily`
 counter; V012 adds the read-only `monitoring` role (`pg_monitor`) for
-postgres_exporter. Every table ends its columns with `created_at` and
-`updated_at`.
+postgres_exporter. Every table carries `created_at` and `updated_at`, except the
+append-only `studio.audit_event` (`created_at` only) and the pre-aggregated
+`analytics.view_daily` (`day` is its date).
 
 V001 still reserves the `oliumbi` schema and role, but there is no Oliumbi
 migration and no table: the first Oliumbi slice is a static site with no

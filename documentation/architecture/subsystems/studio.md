@@ -84,7 +84,7 @@ clears the cookie only after identity confirms success.
    at 500 recipients before anything is queued.
 
 Uploads are handled by the assets service. Studio accepts 20 MiB images and
-50 MiB PDFs; Caddy allows 51 MB on the Studio host. The editor tracks upload
+50 MiB PDFs; Caddy allows 55 MB on the Studio host. The editor tracks upload
 readiness and blocks saving while an upload runs (TD-07, fixed 2026-11).
 
 ## Invariants
@@ -102,7 +102,8 @@ readiness and blocks saving while an upload runs (TD-07, fixed 2026-11).
 
 Required: identity and assets service URLs plus their internal authorization
 tokens. Delivery history also needs messaging. `STUDIO_SECURE_COOKIES=true` over
-HTTPS. Site public URLs and owner email addresses are per-site settings.
+HTTPS. Site public URLs and the request/newsletter addresses are per-site
+settings.
 `/api/session/login` is the public sign-in path; the proxy rate limit depends on
 that route remaining stable.
 

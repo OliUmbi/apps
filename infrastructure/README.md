@@ -55,7 +55,7 @@ Public names (see `caddy/Caddyfile`):
 Every site response carries the baseline CSP, HSTS and the other security
 headers. Per-client rate limits are 20 events per 2-second window publicly
 (roughly 10 r/s, burst 20; IPv6 per /64) and 10 per minute on
-`/api/session/login`. Body limits are 10 MB on public sites and 51 MB on the
+`/api/session/login`. Body limits are 10 MB on public sites and 55 MB on the
 Studio host. Hashed Vite assets under `/assets/` are immutable for a year;
 unhashed `public/` files keep a one-hour default. See
 [edge](../documentation/architecture/subsystems/edge.md).

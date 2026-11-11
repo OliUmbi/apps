@@ -48,7 +48,9 @@ The `oliumbi` schema and role remain reserved in V001, but no tables are created
 and production leaves the role `NOLOGIN`: the first Oliumbi slice is static and
 needs no database.
 
-Every table ends with `created_at` and `updated_at`. Delivery records have
+Every table carries `created_at` and `updated_at`, except the append-only
+`studio.audit_event` (`created_at` only) and the pre-aggregated
+`analytics.view_daily` (`day` is its date). Delivery records have
 independent ids; their unique `queue_id` preserves replay protection without a
 foreign key to a consumed inbox row.
 
@@ -99,15 +101,16 @@ another owner's table goes through that owner's contract, not a direct write.
 
 ## Roles and credentials
 
-Migrations create eight roles `NOLOGIN` without passwords. Credentials are
-provisioned per environment:
+Migrations create nine roles `NOLOGIN` without passwords: the eight V001 roles
+(seven application roles plus the reserved `oliumbi`) and the read-only
+`monitoring` role in V012. Credentials are provisioned per environment:
 
 - **development** - the compose stack runs migrations, then a one-shot `roles`
   service that issues `ALTER ROLE ... LOGIN PASSWORD ...` from
   `infrastructure/.env.dev`;
 - **production** - the Ansible `app` role provisions login credentials from the
   vault after `apps-migrate` and before the application units start, then verifies
-  one connection per role. Only the seven roles that serve an application are
+  one connection per role. The seven application roles and `monitoring` are
   provisioned; `oliumbi` stays `NOLOGIN` because the site is static.
 
 Any credential ever committed to the repository must be rotated. See

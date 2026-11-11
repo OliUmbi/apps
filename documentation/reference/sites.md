@@ -31,7 +31,10 @@ changes belong in [open work](../work/open-work.md). The shared vocabulary is in
 | Roles | site admin | site admin | site admin | site admin |
 
 A discovery tool, not a universal data model: a farm order intent is not the
-same domain as a catering booking.
+same domain as a catering booking. This map is the owner-approved **target**
+capability set; the current implementation is described per site below. Today
+Oliumbi is a static placeholder with no contact form or media library, and
+Jublawoma's join flow uses mail/PDF while donation commitments send no email.
 
 ## Zelglihof
 

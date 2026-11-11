@@ -47,7 +47,6 @@ vault_messaging_smtp_password: ""
 # ---- sites ----
 # requests: form notifications land here; it is the Reply-To for visitors
 # newsletter: sending identity for subscriber mail
-vault_jublawoma_requests_email: ""
 vault_unclet_requests_email: ""
 vault_zelglihof_requests_email: ""
 vault_zelglihof_newsletter_email: ""

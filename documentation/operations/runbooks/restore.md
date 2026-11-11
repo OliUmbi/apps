@@ -45,8 +45,8 @@ a new major version. Policy and archive contents are in
 
 3. **Restore roles and database.** The globals file recreates the application
    roles and their password hashes, so treat the extraction directory as secret.
-   Use the container's configured superuser role; production and the dev rig name
-   it `apps_migrator`, not `postgres`.
+   Use the container's configured `POSTGRES_USER` (the example vault uses
+   `apps_migrator`, not `postgres`).
 
    ```sh
    podman exec -i postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f -' < globals.sql

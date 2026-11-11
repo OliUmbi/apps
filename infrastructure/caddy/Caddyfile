@@ -81,7 +81,9 @@
 }
 
 # Request body limits. Public sites keep the legacy nginx limit of 10M;
-# Studio accepts its upload maxima (20 MiB images plus 50 MiB PDFs).
+# Studio accepts its upload maxima (20 MiB images plus 50 MiB PDFs). Caddy
+# sizes are decimal (go-humanize), so 50 MiB is 52,428,800 bytes: 55MB leaves
+# room for the multipart envelope instead of rejecting a valid PDF.
 (public-body) {
 	request_body {
 		max_size 10MB
@@ -89,7 +91,7 @@
 }
 (studio-body) {
 	request_body {
-		max_size 51MB
+		max_size 55MB
 	}
 }
 

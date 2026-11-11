@@ -80,7 +80,7 @@
     mode: "0644"
     content: |
       PasswordAuthentication no
-  notify: restart sshd
+  notify: restart ssh
 
 - name: sshd listens on wireguard only
   ansible.builtin.copy:
@@ -89,7 +89,7 @@
     content: |
       ListenAddress {{ wireguard_address.split('/')[0] }}
   when: restrict_ssh | bool
-  notify: restart sshd
+  notify: restart ssh
 
 # Keeping the drop-in when restrict_ssh flips back to false would leave SSH
 # bound to the tunnel forever. Removing it makes the restriction reversible
@@ -99,4 +99,4 @@
     path: /etc/ssh/sshd_config.d/60-wireguard.conf
     state: absent
   when: not (restrict_ssh | bool)
-  notify: restart sshd
+  notify: restart ssh

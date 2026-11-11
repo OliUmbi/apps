@@ -66,7 +66,7 @@ From `web/`:
 
 ```powershell
 pnpm check       # Biome style/lint - must be exit 0
-pnpm typecheck   # runs pnpm generate first; fails on stale route trees
+pnpm typecheck   # runs pnpm generate first; route trees are committed (regenerate via dev/build)
 pnpm test        # node:test suite (tsx)
 pnpm build       # all five sites
 pnpm --filter studio build   # REQUIRED after any web/packages/* change

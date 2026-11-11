@@ -38,7 +38,7 @@ curl -I https://<site>/
   so a broken policy shows up as a browser error or a missing asset.
 - Burst more than 20 requests in two seconds from one address; expect `429`.
 - Confirm `/api/session/login` is limited to 10 per minute.
-- Confirm the body limits: public sites 10 MB, Studio 51 MB.
+- Confirm the body limits: public sites 10 MB, Studio 55 MB.
 - Confirm the Studio cookie is `__Host-studio_session` with `Secure`, `HttpOnly`
   and `SameSite=Lax`.
 

@@ -86,7 +86,7 @@ implementation.
 - [x] **DR-11** Secrets are safely rendered: `DATABASE_URL` carries no
   credentials, passwords are separate environment values, and secret templates
   use `no_log`.
-- [x] **DR-12** The Studio route accepts 51 MB; public site routes keep the 10 MB
+- [x] **DR-12** The Studio route accepts 55 MB; public site routes keep the 10 MB
   limit.
 - [ ] [verify] **DR-13** CI now builds every image without pushing. Verify the
   first CI image run is green.

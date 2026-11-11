@@ -1,4 +1,4 @@
-# Caddy edge: the only unit that publishes ports. TLS via DNS-01 wildcards
+# Caddy edge: the only unit that publishes public ports. TLS via DNS-01 wildcards
 # through Infomaniak (custom build, see infrastructure/caddy). ACME state
 # lives in /var/lib/apps/caddy-data -- deleting it re-issues every certificate.
 [Unit]

@@ -31,7 +31,7 @@ content. Keep source extracts, mapping notes and production values outside git.
 - [ ] Drafts, future dates, deleted states, long content and Unicode are included
       in the review, not only the visible happy-path records.
 - [ ] Subscriber consent is verified. Historical imports do not trigger
-      confirmation, welcome, campaign or owner email.
+      confirmation, welcome, campaign, request or newsletter email.
 
 ## Rehearse into a clean target
 

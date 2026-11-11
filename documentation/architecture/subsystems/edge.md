@@ -61,7 +61,7 @@ Every site route inherits:
 - a baseline Content-Security-Policy: same-origin scripts, styles, fonts and
   connections, inline styles/scripts as the sites currently require,
   `data:`/`blob:` images, `frame-ancestors 'none'` and `object-src 'none'`;
-- a 10 MB request-body limit; the Studio host raises this to 51 MB so its
+- a 10 MB request-body limit; the Studio host raises this to 55 MB so its
   20 MiB images and 50 MiB PDFs fit.
 
 Rate limits are per client IP. The public zone allows 20 events per 2-second

@@ -15,7 +15,7 @@ development rig and deliberately not a mirror of this (finding DP-09).
 | `apps-migrate.container` | `apps-migrate.service` | `Type=oneshot` Flyway run before the apps |
 | `apps-identity/-messaging/-assets` | same name | Java services on 8081–8083; assets stores media in `/var/lib/apps/media` |
 | `apps-jublawoma/-unclet/-zelglihof/-oliumbi/-studio` | same name | Nitro sites on 8000–8004 |
-| `apps-caddy` | `apps-caddy.service` | the only unit that publishes ports (80/443, 443/udp) |
+| `apps-caddy` | `apps-caddy.service` | the only unit that publishes public ports (80/443, 443/udp); monitoring binds its ports to the WireGuard address |
 | `apps-prometheus/-alertmanager/-node-exporter/-blackbox/-grafana` | same name | monitoring; ports bound to `monitoring_bind` (WireGuard) |
 | `apps-postgres-exporter` | same name | read-only database statistics; internal networks only |
 | `data-prometheus.volume`, `data-grafana.volume` | — | named volumes for state the backup does not cover |
@@ -55,7 +55,7 @@ root. That is the host boundary. The container processes are not all root:
 
 | Workload | Process user |
 | --- | --- |
-| the three services and five sites | `app` (uid 100; the assets image pins it for `/media`) |
+| the three services and five sites | the image's unprivileged `app` user (the assets image pins uid 100 for `/media`) |
 | postgres | 70 (the entrypoint drops from root after init/chown) |
 | caddy | root (the official image default; it binds 80/443 and writes `/data`) |
 | migrate | the Flyway image default |

@@ -267,9 +267,10 @@ Encrypt rate limits.
 
 **The Quadlet services run rootful.** Systemd starts podman and conmon as root,
 so a podman/conmon or bind-mount mistake has host-root impact. The application
-images already run as their own unprivileged `app` user (uid 100), postgres
-drops to uid 70, and the eight app units drop all capabilities with
-`NoNewPrivileges=true`; Caddy and the Flyway migrator keep their image defaults.
+images already run as their own unprivileged `app` user (the assets image pins
+uid 100 for the media mount), postgres drops to uid 70, and the eight app units
+drop all capabilities with `NoNewPrivileges=true`; Caddy and the Flyway migrator
+keep their image defaults.
 
 - **Next action:** evaluate rootless podman on a spare host after launch. Keep
   Caddy (80/443) and node-exporter (host `/proc`, dbus) in the test. The change
@@ -279,7 +280,7 @@ drops to uid 70, and the eight app units drop all capabilities with
 - **Source:** 2026-11 privilege-model review.
 
 *Disposition (2026-11): accepted (TD-23) - one tenant, only Caddy publishes
-ports, and the application processes are already unprivileged. The alternative
+public ports, and the application processes are already unprivileged. The alternative
 is a full deployment-shape migration that cannot be validated before go-live.
 Revisit on a second tenant, an exposed container escape, or a podman CVE whose
 mitigation requires rootless.*

@@ -1,4 +1,4 @@
-﻿# Go-live evidence checklist
+# Go-live evidence checklist
 
 Run this on the real host and record the result. **Code complete is not done**:
 an item is closed only when the evidence line is filled with a date, a person and
@@ -33,11 +33,12 @@ in place and keep the commit.
   `false` removes the drop-in and SSH listens on all interfaces again.
   Evidence:
 - [ ] **Setup exit** Every `apps-*` unit is active, every timer except dyndns is
-  enabled, the first admin signs in, and only Caddy publishes ports.
+  enabled, the first admin signs in, and only Caddy publishes public ports
+  (monitoring binds to the WireGuard address).
   Evidence:
-- [ ] **Privileges** The eight app containers run as uid 100 with
-  `NoNewPrivileges`; postgres runs as 70; Caddy and the migrator keep their
-  image defaults, accepted by TD-23.
+- [ ] **Privileges** The eight app containers run as their image's unprivileged
+  `app` user (assets is pinned to uid 100) with `NoNewPrivileges`; postgres runs
+  as 70; Caddy and the migrator keep their image defaults, accepted by TD-23.
   Check: `podman inspect --format '{{.Config.User}}' <name>` and
   `podman exec <name> id`; `podman inspect <name> | grep -i no-new-privileges`.
   Evidence:
@@ -54,7 +55,7 @@ in place and keep the commit.
   `Referrer-Policy`, `Permissions-Policy` and the baseline CSP are present.
   Evidence:
 - [ ] **Rate limits** More than 20 events in two seconds returns `429`; login is
-  limited to 10 per minute; public bodies allow 10 MB and Studio 51 MB.
+  limited to 10 per minute; public bodies allow 10 MB and Studio 55 MB.
   Evidence:
 - [ ] **Secrets** No development or placeholder credential is in use; env files
   are `0600 root`; the vault is the only source.

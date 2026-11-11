@@ -21,7 +21,7 @@ From `web/`:
 
 ```powershell
 pnpm check       # Biome style/lint - must be exit 0
-pnpm typecheck   # runs pnpm generate first; fails on a stale route tree
+pnpm typecheck   # runs pnpm generate first; route trees are committed, not regenerated here
 pnpm test        # node:test suite (tsx)
 pnpm build       # all five sites, serialized
 pnpm --filter studio build   # REQUIRED after any web/packages/* change

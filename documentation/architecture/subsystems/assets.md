@@ -42,7 +42,7 @@ tracking is process-local.
 ## Flow: upload
 
 1. Studio sends the file with the internal token and the site. Studio accepts
-   20 MiB images and 50 MiB PDFs; Caddy allows 51 MB on the Studio host.
+   20 MiB images and 50 MiB PDFs; Caddy allows 55 MB on the Studio host.
 2. Assets rejects a known oversize at request time (413) and enforces a streaming
    limit during staging as defense in depth.
 3. Images are validated by container, decoded within a pixel bound, normalized,
@@ -66,7 +66,7 @@ tracking is process-local.
 | PDF | 50 MiB |
 | variants | configured widths, qualities and byte budgets |
 
-The edge body limit on the Studio host is 51 MB, just above the 50 MiB PDF
+The edge body limit on the Studio host is 55 MB, just above the 50 MiB PDF
 maximum and the 20 MiB image maximum. Public sites keep the 10 MB body limit and
 do not accept uploads.
 
