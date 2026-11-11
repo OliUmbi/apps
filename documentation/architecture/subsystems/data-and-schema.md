@@ -41,12 +41,12 @@ uses their HTTP contracts. A site never reads another site's schema.
 | `V011__analytics.sql` | anonymous daily page-view counters |
 | `V012__monitoring_role.sql` | read-only `monitoring` role for postgres_exporter |
 
-V007 is reserved for the first Oliumbi table set; the schema and role already
-exist, so the migration slots in there when the site needs one.
-
-The old empty Oliumbi migration is gone. The `oliumbi` schema and role remain
-reserved in V001, but no tables are created and production leaves the role
-`NOLOGIN`: the first Oliumbi slice is static and needs no database.
+V007 is intentionally unused (no migration file) because the first Oliumbi
+table set is post-launch; it will start at the then-current head (V013 or
+later), never as an out-of-order V007. The old empty Oliumbi migration is gone.
+The `oliumbi` schema and role remain reserved in V001, but no tables are created
+and production leaves the role `NOLOGIN`: the first Oliumbi slice is static and
+needs no database.
 
 Every table ends with `created_at` and `updated_at`. Delivery records have
 independent ids; their unique `queue_id` preserves replay protection without a

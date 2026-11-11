@@ -58,6 +58,7 @@ action:
 | `SiteProbeFailing` | a site is not answering for 5 minutes | check caddy and the site unit; see [runbooks](runbooks.md#site-unavailable) |
 | `ProbeSeriesMissing` | a blackbox probe series disappeared | blackbox or the scrape is down; check the exporter unit |
 | `ServiceDown` | a service stopped exposing metrics | `logs.yml` for that service |
+| `ScrapeTargetDown` | Caddy or postgres_exporter stopped exposing metrics | check that unit and its journal; capacity alerts are blind without it |
 | `TlsProbeFailing` | the TLS handshake or route fails | Caddy logs, DNS and the certificate state |
 | `Edge5xxRate` | more than 1% of edge responses are 5xx | correlate with `Service5xxRate` and site logs |
 | `Service5xxRate` | a service returns more than 1% 5xx | `logs.yml`, then the service runbook |
@@ -65,6 +66,7 @@ action:
 | `PostgresConnectionsHigh` | above 80% of `max_connections` | check pools and long transactions |
 | `MessageFailed` | a message reached FAILED | inspect the attempt history in Studio; see [messaging](runbooks.md#email-not-delivered) |
 | `QueueStalled` | the oldest pending message is over 30 minutes old | check the messaging unit and SMTP reachability |
+| `QueueIntakeStalled` | the oldest unconsumed email inbox row is over 30 minutes old | intake is not consuming; read the messaging journal (the row is never expired by housekeeping) |
 | `PostgresNotAnswering` | postgres rejects connections | check the postgres unit and disk; do not restart blindly |
 | `NodeExporterDown` | the host or exporter is unhealthy | check the host over WireGuard; this may be the host itself |
 | `UnitFailing` | an `apps-*` unit is failed | `logs.yml` for that unit, then the relevant runbook |

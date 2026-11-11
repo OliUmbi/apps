@@ -140,7 +140,7 @@ Deployment shape: ghcr images pinned by tag, systemd units from
 
 - [ ] [owner] Cutover from `legacy/`: freeze writes, final `pg_dump` (Postgres
   17), restore into Postgres 18, flip routing and explicitly enable dyndns.
-  Migrations end at V012 (V007 reserved for Oliumbi, V008 Jublawoma, V009
+  Migrations end at V012 (V007 intentionally unused, V008 Jublawoma, V009
   Uncle-T, V010 Zelglihof, V011 analytics and V012 monitoring role); the
   baseline freezes at the first accepted import. Delete the retired `api.*` DNS
   records. Follow [migration](migration.md#cutover-playbook).
@@ -185,8 +185,9 @@ Deployment shape: ghcr images pinned by tag, systemd units from
 - [x] Anonymous first-party page counting (revisit O-016 "No analytics").
   (implemented in PH-6 - one route-id beacon per navigation into
   `analytics.view_daily`, a per-site Studio panel, no cookies or identifiers;
-  decision D25.) Jublawoma stays untracked until its external privacy policy
-  covers the counting, and Oliumbi has no database.
+  decision D25.) All three German sites are tracked, including Jublawoma; each
+  privacy page carries the disclosure inline. Oliumbi has no database and is
+  excluded.
 - [ ] Explore error tracking so failures surface without a user report:
   frontend JS errors and Java `errorId`s currently end in journald with no
   aggregation. Weigh a self-hosted option (GlitchTip or similar) against

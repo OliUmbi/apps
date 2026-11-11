@@ -10,10 +10,10 @@ What is unfinished, and where each kind of unfinished thing lives.
   findings are code complete; their remaining work is real-host verification.
 - **P1 debt** - [TD-14](tech-debt.md#td-14) legacy import validation. TD-01 is
   resolved and the other P1 items are closed.
-- **Deployment P1 blockers** - DR-04 to DR-07 in
+- **Deployment P1 blockers** - DR-04, DR-05 and DR-07 in
   [open work](open-work.md#build-and-deployment-review-2026-11): role
-  provisioning, monitoring permissions, the pinned tag and Studio DNS are
-  implemented and need host evidence.
+  provisioning, monitoring permissions and Studio DNS are implemented and need
+  host evidence. DR-06 (explicit deploy tag) is closed.
 - **Owner choices** - the resolved directions are in
   [decisions](../reference/decisions.md), plus the remaining content, photo and
   deliverability items under **Owner decisions** in [open work](open-work.md).

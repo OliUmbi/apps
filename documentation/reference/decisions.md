@@ -64,7 +64,7 @@ old one; do not silently rewrite history.
 | O-013 | Superseded: certbot/nginx plan replaced by containerized Caddy with DNS-01 wildcards; dynamic DNS handled by a server-side timer. |
 | O-014 | Stability requirements low; beta versions acceptable; periodic upgrades without formal policy. |
 | O-015 | German-only for the three client sites, Oliumbi mainly English; **German public paths** via Paraglide `urlPatterns` with English route files (2026-11, D32); Paraglide for i18n; dates via a proper library, formatted per browser locale. |
-| O-016 | No analytics; minimal third-party embeds. Instagram is an explicit requirement (Uncle-T, Jublawoma); review better embedding options. |
+| O-016 | No third-party analytics or tracking embeds; minimal third-party embeds. Instagram is an explicit requirement (Uncle-T, Jublawoma); review better embedding options. **Superseded for first-party counting by D25**: anonymous, cookie-free, aggregate page counts are adopted on the three German sites; the stance on third-party analytics and embeds is unchanged. |
 | O-017 | Owner confirmation is easy; small data sets may be migrated by hand. |
 
 ## Operations decisions (2026-10)
@@ -126,11 +126,12 @@ Adopted to move the server off Docker Engine ([deployment plan](../history/deplo
 - **D17 — The pre-launch Flyway baseline stays consolidated.** Owning migration
   files are edited in place until the first accepted production import, and local
   volumes may be rebuilt from zero. The current head is V012: V006 is Studio
-  (with the audit history), V007 is reserved for Oliumbi, V008 Jublawoma,
-  V009 Uncle-T and V010 Zelglihof, V011 analytics and V012 the monitoring role;
-  the Oliumbi schema/role stays reserved in V001. Submission
-  idempotency lives in V008–V010 with the tables it protects. Once live data
-  exists, new changes are append-only expand/contract migrations.
+  (with the audit history), V007 is intentionally unused (no file, so a future
+  Oliumbi table set starts at the then-current head, never as an out-of-order
+  V007), V008 Jublawoma, V009 Uncle-T and V010 Zelglihof, V011 analytics and
+  V012 the monitoring role; the Oliumbi schema/role stays reserved in V001.
+  Submission idempotency lives in V008–V010 with the tables it protects. Once
+  live data exists, new changes are append-only expand/contract migrations.
 
 Also closed: the Zelglihof domain is `zelglihof-maegenwil.ch` (the application
 code had it right; documentation and infrastructure did not).
@@ -196,7 +197,10 @@ and set the recovery and cutover boundaries.
   consent banner is needed because the counters carry no personal data. All
   three German sites are tracked; each privacy page states the anonymous
   counting inline, including Jublawoma (the external PDF is unchanged). Oliumbi
-  has no database and is excluded until it has one.
+  has no database and is excluded until it has one. Site roles hold SELECT on the
+  counter table because the PostgreSQL upsert requires it on the conflict
+  target; the counts are anonymous aggregates, and a security-definer writer is
+  the option if that ever needs tightening.
 - **D26 — The audit trail is append-only, admin-only and narrow.** Studio
   records destructive and administrative actions (accounts, permissions, asset
   visibility/deletion, product/variant archival, reservation changes and
@@ -204,11 +208,15 @@ and set the recovery and cutover boundaries.
   `studio.audit_event` with actor, site, action and entity. No before/after
   values and no message bodies. The application role cannot update or delete
   rows; 18-month retention runs in housekeeping. A site role cannot read the
-  trail.
+  trail. The row is written after the mutation commits, so a crash or a failed
+  audit write can lose an entry; that gap is logged to journald rather than
+  turning a successful user action into an error.
 - **D27 — Operational retention is age-based and never touches product data.**
-  Delivery history ages out after 12 months, inbox rows after 30 days, audit
-  events after 18 months and analytics counters after 25 months. Inquiries,
-  reservations, subscribers and donations are never deleted by housekeeping.
+  Delivery history ages out after 12 months, inbox rows after 30 days only once
+  their delivery record is terminal (an inbox row the worker has not taken up
+  is never expired), audit events after 18 months and analytics counters after
+  25 months. Inquiries, reservations, subscribers and donations are never
+  deleted by housekeeping.
   The current shell job is an interim; it moves into a service-owned scheduled
   job if the policy grows ([TD-22](../work/tech-debt.md#td-22)).
 - **D28 — A subscriber address correction keeps the consent chain intact.** The

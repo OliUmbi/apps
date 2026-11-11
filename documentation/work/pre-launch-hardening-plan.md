@@ -1,8 +1,10 @@
 # Pre-launch hardening plan
 
-**Status:** IN PROGRESS, 2026-11. Packages PH-1 to PH-6 are code complete and
-committed. The registers remain the issue checklist; this file owns sequencing,
-file ownership and acceptance evidence.
+**Status:** CLOSED, 2026-11. PH-1 to PH-8, PH-12 and PH-13 are code complete
+(host and CI evidence stays in the registers). PH-9, PH-10 and PH-11 shipped
+their planned slice; the remainder is in [open work](open-work.md). The
+registers remain the issue checklist; this file owns sequencing, file ownership
+and acceptance evidence.
 
 **Context:** the go-live remediation plan closed the review findings. This plan
 lands the decisions taken in the pre-launch review: the small correctness and
@@ -45,7 +47,7 @@ evidence exists and the registers are updated.
 | PH-10 | partial | Canonical links, LocalBusiness/Organization JSON-LD and dynamic `/sitemap.xml` routes (static pages + articles/products/showcases/stories) ship. The legacy redirect map needs the migration URL inventory. |
 | PH-11 | partial | Oliumbi has robots, sitemap, branded 404/error and a check test; the three German sites have skip links and a `main` target. Focus after submit, `aria-describedby` and reduced motion remain. |
 | PH-12 | done (first remote run pending) | `gitleaks` + report-only Trivy in CI, blocking weekly `security.yml` (Trivy, gitleaks, `pnpm audit --prod`), a dev-placeholder allowlist, and the 10-step monthly refresh checklist. |
-| PH-13 | in progress | Decisions D25-D32, both registers, the plan and the V012 head are updated. Trimming the component READMEs to structure only remains. |
+| PH-13 | done | Decisions D25-D32, both registers, the V012 head and the component READMEs are updated. The migration-head, V007, Jublawoma-tracking and O-016 inconsistencies are corrected. |
 
 ## Acceptance evidence
 
@@ -60,3 +62,11 @@ evidence exists and the registers are updated.
   when tested, and the probe-silence rule catches a stopped blackbox.
 - PH-8: a restore from a pulled archive using the printed identity and its
   passphrase, recorded in the restore drill.
+- PH-9/PH-10: the `i18n-urls` and `seo` tests are green and every site serves
+  German paths, a canonical URL and a content sitemap; the legacy redirect map
+  stays with the migration URL inventory (open work).
+- PH-11: the `oliumbi-site` file check and the export-surface tests are green;
+  the accessibility remainder is tracked in open work.
+- PH-12: the first remote `security.yml` run is green (outstanding).
+- PH-13: this pass - decisions, both registers, the plan and the component
+  READMEs agree with the code.
