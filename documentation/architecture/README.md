@@ -87,7 +87,7 @@ are pulled to.
 | caddy | TLS via DNS-01, hostname routing, security headers, CSP, rate limits, body limits | certificates in `/var/lib/apps/caddy-data` | [edge](subsystems/edge.md) |
 | dyndns | timer that keeps the Infomaniak A records on the dynamic IP | - | [edge](subsystems/edge.md) |
 | sites (jublawoma, unclet, zelglihof) | public SSR websites; own routes, content and forms | their own schema | [web apps](subsystems/web-apps.md) |
-| oliumbi | static English placeholder; no database or service dependencies | its own route wording | [web apps](subsystems/web-apps.md) |
+| oliumbi | static English placeholder; no content tables or service dependencies, only the shared anonymous counter | its own route wording | [web apps](subsystems/web-apps.md) |
 | studio | admin UI for all sites; one hostname so sessions survive | - | [studio](subsystems/studio.md) |
 | identity | accounts, sessions, permissions | `identity` schema | [identity](subsystems/identity.md) |
 | messaging | email queue intake, delivery, history | `messaging` schema | [messaging](subsystems/messaging.md) |

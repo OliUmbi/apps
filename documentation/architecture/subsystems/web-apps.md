@@ -11,8 +11,8 @@ Serve the four public sites - `jublawoma.ch`, `uncle-t.ch`,
 applications. Each site owns its routes, visual language, build and release; the
 three data-backed sites also own their content tables and forms. No site imports
 another site's implementation or tables. Oliumbi is currently a static English
-placeholder: its first slice has no content tables, no data package and no
-runtime environment.
+placeholder: its first slice has no content tables or data package, and it writes
+only the shared anonymous page counter.
 
 ## Inside
 

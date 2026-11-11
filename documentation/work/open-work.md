@@ -187,9 +187,8 @@ Deployment shape: ghcr images pinned by tag, systemd units from
 - [x] Anonymous first-party page counting (revisit O-016 "No analytics").
   (implemented in PH-6 - one route-id beacon per navigation into
   `analytics.view_daily`, a per-site Studio panel, no cookies or identifiers;
-  decision D25.) All three German sites are tracked, including Jublawoma; each
-  privacy page carries the disclosure inline. Oliumbi has no database and is
-  excluded.
+  decision D25.) All four public sites are tracked; each tracked page carries
+  the disclosure inline, including Oliumbi's placeholder.
 - [ ] Explore error tracking so failures surface without a user report:
   frontend JS errors and Java `errorId`s currently end in journald with no
   aggregation. Weigh a self-hosted option (GlitchTip or similar) against

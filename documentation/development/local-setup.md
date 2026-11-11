@@ -76,8 +76,9 @@ pnpm dev:studio        # or dev:jublawoma, dev:unclet, dev:zelglihof, dev:oliumb
 
 Studio also needs identity and assets; delivery history needs messaging. Run
 them in Docker or in the IDE. Public images need assets; queued email needs
-messaging. Oliumbi is static and needs no database or service; it is the
-smallest way to check the shared Vite/Tailwind setup.
+messaging. Oliumbi needs only the database variables for its anonymous counter
+and no other service; it is the smallest way to check the shared Vite/Tailwind
+setup.
 
 ```powershell
 docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d identity assets messaging
@@ -91,8 +92,9 @@ From `web/`, after `pnpm build`:
 node --env-file=../.env sites/studio/.output/server/index.mjs
 ```
 
-Replace `studio` with another site as needed. Oliumbi reads no runtime
-environment, so it also runs without the `--env-file` flag. Node loads the root
+Replace `studio` with another site as needed. Oliumbi needs `DATABASE_URL` and
+`OLIUMBI_DATABASE_PASSWORD` for its anonymous counter; include `--env-file` when
+you want counting to work in a built site (the page itself renders without it). Node loads the root
 `.env`; shell variables win. Production builds do not load `.env`;
 `pnpm --filter studio start` expects variables to be supplied externally.
 
@@ -107,10 +109,11 @@ docker compose -f infrastructure/compose.dev.yaml --env-file .env down -v
 docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d --build
 ```
 
-Migrations create the roles `NOLOGIN` (nine in V001: the application roles plus
-the read-only `monitoring` role); the compose `roles` service provisions the
-application roles' development passwords after migration. Oliumbi is a static
-site, so its reserved role is not used by any app. If you created a database
+Migrations create the roles `NOLOGIN` (nine in V001: the content roles, the
+`oliumbi` counter role and the read-only `monitoring` role); the compose `roles`
+service provisions the application roles' development passwords after migration.
+Oliumbi writes only the shared analytics counter; its content schema stays empty.
+If you created a database
 without compose, run the documented `ALTER ROLE ... LOGIN PASSWORD ...`
 statements once; see [database/README.md](../../database/README.md).
 

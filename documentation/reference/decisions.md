@@ -64,7 +64,7 @@ old one; do not silently rewrite history.
 | O-013 | Superseded: certbot/nginx plan replaced by containerized Caddy with DNS-01 wildcards; dynamic DNS handled by a server-side timer. |
 | O-014 | Stability requirements low; beta versions acceptable; periodic upgrades without formal policy. |
 | O-015 | German-only for the three client sites, Oliumbi mainly English; **German public paths** via Paraglide `urlPatterns` with English route files (2026-11, D32); Paraglide for i18n; dates via a proper library, formatted per browser locale. |
-| O-016 | No third-party analytics or tracking embeds; minimal third-party embeds. Instagram is an explicit requirement (Uncle-T, Jublawoma); review better embedding options. **Superseded for first-party counting by D25**: anonymous, cookie-free, aggregate page counts are adopted on the three German sites; the stance on third-party analytics and embeds is unchanged. |
+| O-016 | No third-party analytics or tracking embeds; minimal third-party embeds. Instagram is an explicit requirement (Uncle-T, Jublawoma); review better embedding options. **Superseded for first-party counting by D25**: anonymous, cookie-free, aggregate page counts are adopted on all four sites; the stance on third-party analytics and embeds is unchanged. |
 | O-017 | Owner confirmation is easy; small data sets may be migrated by hand. |
 
 ## Operations decisions (2026-10)
@@ -130,7 +130,8 @@ Adopted to move the server off Docker Engine ([deployment plan](../history/deplo
   privileges; V006 is Studio (with the audit history), V007 is intentionally
   unused (no file, so a future Oliumbi table set starts at the then-current
   head, never as an out-of-order V007), V008 Jublawoma, V009 Uncle-T, V010
-  Zelglihof and V011 analytics. The Oliumbi schema/role stays reserved in V001.
+  Zelglihof and V011 analytics. The Oliumbi content schema and role stay in
+  V001; the role is provisioned only for the shared anonymous counter.
   Submission idempotency lives in V008–V010 with the tables it protects. Once
   live data exists, new changes are append-only expand/contract migrations.
 
@@ -196,9 +197,9 @@ and set the recovery and cutover boundaries.
   row per site, day and route template. Bot and no-JS traffic is not counted.
   Studio shows a per-site 30-day total, top routes and a daily series. No
   consent banner is needed because the counters carry no personal data. All
-  three German sites are tracked; each privacy page states the anonymous
-  counting inline, including Jublawoma (the external PDF is unchanged). Oliumbi
-  has no database and is excluded until it has one. Site roles hold SELECT on the
+  four public sites are tracked; each tracked page states the anonymous counting
+  inline, including Oliumbi's placeholder and Jublawoma (whose external PDF is
+  unchanged). Site roles hold SELECT on the
   counter table because the PostgreSQL upsert requires it on the conflict
   target; the counts are anonymous aggregates, and a security-definer writer is
   the option if that ever needs tightening.
@@ -254,6 +255,16 @@ and set the recovery and cutover boundaries.
   keep using the type-safe English route ids. Sitemaps use the German paths.
   System endpoints (`/api/*`, newsletter tokens) are never localized. A missing
   pattern fails the `i18n-urls` test.
+- **D33 — Ports keep upstream defaults and a loose family.** Public edge 80/443
+  and WireGuard 51820; web applications 8000–8004; Java HTTP 8081–8083; standard
+  monitoring ports (Grafana 3000, Prometheus 9090, Alertmanager 9093,
+  node-exporter 9100, Caddy admin 2019, blackbox 9115, postgres-exporter 9187);
+  PostgreSQL 5432; Mailpit 1025/8025 in development. A custom 80xx/90xx taxonomy
+  was considered and declined: it would churn Caddy, units, Java configuration,
+  Prometheus targets, health checks and docs for no operational gain, while
+  breaking the defaults most tools and operators expect. A new service takes the
+  next free port in its family and updates
+  [network surfaces](../operations/network-surfaces.md).
 
 ### O-006 threat model (accepted 2026-11)
 

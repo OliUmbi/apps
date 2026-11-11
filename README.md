@@ -16,9 +16,10 @@ shared PostgreSQL schema.
 | Messaging | Email queue and delivery history | <http://localhost:8082> |
 | Assets | Image and document storage | <http://localhost:8083> |
 
-Oliumbi is a static placeholder in its first slice: it has no database package,
-no `oliumbi-data` package and no runtime environment. The full personal site is
-later work; see [documentation/reference/sites.md](documentation/reference/sites.md).
+Oliumbi is a static placeholder in its first slice: it has no content data
+package and no Java service. Its only runtime dependency is the shared anonymous
+page counter. The full personal site is later work; see
+[documentation/reference/sites.md](documentation/reference/sites.md).
 
 Start with [documentation/README.md](documentation/README.md) for the reading
 order. The web workspace is documented in

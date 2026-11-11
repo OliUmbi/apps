@@ -28,10 +28,11 @@ from the vault (`../ansible/roles/app/templates/`).
 Production deploy, rollback and the verification checklist are the
 [release runbook](../documentation/operations/runbooks/release.md).
 `image_tag` is required and `latest` is rejected. The app role renders `units/`
-into `/etc/containers/systemd/`, pulls the images, provisions the seven
-application roles and the read-only `monitoring` role from the vault, and starts
-the stack in dependency order. `oliumbi` stays `NOLOGIN` because the site is
-static. There is no compose and no container daemon on the server.
+into `/etc/containers/systemd/`, pulls the images, provisions the content roles,
+the `oliumbi` counter role and the read-only `monitoring` role from the vault,
+and starts the stack in dependency order. Oliumbi writes only the anonymous
+counter; its content schema has no tables. There is no compose and no container
+daemon on the server.
 
 ## routing
 

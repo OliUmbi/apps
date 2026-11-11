@@ -44,10 +44,10 @@ ansible-playbook playbooks/housekeep.yml                     # housekeeping now
 explicitly. `first-admin.yml` uses the vault's `vault_first_admin_*` values and
 must not be replaced by seeding an account in migrations.
 
-The `app` role starts postgres and `apps-migrate`, provisions the seven
-application database roles and the read-only `monitoring` role from the vault,
-verifies one login per role, and only then starts the application units. The
-reserved `oliumbi` role stays `NOLOGIN` because the site is static. The backup
+The `app` role starts postgres and `apps-migrate`, provisions the content roles,
+the `oliumbi` counter role and the read-only `monitoring` role from the vault,
+verifies one login per role, and only then starts the application units. Oliumbi
+writes only the shared analytics counter; its content schema has no tables. The backup
 and housekeeping timers are templated from `backup_hour`, `housekeep_day` and
 `housekeep_hour`. The dyndns timer is installed but disabled before cutover
 (`dyndns_enabled: false`); enable it explicitly on the cutover run and keep

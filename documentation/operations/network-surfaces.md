@@ -5,6 +5,27 @@ router is the outer boundary: there is no host firewall, so a published port and
 its bind address decide exposure. Keep this page in step with the units and the
 Caddyfile.
 
+## Port scheme
+
+The numbers are a loose family, not a taxonomy. Keep the defaults tools expect
+and take the next free port in the matching range for a new service (D33).
+
+| Range | Use |
+| --- | --- |
+| 80, 443 | public edge (Caddy); 443/udp is HTTP/3 |
+| 51820/udp | WireGuard |
+| 8000–8004 | web applications: Studio 8000, sites 8001–8004 |
+| 8081–8083 | Java HTTP services |
+| 3000, 9090, 9093, 9100 | Grafana, Prometheus, Alertmanager, node-exporter (standard) |
+| 2019, 9115, 9187 | Caddy admin, blackbox, postgres-exporter (defaults, internal) |
+| 5432 | PostgreSQL |
+| 1025, 8025 | Mailpit SMTP/UI in development |
+
+A custom 80xx/90xx renumbering was considered and declined: the public surface is
+only 80/443/51820, the rest is internal or WireGuard-bound, and renaming working
+ports would add deploy risk while breaking tool defaults. See
+[D33](../reference/decisions.md#launch-decisions-2026-11).
+
 ## Internet (router forwards)
 
 | Port | Proto | Host binding | Purpose |

@@ -38,7 +38,7 @@ are in [database/README.md](../../database/README.md).
 | **Campaign** | A newsletter send to confirmed subscribers. Editable while `draft`; irreversible once `queued`, and bounded at 500 recipients. |
 | **Archive** | Retiring a managed record by setting `archived_at`/`archived_by`. It is a lifecycle column, not a status; the row and its history stay, public reads hide it. |
 | **Cancellation** | A one-way transition from open work to `cancelled`, with audit columns and, where stock was reserved, exactly one stock restoration. It is not a generic status edit. |
-| **Static placeholder** | The first Oliumbi slice: fixed English wording, no database or service dependency. |
+| **Static placeholder** | The first Oliumbi slice: fixed English wording, no content tables or service dependency; only the shared anonymous page counter. |
 
 ## Per-workflow states
 

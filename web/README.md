@@ -23,9 +23,10 @@ Each site owns its routes, page components, styling and public server functions.
 | `i18n` | Paraglide configuration, generated runtime and message catalog; the `generate.mjs` entry owns generation (`pnpm generate`) |
 | `environment` | Shared Vite environment loading for local development and builds |
 
-`oliumbi` has no data package: it is a static English placeholder whose wording
-lives directly in its route. It has no content tables, no runtime environment and
-no Java service dependency.
+`oliumbi` has no content data package: it is a static English placeholder whose
+wording lives directly in its route. Its only runtime dependency is the shared
+anonymous analytics counter; it has no content tables and no Java service
+dependency.
 
 Repositories perform database operations only. Domain services validate inputs, own transactions, and coordinate repositories and queue messages. Email composition and data types live separately. A reservation stores its product snapshot, adjusts stock and queues notifications atomically. Donation commitments lock the requested item and check remaining quantity. Campaign sending locks the campaign, reads confirmed subscribers in batches and queues each email individually.
 
@@ -62,13 +63,15 @@ Data packages use `<feature>.<role>.ts`, such as `donation.repository.ts` and `r
 - Oliumbi: a static English placeholder route linking to GitHub and the three existing sites. The full personal site is later work.
 - Studio: schema-specific CRUD, full record details, nested child editors, image selection, image/document uploads and visibility, account management and permissions, and delivery history.
 
-`oliumbi` has no content tables, no data package and no database role in use; it is a static app in this workspace. Studio can still scope generic assets to the site, but there is no content to manage. `studio.account_notification` has no defined event catalog or dispatch contract yet and is not connected to these workflows. Form notifications (Zelglihof, Uncle-T) use the site's configured request address (`*_REQUESTS_EMAIL`); Zelglihof also has a separate newsletter sender. These are remaining product capabilities, not substitute tables or fabricated service endpoints.
+`oliumbi` has no content tables, no data package and no content database role;
+it writes only the shared anonymous counter. Studio can still scope generic
+assets to the site, but there is no content to manage. `studio.account_notification` has no defined event catalog or dispatch contract yet and is not connected to these workflows. Form notifications (Zelglihof, Uncle-T) use the site's configured request address (`*_REQUESTS_EMAIL`); Zelglihof also has a separate newsletter sender. These are remaining product capabilities, not substitute tables or fabricated service endpoints.
 
 ## Development
 
 Use Node.js 26 or newer (declared in the root `package.json` `engines` and matching the container runtime) and the pinned pnpm version from `package.json`. Install from `web` with `pnpm install --frozen-lockfile`. Apply the repository's database migrations before running the applications. Supply `DATABASE_URL` without a username plus the site's `*_DATABASE_PASSWORD`, or supply that site's role and password in the URL. Never use the migrator's credentials for a web application.
 
-Copy `infrastructure/.env.dev` to the repository root as `.env` (gitignored); it contains development-only defaults. The Vite development servers for the four data-backed apps load the root `.env` automatically, regardless of which site you start; Oliumbi reads no runtime environment. Site-local files override root values, and shell/IDE environment variables override both. Only `VITE_` variables are exposed to browser code. Restart the dev process after changing environment files, and never reuse the development credentials in a deployed environment.
+Copy `infrastructure/.env.dev` to the repository root as `.env` (gitignored); it contains development-only defaults. The Vite development servers for all five apps load the root `.env` automatically, regardless of which site you start; Oliumbi uses only the database variables for its anonymous counter. Site-local files override root values, and shell/IDE environment variables override both. Only `VITE_` variables are exposed to browser code. Restart the dev process after changing environment files, and never reuse the development credentials in a deployed environment.
 
 To run a built Studio locally, execute this from `web/`:
 

@@ -20,7 +20,7 @@ view: what is owned, how a change moves, and which rules always hold.
 | `jublawoma` | Jublawoma | jublawoma role + studio role | jublawoma, studio |
 | `unclet` | Uncle-T | unclet role + studio role | unclet, studio |
 | `zelglihof` | Zelglihof | zelglihof role + studio role | zelglihof, studio |
-| `oliumbi` | reserved for the future full site; `NOLOGIN` in production | - (static site; no tables) | - |
+| `oliumbi` | reserved for the future content schema; the role writes only `analytics.view_daily` | the shared analytics counter | - |
 
 Studio's role does not read identity, assets or messaging tables directly; it
 uses their HTTP contracts. A site never reads another site's schema.
@@ -43,9 +43,9 @@ uses their HTTP contracts. A site never reads another site's schema.
 V007 is intentionally unused (no migration file) because the first Oliumbi
 table set is post-launch; it will start at the then-current head (V012 or
 later), never as an out-of-order V007. The old empty Oliumbi migration is gone.
-The `oliumbi` schema and role remain reserved in V001, but no tables are created
-and production leaves the role `NOLOGIN`: the first Oliumbi slice is static and
-needs no database.
+The `oliumbi` schema remains reserved for future content and has no tables.
+Its role is provisioned only for the shared anonymous counter; the placeholder
+still has no content database or service dependency.
 
 Every table carries `created_at` and `updated_at`, except the append-only
 `studio.audit_event` (`created_at` only) and the pre-aggregated
@@ -101,16 +101,16 @@ another owner's table goes through that owner's contract, not a direct write.
 ## Roles and credentials
 
 Migrations create nine roles `NOLOGIN` without passwords in V001: the seven
-application roles, the reserved `oliumbi`, and the read-only `monitoring` role.
-Credentials are provisioned per environment:
+content roles, the `oliumbi` role (counter only), and the read-only `monitoring`
+role. Credentials are provisioned per environment:
 
 - **development** - the compose stack runs migrations, then a one-shot `roles`
   service that issues `ALTER ROLE ... LOGIN PASSWORD ...` from
   `infrastructure/.env.dev`;
 - **production** - the Ansible `app` role provisions login credentials from the
   vault after `apps-migrate` and before the application units start, then verifies
-  one connection per role. The seven application roles and `monitoring` are
-  provisioned; `oliumbi` stays `NOLOGIN` because the site is static.
+  one connection per role. The seven content roles, `oliumbi` (counter only)
+  and `monitoring` are provisioned.
 
 Any credential ever committed to the repository must be rotated. See
 [database/README.md](../../../database/README.md) for the exact role list.

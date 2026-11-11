@@ -33,8 +33,9 @@ changes belong in [open work](../work/open-work.md). The shared vocabulary is in
 A discovery tool, not a universal data model: a farm order intent is not the
 same domain as a catering booking. This map is the owner-approved **target**
 capability set; the current implementation is described per site below. Today
-Oliumbi is a static placeholder with no contact form or media library, and
-Jublawoma's join flow uses mail/PDF while donation commitments send no email.
+Oliumbi is a static placeholder with no contact form or media library that
+counts page views anonymously, and Jublawoma's join flow uses mail/PDF while
+donation commitments send no email.
 
 ## Zelglihof
 
@@ -96,7 +97,8 @@ Association site for members, parents and group leaders.
 
 The first slice is a static English placeholder: it shows the Oliumbi name, one
 line of introduction and links to GitHub and the three existing sites. It has no
-database, no data package, no i18n package and no runtime environment. It builds
+content tables, no data package, no i18n package and no Java service; its only
+runtime dependency is the shared anonymous page counter. It builds
 as its own deployable image on `oliumbi.ch` (port 8004), not a Studio redirect;
 launch behavior still needs verification on the real host.
 

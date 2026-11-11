@@ -2,8 +2,9 @@
 
 A temporary, static English placeholder for oliumbi.ch. It shows the Oliumbi
 name, one line of introduction and links to GitHub and the three existing
-sites. There is no database, no Java service and no i18n package here: the
-wording lives directly in the route.
+sites. There are no content tables, no Java service and no i18n package here:
+the wording lives directly in the route. Its only database use is the shared
+anonymous page counter, disclosed on the page.
 
 The site uses the shared TanStack Start, Vite and Tailwind setup and listens on
 port 8004.
@@ -17,7 +18,9 @@ pnpm install
 pnpm dev:oliumbi
 ```
 
-Open <http://localhost:8004>. A production build is available with:
+Open <http://localhost:8004>. Analytics needs the database variables from the
+root `.env`; without them the page still renders and the counter endpoint fails.
+A production build is available with:
 
 ```powershell
 pnpm --filter oliumbi build

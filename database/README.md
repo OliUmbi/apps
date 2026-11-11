@@ -28,9 +28,9 @@ counter in the V001 `analytics` schema. Every table carries `created_at` and
 `updated_at`, except the append-only `studio.audit_event` (`created_at` only)
 and the pre-aggregated `analytics.view_daily` (`day` is its date).
 
-V001 still reserves the `oliumbi` schema and role, but there is no Oliumbi
-migration and no table: the first Oliumbi slice is a static site with no
-database. The role stays `NOLOGIN` in production.
+V001 reserves the `oliumbi` content schema and creates its role, but there is no
+Oliumbi content migration and no table. The role is provisioned only for the
+shared anonymous analytics counter; the placeholder has no content database.
 
 Delivery records have independent IDs. Their unique queue_id correlates with the
 original request and protects against replay. No foreign key points back to the
@@ -40,11 +40,10 @@ consumed inbox row.
 
 The migrations create nine roles as `NOLOGIN` roles **without passwords**:
 `identity`, `messaging`, `assets`, `studio`, `jublawoma`, `unclet`, `zelglihof`,
-the reserved `oliumbi`, and the read-only `monitoring` role (`pg_monitor`).
-Credentials are provisioned per environment after `V001` has run; no password
-literal lives in this directory. The seven application roles and `monitoring`
-are provisioned in production; `oliumbi` stays `NOLOGIN` because the static site
-has no database client. The first Studio administrator is likewise
+the `oliumbi` role (only the shared analytics counter), and the read-only
+`monitoring` role (`pg_monitor`). Credentials are provisioned per environment
+after `V001` has run; no password literal lives in this directory. The seven
+content roles, `oliumbi` and `monitoring` are provisioned in production. The first Studio administrator is likewise
 an operational step (`ansible/playbooks/first-admin.yml`), not a migration seed.
 
 - **Development** — the documented entry path is the dev compose stack:
@@ -69,8 +68,8 @@ an operational step (`ansible/playbooks/first-admin.yml`), not a migration seed.
 - **Production** — provisioning is part of the deployment flow, not the
   migrations: the Ansible `app` role runs `ALTER ROLE … LOGIN PASSWORD …` from
   the vault after `apps-migrate` and before the application units start, then
-  verifies one connection per role. The seven application roles and `monitoring`
-  are provisioned; `oliumbi` stays `NOLOGIN`. Rotate any real credential that was ever committed
+  verifies one connection per role. The seven content roles, `oliumbi` (counter
+  only) and `monitoring` are provisioned. Rotate any real credential that was ever committed
   to this repository; non-secret placeholders are not credentials.
 
 ## Constraint list (RS-E2 / R07, plan decision D3)
