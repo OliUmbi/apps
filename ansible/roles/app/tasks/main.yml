@@ -66,18 +66,21 @@
   notify: restart monitoring
 
 # Dashboards are code too: every JSON file next to the provider is copied on
-# each deploy. The tree stays flat because the copy does not create
-# subdirectories (the provider scans recursively, but a subdirectory would need
-# its own directory task). Grafana refuses UI edits for these dashboards.
+# each deploy. `fileglob` is a builtin lookup that runs on the controller, so
+# the repository path resolves and no collection is needed -- the syntax check
+# runs plain ansible-core, which has no `community.general.filetree` lookup.
+# The tree stays flat because the copy does not create subdirectories (the
+# provider scans recursively, but a subdirectory would need its own task).
+# Grafana refuses UI edits for these dashboards.
 - name: grafana dashboards
   ansible.builtin.copy:
-    src: "{{ item.src }}"
-    dest: "{{ project_dir }}/monitoring/grafana/provisioning/dashboards/{{ item.path }}"
+    src: "{{ item }}"
+    dest: "{{ project_dir }}/monitoring/grafana/provisioning/dashboards/{{ item | basename }}"
     mode: "0644"
-  with_filetree: "{{ repo_root }}/infrastructure/monitoring/grafana/provisioning/dashboards"
+  with_fileglob:
+    - "{{ repo_root }}/infrastructure/monitoring/grafana/provisioning/dashboards/*.json"
   loop_control:
-    label: "{{ item.path }}"
-  when: item.state == 'file' and item.path is match('.*[.]json$')
+    label: "{{ item | basename }}"
   notify: restart monitoring
 
 # alertmanager runs as nobody (65534) and must read the file, but the webhook
