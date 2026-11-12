@@ -28,12 +28,12 @@ export function InputField({
 				aria-invalid={invalid ? true : undefined}
 				aria-describedby={messageId}
 				className={(state) =>
-					`min-h-12 w-full rounded-xl border border-forest/20 bg-white/55 px-4 py-3 transition placeholder:text-ink/35 focus:border-clay focus:bg-white focus:outline-2 focus:outline-offset-2 disabled:opacity-50 ${(typeof className === "function" ? className(state) : className) ?? ""}`
+					`min-h-12 w-full rounded-xl border border-forest/60 bg-white/55 px-4 py-3 transition placeholder:text-ink/70 focus:border-clay focus:bg-white disabled:opacity-50 ${(typeof className === "function" ? className(state) : className) ?? ""}`
 				}
 			/>
 			<p
 				id={messageId}
-				className={`min-h-5 text-sm ${invalid ? "text-danger" : "text-ink/60"}`}
+				className={`min-h-5 text-sm ${invalid ? "text-danger" : "text-ink/70"}`}
 			>
 				{message}
 			</p>

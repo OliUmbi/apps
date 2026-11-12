@@ -11,7 +11,7 @@ export function UpdateArticle({ update }: { update: Update }) {
 			<header className="shell py-12 md:py-20">
 				<Link
 					to="/latest"
-					className="inline-flex items-center gap-2 text-sm font-bold text-ink/55 hover:text-ink"
+					className="inline-flex items-center gap-2 text-sm font-bold text-ink/70 hover:text-ink"
 				>
 					<ArrowLeft size={17} aria-hidden="true" />
 					{m.zelglihof_article_all_updates()}
@@ -23,7 +23,7 @@ export function UpdateArticle({ update }: { update: Update }) {
 				<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 max-w-5xl text-6xl md:text-8xl">
 					{update.title}
 				</h1>
-				<p className="mt-8 max-w-2xl text-xl leading-relaxed text-ink/60">
+				<p className="mt-8 max-w-2xl text-xl leading-relaxed text-ink/70">
 					{update.description}
 				</p>
 			</header>
@@ -59,7 +59,7 @@ export function UpdateArticle({ update }: { update: Update }) {
 								alt={image.description}
 								className="w-full rounded-3xl"
 							/>
-							<figcaption className="mt-3 text-sm text-ink/60">
+							<figcaption className="mt-3 text-sm text-ink/70">
 								{image.description}
 							</figcaption>
 						</figure>

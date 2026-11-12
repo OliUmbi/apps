@@ -38,7 +38,7 @@ export function Promotions({
 					<div className="promotion-body">
 						<p className="kicker">{m.jublawoma_promotion_eyebrow()}</p>
 						<h2 className="text-2xl font-bold">{promotion.title}</h2>
-						<p className="mt-2 text-bark/70">{promotion.description}</p>
+						<p className="mt-2 text-bark-soft">{promotion.description}</p>
 						<span className="mt-6 inline-flex items-center gap-2 border-b-2 border-current pb-[0.35rem] font-extrabold">
 							{m.jublawoma_promotion_link()}{" "}
 							<ArrowUpRight size={18} aria-hidden="true" />

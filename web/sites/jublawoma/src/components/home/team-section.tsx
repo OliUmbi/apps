@@ -15,7 +15,7 @@ export function TeamSection() {
 				<h2 className="my-5 text-[clamp(2.5rem,5vw,3.6rem)] leading-none tracking-[-.05em]">
 					{m.jublawoma_home_team_title()}
 				</h2>
-				<p className="leading-relaxed text-bark/65">
+				<p className="leading-relaxed text-bark-soft">
 					{m.jublawoma_home_team_body()}
 				</p>
 				<Link to="/about" className="cta mt-5">

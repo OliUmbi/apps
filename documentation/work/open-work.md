@@ -242,6 +242,10 @@ Remaining product features are deliberately deferred until after launch; see
   successful Zelglihof submission, focus-visible styles on Jublawoma and Studio,
   Studio reduced motion; field errors use the shared field description wiring).
   Remaining: the manual keyboard, contrast, mobile-menu and translation pass.
+- [ ] Contrast follow-up (2026-11 audit): Studio file-input border and
+  `line-strong` hover/filter-chip selected state; Zelglihof secondary CTA
+  outlines; Oliumbi skip-link focus ring. The high-severity text and focus-pair
+  failures are fixed.
 
 ## Owner decisions
 
@@ -306,7 +310,11 @@ Remaining product features are deliberately deferred until after launch; see
 - [ ] Replace the static Oliumbi placeholder with real content when it exists;
   the placeholder site and apex route are built.
 - [ ] Translate the remaining hard-coded labels and content in Studio and the
-  public sites.
+  public sites. (2026-11 audit: the public sites are clean after fixing the
+  Zelglihof email/phone placeholders. Remaining: Studio section vocabulary and
+  page titles, the slug-field labels, English schema validation messages that
+  reach the editor, the `gelöscht` edge labels, and the Zelglihof transactional
+  email copy. Detailed inventory: the 2026-11 translation audit.)
 - [x] Paraglide URL translation (`/kontakt`, `/produkte`, ...). (implemented in
   PH-9 - German public paths via `urlPatterns`, English route ids, sitemaps
   updated; `i18n-urls` test pins the mapping.) The remaining hard-coded TSX

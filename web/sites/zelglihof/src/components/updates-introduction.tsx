@@ -8,7 +8,7 @@ export function UpdatesIntroduction() {
 				<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] text-6xl md:text-8xl">
 					{m.zelglihof_updates_title()}
 				</h1>
-				<p className="max-w-xl text-xl leading-relaxed text-ink/60">
+				<p className="max-w-xl text-xl leading-relaxed text-ink/70">
 					{m.zelglihof_updates_description()}
 				</p>
 			</div>

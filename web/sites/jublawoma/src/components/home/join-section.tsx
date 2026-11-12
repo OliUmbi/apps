@@ -16,7 +16,7 @@ export function JoinSection() {
 					<h2 className="my-4 text-[clamp(2.6rem,5vw,5.3rem)] leading-[.95] tracking-[-.06em]">
 						{m.jublawoma_home_join_title()}
 					</h2>
-					<p className="max-w-2xl text-lg leading-relaxed text-bark/70">
+					<p className="max-w-2xl text-lg leading-relaxed text-bark-soft">
 						{m.jublawoma_home_join_body()}
 					</p>
 					<Link to="/join" className="button dark mt-6">

@@ -14,7 +14,7 @@ export function ContactForm() {
 				<h2 className="mt-4 font-serif text-4xl font-bold">
 					{m.zelglihof_contact_title()}
 				</h2>
-				<p className="mt-3 max-w-xl leading-relaxed text-ink/60">
+				<p className="mt-3 max-w-xl leading-relaxed text-ink/70">
 					{m.zelglihof_contact_description()}
 				</p>
 			</header>
@@ -43,14 +43,14 @@ export function ContactForm() {
 						name: "email",
 						kind: "email",
 						label: m.email(),
-						placeholder: "dein.name@beispiel.ch",
+						placeholder: m.zelglihof_contact_email_placeholder(),
 						autoComplete: "email",
 					},
 					{
 						name: "phone",
 						kind: "tel",
 						label: m.phone(),
-						placeholder: "079 123 45 67",
+						placeholder: m.zelglihof_contact_phone_placeholder(),
 						autoComplete: "tel",
 						required: true,
 					},

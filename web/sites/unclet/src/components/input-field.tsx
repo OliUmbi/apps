@@ -21,7 +21,7 @@ export function InputField({
 				{...props}
 				aria-invalid={error ? true : undefined}
 				className={(state) =>
-					`min-h-12 w-full border border-bone/20 bg-night/45 px-4 py-3 transition placeholder:text-bone/30 focus:border-brass focus:bg-night/70 focus:outline-2 focus:outline-offset-2 disabled:opacity-50 ${(typeof className === "function" ? className(state) : className) ?? ""}`
+					`min-h-12 w-full border border-bone/40 bg-night/45 px-4 py-3 transition placeholder:text-bone/50 focus:border-brass focus:bg-night/70 disabled:opacity-50 ${(typeof className === "function" ? className(state) : className) ?? ""}`
 				}
 			/>
 			<Field.Error match={error !== undefined} className="text-danger">

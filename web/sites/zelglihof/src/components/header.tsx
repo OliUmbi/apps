@@ -57,7 +57,7 @@ function Brand() {
 				<span className="block font-serif text-xl font-bold tracking-tight">
 					{m.zelglihof_brand()}
 				</span>
-				<span className="mt-1 block text-[0.62rem] font-bold uppercase tracking-[0.18em] text-ink/50">
+				<span className="mt-1 block text-[0.62rem] font-bold uppercase tracking-[0.18em] text-ink/70">
 					{m.zelglihof_location()}
 				</span>
 			</span>
@@ -70,7 +70,7 @@ function MobileMenu() {
 	return (
 		<Drawer.Root swipeDirection="right" open={open} onOpenChange={setOpen}>
 			<Drawer.Trigger
-				className="grid size-11 place-items-center rounded-full border border-forest/20 lg:hidden"
+				className="grid size-11 place-items-center rounded-full border border-forest/60 lg:hidden"
 				aria-label={m.open_navigation()}
 			>
 				<Menu size={21} aria-hidden="true" />

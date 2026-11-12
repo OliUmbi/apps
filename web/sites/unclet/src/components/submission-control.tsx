@@ -47,7 +47,7 @@ export function SubmissionControl<Input>({
 					defaultValue={field.options[0]?.value}
 					required={field.required}
 				>
-					<Select.Trigger className="flex min-h-12 items-center justify-between border border-bone/20 bg-coal px-4 text-left">
+					<Select.Trigger className="flex min-h-12 items-center justify-between border border-bone/40 bg-coal px-4 text-left">
 						<Select.Value />
 						<ChevronDown size={17} aria-hidden="true" />
 					</Select.Trigger>

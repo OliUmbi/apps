@@ -50,7 +50,7 @@ export function SubmissionControl<Input>({
 	const messageLine = (
 		<p
 			id={messageId}
-			className={`min-h-5 text-sm ${invalid ? "text-danger" : "text-ink/60"}`}
+			className={`min-h-5 text-sm ${invalid ? "text-danger" : "text-ink/70"}`}
 		>
 			{message}
 		</p>
@@ -70,7 +70,7 @@ export function SubmissionControl<Input>({
 					<Select.Trigger
 						aria-invalid={invalid ? true : undefined}
 						aria-describedby={messageId}
-						className="flex min-h-12 items-center justify-between rounded-xl border border-forest/20 bg-cream px-4 text-left"
+						className="flex min-h-12 items-center justify-between rounded-xl border border-forest/60 bg-cream px-4 text-left"
 					>
 						<Select.Value />
 						<ChevronDown size={17} aria-hidden="true" />
@@ -78,11 +78,14 @@ export function SubmissionControl<Input>({
 					<Select.Portal>
 						<Select.Positioner className="z-70">
 							<Select.Popup className="rounded-xl border border-current/20 bg-cream p-2 text-ink shadow-xl">
+								{/* `bg-oat` on cream is 1.1:1; the highlighted row keeps a
+								    sage tint and adds an inset forest ring (3.35:1) so the
+								    state is visible without relying on the fill. */}
 								{field.options.map((option) => (
 									<Select.Item
 										key={option.value}
 										value={option.value}
-										className="rounded p-3 data-highlighted:bg-oat"
+										className="rounded p-3 data-highlighted:bg-sage/45 data-highlighted:ring-2 data-highlighted:ring-forest/60 data-highlighted:ring-inset"
 									>
 										<Select.ItemText>{option.label}</Select.ItemText>
 									</Select.Item>

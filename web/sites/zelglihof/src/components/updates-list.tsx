@@ -35,7 +35,7 @@ export function UpdatesList({ updates }: { updates: UpdateSummary[] }) {
 									{update.title}
 								</Link>
 							</h2>
-							<p className="mt-5 max-w-lg text-lg leading-relaxed text-ink/60">
+							<p className="mt-5 max-w-lg text-lg leading-relaxed text-ink/70">
 								{update.description}
 							</p>
 						</div>

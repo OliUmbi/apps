@@ -16,7 +16,7 @@ export function Hero() {
 							{m.jublawoma_home_hero_title_emphasis()}
 						</em>
 					</h1>
-					<p className="max-w-2xl text-lg leading-relaxed text-bark/70">
+					<p className="max-w-2xl text-lg leading-relaxed text-bark-soft">
 						{m.jublawoma_home_hero_description()}
 					</p>
 					<div className="mt-8 flex flex-wrap items-center gap-6">

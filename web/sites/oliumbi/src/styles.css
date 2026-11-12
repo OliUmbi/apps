@@ -27,6 +27,13 @@ body {
 	margin: 0;
 }
 
+@layer base {
+	a {
+		color: inherit;
+		text-decoration: none;
+	}
+}
+
 a,
 button {
 	-webkit-tap-highlight-color: transparent;

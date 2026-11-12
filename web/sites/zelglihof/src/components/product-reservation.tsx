@@ -16,7 +16,7 @@ export function ProductReservation({ product }: { product: Product }) {
 				<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-5xl">
 					{m.zelglihof_product_reservation_title()}
 				</h2>
-				<div className="mt-8 grid gap-6 text-sm leading-relaxed text-ink/60">
+				<div className="mt-8 grid gap-6 text-sm leading-relaxed text-ink/70">
 					<p>
 						<strong className="block text-ink">
 							{m.zelglihof_product_selection_title()}
@@ -46,7 +46,7 @@ export function ProductReservation({ product }: { product: Product }) {
 						<h2 className="mt-5 font-serif text-4xl font-bold">
 							{m.zelglihof_product_out_of_season_title()}
 						</h2>
-						<p className="mt-4 leading-relaxed text-ink/65">
+						<p className="mt-4 leading-relaxed text-ink/80">
 							{soldOut
 								? m.zelglihof_product_sold_out_body()
 								: m.zelglihof_product_out_of_season_body()}

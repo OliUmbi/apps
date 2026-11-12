@@ -51,7 +51,7 @@ export default function Header() {
 					</nav>
 					<Dialog.Trigger
 						type="button"
-						className="inline-flex items-center gap-3 rounded-full border border-bone/25 py-2 pl-4 pr-2 text-bone/85 transition-colors hover:border-brass hover:text-brass-light md:hidden"
+						className="inline-flex items-center gap-3 rounded-full border border-bone/40 py-2 pl-4 pr-2 text-bone/85 transition-colors hover:border-brass hover:text-brass-light md:hidden"
 						aria-expanded={open}
 						aria-label={open ? m.close_menu() : m.open_menu()}
 					>
@@ -76,7 +76,7 @@ export default function Header() {
 							</Dialog.Title>
 							<Dialog.Close
 								aria-label={m.close_menu()}
-								className="grid size-10 place-items-center rounded-full border border-bone/25 text-bone/80 transition-colors hover:border-brass hover:text-brass-light"
+								className="grid size-10 place-items-center rounded-full border border-bone/40 text-bone/80 transition-colors hover:border-brass hover:text-brass-light"
 							>
 								<X size={17} aria-hidden="true" />
 							</Dialog.Close>
@@ -93,7 +93,7 @@ export default function Header() {
 											onClick={() => setOpen(false)}
 											className="group flex items-baseline gap-4 border-b border-bone/10 py-4 text-bone data-[status=active]:text-brass-light"
 										>
-											<span className="font-mono text-[0.66rem] font-semibold uppercase leading-none tracking-[0.18em] text-brass/70">
+											<span className="font-mono text-[0.66rem] font-semibold uppercase leading-none tracking-[0.18em] text-brass">
 												{String(index + 1).padStart(2, "0")}
 											</span>
 											<span className="flex-1 font-serif text-[1.75rem] leading-tight tracking-[-0.02em] transition-colors group-hover:text-brass-light">
@@ -117,7 +117,7 @@ export default function Header() {
 									{m.unclet_inquire()}
 									<ArrowRight size={15} aria-hidden="true" />
 								</Link>
-								<p className="mt-5 text-xs leading-relaxed text-bone/45">
+								<p className="mt-5 text-xs leading-relaxed text-bone/55">
 									{m.unclet_footer_address()}
 								</p>
 							</div>

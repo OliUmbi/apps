@@ -74,13 +74,38 @@ textarea,
 select {
 	font: inherit;
 }
-a {
-	color: inherit;
-	text-decoration: none;
+@layer base {
+	a {
+		color: inherit;
+		text-decoration: none;
+	}
 }
 img {
 	display: block;
 	max-width: 100%;
+}
+
+/*
+ * One site-level focus ring. The browser default ring is only ~1.4:1 on the
+ * brass CTA fill; this two-tone ring pairs a night inner band (7.05:1 against
+ * brass) with a bone outer band (16.3:1 against night), so the indicator keeps
+ * 3:1 on the page and on the accent instead of relying on a single color.
+ * `[tabindex="-1"]` stays out: `main` and the form honeypot are programmatic
+ * focus targets, not tab stops.
+ */
+:where(
+	a,
+	button,
+	input,
+	select,
+	textarea,
+	[tabindex]:not([tabindex="-1"])
+):focus-visible {
+	outline: 2px solid var(--color-night);
+	outline-offset: 0;
+	box-shadow:
+		0 0 0 2px var(--color-night),
+		0 0 0 4px var(--color-bone);
 }
 ::selection {
 	color: var(--color-night);
@@ -196,7 +221,9 @@ img {
 .rating-control label {
 	position: relative;
 	padding: 0.2rem;
-	color: color-mix(in srgb, var(--color-bone) 25%, transparent);
+	/* Idle star outline: bone/40 keeps the 3:1 non-text minimum on night
+	   (bone/25 was 2.07). */
+	color: color-mix(in srgb, var(--color-bone) 40%, transparent);
 	cursor: pointer;
 }
 .rating-control input {

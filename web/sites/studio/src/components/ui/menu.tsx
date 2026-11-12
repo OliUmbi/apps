@@ -42,7 +42,7 @@ export function MenuItem({
 }: ComponentProps<typeof Menu.Item>) {
 	return (
 		<Menu.Item
-			className="flex h-9 cursor-pointer items-center gap-2 rounded-control px-2 text-sm text-fg data-highlighted:bg-layer-2 data-highlighted:outline-none"
+			className="flex h-9 cursor-pointer items-center gap-2 rounded-control px-2 text-sm text-fg data-highlighted:bg-layer-2"
 			{...props}
 		>
 			{children}

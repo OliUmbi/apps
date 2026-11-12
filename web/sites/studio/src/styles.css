@@ -14,8 +14,10 @@
  *   canvas     the page itself
  *   layer-N    stacked surfaces: panel, raised, overlay
  *   field      editable controls
- *   line       hairlines, from subtle to strong
- *   fg         foreground text, muted to disabled
+ *   line       hairlines, from subtle to strong; `line-control` outlines the
+ *              edge of an editable control, which must stay visible on `field`
+ *   fg         foreground text, muted to disabled; `fg-faint` is the quietest
+ *              non-disabled text and still meets 4.5:1 on `layer-1`
  * Utilities follow the token, so `bg-canvas`, `bg-layer-1`, `border-line`,
  * `text-fg-muted` all read the same way.
  *
@@ -35,11 +37,15 @@
 	--color-line-subtle: #282521;
 	--color-line: #3a3630;
 	--color-line-strong: #5c564e;
+	/* Editable-control edge: 3.66:1 on `field`, so the target is perceivable. */
+	--color-line-control: #7a7266;
 
 	/* Foreground */
 	--color-fg: #f2f0ed;
 	--color-fg-muted: #b3aca3;
-	--color-fg-subtle: #8c847a;
+	--color-fg-subtle: #9a9287;
+	/* Quiet table headers and index numerals: 4.87:1 on `layer-1`. */
+	--color-fg-faint: #8d8478;
 	--color-fg-disabled: #5c564e;
 
 	/* Interaction: links and focus rings only */
@@ -111,7 +117,16 @@
 		text-decoration: none;
 	}
 
-	:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+	/* `main` is programmatically focused by the skip link; a ring around the
+	 * whole page reads as an error state, so it is excluded here. */
+	:where(
+		a,
+		button,
+		input,
+		select,
+		textarea,
+		[tabindex]:not(main)
+	):focus-visible {
 		outline: 2px solid var(--color-interactive);
 		outline-offset: 2px;
 	}
@@ -209,7 +224,7 @@
 	background: rgb(255 255 255 / 2%);
 }
 .overview-index {
-	color: var(--color-fg-disabled);
+	color: var(--color-fg-faint);
 	font-family: "Cascadia Code", monospace;
 	font-size: 0.68rem;
 }

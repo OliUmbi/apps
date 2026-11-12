@@ -23,7 +23,7 @@ export function ReviewCard({ review }: { review: PublicReview }) {
 							key={index}
 							size={16}
 							fill={index < review.stars ? "currentColor" : "none"}
-							className={index < review.stars ? undefined : "text-brass/35"}
+							className={index < review.stars ? undefined : "text-brass/65"}
 							aria-hidden="true"
 						/>
 					))}

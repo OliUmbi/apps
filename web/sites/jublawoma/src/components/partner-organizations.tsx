@@ -42,7 +42,7 @@ export function PartnerOrganizations() {
 		<section className="bg-moss text-oat py-20">
 			<div className="shell">
 				<p className="kicker light">{m.jublawoma_about_partners_title()}</p>
-				<div className="mt-8 grid gap-px overflow-hidden rounded-3xl bg-white/20 sm:grid-cols-2 lg:grid-cols-3">
+				<div className="partner-grid mt-8 grid gap-px overflow-hidden rounded-3xl bg-white/20 sm:grid-cols-2 lg:grid-cols-3">
 					{partners().map((partner) => (
 						<a
 							className="group flex min-h-52 flex-col justify-between bg-moss p-6"
@@ -58,7 +58,7 @@ export function PartnerOrganizations() {
 									alt=""
 								/>
 								{partner.description ? (
-									<p className="mt-4 text-sm leading-relaxed text-oat/75">
+									<p className="mt-4 text-sm leading-relaxed text-oat">
 										{partner.description()}
 									</p>
 								) : null}

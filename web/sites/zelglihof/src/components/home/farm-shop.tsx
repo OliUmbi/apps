@@ -55,7 +55,7 @@ export function FarmShop({ products }: { products: ProductSummary[] }) {
 									<h3 className="font-serif text-2xl font-bold">
 										{product.name}
 									</h3>
-									<p className="mt-1 text-sm text-ink/55">
+									<p className="mt-1 text-sm text-ink/70">
 										{m.zelglihof_shop_farm_direct()}
 									</p>
 								</div>

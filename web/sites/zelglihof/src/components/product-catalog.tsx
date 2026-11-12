@@ -36,7 +36,7 @@ export function ProductCatalog({ products }: { products: ProductSummary[] }) {
 							<h2 className="mt-3 font-serif text-4xl font-bold md:text-5xl">
 								{product.name}
 							</h2>
-							<p className="mt-5 max-w-lg leading-relaxed text-ink/60">
+							<p className="mt-5 max-w-lg leading-relaxed text-ink/70">
 								{product.description}
 							</p>
 						</div>

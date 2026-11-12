@@ -11,7 +11,7 @@ export function ProductNotifications() {
 					<h2 className="font-serif text-3xl font-bold">
 						{m.zelglihof_shop_newsletter_title()}
 					</h2>
-					<p className="mt-2 text-ink/60">
+					<p className="mt-2 text-ink/70">
 						{m.zelglihof_shop_newsletter_body()}
 					</p>
 				</div>

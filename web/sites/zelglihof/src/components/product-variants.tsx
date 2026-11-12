@@ -25,7 +25,7 @@ export function ProductVariants({ product }: { product: Product }) {
 						{variant.description}
 					</p>
 					{stockLabel(variant.stock) && (
-						<p className="mt-3 text-sm font-semibold text-ink/60">
+						<p className="mt-3 text-sm font-semibold text-ink/70">
 							{stockLabel(variant.stock)}
 						</p>
 					)}

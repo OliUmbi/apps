@@ -23,8 +23,8 @@ export function UpdatesEmptyState({ size = "lg" }: { size?: "sm" | "lg" }) {
 				<p
 					className={
 						small
-							? "mt-2 text-ink/60"
-							: "mt-3 max-w-xl leading-relaxed text-ink/60"
+							? "mt-2 text-ink/70"
+							: "mt-3 max-w-xl leading-relaxed text-ink/70"
 					}
 				>
 					{m.zelglihof_updates_empty_body()}

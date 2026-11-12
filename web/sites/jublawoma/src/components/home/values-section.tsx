@@ -59,7 +59,7 @@ export function ValuesSection() {
 							alt=""
 						/>
 						<h3 className="mt-5 mb-2 text-2xl font-bold">{value.title()}</h3>
-						<p className="leading-relaxed text-bark/65">{value.body()}</p>
+						<p className="leading-relaxed text-bark-soft">{value.body()}</p>
 					</article>
 				))}
 			</div>

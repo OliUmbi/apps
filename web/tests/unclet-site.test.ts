@@ -91,5 +91,5 @@ test("a review card always shows five star slots (U-19)", () => {
 	assert.ok(rating, "the rating paragraph renders");
 	// Three filled and two outline slots: the rating never reads ambiguously.
 	assert.equal((rating[1].match(/<svg\b/g) ?? []).length, 5);
-	assert.equal((rating[1].match(/text-brass\/35/g) ?? []).length, 2);
+	assert.equal((rating[1].match(/text-brass\/65/g) ?? []).length, 2);
 });

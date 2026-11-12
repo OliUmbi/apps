@@ -34,7 +34,7 @@ export function Promotions({
 				>
 					<div>
 						<h2 className="font-serif text-3xl">{promotion.title}</h2>
-						<p className="mt-3 text-ink/65">{promotion.description}</p>
+						<p className="mt-3 text-ink/70">{promotion.description}</p>
 					</div>
 					<ArrowUpRight className="self-center" size={30} aria-hidden="true" />
 				</a>

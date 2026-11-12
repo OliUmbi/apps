@@ -48,7 +48,7 @@ export function NewsletterSignup() {
 								name: "email",
 								kind: "email",
 								label: m.email(),
-								placeholder: "dein.name@beispiel.ch",
+								placeholder: m.zelglihof_contact_email_placeholder(),
 								autoComplete: "email",
 								required: true,
 							},

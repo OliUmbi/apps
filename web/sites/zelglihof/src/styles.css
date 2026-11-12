@@ -9,13 +9,13 @@
 	--color-ink: #1d291f;
 	--color-forest: #24452f;
 	--color-forest-dark: #172f20;
-	--color-moss: #637a52;
+	--color-moss: #4e6140;
 	--color-sage: #b9c3a8;
 	--color-oat: #f2ecdf;
 	--color-cream: #fbf8f1;
 	--color-cream-veil: rgb(251 248 241 / 72%);
 	--color-hairline: rgb(36 69 47 / 16%);
-	--color-clay: #b85f42;
+	--color-clay: #954428;
 	--color-sun: #e7b852;
 	--color-danger: #b91c1c;
 	--color-success: #24452f;
@@ -75,13 +75,31 @@ a {
 		border-color 180ms ease,
 		transform 180ms ease;
 }
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
-	outline: 3px solid var(--color-sun);
+/*
+ * Two-tone focus ring: no single accent clears 3:1 on both the light surfaces
+ * (oat, cream, sage tints) and the forest panels. Forest carries the ring on
+ * light surfaces (9.1:1 on oat, 10.1:1 on cream); the cream inner band carries
+ * it on forest (10:1), so the pair stays visible on every surface.
+ */
+:is(
+	a,
+	button,
+	input,
+	select,
+	textarea,
+	summary,
+	[tabindex]:not([tabindex="-1"]),
+	[role="button"],
+	[role="link"],
+	[role="combobox"],
+	[role="option"],
+	[role="switch"],
+	[role="checkbox"],
+	[role="tab"]
+):focus-visible {
+	outline: 3px solid var(--color-forest);
 	outline-offset: 3px;
+	box-shadow: 0 0 0 3px var(--color-cream);
 }
 ::selection {
 	color: var(--color-cream);

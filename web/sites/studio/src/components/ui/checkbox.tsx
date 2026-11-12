@@ -38,7 +38,7 @@ export function Checkbox({
 				onCheckedChange={(next) => onChange(Boolean(next))}
 				aria-labelledby={labelId}
 				aria-describedby={description ? descriptionId : undefined}
-				className="grid size-5 shrink-0 place-items-center rounded-control border border-line bg-field data-checked:border-transparent data-checked:bg-fg data-disabled:cursor-not-allowed data-disabled:opacity-50"
+				className="grid size-5 shrink-0 place-items-center rounded-control border border-line-control bg-field data-checked:border-transparent data-checked:bg-fg data-disabled:cursor-not-allowed data-disabled:opacity-50"
 			>
 				<BaseCheckbox.Indicator>
 					<Check size={13} strokeWidth={3} className="text-canvas" />

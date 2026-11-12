@@ -25,7 +25,7 @@ function HomePage() {
 					{links.map((link) => (
 						<li key={link.href}>
 							<a
-								className="inline-flex items-baseline gap-1 text-sm font-semibold text-ink underline decoration-line decoration-1 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+								className="inline-flex items-baseline gap-1 text-sm font-semibold text-ink underline decoration-accent/50 decoration-1 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
 								href={link.href}
 								target="_blank"
 								rel="noopener noreferrer"

@@ -31,7 +31,7 @@ export function InquiryContact() {
 				</div>
 			</div>
 			<div className="h-px bg-linear-to-r from-brass to-brass/0 mt-10" />
-			<p className="mt-6 text-sm leading-relaxed text-bone/45">
+			<p className="mt-6 text-sm leading-relaxed text-bone/55">
 				{m.unclet_inquiry_service_area_body()}
 			</p>
 		</aside>

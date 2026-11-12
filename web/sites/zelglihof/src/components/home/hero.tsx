@@ -73,7 +73,7 @@ export function Hero({
 								aria-hidden="true"
 							/>
 						</div>
-						<p className="mt-3 text-sm leading-relaxed text-ink/65">
+						<p className="mt-3 text-sm leading-relaxed text-ink/70">
 							{featuredProduct.description}
 						</p>
 					</div>

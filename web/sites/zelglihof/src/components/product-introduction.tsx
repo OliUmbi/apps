@@ -10,7 +10,7 @@ export function ProductIntroduction({ product }: { product: Product }) {
 		<section className="shell py-5 md:py-8">
 			<Link
 				to="/products"
-				className="mb-5 inline-flex items-center gap-2 text-sm font-bold text-ink/60 hover:text-ink"
+				className="mb-5 inline-flex items-center gap-2 text-sm font-bold text-ink/70 hover:text-ink"
 			>
 				<ArrowLeft size={17} aria-hidden="true" />
 				{m.zelglihof_product_back_to_shop_link()}

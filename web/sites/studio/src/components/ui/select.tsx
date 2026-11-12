@@ -62,7 +62,7 @@ export function SelectItem({
 }) {
 	return (
 		<Select.Item
-			className="flex cursor-pointer items-center gap-3 rounded-control px-2 py-2 text-sm text-fg data-highlighted:bg-layer-2 data-highlighted:outline-none"
+			className="flex cursor-pointer items-center gap-3 rounded-control px-2 py-2 text-sm text-fg data-highlighted:bg-layer-2"
 			{...props}
 		>
 			{prefix}

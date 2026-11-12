@@ -20,7 +20,7 @@ export function AttemptRow({
 }) {
 	return (
 		<li className="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-4 bg-layer-1 px-6 py-5">
-			<span className="font-mono text-sm text-fg-disabled">{index}</span>
+			<span className="font-mono text-sm text-fg-faint">{index}</span>
 			<div>
 				<strong className="text-sm font-semibold text-fg">{outcome}</strong>
 				{timestamp ? (

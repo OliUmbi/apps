@@ -11,11 +11,11 @@ export function NextEvent({ event }: { event: PublicEvent }) {
 				<p className="kicker">{m.jublawoma_home_next_event_eyebrow()}</p>
 				<div className="flex flex-wrap items-center gap-x-8 gap-y-2">
 					<strong className="text-2xl">{event.title}</strong>
-					<span className="inline-flex items-center gap-2 text-sm text-bark/65">
+					<span className="inline-flex items-center gap-2 text-sm text-bark-soft">
 						<CalendarDays size={15} aria-hidden="true" />
 						{formatEventDates(event.startsOn, event.endsOn)}
 					</span>
-					<span className="inline-flex items-center gap-2 text-sm text-bark/65">
+					<span className="inline-flex items-center gap-2 text-sm text-bark-soft">
 						<MapPin size={15} aria-hidden="true" />
 						{event.location}
 					</span>

@@ -9,7 +9,7 @@ export interface ContentColumn<Row> {
 }
 
 const headClass =
-	"h-9 bg-layer-1 px-4 text-left text-xs font-semibold uppercase tracking-wider text-fg-disabled";
+	"h-9 bg-layer-1 px-4 text-left text-xs font-semibold uppercase tracking-wider text-fg-faint";
 const cellClass =
 	"border-t border-line-subtle px-4 py-3 text-fg-muted align-middle";
 

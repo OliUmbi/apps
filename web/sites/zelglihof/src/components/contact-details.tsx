@@ -14,7 +14,7 @@ export function ContactDetails() {
 						<br />
 						{m.zelglihof_contact_hero_title_accent()}
 					</h1>
-					<p className="max-w-lg text-xl leading-relaxed text-ink/60">
+					<p className="max-w-lg text-xl leading-relaxed text-ink/70">
 						{m.zelglihof_contact_hero_description()}
 					</p>
 				</div>
@@ -43,7 +43,7 @@ export function ContactDetails() {
 						<h2 className="mt-7 font-serif text-3xl font-bold">
 							{m.zelglihof_shop()}
 						</h2>
-						<p className="mt-3 leading-relaxed text-ink/60">
+						<p className="mt-3 leading-relaxed text-ink/70">
 							{m.zelglihof_contact_shop_body()}
 						</p>
 					</div>
