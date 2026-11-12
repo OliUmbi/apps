@@ -1,3 +1,4 @@
+import { m } from "@oliumbi/i18n/messages";
 import { useState } from "react";
 import { slugify } from "../../model/content/slug";
 import { TextField } from "../ui/text-field";
@@ -18,7 +19,7 @@ export function SlugField({
 		<>
 			<TextField
 				name="title"
-				label="Titel"
+				label={m.title()}
 				required
 				value={title}
 				onChange={(event) => {
@@ -29,7 +30,7 @@ export function SlugField({
 			/>
 			<TextField
 				name="slug"
-				label="URL-Kürzel"
+				label={m.studio_url_slug()}
 				required
 				maxLength={120}
 				value={slug}

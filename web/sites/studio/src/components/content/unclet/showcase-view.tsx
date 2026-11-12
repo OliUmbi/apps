@@ -27,7 +27,7 @@ export function ShowcasesView() {
 	return (
 		<PageCollection<Showcase, ShowcaseInput>
 			collection="unclet.showcase"
-			title="Einblicke"
+			title={m.studio_section_showcase()}
 			rowKey={(record) => record.id}
 			loadPage={(input) => listShowcases({ data: input })}
 			loadRecord={(id) => getShowcase({ data: { id } })}

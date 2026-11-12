@@ -31,7 +31,7 @@ function productVariantCollection(
 	return {
 		collection: "zelglihof.product_variant",
 		scope: productId,
-		title: "Varianten",
+		title: m.studio_product_variants(),
 		rowKey: (record) => record.id,
 		loadPage: (input) => listProductVariants({ data: { ...input, productId } }),
 		loadRecord: (id) => getProductVariant({ data: { id } }),

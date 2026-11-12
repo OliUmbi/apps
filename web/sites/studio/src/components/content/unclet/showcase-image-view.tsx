@@ -28,7 +28,7 @@ function showcaseImageCollection(
 	return {
 		collection: "unclet.showcase_image",
 		scope: showcaseId,
-		title: "Einblickbilder",
+		title: m.studio_showcase_images(),
 		rowKey: (record) => [record.showcaseId, record.imageId].join(":"),
 		loadPage: (input) => listShowcaseImages({ data: { ...input, showcaseId } }),
 		remove: (record) =>

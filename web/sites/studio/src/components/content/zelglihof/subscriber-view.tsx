@@ -16,7 +16,7 @@ export function SubscribersView() {
 	return (
 		<PageCollection<Subscriber>
 			collection="zelglihof.subscriber"
-			title="Abonnenten"
+			title={m.studio_section_subscriber()}
 			rowKey={(record) => record.id}
 			loadPage={(input) => listSubscribers({ data: input })}
 			loadRecord={(id) => getSubscriber({ data: { id } })}

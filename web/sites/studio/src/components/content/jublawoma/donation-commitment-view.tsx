@@ -19,7 +19,7 @@ function donationCommitmentCollection(
 	return {
 		collection: "jublawoma.donation_commitment",
 		scope: donationId,
-		title: "Zusagen",
+		title: m.studio_donation_commitments(),
 		rowKey: (record) => record.id,
 		loadPage: (input) =>
 			listDonationCommitments({ data: { ...input, donationId } }),
@@ -94,7 +94,7 @@ export function DonationCommitmentsView() {
 	return (
 		<PageCollection<DonationCommitment>
 			{...donationCommitmentCollection()}
-			title="Spendenzusagen"
+			title={m.studio_section_donation_commitment()}
 		/>
 	);
 }

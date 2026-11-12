@@ -28,7 +28,7 @@ export function ArticlesView() {
 	return (
 		<PageCollection<Article, ArticleInput>
 			collection="zelglihof.article"
-			title="Aktuelles"
+			title={m.studio_section_article()}
 			rowKey={(record) => record.id}
 			loadPage={(input) => listArticles({ data: input })}
 			loadRecord={(id) => getArticle({ data: { id } })}

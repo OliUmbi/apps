@@ -28,7 +28,7 @@ export function StoriesView() {
 	return (
 		<PageCollection<Story, StoryInput>
 			collection="jublawoma.story"
-			title="Geschichten"
+			title={m.studio_section_story()}
 			rowKey={(record) => record.id}
 			loadPage={(input) => listStories({ data: input })}
 			loadRecord={(id) => getStory({ data: { id } })}

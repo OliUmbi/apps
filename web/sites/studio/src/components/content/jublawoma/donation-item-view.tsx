@@ -26,7 +26,7 @@ function donationItemCollection(
 	return {
 		collection: "jublawoma.donation_item",
 		scope: donationId,
-		title: "Spendenbedarf",
+		title: m.studio_donation_need(),
 		rowKey: (record) => record.id,
 		loadPage: (input) => listDonationItems({ data: { ...input, donationId } }),
 		loadRecord: (id) => getDonationItem({ data: { id } }),

@@ -22,7 +22,7 @@ export function ReviewsView() {
 	return (
 		<PageCollection<Review, ReviewInput>
 			collection="unclet.review"
-			title="Bewertungen"
+			title={m.studio_section_review()}
 			rowKey={(record) => record.id}
 			loadPage={(input) => listReviews({ data: input })}
 			loadRecord={(id) => getReview({ data: { id } })}

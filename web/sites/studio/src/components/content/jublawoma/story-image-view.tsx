@@ -28,7 +28,7 @@ function storyImageCollection(
 	return {
 		collection: "jublawoma.story_image",
 		scope: storyId,
-		title: "Geschichtenbilder",
+		title: m.studio_story_images(),
 		rowKey: (record) => [record.storyId, record.imageId].join(":"),
 		loadPage: (input) => listStoryImages({ data: { ...input, storyId } }),
 		remove: (record) =>

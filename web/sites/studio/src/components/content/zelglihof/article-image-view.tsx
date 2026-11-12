@@ -28,7 +28,7 @@ function articleImageCollection(
 	return {
 		collection: "zelglihof.article_image",
 		scope: articleId,
-		title: "Artikelbilder",
+		title: m.studio_article_images(),
 		rowKey: (record) => [record.articleId, record.imageId].join(":"),
 		loadPage: (input) => listArticleImages({ data: { ...input, articleId } }),
 		remove: (record) =>

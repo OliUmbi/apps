@@ -125,6 +125,6 @@ function workspaceContext({ site, area, section }: StudioWorkspace) {
 		};
 	return {
 		label: site.name,
-		title: site.sections.find((item) => item.id === section)?.label,
+		title: site.sections.find((item) => item.id === section)?.label(),
 	};
 }

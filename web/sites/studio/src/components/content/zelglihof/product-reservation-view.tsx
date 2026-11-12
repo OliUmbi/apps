@@ -31,7 +31,7 @@ function productReservationCollection(
 	return {
 		collection: "zelglihof.product_reservation",
 		scope: productId,
-		title: "Reservationen",
+		title: m.studio_section_product_reservation(),
 		rowKey: (record) => record.id,
 		loadPage: (input) =>
 			listProductReservations({ data: { ...input, productId } }),

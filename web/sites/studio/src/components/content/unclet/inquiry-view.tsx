@@ -24,7 +24,7 @@ export function InquiriesView() {
 	return (
 		<PageCollection<Inquiry, InquiryInput>
 			collection="unclet.inquiry"
-			title="Anfragen"
+			title={m.studio_section_inquiry()}
 			rowKey={(record) => record.id}
 			loadPage={(input) => listInquiries({ data: input })}
 			loadRecord={(id) => getInquiry({ data: { id } })}

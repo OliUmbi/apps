@@ -25,7 +25,7 @@ export function PromotionsView() {
 	return (
 		<PageCollection<Promotion, PromotionInput>
 			collection="zelglihof.promotion"
-			title="Promotionen"
+			title={m.studio_section_promotion()}
 			rowKey={(record) => record.id}
 			loadPage={(input) => listPromotions({ data: input })}
 			loadRecord={(id) => getPromotion({ data: { id } })}

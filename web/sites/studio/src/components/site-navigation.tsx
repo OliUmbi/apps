@@ -39,7 +39,7 @@ export function SiteNavigation({
 						active={item.id === section}
 						onClick={() => onSelect(item.id)}
 					>
-						{item.label}
+						{item.label()}
 					</NavItem>
 				))}
 			</NavSection>

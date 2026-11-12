@@ -29,7 +29,7 @@ export function ProductsView() {
 	return (
 		<PageCollection<Product, ProductInput>
 			collection="zelglihof.product"
-			title="Produkte"
+			title={m.studio_section_product()}
 			rowKey={(record) => record.id}
 			loadPage={(input) => listProducts({ data: input })}
 			loadRecord={(id) => getProduct({ data: { id } })}

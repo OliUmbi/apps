@@ -51,7 +51,7 @@ export function SiteOverview({
 							</span>
 							<OverviewIcon icon={item.icon} />
 							<span className="col-span-full self-end text-fg text-base font-semibold">
-								{item.label}
+								{item.label()}
 							</span>
 							<span className="col-span-2 text-fg-subtle text-xs leading-relaxed">
 								{item.description()}

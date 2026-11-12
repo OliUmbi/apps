@@ -25,7 +25,7 @@ export function EventsView() {
 	return (
 		<PageCollection<Event, EventInput>
 			collection="jublawoma.event"
-			title="Anlässe"
+			title={m.studio_section_event()}
 			rowKey={(record) => record.id}
 			loadPage={(input) => listEvents({ data: input })}
 			loadRecord={(id) => getEvent({ data: { id } })}

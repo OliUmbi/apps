@@ -24,7 +24,7 @@ export function CampaignsView() {
 	return (
 		<PageCollection<Campaign, CampaignInput>
 			collection="zelglihof.campaign"
-			title="Kampagnen"
+			title={m.studio_section_campaign()}
 			rowKey={(record) => record.id}
 			loadPage={(input) => listCampaigns({ data: input })}
 			loadRecord={(id) => getCampaign({ data: { id } })}

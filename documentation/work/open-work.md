@@ -315,10 +315,11 @@ Remaining product features are deliberately deferred until after launch; see
   the placeholder site and apex route are built.
 - [ ] Translate the remaining hard-coded labels and content in Studio and the
   public sites. (2026-11 audit: the public sites are clean after fixing the
-  Zelglihof email/phone placeholders. Remaining: Studio section vocabulary and
-  page titles, the slug-field labels, English schema validation messages that
-  reach the editor, the `gelöscht` edge labels, and the Zelglihof transactional
-  email copy. Detailed inventory: the 2026-11 translation audit.)
+  Zelglihof email/phone placeholders, and the Studio section vocabulary, page
+  titles, slug-field and asset labels now use the catalog. Remaining: English
+  schema validation messages that reach the editor, the `gelöscht` edge labels,
+  audit action codes/summaries, message status labels, and the Zelglihof
+  transactional email copy. Detailed inventory: the 2026-11 translation audit.)
 - [x] Paraglide URL translation (`/kontakt`, `/produkte`, ...). (implemented in
   PH-9 - German public paths via `urlPatterns`, English route ids, sitemaps
   updated; `i18n-urls` test pins the mapping.) The remaining hard-coded TSX

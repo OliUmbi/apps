@@ -26,7 +26,7 @@ export function DonationsView() {
 	return (
 		<PageCollection<Donation, DonationInput>
 			collection="jublawoma.donation"
-			title="Spendenaktionen"
+			title={m.studio_section_donation()}
 			rowKey={(record) => record.id}
 			loadPage={(input) => listDonations({ data: input })}
 			loadRecord={(id) => getDonation({ data: { id } })}

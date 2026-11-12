@@ -6,7 +6,7 @@ import type { StudioSectionId } from "./navigation";
 export { type SiteId, siteIds } from "@oliumbi/contracts";
 export interface StudioSection {
 	id: StudioSectionId;
-	label: string;
+	label: () => string;
 	description: () => string;
 	icon: "home" | "inbox" | "content" | "people" | "commerce" | "newsletter";
 }
@@ -53,7 +53,7 @@ export const studioSites: StudioSite[] = siteDetails.map((site) => ({
 	sections: [
 		{
 			id: "overview",
-			label: "Übersicht",
+			label: m.studio_section_overview,
 			description: m.studio_dashboard_workspaces_title,
 			icon: "home",
 		},
@@ -64,7 +64,7 @@ export const studioSites: StudioSite[] = siteDetails.map((site) => ({
 			? [
 					{
 						id: "traffic" as const,
-						label: m.studio_traffic(),
+						label: m.studio_traffic,
 						description: m.studio_traffic_description,
 						icon: "content" as const,
 					},
@@ -80,13 +80,13 @@ export const studioSites: StudioSite[] = siteDetails.map((site) => ({
 			})),
 		{
 			id: "images",
-			label: "Bilder",
+			label: m.studio_section_images,
 			description: m.studio_overview_content,
 			icon: "content",
 		},
 		{
 			id: "documents",
-			label: "Dokumente",
+			label: m.studio_section_documents,
 			description: m.studio_overview_content,
 			icon: "content",
 		},

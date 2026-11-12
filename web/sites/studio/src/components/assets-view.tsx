@@ -50,7 +50,13 @@ export function AssetsView({
 	});
 	return (
 		<div className="grid gap-6">
-			<PageHeader title={kind === "images" ? "Bilder" : "Dokumente"} />
+			<PageHeader
+				title={
+					kind === "images"
+						? m.studio_section_images()
+						: m.studio_section_documents()
+				}
+			/>
 			<AssetUploadForm site={site} kind={kind} onUploaded={refresh} />
 			<Alert>
 				{query.isError || toggle.isError ? m.error_generic() : null}
