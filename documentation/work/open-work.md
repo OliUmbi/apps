@@ -243,8 +243,10 @@ Remaining product features are deliberately deferred until after launch; see
   implemented (skip link and `main` target on every shell, focus after a
   successful Zelglihof submission, focus-visible styles on Jublawoma and Studio,
   Studio reduced motion; field errors use the shared field description wiring).
-  Lighthouse accessibility is 100 on the Uncle-T inquiry and Jublawoma join
-  pages (2026-11). Remaining: the manual keyboard, contrast, mobile-menu and
+  Lighthouse accessibility is 100 on the Uncle-T inquiry, Jublawoma join,
+  Zelglihof contact and Oliumbi home pages (2026-11). A 390px overflow audit is
+  clean across the static pages of all four sites, including the long German
+  legal headings. Remaining: the manual keyboard, contrast, mobile-menu and
   translation pass.
 - [x] Contrast follow-up (2026-11 audit): Studio file-input, button and
   filter-chip borders, Zelglihof secondary CTA outlines, the Jublawoma success

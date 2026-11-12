@@ -67,6 +67,15 @@ textarea,
 select {
 	-webkit-tap-highlight-color: transparent;
 }
+
+/* German legal and page headings contain long compounds; never let a single
+   word widen the layout viewport on a phone. */
+h1,
+h2,
+h3 {
+	overflow-wrap: break-word;
+	hyphens: auto;
+}
 button,
 a {
 	transition:

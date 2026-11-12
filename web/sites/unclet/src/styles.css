@@ -85,6 +85,15 @@ img {
 	max-width: 100%;
 }
 
+/* German legal and page headings contain long compounds; never let a single
+   word widen the layout viewport on a phone. */
+h1,
+h2,
+h3 {
+	overflow-wrap: break-word;
+	hyphens: auto;
+}
+
 /*
  * One site-level focus ring. The browser default ring is only ~1.4:1 on the
  * brass CTA fill; this two-tone ring pairs a night inner band (7.05:1 against
