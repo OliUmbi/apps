@@ -43,7 +43,7 @@ package and module details.
 
 ## Local development
 
-Requirements: Docker Desktop, Node.js 26+, pnpm 11+, JDK 25, Maven 3.9.12
+Requirements: Docker Desktop, Node.js 26+, pnpm 12+, JDK 25, Maven 3.10.0
 (`services/mvnw` wrapper pins it).
 
 ```powershell

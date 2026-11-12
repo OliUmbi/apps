@@ -1,6 +1,6 @@
 # Base images are pinned as tag@digest across web/sites/* and services/*;
 # bump the tag and the digest together.
-FROM maven:3.9.12-eclipse-temurin-25-alpine@sha256:91fbbf32cc5076b6142ed98405f3a1a21e102d876eafa5eaf359b5591e8e3fd8 AS build
+FROM maven:3.10.0-eclipse-temurin-25-alpine@sha256:908342738213796918a85cffc2065924ba82e4a9ab87d2756073e01da6b05d78 AS build
 WORKDIR /workspace
 COPY services/pom.xml .
 # Checkstyle runs in the validate phase, so the build image needs the shared

@@ -17,10 +17,10 @@ first refresh.
 | Dependency | Version | Pinned in | Notes |
 | --- | --- | --- | --- |
 | Node.js | 26 | CI `node-version`, `web/package.json` `engines`, site Dockerfiles | Active LTS; CI, engines and site images must stay on one major |
-| pnpm | 11 | `web/package.json` `packageManager`; site Dockerfiles install `corepack` explicitly | 12 is available - held as a tooling major, see below |
+| pnpm | 12 | `web/package.json` `packageManager`; site Dockerfiles install `corepack` explicitly | current major |
 | JDK | 25 | `services/pom.xml` `java.version`, temurin images | LTS |
-| Maven | 3.9.12 | `services/mvnw` wrapper | the wrapper pins it |
-| ansible-core | 2.19 | `ci.yml` (pip install) | exact version (DR-14) |
+| Maven | 3.10.0 | `services/mvnw` wrapper | the wrapper pins it |
+| ansible-core | 2.22 | `ci.yml` (pip install) | exact version (DR-14) |
 
 ## Container images (external, `tag@digest`)
 
@@ -28,7 +28,7 @@ first refresh.
 | --- | --- | --- | --- |
 | `node` | 26-alpine3.24 | the five site images | `web/sites/*/Dockerfile` |
 | `caddy` | 2.11.9 | edge proxy (custom xcaddy build) | `infrastructure/caddy/Dockerfile` |
-| `maven` | 3.9.12-eclipse-temurin-25-alpine | service build stage | `services/*/Dockerfile` |
+| `maven` | 3.10.0-eclipse-temurin-25-alpine | service build stage | `services/*/Dockerfile` |
 | `eclipse-temurin` | 25-jre-alpine | service runtime | `services/*/Dockerfile` |
 | `postgres` | 18-alpine | server and dev rig | `infrastructure/units/apps-postgres.container`, `compose.dev.yaml` |
 | `flyway` | 13.12.2-alpine | migrator | `database/Dockerfile`, `compose.dev.yaml` |
@@ -57,10 +57,10 @@ something newer - open work, Later).
 
 ## CI actions (commit SHA + version comment)
 
-`actions/checkout` v4, `actions/setup-node` v4, `actions/setup-java` v4,
-`pnpm/action-setup` v4, `docker/setup-buildx-action` v3,
-`docker/login-action` v3, `docker/metadata-action` v5,
-`docker/build-push-action` v6 - each pinned by SHA in
+`actions/checkout` v7, `actions/setup-node` v7, `actions/setup-java` v6,
+`pnpm/action-setup` v6, `docker/setup-buildx-action` v4,
+`docker/login-action` v4, `docker/metadata-action` v6,
+`docker/build-push-action` v7 - each pinned by SHA in
 `.github/workflows/`. Bump the SHA and the version comment together.
 
 ## Web JavaScript stack
@@ -79,19 +79,14 @@ Start needs it; move to the stable 3.x line when it exists.
 Single source of truth: `services/pom.xml` (Spring Boot parent BOM and
 properties). Spring Boot 4.1, Java 25, springdoc-openapi 3.2,
 metadata-extractor 2.22, twelvemonkeys imageio 3.15, thumbnailator 0.4.21,
-lombok 1.18.
+lombok 1.18, Checkstyle 14.4.
 
 ## Held upgrades (deliberate, not drift)
 
 | Item | Wait for | Where it lands |
 | --- | --- | --- |
-| pnpm 12 (12.18 available) | a dedicated tooling pass | `packageManager`, Dockerfile corepack line |
-| Maven 3.10.0 | a dedicated toolchain pass (wrapper, Dockerfiles and docs move together) | `services/mvnw`, `services/*/Dockerfile` |
 | Spring Boot 4.2 | stable GA (currently RC) | `services/pom.xml` parent |
-| Checkstyle 14.4 | the next Java toolchain pass (major rule baseline) | `services/pom.xml` |
-| ansible-core 2.22 | a dedicated Ansible pass, verified on the host | `ci.yml` |
-| GitHub Actions majors (`actions/checkout` 7, `actions/setup-node` 7, `actions/setup-java` 6, `pnpm/action-setup` 6, `docker/setup-buildx-action` 4, `docker/build-push-action` 7, `docker/login-action` 4, `docker/metadata-action` 6) | a dedicated CI pass; major bumps cannot be verified locally | `.github/workflows/` |
-| Podman 6.2 | the server moves past Podman 5.x; generator and host stay aligned | `ci.yml` |
+| Podman 6.x | Debian stable ships 5.4.x and testing 5.8.x; 6.1.1 is experimental only. Wait for a stable package or a planned host-OS change. | server package, `ci.yml` generator |
 | nitro stable 3.x | upstream stable release | catalog |
 | caddy-ratelimit release tag | upstream tag newer than `5625512f` | caddy Dockerfile; open work, Later |
 

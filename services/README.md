@@ -9,7 +9,7 @@ This Maven reactor sits alongside the pnpm workspace in ../web.
 
 ## Build
 
-Use JDK 25 and Maven 3.9.12; the wrapper `./mvnw` pins Maven 3.9.12
+Use JDK 25 and Maven 3.10.0; the wrapper `./mvnw` pins Maven 3.10.0
 (`services/.mvn/wrapper`). Run these commands from services, with `mvn` or `./mvnw`:
 
 ```sh

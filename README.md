@@ -30,7 +30,7 @@ order. The web workspace is documented in
 
 ## Local development
 
-Requirements: Docker Desktop, Node.js 26+, pnpm 11+, JDK 25, and Maven 3.9.12
+Requirements: Docker Desktop, Node.js 26+, pnpm 12+, JDK 25, and Maven 3.10.0
 (the wrapper pins Maven).
 
 ```powershell

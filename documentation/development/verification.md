@@ -53,7 +53,7 @@ services\mvnw.cmd -f services/pom.xml test
 ```
 
 From `services/`, `./mvnw test` or `mvn test` is equivalent. The wrapper pins
-Maven 3.9.12, the same version CI uses. The unit and controller suites need no
+Maven 3.10.0, the same version CI uses. The unit and controller suites need no
 database or SMTP server.
 
 The narrow persistence suites (`*PersistenceTest` in each module's

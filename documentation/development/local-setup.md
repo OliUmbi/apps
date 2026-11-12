@@ -4,8 +4,8 @@
 
 - Docker Desktop (for the development stack)
 - Node.js 26 or newer
-- pnpm 11 (the pinned version is in `web/package.json`)
-- JDK 25 and Maven 3.9.12; the wrapper `services/mvnw` pins Maven, so a local
+- pnpm 12 (the pinned version is in `web/package.json`)
+- JDK 25 and Maven 3.10.0; the wrapper `services/mvnw` pins Maven, so a local
   install is optional
 
 ## Environment
