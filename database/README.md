@@ -98,8 +98,8 @@ D4); shared spelling is not shared meaning.
 | `zelglihof.subscriber` | `subscriber_status_domain`: see vocabulary |
 | `zelglihof.campaign` | `campaign_status_domain`: see vocabulary |
 | `zelglihof.inquiry` | `inquiry_status_domain`: see vocabulary; `inquiry_subject_domain`: `subject IN ('hofladen', 'reservation', 'hof', 'other')` |
-| `messaging.message` | lifecycle CHECK: each status requires its own `available_at`/`locked_at`/`finished_at`/`attempt_count` combination |
-| `messaging.message_attempt` | lifecycle CHECK: open attempts carry no result; finished attempts carry an outcome and its detail |
+| `messaging.message` | `message_attempt_count_nonnegative`: `attempt_count >= 0`; `message_lifecycle`: each status requires its own `available_at`/`locked_at`/`finished_at`/`attempt_count` combination |
+| `messaging.message_attempt` | `message_attempt_number_positive`: `attempt_number > 0`; `message_attempt_lifecycle`: open attempts carry no result; finished attempts carry an outcome and its detail |
 
 Importing legacy data must validate against these rules. Known friction:
 imported inquiries need a category (`subject` is `NOT NULL`) — map uncategorized

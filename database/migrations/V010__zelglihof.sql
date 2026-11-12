@@ -158,3 +158,13 @@ CREATE TABLE zelglihof.inquiry
 );
 
 CREATE UNIQUE INDEX inquiry_submission_id_idx ON zelglihof.inquiry (submission_id);
+
+-- PostgreSQL does not index FK columns automatically. These support parent
+-- deletes (cascade/SET NULL) and the scoped repository reads.
+CREATE INDEX promotion_image_id_idx ON zelglihof.promotion (image_id);
+CREATE INDEX article_image_id_idx ON zelglihof.article (image_id);
+CREATE INDEX product_image_id_idx ON zelglihof.product (image_id);
+CREATE INDEX product_variant_product_id_idx ON zelglihof.product_variant (product_id);
+CREATE INDEX product_variant_image_id_idx ON zelglihof.product_variant (image_id);
+CREATE INDEX product_reservation_product_id_idx ON zelglihof.product_reservation (product_id);
+CREATE INDEX product_reservation_product_variant_id_idx ON zelglihof.product_reservation (product_variant_id);

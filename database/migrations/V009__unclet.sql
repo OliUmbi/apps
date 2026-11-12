@@ -59,3 +59,8 @@ CREATE TABLE unclet.inquiry
 );
 
 CREATE UNIQUE INDEX inquiry_submission_id_idx ON unclet.inquiry (submission_id);
+
+-- PostgreSQL does not index FK columns automatically. These support parent
+-- deletes (cascade/SET NULL) and the scoped repository reads.
+CREATE INDEX showcase_image_id_idx ON unclet.showcase (image_id);
+CREATE INDEX showcase_image_image_id_idx ON unclet.showcase_image (image_id);

@@ -118,3 +118,14 @@ CREATE TABLE jublawoma.donation_commitment
 );
 
 CREATE UNIQUE INDEX donation_commitment_submission_id_idx ON jublawoma.donation_commitment (submission_id);
+
+-- PostgreSQL does not index FK columns automatically. These support parent
+-- deletes (cascade/SET NULL) and the scoped repository reads.
+CREATE INDEX donation_item_donation_id_idx ON jublawoma.donation_item (donation_id);
+CREATE INDEX donation_commitment_donation_id_idx ON jublawoma.donation_commitment (donation_id);
+CREATE INDEX donation_commitment_donation_item_id_idx ON jublawoma.donation_commitment (donation_item_id);
+CREATE INDEX promotion_image_id_idx ON jublawoma.promotion (image_id);
+CREATE INDEX story_image_id_idx ON jublawoma.story (image_id);
+CREATE INDEX story_image_image_id_idx ON jublawoma.story_image (image_id);
+CREATE INDEX event_image_id_idx ON jublawoma.event (image_id);
+CREATE INDEX member_image_id_idx ON jublawoma.member (image_id);

@@ -14,3 +14,6 @@ CREATE TABLE queue.message
 );
 
 CREATE INDEX queue_message_created_at_idx ON queue.message (created_at, id);
+-- The worker currently filters type = 'email'; every row matches, so this index
+-- serves it. When a second channel lands, add a partial
+-- (created_at, id) WHERE type = 'email' index instead of widening this one.
