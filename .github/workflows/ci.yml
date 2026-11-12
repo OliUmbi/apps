@@ -274,10 +274,12 @@ jobs:
           ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f
           detect --source=/repo --no-git --redact --verbose
 
+      # trivy.yaml mirrors Maven Central: resolving the poms makes many
+      # requests and anonymous clients get HTTP 429 from Central.
       - name: dependency scan (report only)
         run: >
           docker run --rm -v "$PWD:/repo"
           aquasec/trivy:0.76.2@sha256:8f6bb947dbc528902e11f2f5be52f7b519f6a39d5d148f41166f2040499768fb
-          fs --scanners vuln --severity HIGH,CRITICAL --no-progress
+          fs -c /repo/trivy.yaml --scanners vuln --severity HIGH,CRITICAL --no-progress
           --skip-dirs /repo/legacy --skip-dirs /repo/web/node_modules
           --skip-dirs /repo/.pnpm-store /repo

@@ -11,6 +11,9 @@ editor joins, changes role or leaves, or data must be deleted. Policy is in
   and `pnpm audit --prod`.
 - Pull requests run the **report-only** variant in `ci.yml`, so an unrelated CVE
   never blocks a hotfix. A finding still needs a decision.
+- Trivy loads [`trivy.yaml`](../../../trivy.yaml), which mirrors Maven Central
+  to Google's public mirror; resolving the Maven poms otherwise makes enough
+  anonymous requests to earn a 429 and a 30-minute block.
 - A **secret** finding is always urgent: remove it from the working tree, rotate
   the credential (below), and check the audit trail for use.
 

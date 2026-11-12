@@ -28,8 +28,9 @@ automation: the point is that someone looks at what changed.
    database), `pnpm build`, `services\mvnw.cmd -f services/pom.xml test`, and
    `docker compose -f infrastructure/compose.dev.yaml --env-file .env config`.
 7. **Run the blocking scans locally** (or read the weekly workflow):
-   `trivy fs --severity HIGH,CRITICAL web services database` and
-   `gitleaks detect`; triage per [security](security.md#scan-triage).
+   `trivy fs -c trivy.yaml --severity HIGH,CRITICAL web services database` and
+   `gitleaks detect`; triage per [security](security.md#scan-triage). The
+   repository config mirrors Maven Central so POM resolution is not rate-limited.
 8. **Before a release, scan the built images** (manual, not in CI):
    `trivy image ghcr.io/oliumbi/apps-<name>:<tag> --severity HIGH,CRITICAL`.
    The images are pinned by digest, so this measures the bytes you deploy.

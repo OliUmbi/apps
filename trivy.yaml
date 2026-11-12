@@ -1,0 +1,12 @@
+# Trivy scan configuration.
+#
+# Trivy resolves a Maven project by downloading every parent POM and BOM from
+# Maven Central. An anonymous client can be rate-limited (HTTP 429, with a
+# 30-minute block), which fails the whole scan. Mirror Central to Google's
+# public mirror so the scan does not depend on that limit.
+scan:
+  maven:
+    mirrors:
+      - source: https://repo.maven.apache.org/maven2/
+        targets:
+          - https://maven-central.storage-download.googleapis.com/maven2/
