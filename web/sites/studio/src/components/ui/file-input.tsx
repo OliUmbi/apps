@@ -18,8 +18,8 @@ export function FileInput({
 		<label
 			className={[
 				"flex min-h-10 cursor-pointer items-center justify-between gap-3 rounded-control",
-				"border border-dashed border-line bg-layer-1 px-3 text-sm text-fg-subtle",
-				"transition-colors hover:border-line-strong hover:text-fg-muted",
+				"border border-dashed border-line-control bg-layer-1 px-3 text-sm text-fg-subtle",
+				"transition-colors hover:border-fg-subtle hover:text-fg-muted",
 				"focus-within:border-interactive focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-interactive",
 				disabled ? "cursor-not-allowed opacity-50" : "",
 			].join(" ")}

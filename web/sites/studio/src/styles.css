@@ -36,7 +36,6 @@
 	/* Hairlines */
 	--color-line-subtle: #282521;
 	--color-line: #3a3630;
-	--color-line-strong: #5c564e;
 	/* Editable-control edge: 3.66:1 on `field`, so the target is perceivable. */
 	--color-line-control: #7a7266;
 

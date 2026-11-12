@@ -16,8 +16,8 @@ const tones = {
 } as const;
 
 const states = {
-	idle: "border-line bg-layer-1",
-	selected: "border-line-strong bg-layer-2",
+	idle: "border-line-control bg-layer-1",
+	selected: "border-fg-subtle bg-layer-2",
 } as const;
 
 export function FilterChip({

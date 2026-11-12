@@ -45,6 +45,11 @@ a:focus-visible {
 	outline-offset: 4px;
 }
 
+/* The skip link's dark pill needs a ring that contrasts with ink, not canvas. */
+.skip-link:focus-visible {
+	outline-color: var(--color-canvas);
+}
+
 ::selection {
 	color: var(--color-canvas);
 	background: var(--color-accent);

@@ -242,10 +242,10 @@ Remaining product features are deliberately deferred until after launch; see
   successful Zelglihof submission, focus-visible styles on Jublawoma and Studio,
   Studio reduced motion; field errors use the shared field description wiring).
   Remaining: the manual keyboard, contrast, mobile-menu and translation pass.
-- [ ] Contrast follow-up (2026-11 audit): Studio file-input border and
-  `line-strong` hover/filter-chip selected state; Zelglihof secondary CTA
-  outlines; Oliumbi skip-link focus ring. The high-severity text and focus-pair
-  failures are fixed.
+- [x] Contrast follow-up (2026-11 audit): Studio file-input, button and
+  filter-chip borders, Zelglihof secondary CTA outlines, the Jublawoma success
+  token and the Oliumbi skip-link focus ring are fixed. The remaining items are
+  decorative or owner-gated.
 
 ## Owner decisions
 

@@ -20,7 +20,7 @@ export function FarmShop({ products }: { products: ProductSummary[] }) {
 					</div>
 					<Link
 						to="/products"
-						className="inline-flex min-h-12 items-center justify-center gap-[0.55rem] rounded-full border border-forest/35 bg-transparent px-[1.15rem] py-3 text-[0.9rem] font-[720] leading-none text-forest transition hover:border-forest hover:bg-white/35"
+						className="inline-flex min-h-12 items-center justify-center gap-[0.55rem] rounded-full border border-forest/60 bg-transparent px-[1.15rem] py-3 text-[0.9rem] font-[720] leading-none text-forest transition hover:border-forest hover:bg-white/35"
 					>
 						{m.zelglihof_home_visit_shop()}
 						<ArrowRight size={17} aria-hidden="true" />

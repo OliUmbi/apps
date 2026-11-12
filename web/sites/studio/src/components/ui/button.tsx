@@ -10,7 +10,7 @@ import type { ComponentProps, ReactNode } from "react";
 const variants = {
 	primary: "border-transparent bg-fg text-canvas hover:bg-white",
 	secondary:
-		"border-line bg-layer-1 text-fg hover:border-line-strong hover:bg-layer-2",
+		"border-line-control bg-layer-1 text-fg hover:border-fg-subtle hover:bg-layer-2",
 	ghost:
 		"border-transparent bg-transparent text-fg-muted hover:bg-layer-2 hover:text-fg",
 	link: "border-transparent bg-transparent px-0 text-interactive hover:underline",

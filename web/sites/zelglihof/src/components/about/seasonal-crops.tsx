@@ -54,7 +54,7 @@ export function SeasonalCrops() {
 						</div>
 						<Link
 							to="/crops"
-							className="inline-flex min-h-12 items-center justify-center gap-[0.55rem] rounded-full border border-forest/35 bg-transparent px-[1.15rem] py-3 text-[0.9rem] font-[720] leading-none text-forest transition hover:border-forest hover:bg-white/35 mt-9"
+							className="inline-flex min-h-12 items-center justify-center gap-[0.55rem] rounded-full border border-forest/60 bg-transparent px-[1.15rem] py-3 text-[0.9rem] font-[720] leading-none text-forest transition hover:border-forest hover:bg-white/35 mt-9"
 						>
 							{m.zelglihof_farm_crops_action()}
 							<ArrowRight size={17} aria-hidden="true" />
