@@ -2,6 +2,7 @@ package ch.oliumbi.assets.controllers;
 
 import ch.oliumbi.assets.services.DocumentService;
 import ch.oliumbi.assets.services.ImageService;
+import ch.oliumbi.shared.security.BearerAuthorizationInterceptor;
 import ch.oliumbi.shared.security.BearerTokenVerifier;
 import ch.oliumbi.shared.web.ApiExceptionHandler;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,6 +51,7 @@ class AssetControllerAuthorizationTest {
                     new DocumentController(documents, new BearerTokenVerifier(TOKEN), mock(ContentResponse.class)))
             .setControllerAdvice(new ApiExceptionHandler())
             .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+            .addInterceptors(new BearerAuthorizationInterceptor(new BearerTokenVerifier(TOKEN)))
             .build();
 
     /**
@@ -96,6 +99,16 @@ class AssetControllerAuthorizationTest {
         }
         if (authorization != null) builder.header(HttpHeaders.AUTHORIZATION, authorization);
         return builder;
+    }
+
+    @Test
+    void aMalformedBodyWithoutABearerIsStillA401() throws Exception {
+        mvc.perform(patch("/internal/images/" + ID + "/visibility")
+                        .param("site", SITE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("not-json"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.detail").value(DETAIL));
     }
 
     @ParameterizedTest(name = "{0} without Authorization is a 401 problem detail")
