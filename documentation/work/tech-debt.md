@@ -38,12 +38,12 @@ debt: it is listed so it is not rediscovered as a surprise.
 | [TD-15](#td-15) | Identity: plaintext unsubscribe tokens | P2 | accepted |
 | [TD-16](#td-16) | Operations: Caddy state outside the backup | P2 | accepted |
 | [TD-17](#td-17) | Operations: backup checksum manifest is not portable | P3 | resolved |
-| [TD-18](#td-18) | Services: bearer check runs after request binding | P3 | open |
+| [TD-18](#td-18) | Services: bearer check runs after request binding | P3 | resolved |
 | [TD-22](#td-22) | Operations: retention runs in the housekeeping shell script | P3 | accepted |
 | [TD-23](#td-23) | Operations: rootful Quadlet services | P2 | accepted |
 | [TD-24](#td-24) | Edge: Caddy admin API trust boundary | P3 | accepted |
 
-Open counts: 1 P1, 0 P2, 1 P3. Accepted: TD-13 (P3), TD-15 (P2), TD-16 (P2),
+Open counts: 1 P1, 0 P2, 0 P3. Accepted: TD-13 (P3), TD-15 (P2), TD-16 (P2),
 TD-22 (P3), TD-23 (P2) and TD-24 (P3); accepted debt stays listed. Every other
 entry is resolved. The 2026-10 refactor
 resolved most findings in the [code quality review](../history/code-quality-review.md);
@@ -399,6 +399,11 @@ well-formed bodies so they exercise the intended authorization path.
   the well-formed-body workaround from the controller tests.
 - **Source:** 2026-11 test review (Java mutation testing).
 
+*Disposition (2026-11-13): fixed (TD-18) - a shared `BearerAuthorizationInterceptor`
+runs before argument resolution on `/account/**`, `/session/**`, `/message/**`
+and `/internal/**`. The controller checks remain as defense in depth; the
+malformed-body 400 path is closed.*
+
 ### TD-22
 
 **Retention runs inside the host housekeeping shell script.** The weekly
@@ -445,6 +450,7 @@ defects. Revisit only when the stated condition changes.
 | No staging environment or end-to-end suite | One maintainer, low traffic; the environment integration pass and restore drill cover the risk for now. |
 | No code coverage measurement | Unit, persistence-gated and web suites with a no-silent-skip CI guard cover the risk; a coverage percentage adds little signal at this scale (C-010). |
 | One host, no HA, autoscaling or multi-region | Traffic and budget do not justify it; recoverability is the chosen answer. |
+| No external uptime or dead-man's switch for launch | Monitoring runs on the host it watches; the owner accepted the silent-host gap for launch on 2026-11-13. Revisit after launch. |
 | No host firewall | The router forwards and unit bind addresses are the boundary; a host firewall would not stop published ports. |
 | No CDN; media on disk | Private server, small audience; the assets service owns cache headers. |
 | Journald only, no Loki | One host and a 200 MB cap are enough until log volume or query needs grow. |

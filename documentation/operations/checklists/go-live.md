@@ -77,9 +77,9 @@ in place and keep the commit.
 - [ ] **DR-18** `probe_ssl_earliest_cert_expiry` series exist for every site and
   the certificate alert is wired.
   Evidence:
-- [ ] **Caddy access logging** The decision is recorded: enable a short-retention
-  access log, or correct the monitoring page to say journald only.
-  Evidence:
+- [x] **Caddy access logging** Decision recorded: journald-only, no per-request
+  access log (2026-11-13).
+  Evidence: [monitoring](../monitoring.md#logging).
 
 ## C. Backup and recovery
 
@@ -122,9 +122,11 @@ in place and keep the commit.
   Evidence:
 - [ ] **Phone** A test alert reaches the phone through ntfy and clears.
   Evidence:
-- [ ] **Dead-man's switch** An external uptime check and a host dead-man's switch
-  exist, or the owner accepts the gap in writing before launch.
-  Evidence:
+- [x] **Dead-man's switch** Owner accepted the gap for launch on 2026-11-13: no
+  external uptime check or host dead-man's switch exists yet. Monitoring stays
+  host-local, so a dead host is silent until that item is revisited.
+  Evidence: [open work](../../work/open-work.md#infrastructure-and-operations)
+  and [technical debt](../../work/tech-debt.md#accepted-limitations-not-debt).
 - [ ] **Housekeeping** `HousekeepStale` and the success metric are verified; the
   first run is in the journal.
   Evidence:

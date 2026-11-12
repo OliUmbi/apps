@@ -187,9 +187,12 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   store the webhook URL in the vault (`vault_ntfy_webhook_url`); steps in
   [monitoring](../operations/monitoring.md#setting-up-ntfy).
 - [ ] [verify] Deploy the monitoring stack (`apps-prometheus` ... `apps-grafana`)
-  and confirm alerts reach the phone. Then add external uptime checks and a
-  dead-man's switch outside the box: everything current runs on the machine it
-  watches.
+  and confirm alerts reach the phone. External uptime and dead-man coverage is
+  accepted for launch; see the owner acceptance below.
+- [x] [owner] External uptime and dead-man's switch. (accepted 2026-11-13 for
+  launch: monitoring stays host-local, so a dead host is silent. Revisit after
+  launch; the accepted limitation is recorded in
+  [technical debt](tech-debt.md#accepted-limitations-not-debt).)
 - [x] Anonymous first-party page counting (revisit O-016 "No analytics").
   (implemented in PH-6 - one route-id beacon per navigation into
   `analytics.view_daily`, a per-site Studio panel, no cookies or identifiers;
@@ -205,10 +208,9 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   `monitoring` role, and the service/pool/queue/connection alert rules.) The
   first Grafana dashboards for those series are provisioned as code; extend
   them after the metric names are confirmed on the host.
-- [ ] Decide on Caddy access logging: the Caddyfile has no `log` directive,
-  but [monitoring](../operations/monitoring.md) implies short-retention access
-  logs exist. Either enable them (they remain the forensic record; usage
-  counting no longer depends on them) or correct the doc.
+- [x] Decide on Caddy access logging. (decided 2026-11-13: journald-only; the
+  Caddyfile keeps no `log` directive, so per-request client IPs are not retained.
+  [Monitoring](../operations/monitoring.md) states the accepted trade-off.)
 - [x] Dependency and secret scanning. (implemented in PH-12 - `gitleaks` on
   every change, report-only `trivy fs` on pull requests, blocking weekly
   `security.yml` with Trivy and `pnpm audit --prod`; the manual image scan is
@@ -322,19 +324,12 @@ Remaining product features are deliberately deferred until after launch; see
   rules for messages, tokens and personal data.
 - [ ] After launch by the go-live plan: clarify image publication and retention
   when linked content outlives an image.
-- [ ] Wire public document retrieval when a site needs it: the assets service
-  implements `GET /documents/{slug}`, but no site proxy or edge route consumes
-  it yet; current PDFs are static files. Alternatively remove the unused public
-  path and keep only the management API.
 - [ ] Replace the static Oliumbi placeholder with real content when it exists;
   the placeholder site and apex route are built.
-- [ ] Translate the remaining hard-coded labels and content in Studio and the
-  public sites. (2026-11 audit: the public sites are clean after fixing the
-  Zelglihof email/phone placeholders, and the Studio section vocabulary, page
-  titles, slug-field and asset labels now use the catalog. Remaining: English
-  schema validation messages that reach the editor, the `gelöscht` edge labels,
-  audit action codes/summaries, message status labels, and the Zelglihof
-  transactional email copy.)
+- [x] Translate the remaining hard-coded labels and content in Studio and the
+  public sites. (resolved 2026-11-13: editor validation messages, `gelöscht`
+  edge labels, audit action/entity/summary labels, message status labels and the
+  Zelglihof admin inquiry email now use the catalog/German copy.)
 - [x] Paraglide URL translation (`/kontakt`, `/produkte`, ...). (implemented in
   PH-9 - German public paths via `urlPatterns`, English route ids, sitemaps
   updated; `i18n-urls` test pins the mapping.) The remaining hard-coded TSX

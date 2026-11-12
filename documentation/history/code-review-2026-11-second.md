@@ -21,7 +21,7 @@ review; the historical `R-*` IDs in
 | R-08 | Missing FK indexes on site schemas | fixed in `c94b22f` |
 | R-09 | Unnamed messaging lifecycle CHECKs | fixed in `c94b22f` |
 | R-10 | Queue partial index needed only for a second channel | noted at the index in `c94b22f`; no change now |
-| R-11 | Public document endpoint has no site/edge consumer | documented; deferred in [open work](../work/open-work.md) |
+| R-11 | Public document endpoint has no site/edge consumer | removed in `0135aed`; documents stay management-only |
 | R-12 | Monitoring units lacked capability/no-new-privileges hardening | fixed in `36196aa`; host verification remains in the [go-live checklist](../operations/checklists/go-live.md) |
 | R-13 | Caddy admin API trust boundary undocumented | documented in `091d58d`; accepted as [TD-24](../work/tech-debt.md#td-24) |
 | R-14 | Off-host backup pull was manual-only | script/docs fixed in `1cd19de`; installation and a real pull are in [open work](../work/open-work.md) |
@@ -42,8 +42,6 @@ and the full test/build gate. No finding required a design change.
 
 ## Follow-ups
 
-- The document endpoint (R-11) is a product decision: wire a site proxy or remove
-  the public path.
 - Monitoring hardening (R-12) needs a host check after the next deploy.
 - The backup pull schedule (R-14) needs one real scheduled pull.
 - TD-24 (Caddy admin API) is accepted for the single-tenant network and becomes

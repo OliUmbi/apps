@@ -12,9 +12,9 @@ for diagnosis and a known blind spot for host-level failure.
   wraps `journalctl -u apps-<service>`. Logs are for debugging and post-mortems;
   alerts come from metrics.
 - **Never log** secrets, tokens, full request bodies or personal form data.
-  Caddy does not emit access logs today (the Caddyfile has no `log` directive);
-  whether to enable them is an open decision. Errors and application logs go to
-  journald, capped at 200 MB.
+  Caddy does not emit access logs; journald-only is the accepted decision for
+  this traffic level, so per-request client IPs are not retained. Errors and
+  application logs go to journald, capped at 200 MB.
 - **Errors carry context** (what was attempted, ids, outcome), not a stack trace
   on every request. Java errors carry `errorId`; correlation ids are useful but
   not required everywhere yet.
