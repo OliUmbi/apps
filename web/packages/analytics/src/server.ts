@@ -31,25 +31,50 @@ export function normalizedRoute(
 	return allowed.includes(route) ? route : "other";
 }
 
+const FAILURE_LOG_INTERVAL_MS = 60_000;
+let lastFailureLoggedAt = 0;
+
+function logRecordFailure(error: unknown) {
+	// A database outage would otherwise log once per page view. One line per
+	// minute still makes the gap visible in the journal without flooding it.
+	const now = Date.now();
+	if (now - lastFailureLoggedAt < FAILURE_LOG_INTERVAL_MS) return;
+	lastFailureLoggedAt = now;
+	console.error("analytics view not recorded", error);
+}
+
 export function createAnalytics(
 	database: DatabasePool,
 	site: AnalyticsSite,
 	allowed: readonly string[],
 ) {
+	async function record(route: string): Promise<void> {
+		await database.db
+			.insert(viewDaily)
+			.values({
+				site,
+				day: sql`current_date`,
+				route: normalizedRoute(route, allowed),
+				views: 1,
+			})
+			.onConflictDoUpdate({
+				target: [viewDaily.site, viewDaily.day, viewDaily.route],
+				set: { views: sql`${viewDaily.views} + 1` },
+			});
+	}
 	return {
-		async record(route: string): Promise<void> {
-			await database.db
-				.insert(viewDaily)
-				.values({
-					site,
-					day: sql`current_date`,
-					route: normalizedRoute(route, allowed),
-					views: 1,
-				})
-				.onConflictDoUpdate({
-					target: [viewDaily.site, viewDaily.day, viewDaily.route],
-					set: { views: sql`${viewDaily.views} + 1` },
-				});
+		record,
+		/**
+		 * The public beacon is best-effort: a database outage must not turn a
+		 * page view into a browser error, but the failure still belongs in the
+		 * server journal (rate-limited).
+		 */
+		async recordBestEffort(route: string): Promise<void> {
+			try {
+				await record(route);
+			} catch (error) {
+				logRecordFailure(error);
+			}
 		},
 	};
 }

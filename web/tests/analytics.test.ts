@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { normalizedRoute, routeIds } from "../packages/analytics/src/server";
+import {
+	createAnalytics,
+	normalizedRoute,
+	routeIds,
+} from "../packages/analytics/src/server";
 
 /*
  * The analytics boundary: the route allowlist and the unknown-route fallback.
@@ -35,4 +39,33 @@ test("a route outside the allowlist is counted as other", () => {
 	);
 	assert.equal(normalizedRoute("/../../../etc/passwd", allowed), "other");
 	assert.equal(normalizedRoute("", allowed), "other");
+});
+
+test("the beacon helper swallows a failed write and logs once a minute", async () => {
+	const failingDatabase = {
+		db: {
+			insert: () => ({
+				values: () => ({
+					onConflictDoUpdate: async () => {
+						throw new Error("database is down");
+					},
+				}),
+			}),
+		},
+	} as unknown as Parameters<typeof createAnalytics>[0];
+	const analytics = createAnalytics(failingDatabase, "jublawoma", ["/"]);
+	const originalError = console.error;
+	const logged: unknown[][] = [];
+	console.error = (...args: unknown[]) => {
+		logged.push(args);
+	};
+	try {
+		await assert.rejects(analytics.record("/"));
+		await analytics.recordBestEffort("/");
+		await analytics.recordBestEffort("/");
+	} finally {
+		console.error = originalError;
+	}
+	assert.equal(logged.length, 1);
+	assert.equal(logged[0][0], "analytics view not recorded");
 });

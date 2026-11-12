@@ -87,7 +87,7 @@ Use `docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d --b
 
 Local Java uses `MESSAGING_SMTP_HOST=localhost` to reach Mailpit on port 1025. Compose uses `MESSAGING_SMTP_CONTAINER_HOST=mailpit` inside its network. Database role passwords must match the migrated database; editing the environment file does not change existing PostgreSQL passwords.
 
-Run `pnpm dev:studio`, `pnpm dev:jublawoma`, `pnpm dev:unclet`, `pnpm dev:zelglihof` or `pnpm dev:oliumbi`. The ports are 8000-8004 respectively, with Oliumbi on 8004. Content-backed pages return the branded error page when the development database is unreachable; start the `postgres`, `flyway` and `roles` services first. The analytics beacon is best-effort and never turns a page view into a browser error.
+Run `pnpm dev:studio`, `pnpm dev:jublawoma`, `pnpm dev:unclet`, `pnpm dev:zelglihof` or `pnpm dev:oliumbi`. The ports are 8000-8004 respectively, with Oliumbi on 8004. Content-backed pages return the branded error page when the development database is unreachable; start the `postgres`, `flyway` and `roles` services first. The analytics beacon is best-effort and never turns a page view into a browser error; a failed counter write is logged once a minute.
 
 Studio requires the identity and assets service URLs and their `*_INTERNAL_AUTHORIZATION_TOKEN` values; delivery history also requires the messaging service. Access is granted by `studio.admin` or the corresponding `<site>.manage` permission. Account administration and delivery history require `studio.admin`. No default administrator is created by the web apps.
 
