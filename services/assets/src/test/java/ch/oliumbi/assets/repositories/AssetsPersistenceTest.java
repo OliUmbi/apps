@@ -81,13 +81,9 @@ class AssetsPersistenceTest {
     }
 
     @Test
-    void publicDocumentReadsRequireBothTheSlugAndVisibility() {
-        var visible = UUID.randomUUID();
-        documents.saveAndFlush(new Document(visible, "zelglihof", true, "visible-doc", 3, "abc"));
+    void documentsCanBeFilteredByVisibility() {
         documents.saveAndFlush(new Document(UUID.randomUUID(), "zelglihof", false, "hidden-doc", 3, "abc"));
 
-        assertThat(documents.findBySlugAndVisibleTrue("visible-doc")).isPresent();
-        assertThat(documents.findBySlugAndVisibleTrue("hidden-doc")).isEmpty();
         assertThat(documents.findBySiteAndVisible("zelglihof", false, page))
                 .singleElement().extracting(Document::getSlug).isEqualTo("hidden-doc");
     }

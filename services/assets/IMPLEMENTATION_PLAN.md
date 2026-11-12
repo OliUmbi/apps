@@ -51,7 +51,7 @@ The previous site segment on documents disambiguated site-local slugs; image UUI
 
 | Operation | Route |
 | --- | --- |
-| Public content | GET /images/{id}?size=xl; GET /documents/{slug} |
+| Public content | GET /images/{id}?size=xl (documents stay management-only) |
 | Internal lists / upload | GET or POST /internal/images?site=...; equivalent /internal/documents |
 | Internal metadata / content | GET /internal/images/{id}?site=...; GET /internal/images/{id}/content?site=...&size=...; equivalent document routes |
 | Visibility / deletion | PATCH /internal/images/{id}/visibility?site=...; DELETE /internal/images/{id}?site=...; equivalent document routes |

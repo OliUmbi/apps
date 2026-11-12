@@ -19,6 +19,4 @@ public interface DocumentRepository extends JpaRepository<Document, UUID> {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Document> findLockedByIdAndSite(UUID id, String site);
-
-    Optional<Document> findBySlugAndVisibleTrue(String slug);
 }

@@ -72,11 +72,6 @@ public class DocumentService {
         return content(documents.findByIdAndSite(id, site).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)));
     }
 
-    @Transactional(readOnly = true)
-    public AssetContent publicContent(String slug) {
-        return content(documents.findBySlugAndVisibleTrue(slug).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)));
-    }
-
     private AssetContent content(Document document) {
         var path = storage.file(AssetKind.DOCUMENT, document.getId(), DocumentProcessor.FILE_KEY);
         return new AssetContent(path, DocumentProcessor.CONTENT_TYPE,

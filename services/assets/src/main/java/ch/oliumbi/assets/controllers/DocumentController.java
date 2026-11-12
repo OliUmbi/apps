@@ -5,7 +5,6 @@ import ch.oliumbi.assets.data.requests.VisibilityRequest;
 import ch.oliumbi.assets.data.responses.DocumentResponse;
 import ch.oliumbi.assets.services.DocumentService;
 import ch.oliumbi.shared.security.BearerTokenVerifier;
-import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -45,12 +44,6 @@ public class DocumentController {
         this.service = service;
         this.authorization = authorization;
         this.contentResponse = contentResponse;
-    }
-
-    @GetMapping("/documents/{slug}")
-    @SecurityRequirements
-    public ResponseEntity<Resource> publicContent(@PathVariable String slug, WebRequest webRequest) {
-        return contentResponse.create(service.publicContent(slug), false, webRequest);
     }
 
     @GetMapping("/internal/documents")
