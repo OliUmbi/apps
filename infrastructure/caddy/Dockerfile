@@ -19,3 +19,9 @@ FROM caddy:2.11.9@sha256:e40b94d0a43b5ff69cb20568d73f10c70703df7b0ffc2298eb3d723
 
 COPY --from=build /usr/bin/caddy /usr/bin/caddy
 COPY infrastructure/caddy/Caddyfile /etc/caddy/Caddyfile
+# Validate the final config at build time, where the custom modules and the
+# Caddyfile meet. The values are placeholders; validation parses the config and
+# does not request a certificate.
+RUN ACME_EMAIL=validate@example.invalid \
+    INFOMANIAK_API_TOKEN=validate \
+    caddy validate --config /etc/caddy/Caddyfile

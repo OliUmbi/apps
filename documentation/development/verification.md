@@ -105,8 +105,11 @@ The unit files and playbooks are checked in CI, not locally:
 - every `infrastructure/units/*.container` must generate a `.service` under the
   podman 5.x Quadlet generator;
 - every `ansible/playbooks/*.yml` must pass `ansible-playbook --syntax-check`;
+- the Prometheus config and rules, Alertmanager config and blackbox modules are
+  checked with `promtool`, `amtool` and the blackbox config check;
 - the CI `images` job builds every image without pushing, using the same matrix
-  as publish.
+  as publish; the Caddy image build validates the Caddyfile with the custom
+  modules loaded.
 
 Unit behavior is verified on the rebuilt server, because the workstation cannot
 run the generator the same way. CI pins GitHub Actions by commit SHA, tool

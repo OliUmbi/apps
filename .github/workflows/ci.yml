@@ -259,6 +259,31 @@ jobs:
             done
           '
 
+      # The image build validates the Caddyfile with the custom modules; these
+      # steps validate the monitoring files before they reach the host.
+      - name: prometheus configuration
+        run: |
+          docker run --rm -v "$PWD/infrastructure/monitoring:/etc/prometheus:ro" --entrypoint /bin/promtool \
+            prom/prometheus:v3.16.0@sha256:e04987641b57704f408e31f6373ba4138ecf27cb4a165d24aabb6c38fddd0f06 \
+            check config /etc/prometheus/prometheus.yml
+          docker run --rm -v "$PWD/infrastructure/monitoring:/etc/prometheus:ro" --entrypoint /bin/promtool \
+            prom/prometheus:v3.16.0@sha256:e04987641b57704f408e31f6373ba4138ecf27cb4a165d24aabb6c38fddd0f06 \
+            check rules /etc/prometheus/alerts.yml
+
+      - name: alertmanager configuration
+        run: |
+          sed 's|__NTFY_WEBHOOK_URL__|https://example.invalid/topic|' \
+            infrastructure/monitoring/alertmanager.yml > "$RUNNER_TEMP/alertmanager.yml"
+          docker run --rm -v "$RUNNER_TEMP/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro" --entrypoint /bin/amtool \
+            prom/alertmanager:v0.35.0@sha256:e638797febd034838eca8b98cdbd46f951e9bf7f178777aa8669167406a9946c \
+            check-config /etc/alertmanager/alertmanager.yml
+
+      - name: blackbox configuration
+        run: |
+          docker run --rm -v "$PWD/infrastructure/monitoring/blackbox.yml:/etc/blackbox.yml:ro" --entrypoint /bin/blackbox_exporter \
+            prom/blackbox-exporter:v0.29.1@sha256:ea1c7aa3ef3f307cd03e85f34abb604478ccb90b567fc690da0cd9776da76b13 \
+            --config.file=/etc/blackbox.yml --config.check
+
   # Supply-chain guard. A committed secret fails the run immediately; dependency
   # findings are reported (not blocking) here and become blocking in the weekly
   # security workflow, so a hotfix is never held hostage by an upstream CVE.
