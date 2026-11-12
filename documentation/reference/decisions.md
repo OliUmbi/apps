@@ -45,12 +45,6 @@ old one; do not silently rewrite history.
 | P-011 | Extract shared code after two real consumers. | Prevents a restrictive universal component layer. |
 | P-012 | Stable ecosystem frameworks over custom routing/DI/SQL/auth. | Code is limited to logic; legacy was too experimental. |
 
-## Open questions
-
-| # | Question |
-| --- | --- |
-| O-018 | Uncle-T wants an Instagram feed and Google reviews on the site. Constraints: Instagram's Basic Display API is retired (September 2025); the official paths are the Instagram embed or a professional-account API with a long-lived token, expiring CDN URLs and no new-post webhook. Meta's Developer Policies discourage an app that only displays platform content. Google reviews require the Places API (New), Google Maps and author attribution, a link to the source review, no caching or storing of review content, and a privacy policy that incorporates Google's terms. Options: curated Studio gallery (recommended for Instagram), click-to-load official Instagram embed, link-only or on-demand server-side Places API for Google. No third-party widgets and no client-side Google scripts. Decision pending. |
-
 ## Closed questions
 
 | # | Answer |
@@ -72,6 +66,7 @@ old one; do not silently rewrite history.
 | O-015 | German-only for the three client sites, Oliumbi mainly English; **German public paths** via Paraglide `urlPatterns` with English route files (2026-11, D32); Paraglide for i18n; dates via a proper library, formatted per browser locale. |
 | O-016 | No third-party analytics or tracking embeds; minimal third-party embeds. Instagram is an explicit requirement (Uncle-T, Jublawoma); review better embedding options. **Superseded for first-party counting by D25**: anonymous, cookie-free, aggregate page counts are adopted on all four sites; the stance on third-party analytics and embeds is unchanged. |
 | O-017 | Owner confirmation is easy; small data sets may be migrated by hand. |
+| O-018 | **Decided 2026-11 (D36).** Instagram is not embedded: Uncle-T's showcases and Jublawoma's stories stand in for the old feed, with a plain profile link. Uncle-T links to its Google Business Profile for reviews; no Places API, no Google script and no stored review content for now. |
 
 ## Operations decisions (2026-10)
 
@@ -284,6 +279,14 @@ and set the recovery and cutover boundaries.
   no seed content. The claim inventory in
   [content verification](../work/content-verification.md) is the editorial gate
   before publishing.
+- **D36 — Social proof stays first-party, plus a Google link.** The old
+  Instagram iframe is not replaced with a feed or a Meta script: Uncle-T's
+  showcases and Jublawoma's stories carry the visual content and both sites link
+  to their profiles. Uncle-T adds a plain link to its Google Business Profile
+  for reviews; no Places API, no Google script and no stored review content for
+  now. A server-side Places API block can be added later if the owner needs
+  review text; it must follow Google's attribution, source-link and no-caching
+  rules, and the privacy page must be updated.
 
 ### O-006 threat model (accepted 2026-11)
 

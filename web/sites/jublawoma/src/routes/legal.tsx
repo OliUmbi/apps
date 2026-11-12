@@ -26,12 +26,12 @@ function Imprint() {
 			<p>
 				<a href={contactMailto}>{m.jublawoma_email()}</a>
 			</p>
-			<h2>{m.jublawoma_legal_leadership_title()}</h2>
-			<p>
-				{leadership.length
-					? leadership.map((member) => member.name).join(" · ")
-					: m.jublawoma_legal_leadership_names()}
-			</p>
+			{leadership.length ? (
+				<>
+					<h2>{m.jublawoma_legal_leadership_title()}</h2>
+					<p>{leadership.map((member) => member.name).join(" · ")}</p>
+				</>
+			) : null}
 			<h2>{m.jublawoma_legal_liability_title()}</h2>
 			<p className="whitespace-pre-line">
 				{m.jublawoma_legal_liability_body()}

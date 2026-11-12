@@ -63,15 +63,16 @@ Chef and catering business. Marketing plus qualified inquiries.
 
 - Unify catering and private dinners into one "range of events" offer (small to
   large). Courses removed — not core.
-- About: professional experience (Gusto Sieger 2013, 3y Koch Gstaad Palace, 3y
-  Privatkoch, 4y Chef Catering, selbständig seit 2024).
+- About: professional experience (Gusto Sieger 2013, 3y Koch Gstaad Palace,
+  mehrjährige Erfahrung als Privatkoch, 4y Catering in Zürich, selbständig seit
+  2024).
 - Showcase past events: people count, menu, images, where/for whom, region list
-  (Aargau, Mägenwil, Lupfig, Mellingen, Baden, Brugg, Wohlen, Aarau, …) for
-  search.
+  (Aargau, Mägenwil, Lupfig, Mellingen, Baden, Brugg, Wohlen, Aarau, Zürich,
+  Luzern, Basel, …) for search.
 - Booking requests with a clear workflow state (open → in progress → done /
   rejected), reviews with moderation (open → public / rejected) and consent.
-- Instagram integration is an explicit owner requirement; Google reviews
-  alongside own reviews is an open item.
+- The showcases and a profile link stand in for an Instagram feed; Google
+  reviews are a link to the Business Profile (D36). No third-party feed script.
 - Design: clean and professional, luxury dinners to company burger parties,
   gold accents, sharper edges, dark mode worth trying.
 

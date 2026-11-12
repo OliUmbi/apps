@@ -138,7 +138,7 @@ in place and keep the commit.
 - [ ] **Content claims** Every specific claim in
   [content verification](../../work/content-verification.md) is confirmed or
   removed; no stale membership number, duration, service area or capacity is
-  published.
+  published, and the Uncle-T Google link opens the correct listing.
   Evidence:
 - [ ] **Owner confirmations** Jubla dates, same-day endings, exports, group names
   and donation units are confirmed; mailboxes and sender identities exist.

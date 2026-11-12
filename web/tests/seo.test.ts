@@ -55,13 +55,13 @@ test("local business data carries the postal address", () => {
 
 test("an organization stays minimal without an address", () => {
 	const data = organizationJsonLd({
-		name: "Jubla Woma",
+		name: "Jubla WOMA",
 		url: "https://jublawoma.ch",
 	});
 	assert.deepEqual(data, {
 		"@context": "https://schema.org",
 		"@type": "Organization",
-		name: "Jubla Woma",
+		name: "Jubla WOMA",
 		url: "https://jublawoma.ch",
 	});
 });

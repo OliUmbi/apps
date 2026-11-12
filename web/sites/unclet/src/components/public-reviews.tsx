@@ -2,8 +2,10 @@ import { Button } from "@base-ui/react/button";
 import type { Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
 import { PaginatedList } from "@oliumbi/ui/paginated-list";
+import { ExternalLink } from "lucide-react";
 import { getReviewPage } from "../data/reviews";
 import type { PublicReview } from "../model/content";
+import { googleReviewsUrl } from "../model/links";
 import { ReviewCard } from "./review-card";
 
 export function PublicReviews({
@@ -36,9 +38,20 @@ export function PublicReviews({
 							{m.unclet_reviews_title()}
 						</h2>
 					</div>
-					<p className="max-w-lg text-lg leading-relaxed text-bone/50 md:justify-self-end">
-						{m.unclet_reviews_description()}
-					</p>
+					<div className="max-w-lg md:justify-self-end">
+						<p className="text-lg leading-relaxed text-bone/50">
+							{m.unclet_reviews_description()}
+						</p>
+						<a
+							href={googleReviewsUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="mt-4 inline-flex items-center gap-2 text-sm font-bold tracking-widest uppercase hover:text-brass-light"
+						>
+							{m.unclet_reviews_google_link()}
+							<ExternalLink size={15} aria-hidden="true" />
+						</a>
+					</div>
 				</div>
 			</div>
 			<PaginatedList

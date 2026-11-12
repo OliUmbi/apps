@@ -35,7 +35,7 @@ const siteDetails = [
 	},
 	{
 		id: "jublawoma",
-		name: "Jubla Woma",
+		name: "Jubla WOMA",
 		domain: "jublawoma.ch",
 		short: "JW",
 		accent: "#9baf85",

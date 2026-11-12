@@ -8,7 +8,7 @@ quality order at the bottom is the tiebreaker when things conflict.
 OliUmbi Apps builds, manages and operates several websites with distinct
 identities and feature sets inside one maintainable project:
 
-- `jublawoma.ch` — the Jubla Woma association
+- `jublawoma.ch` — the Jubla WOMA association
 - `uncle-t.ch` — a catering business
 - `zelglihof-maegenwil.ch` — a farm, its products and services
 - `oliumbi.ch` — personal site and experiment space

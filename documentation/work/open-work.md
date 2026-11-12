@@ -269,9 +269,10 @@ Remaining product features are deliberately deferred until after launch; see
   "Mitmachen" and "Zusage" rebrands are reverted).
 - [ ] [owner] Review the rewritten Uncle-T privacy text and the condensed AGB;
   no code change until the review lands.
-- [ ] [owner] Confirm the claim inventory in
-  [content verification](content-verification.md) and choose the Instagram and
-  Google reviews direction (O-018).
+- [x] [owner] Choose the Instagram and Google reviews direction. (resolved
+  2026-11: showcases replace the old Instagram feed, and Uncle-T links to Google
+  rather than embedding reviews; D36.) The claim sign-off stays in the launch
+  gate.
 - [ ] [owner] Collect the "detailed notes will follow" legacy site restructuring
   notes and fold them into [sites](../reference/sites.md) and the migration
   inventory.

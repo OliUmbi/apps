@@ -9,7 +9,7 @@ export function SiteSeo() {
 		<>
 			<Canonical origin={siteOrigin} path={localizeHref(path)} />
 			<JsonLd
-				data={organizationJsonLd({ name: "Jubla Woma", url: siteOrigin })}
+				data={organizationJsonLd({ name: "Jubla WOMA", url: siteOrigin })}
 			/>
 		</>
 	);

@@ -1,6 +1,7 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
+import { googleReviewsUrl } from "../model/links";
 
 export default function Footer() {
 	return (
@@ -36,6 +37,15 @@ export default function Footer() {
 						className="flex items-center gap-2 hover:text-brass-light"
 					>
 						{m.unclet_footer_instagram()}
+						<ArrowUpRight size={14} aria-hidden="true" />
+					</a>
+					<a
+						href={googleReviewsUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="flex items-center gap-2 hover:text-brass-light"
+					>
+						{m.unclet_reviews_google_link()}
 						<ArrowUpRight size={14} aria-hidden="true" />
 					</a>
 					<Link to="/legal" className="hover:text-brass-light">
