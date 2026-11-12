@@ -45,6 +45,12 @@ old one; do not silently rewrite history.
 | P-011 | Extract shared code after two real consumers. | Prevents a restrictive universal component layer. |
 | P-012 | Stable ecosystem frameworks over custom routing/DI/SQL/auth. | Code is limited to logic; legacy was too experimental. |
 
+## Open questions
+
+| # | Question |
+| --- | --- |
+| O-018 | Uncle-T wants an Instagram feed and Google reviews on the site. Constraints: Instagram's Basic Display API is retired (September 2025); the official paths are the Instagram embed or a professional-account API with a long-lived token, expiring CDN URLs and no new-post webhook. Meta's Developer Policies discourage an app that only displays platform content. Google reviews require the Places API (New), Google Maps and author attribution, a link to the source review, no caching or storing of review content, and a privacy policy that incorporates Google's terms. Options: curated Studio gallery (recommended for Instagram), click-to-load official Instagram embed, link-only or on-demand server-side Places API for Google. No third-party widgets and no client-side Google scripts. Decision pending. |
+
 ## Closed questions
 
 | # | Answer |
@@ -265,6 +271,19 @@ and set the recovery and cutover boundaries.
   breaking the defaults most tools and operators expect. A new service takes the
   next free port in its family and updates
   [network surfaces](../operations/network-surfaces.md).
+- **D34 — Retired legacy pages stay retired, and old paths are not redirected.**
+  Uncle-T's Kurse page and Jublawoma's Mario game, standalone Kontakt page and
+  per-item donation/danke routes are intentionally not migrated (owner decision,
+  2026-11). Contact runs through the Uncle-T inquiry page and the Jublawoma
+  footer/imprint. Path redirects were considered and declined for now: the
+  legacy deep links may 404 after cutover, and the decision is revisited if
+  owner reports or analytics show demand.
+- **D35 — Content is migrated by the owner, not by an import job.** The owner
+  moves news, events, donations, members, showcases and reviews into Studio by
+  hand (2026-11). No automated legacy import is built, and the repository keeps
+  no seed content. The claim inventory in
+  [content verification](../work/content-verification.md) is the editorial gate
+  before publishing.
 
 ### O-006 threat model (accepted 2026-11)
 

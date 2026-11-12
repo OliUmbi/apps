@@ -46,8 +46,9 @@ questions are in [decisions](../reference/decisions.md).
   reaches the phone ([monitoring](../operations/monitoring.md)).
 - [ ] [owner] Approve final content, photos and legal pages. The legal, wording
   and founding-year decisions are resolved; real photos and final content assets
-  remain owner-executed. Old URL redirects and the legacy inventory remain
-  (PH-10); canonical links, structured data and dynamic sitemaps are done.
+  remain owner-executed. Redirects are declined for now (D34); the legacy
+  inventory remains (PH-10). Sign the claim inventory in
+  [content verification](content-verification.md) before publishing.
 - [ ] [verify] Run the environment integration pass: publishing, forms,
   reservations, login, email, and one service outage. Retry a public submission
   and confirm it returns the original outcome with no duplicate row, stock
@@ -266,6 +267,11 @@ Remaining product features are deliberately deferred until after launch; see
   invented three-step join process is removed, partner descriptions and the
   Uncle-T delivery offer are restored, "Beitreten" and "Spende" are kept (the
   "Mitmachen" and "Zusage" rebrands are reverted).
+- [ ] [owner] Review the rewritten Uncle-T privacy text and the condensed AGB;
+  no code change until the review lands.
+- [ ] [owner] Confirm the claim inventory in
+  [content verification](content-verification.md) and choose the Instagram and
+  Google reviews direction (O-018).
 - [ ] [owner] Collect the "detailed notes will follow" legacy site restructuring
   notes and fold them into [sites](../reference/sites.md) and the migration
   inventory.

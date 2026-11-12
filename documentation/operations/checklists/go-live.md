@@ -135,6 +135,11 @@ in place and keep the commit.
 - [ ] **Owner content** Final photos, product data, German wording and the legal
   pages are approved.
   Evidence:
+- [ ] **Content claims** Every specific claim in
+  [content verification](../../work/content-verification.md) is confirmed or
+  removed; no stale membership number, duration, service area or capacity is
+  published.
+  Evidence:
 - [ ] **Owner confirmations** Jubla dates, same-day endings, exports, group names
   and donation units are confirmed; mailboxes and sender identities exist.
   Evidence:
