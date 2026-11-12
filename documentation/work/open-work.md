@@ -107,6 +107,7 @@ implementation.
   `restrict_ssh` is false. Verify a flip both ways remains reversible.
 - [x] **DR-20** Grafana dashboards are documented as manually imported; only the
   Prometheus datasource is provisioned as code, and the volume comment says so.
+  (superseded 2026-11: dashboards are now provisioned from git.)
 
 ## First go-live review (2026-11)
 
@@ -197,8 +198,9 @@ Deployment shape: ghcr images pinned by tag, systemd units from
 - [x] Expose Java service metrics to Prometheus. (implemented in PH-7 -
   Micrometer endpoints on identity, messaging and assets, queue gauges and
   oldest-pending age, Caddy edge metrics, postgres_exporter as the read-only
-  `monitoring` role, and the service/pool/queue/connection alert rules.) Add
-  Grafana dashboards for the new series later; they stay manual imports.
+  `monitoring` role, and the service/pool/queue/connection alert rules.) The
+  first Grafana dashboards for those series are provisioned as code; extend
+  them after the metric names are confirmed on the host.
 - [ ] Decide on Caddy access logging: the Caddyfile has no `log` directive,
   but [monitoring](../operations/monitoring.md) implies short-retention access
   logs exist. Either enable them (they remain the forensic record; usage
@@ -286,9 +288,11 @@ Remaining product features are deliberately deferred until after launch; see
 
 ## Later
 
-- [ ] Add Grafana dashboards for the service, queue, edge and Postgres series as
+- [x] Add Grafana dashboards for the service, queue, edge and Postgres series as
   code once the metric names have settled on the host. Dashboards stay manual
-  imports and are not backed up.
+  imports and are not backed up. (implemented 2026-11: `apps-overview` and
+  `host-and-data` are provisioned from git; verify the metric names on the
+  host.)
 
 - [x] Strengthen `AccountServiceTest`: it has two tests for a nine-method
   service and mocks `PasswordService`, so `changePassword` could store a bad

@@ -1,5 +1,6 @@
-# Grafana. Datasource provisioning comes from the bind mount; dashboards are
-# built by hand and live in the data-grafana volume (not backed up, see the
+# Grafana. Datasources and dashboards are provisioned from the bind mount, so
+# the repository is the source of truth and UI edits are refused; the
+# data-grafana volume holds users and history only (not backed up, see the
 # volume note).
 [Unit]
 Description=Grafana

@@ -23,7 +23,10 @@ export async function withGenerationLock(run) {
 			await mkdir(lockDirectory);
 			break;
 		} catch (error) {
-			if (error?.code !== "EEXIST") {
+			// Windows can report EPERM/EACCES when another process removes the
+			// directory between our mkdir attempts. That is contention, not a
+			// failure: retry it like EEXIST. ENOENT is the same race.
+			if (!["EEXIST", "EPERM", "EACCES", "ENOENT"].includes(error?.code)) {
 				throw error;
 			}
 			let abandoned = false;
@@ -31,12 +34,14 @@ export async function withGenerationLock(run) {
 				abandoned =
 					Date.now() - (await stat(lockDirectory)).mtimeMs > STALE_LIMIT_MS;
 			} catch (statError) {
-				if (statError?.code !== "ENOENT") {
+				if (!["ENOENT", "EPERM", "EACCES"].includes(statError?.code)) {
 					throw statError;
 				}
 			}
 			if (abandoned) {
-				await rm(lockDirectory, { recursive: true, force: true });
+				await rm(lockDirectory, { recursive: true, force: true }).catch(
+					() => {},
+				);
 				continue;
 			}
 			if (Date.now() > waitUntil) {
@@ -50,6 +55,8 @@ export async function withGenerationLock(run) {
 	try {
 		return await run();
 	} finally {
-		await rm(lockDirectory, { recursive: true, force: true });
+		// A failed cleanup must not turn a successful generation into a crash;
+		// the next writer treats an old directory as abandoned.
+		await rm(lockDirectory, { recursive: true, force: true }).catch(() => {});
 	}
 }

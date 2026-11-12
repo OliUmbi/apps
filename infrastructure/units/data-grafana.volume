@@ -1,5 +1,5 @@
-# Grafana state (users, manually imported dashboards). Not backed up. Only the
-# Prometheus datasource is provisioned as code from
-# infrastructure/monitoring/grafana; dashboards live in this volume and are
-# maintained by hand.
+# Grafana state (admin password, users, org preferences, query history). Not
+# backed up. Datasources and dashboards are provisioned from
+# infrastructure/monitoring/grafana on every deploy, so losing this volume
+# costs history and UI state, not dashboards.
 [Volume]

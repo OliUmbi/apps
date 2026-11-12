@@ -2,6 +2,9 @@ apiVersion: 1
 
 datasources:
   - name: prometheus
+    # Fixed uid: provisioned dashboards reference it, so it must not be
+    # regenerated or looked up by name.
+    uid: prometheus
     type: prometheus
     access: proxy
     url: http://prometheus:9090

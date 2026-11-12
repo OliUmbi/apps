@@ -49,6 +49,7 @@
     - "{{ project_dir }}/monitoring/grafana"
     - "{{ project_dir }}/monitoring/grafana/provisioning"
     - "{{ project_dir }}/monitoring/grafana/provisioning/datasources"
+    - "{{ project_dir }}/monitoring/grafana/provisioning/dashboards"
   notify: restart monitoring
 
 - name: monitoring configuration files
@@ -61,6 +62,22 @@
     - alerts.yml
     - blackbox.yml
     - grafana/provisioning/datasources/prometheus.yml
+    - grafana/provisioning/dashboards/dashboards.yml
+  notify: restart monitoring
+
+# Dashboards are code too: every JSON file next to the provider is copied on
+# each deploy. The tree stays flat because the copy does not create
+# subdirectories (the provider scans recursively, but a subdirectory would need
+# its own directory task). Grafana refuses UI edits for these dashboards.
+- name: grafana dashboards
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ project_dir }}/monitoring/grafana/provisioning/dashboards/{{ item.path }}"
+    mode: "0644"
+  with_filetree: "{{ repo_root }}/infrastructure/monitoring/grafana/provisioning/dashboards"
+  loop_control:
+    label: "{{ item.path }}"
+  when: item.state == 'file' and item.path is match('.*[.]json$')
   notify: restart monitoring
 
 # alertmanager runs as nobody (65534) and must read the file, but the webhook

@@ -5,7 +5,9 @@ import { contactMailto } from "../model/links";
 import { pageHead } from "../model/metadata";
 
 export const Route = createFileRoute("/legal")({
-	loader: () => getLeadership(),
+	// The imprint is legal content, not a database page: a failed leadership
+	// read omits the names instead of turning the whole imprint into an error.
+	loader: () => getLeadership().catch(() => []),
 	head: () => pageHead({ title: m.imprint() }),
 	component: Imprint,
 });

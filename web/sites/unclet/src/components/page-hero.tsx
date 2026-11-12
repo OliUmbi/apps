@@ -23,15 +23,15 @@ export function PageHero({
 					<div className="absolute inset-0 bg-gradient-to-r from-night via-night/90 to-night/35" />
 				</>
 			) : null}
-			<div className="shell relative z-10 flex min-h-[62svh] items-end py-16 md:py-24">
+			<div className="shell relative z-10 flex min-h-[42svh] items-end py-12 md:min-h-[62svh] md:py-24">
 				<div className="max-w-5xl">
 					<p className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-brass">
 						{eyebrow}
 					</p>
-					<h1 className="font-serif font-medium leading-[0.95] tracking-[-0.045em] mt-6 text-6xl md:text-8xl lg:text-9xl">
+					<h1 className="font-serif font-medium leading-[0.95] tracking-[-0.045em] mt-6 text-5xl sm:text-6xl md:text-8xl lg:text-9xl">
 						{title}
 					</h1>
-					<p className="mt-8 max-w-2xl text-lg leading-relaxed text-bone/60 md:text-xl">
+					<p className="mt-6 max-w-2xl text-lg leading-relaxed text-bone/60 md:mt-8 md:text-xl">
 						{description}
 					</p>
 				</div>

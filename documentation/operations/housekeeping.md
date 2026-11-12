@@ -45,9 +45,10 @@ The timer schedule is templated from `housekeep_day` and `housekeep_hour` in
   They are preserved deliberately (DR-09).
 - The last week of application images is the rollback window. Shortening the
   filter trades rollback convenience for disk.
-- Grafana dashboards are imported by hand and live in `data-grafana`; only the
-  Prometheus datasource is provisioned as code. Losing the volume loses history
-  and dashboards, not application data.
+- Grafana dashboards are provisioned from
+  `infrastructure/monitoring/grafana/provisioning/dashboards` on every start;
+  `data-grafana` holds history, users and annotations. Losing the volume loses
+  history, not application data or dashboards.
 
 ## The shell job
 

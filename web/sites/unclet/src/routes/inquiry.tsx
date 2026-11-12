@@ -30,7 +30,7 @@ function InquiryPage() {
 				}
 				description={m.unclet_inquiry_description()}
 			/>
-			<section className="shell grid gap-16 py-20 md:py-28 lg:grid-cols-[.65fr_1.35fr]">
+			<section className="shell grid gap-16 py-12 md:py-28 lg:grid-cols-[.65fr_1.35fr]">
 				<div className="lg:col-start-2 lg:row-start-1">
 					<InquiryForm />
 				</div>

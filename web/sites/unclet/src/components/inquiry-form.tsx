@@ -8,7 +8,7 @@ export function InquiryForm() {
 	const submit = useServerFn(sendInquiry);
 	return (
 		<div className="relative overflow-hidden border border-bone/15 bg-gradient-card bg-coal p-[clamp(1.5rem,5vw,4rem)] before:absolute before:top-0 before:left-0 before:h-0.5 before:w-28 before:bg-brass before:content-['']">
-			<header className="mb-12">
+			<header className="mb-8 md:mb-12">
 				<p className="font-mono text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-brass">
 					{m.unclet_inquiry_form_eyebrow()}
 				</p>

@@ -115,12 +115,30 @@ through the existing SMTP credentials or a Telegram bot; both are an
 
 ## Grafana
 
-Grafana is reachable at the server's WireGuard address on port 3000. Only the
-Prometheus datasource is provisioned as code from
-`infrastructure/monitoring/grafana/provisioning/`. Dashboards are imported by
-hand (node-exporter dashboard id 1860) and live in the `data-grafana` volume,
-which is deliberately not backed up. Recreate them after a volume loss; the
-volume comment and [housekeeping](housekeeping.md#what-not-to-clean) say so.
+Grafana is reachable at the server's WireGuard address on port 3000. Its
+configuration is provisioned from git under
+`infrastructure/monitoring/grafana/provisioning/`: the Prometheus datasource
+(`datasources/prometheus.yml`, fixed uid `prometheus`), the dashboard provider
+(`dashboards/dashboards.yml`) and one JSON file per dashboard
+(`apps-overview.json`, `host-and-data.json`). A dashboard is a file, not a UI
+object: change the JSON, deploy, and review the diff like any other code.
+Ansible copies the files on each deploy and the unit mounts the directory
+read-only at `/etc/grafana/provisioning`.
+
+- **Apps overview** - site probes, certificate expiry, edge request rate, 5xx
+  ratio and p95 latency, service request rate and 5xx, Hikari pools, messaging
+  queue depth and oldest age.
+- **Host and data** - CPU, memory, root disk, load, network throughput, and
+  PostgreSQL up, connections, `max_connections` and database size.
+
+The provider reads `/etc/grafana/provisioning/dashboards` into the `Apps`
+folder and refuses UI edits (`allowUiUpdates: false`,
+`disableDeletion: true`). Because deletion is disabled, retiring a dashboard is
+manual: remove the JSON from git and from the host directory, then delete the
+dashboard through the Grafana API. Deleting the file alone leaves the dashboard
+in place, and deleting only the dashboard lets the next restart provision it
+again. The `data-grafana` volume now only holds users and history, so losing it
+costs history, not dashboards (it stays outside the backup on purpose).
 
 ## Known gap: the monitor watches itself
 

@@ -428,7 +428,7 @@ defects. Revisit only when the stated condition changes.
 | No host firewall | The router forwards and unit bind addresses are the boundary; a host firewall would not stop published ports. |
 | No CDN; media on disk | Private server, small audience; the assets service owns cache headers. |
 | Journald only, no Loki | One host and a 200 MB cap are enough until log volume or query needs grow. |
-| Monitoring state is not backed up | Prometheus/Grafana history is disposable; application data is not. Dashboards are restored by hand. |
+| Monitoring state is not backed up | Prometheus/Grafana history is disposable; application data is not. Dashboards are provisioned from git, so a volume loss costs history only. |
 | Dev compose is not a production mirror | The server runs podman/Quadlet; mirroring it would add a second topology to maintain. |
 | No payments on Zelglihof | The product is a preorder intent, not a shop; adding payments is a new decision. |
 | No universal CMS, page builder or tenant model | Sites are custom and independent; shared code moves only after a second consumer. |

@@ -1,0 +1,23 @@
+# Dashboard provider. Every JSON file in this directory is provisioned from git
+# into the "Apps" folder; the bind mount in apps-grafana.container makes that
+# directory /etc/grafana/provisioning/dashboards inside the container.
+#
+# allowUiUpdates is false so a Grafana restart cannot drift from the
+# repository, and disableDeletion keeps Grafana from deleting a provisioned
+# dashboard. Consequence: retiring a dashboard is manual -- delete the JSON in
+# git and on the host, then delete the dashboard through the API. Deleting the
+# file alone leaves the dashboard behind, and deleting the dashboard alone lets
+# the next restart re-provision it.
+apiVersion: 1
+
+providers:
+  - name: apps
+    orgId: 1
+    folder: Apps
+    type: file
+    disableDeletion: true
+    allowUiUpdates: false
+    updateIntervalSeconds: 30
+    options:
+      path: /etc/grafana/provisioning/dashboards
+      foldersFromFilesStructure: false
