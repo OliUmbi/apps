@@ -3,6 +3,6 @@
 # ghcr.io/oliumbi/apps-migrate:<tag> -- the tag guarantees the migrations
 # match the application images deployed with it.
 # Pin tag and digest together (DR-14).
-FROM flyway/flyway:13.12.1-alpine@sha256:6af6ece9c5d46f62db7409dc19992d34886cd6376ddd81dbff23d5e03708cff9
+FROM flyway/flyway:13.12.2-alpine@sha256:f5b9740a05ef38fc31356dcf2e7796dafc693ea289546e82c7699d37f83349af
 
 COPY database/migrations /flyway/sql

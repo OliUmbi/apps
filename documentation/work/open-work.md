@@ -215,7 +215,8 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   `ci.yml` and the `publish.yml` action SHAs. The full register with owning
   files and the procedure is [versions](../reference/versions.md). Runtime
   version bumps (Caddy, Node, temurin) stay deliberate, separate bumps; this
-  refresh only picks up silent base rebuild fixes.
+  refresh only picks up silent base rebuild fixes. (Last refreshed 2026-11-12;
+  held majors are listed in the register.)
 
 ## Product features
 

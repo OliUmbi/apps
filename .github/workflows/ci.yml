@@ -46,7 +46,7 @@ jobs:
     services:
       postgres:
         # postgres:18-alpine@sha256:... -- bump tag and digest together (DR-14).
-        image: postgres:18-alpine@sha256:123b17998ccaf47e53b502e8c6a1e79afd8f579c6f3eec83c563da026f957395
+        image: postgres:18-alpine@sha256:9ba53c7d41ea093baf5c1ba635ba5434c4f979880527d49bb7d9237d3193085b
         env:
           POSTGRES_DB: apps
           POSTGRES_USER: postgres
@@ -82,7 +82,7 @@ jobs:
         run: >
           docker run --rm --network host
           -v "$GITHUB_WORKSPACE/database/migrations:/flyway/sql:ro"
-          flyway/flyway:13.12.1-alpine@sha256:6af6ece9c5d46f62db7409dc19992d34886cd6376ddd81dbff23d5e03708cff9
+          flyway/flyway:13.12.2-alpine@sha256:f5b9740a05ef38fc31356dcf2e7796dafc693ea289546e82c7699d37f83349af
           -url=jdbc:postgresql://127.0.0.1:5432/apps
           -user=postgres
           -password=ci-postgres
@@ -120,7 +120,7 @@ jobs:
     services:
       postgres:
         # postgres:18-alpine@sha256:... -- bump tag and digest together (DR-14).
-        image: postgres:18-alpine@sha256:123b17998ccaf47e53b502e8c6a1e79afd8f579c6f3eec83c563da026f957395
+        image: postgres:18-alpine@sha256:9ba53c7d41ea093baf5c1ba635ba5434c4f979880527d49bb7d9237d3193085b
         env:
           POSTGRES_DB: apps
           POSTGRES_USER: postgres
@@ -147,7 +147,7 @@ jobs:
         run: >
           docker run --rm --network host
           -v "$GITHUB_WORKSPACE/database/migrations:/flyway/sql:ro"
-          flyway/flyway:13.12.1-alpine@sha256:6af6ece9c5d46f62db7409dc19992d34886cd6376ddd81dbff23d5e03708cff9
+          flyway/flyway:13.12.2-alpine@sha256:f5b9740a05ef38fc31356dcf2e7796dafc693ea289546e82c7699d37f83349af
           -url=jdbc:postgresql://127.0.0.1:5432/apps
           -user=postgres
           -password=ci-postgres
@@ -249,7 +249,7 @@ jobs:
 
       - name: ansible playbooks syntax
         run: |
-          docker run --rm -v "$PWD/ansible:/ansible:ro" -w /ansible python:3.13-alpine@sha256:1e1f6334529d1fb26a2ef619d7cffb30a7c7d7cc1cc7338ebee283a58d1aeaca sh -c '
+          docker run --rm -v "$PWD/ansible:/ansible:ro" -w /ansible python:3.13-alpine@sha256:9ef1a599f863231c3d91e941389bfdc4a2d6070557243d54df1a4e57015b960e sh -c '
             set -eu
             export ANSIBLE_ROLES_PATH=/ansible/roles
             export ANSIBLE_INVENTORY=/ansible/inventory.yml
@@ -271,13 +271,13 @@ jobs:
       - name: secret scan
         run: >
           docker run --rm -v "$PWD:/repo"
-          ghcr.io/gitleaks/gitleaks:v8.28.0@sha256:cdbb7c955abce02001a9f6c9f602fb195b7fadc1e812065883f695d1eeaba854
+          ghcr.io/gitleaks/gitleaks:v8.30.1@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f
           detect --source=/repo --no-git --redact --verbose
 
       - name: dependency scan (report only)
         run: >
           docker run --rm -v "$PWD:/repo"
-          aquasec/trivy:0.67.0@sha256:94711c60051c6cab848a292e3a67f62623fcee361b2bb661f43b17184f4afdac
+          aquasec/trivy:0.76.2@sha256:8f6bb947dbc528902e11f2f5be52f7b519f6a39d5d148f41166f2040499768fb
           fs --scanners vuln --severity HIGH,CRITICAL --no-progress
           --skip-dirs /repo/legacy --skip-dirs /repo/web/node_modules
           --skip-dirs /repo/.pnpm-store /repo

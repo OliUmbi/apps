@@ -31,17 +31,18 @@ first refresh.
 | `maven` | 3.9.12-eclipse-temurin-25-alpine | service build stage | `services/*/Dockerfile` |
 | `eclipse-temurin` | 25-jre-alpine | service runtime | `services/*/Dockerfile` |
 | `postgres` | 18-alpine | server and dev rig | `infrastructure/units/apps-postgres.container`, `compose.dev.yaml` |
-| `flyway` | 13.12.1-alpine | migrator | `database/Dockerfile`, `compose.dev.yaml` |
-| `mailpit` | v1.29.7 | dev email | `compose.dev.yaml` |
+| `flyway` | 13.12.2-alpine | migrator | `database/Dockerfile`, `compose.dev.yaml` |
+| `mailpit` | v1.33.1 | dev email | `compose.dev.yaml` |
 | `prometheus` | v3.16.0 | monitoring | `infrastructure/units/apps-prometheus.container` |
-| `alertmanager` | v0.34.2 | monitoring | `infrastructure/units/apps-alertmanager.container` |
-| `grafana` | 13.3.0 | monitoring | `infrastructure/units/apps-grafana.container` |
+| `alertmanager` | v0.35.0 | monitoring | `infrastructure/units/apps-alertmanager.container` |
+| `grafana` | 13.3.1 | monitoring | `infrastructure/units/apps-grafana.container` |
 | `node-exporter` | v1.12.1 | monitoring | `infrastructure/units/apps-node-exporter.container` |
 | `blackbox-exporter` | v0.29.1 | monitoring | `infrastructure/units/apps-blackbox.container` |
-| `postgres-exporter` | v0.19.0 | database statistics | `infrastructure/units/apps-postgres-exporter.container` |
-| `trivy` | 0.67.0 | weekly dependency scan | `.github/workflows/{ci,security}.yml` |
-| `gitleaks` | v8.28.0 | secret scan | `.github/workflows/{ci,security}.yml` |
+| `postgres-exporter` | v0.20.1 | database statistics | `infrastructure/units/apps-postgres-exporter.container` |
+| `trivy` | 0.76.2 | weekly dependency scan | `.github/workflows/{ci,security}.yml` |
+| `gitleaks` | v8.30.1 | secret scan | `.github/workflows/{ci,security}.yml` |
 | `python` | 3.13-alpine | CI ansible syntax check | `ci.yml` |
+| `podman` | stable v5.8.9 | Quadlet generation check | `ci.yml` |
 
 The `ghcr.io/oliumbi/apps-*` images are built here from the bases above and
 are versioned by the deploy tag (D13); they are not external dependencies.
@@ -85,7 +86,12 @@ lombok 1.18.
 | Item | Wait for | Where it lands |
 | --- | --- | --- |
 | pnpm 12 (12.18 available) | a dedicated tooling pass | `packageManager`, Dockerfile corepack line |
+| Maven 3.10.0 | a dedicated toolchain pass (wrapper, Dockerfiles and docs move together) | `services/mvnw`, `services/*/Dockerfile` |
 | Spring Boot 4.2 | stable GA (currently RC) | `services/pom.xml` parent |
+| Checkstyle 14.4 | the next Java toolchain pass (major rule baseline) | `services/pom.xml` |
+| ansible-core 2.22 | a dedicated Ansible pass, verified on the host | `ci.yml` |
+| GitHub Actions majors (`actions/checkout` 7, `actions/setup-node` 7, `actions/setup-java` 6, `pnpm/action-setup` 6, `docker/setup-buildx-action` 4, `docker/build-push-action` 7, `docker/login-action` 4, `docker/metadata-action` 6) | a dedicated CI pass; major bumps cannot be verified locally | `.github/workflows/` |
+| Podman 6.2 | the server moves past Podman 5.x; generator and host stay aligned | `ci.yml` |
 | nitro stable 3.x | upstream stable release | catalog |
 | caddy-ratelimit release tag | upstream tag newer than `5625512f` | caddy Dockerfile; open work, Later |
 

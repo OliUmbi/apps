@@ -24,7 +24,7 @@ Workflows live in `.github/workflows/`:
 Details that matter:
 
 - The web job applies `database/migrations/` with the same Flyway major as
-  production (`flyway/flyway:13.12.1-alpine`).
+  production (`flyway/flyway:13.12.2-alpine`).
 - `STUDIO_TEST_ADMIN_URL` points at the CI database, so the PostgreSQL-gated
   suites run. A guard step fails the job if any suite reports skipped.
 - pnpm is pinned by `web/package.json`; Node is 26; Maven by the wrapper; JDK 25.
