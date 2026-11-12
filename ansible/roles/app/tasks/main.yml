@@ -227,8 +227,9 @@
 
 # Migrations create the application roles NOLOGIN without passwords (DR-04).
 # Provision login from the vault now, before the app units start, so a fresh
-# host becomes healthy on the first deploy. The unused oliumbi role stays
-# NOLOGIN (static site), and the monitoring role is read-only (pg_monitor).
+# host becomes healthy on the first deploy. Oliumbi gets a login for the
+# anonymous analytics counter; its content schema stays empty. The monitoring
+# role is read-only (pg_monitor).
 - name: provision application database roles
   ansible.builtin.command:
     argv:

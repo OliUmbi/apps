@@ -40,9 +40,20 @@ The server has no credentials for the workstation; pull over WireGuard.
 ```
 
 Both keep seven local copies and warn when the newest is more than a day old.
-Schedule the Windows script in Task Scheduler, or run it manually after a deploy
-and before any risky change. A pulled archive still proves nothing until
-[restore](restore.md) succeeds once.
+Install the Windows pull as a daily scheduled task from an elevated PowerShell,
+so the off-host copy does not depend on remembering it:
+
+```powershell
+$script = Join-Path $PWD "ansible\files\pull-backups.ps1"
+$action = New-ScheduledTaskAction -Execute "powershell.exe" `
+  -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$script`""
+$trigger = New-ScheduledTaskTrigger -Daily -At 08:00
+Register-ScheduledTask -TaskName "OliUmbi backup pull" `
+  -Action $action -Trigger $trigger
+```
+
+Run it manually after a deploy and before any risky change. A pulled archive
+still proves nothing until [restore](restore.md) succeeds once.
 
 ## Key handling (once, then treat it as done)
 

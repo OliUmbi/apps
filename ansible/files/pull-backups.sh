@@ -20,7 +20,12 @@ if [ -z "$newest" ]; then
   echo "pull-backups: no backups found in $LOCAL_DIR" >&2
   exit 1
 fi
-age_days=$(( ( $(date +%s) - $(stat -c %Y "$newest") ) / 86400 ))
+if stat -c %Y "$newest" >/dev/null 2>&1; then
+  modified=$(stat -c %Y "$newest") # GNU
+else
+  modified=$(stat -f %m "$newest") # BSD/macOS
+fi
+age_days=$(( ( $(date +%s) - modified ) / 86400 ))
 if [ "$age_days" -gt 1 ]; then
   echo "pull-backups: WARNING newest backup is $age_days days old ($newest)" >&2
 fi
