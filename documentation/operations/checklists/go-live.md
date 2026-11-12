@@ -143,8 +143,10 @@ in place and keep the commit.
 - [ ] **Owner confirmations** Jubla dates, same-day endings, exports, group names
   and donation units are confirmed; mailboxes and sender identities exist.
   Evidence:
-- [ ] **Accessibility/translation** The agreed high-value set is done or each
-  remainder is explicitly deferred with a reason.
+- [ ] **Accessibility/translation** The agreed high-value set is implemented
+  (skip links, `main` targets, focus rings, success focus, reduced motion);
+  the manual keyboard, contrast, mobile-menu and translation pass is the
+  remaining evidence.
   Evidence:
 
 ## F. Environment integration

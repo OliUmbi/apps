@@ -237,10 +237,11 @@ Remaining product features are deliberately deferred until after launch; see
   `robots.txt`, a sitemap, branded 404 and error boundaries, and a file check
   regression test.)
 - [ ] Check keyboard use, focus, contrast and mobile menus. Verify German
-  customer sites and Studio translations. The agreed high-value set is a skip
-  link and `main` target on every site, focus after a successful Zelglihof
-  submission, focus-visible styles on Jublawoma and Studio, Studio reduced
-  motion, and `aria-describedby` on field errors (PH-11).
+  customer sites and Studio translations. The agreed high-value set is
+  implemented (skip link and `main` target on every shell, focus after a
+  successful Zelglihof submission, focus-visible styles on Jublawoma and Studio,
+  Studio reduced motion; field errors use the shared field description wiring).
+  Remaining: the manual keyboard, contrast, mobile-menu and translation pass.
 
 ## Owner decisions
 

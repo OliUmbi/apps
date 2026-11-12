@@ -46,7 +46,17 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 				<HeadContent />
 			</head>
 			<body className="min-h-full">
-				<main className="grid min-h-dvh place-items-center px-6 py-16">
+				<a
+					className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-ink focus:px-4 focus:py-2 focus:text-canvas"
+					href="#main"
+				>
+					Skip to content
+				</a>
+				<main
+					id="main"
+					tabIndex={-1}
+					className="grid min-h-dvh place-items-center px-6 py-16"
+				>
 					{children}
 				</main>
 				<Scripts />

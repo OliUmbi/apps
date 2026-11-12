@@ -61,6 +61,12 @@ export function AppShell({
 
 	return (
 		<div className="flex min-h-dvh">
+			<a
+				className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-layer-2 focus:px-4 focus:py-2 focus:text-fg"
+				href="#main"
+			>
+				{m.skip_to_content()}
+			</a>
 			<Sidebar>
 				<SidebarHeader>
 					<Brand name={m.studio_name()} />
@@ -89,7 +95,13 @@ export function AppShell({
 					label={context.label}
 					title={context.title}
 				/>
-				<main className="mx-auto w-full max-w-7xl px-6 py-8">{children}</main>
+				<main
+					id="main"
+					tabIndex={-1}
+					className="mx-auto w-full max-w-7xl px-6 py-8"
+				>
+					{children}
+				</main>
 			</div>
 		</div>
 	);

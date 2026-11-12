@@ -4,7 +4,7 @@ import { m } from "@oliumbi/i18n/messages";
 import { Alert } from "@oliumbi/ui/alert";
 import type { SubmissionFieldName } from "@oliumbi/ui/submission-types";
 import { useSubmissionForm } from "@oliumbi/ui/use-submission-form";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import type { z } from "zod";
 import { type SiteField, SubmissionControl } from "./submission-control";
 
@@ -44,9 +44,20 @@ export function SubmissionForm<Input, Result>({
 		getResultError,
 		success,
 	});
+	const receipt = useRef<HTMLDivElement>(null);
+	// The receipt replaces the focused submit button; moving focus to it keeps
+	// keyboard and screen-reader users with the change.
+	useEffect(() => {
+		if (form.succeeded) receipt.current?.focus();
+	}, [form.succeeded]);
 	// The receipt replaces the form; `Alert` reserves its slot, so swapping
 	// states never moves the elements around it.
-	if (form.succeeded) return <Alert tone="success">{form.success}</Alert>;
+	if (form.succeeded)
+		return (
+			<div ref={receipt} tabIndex={-1} className="outline-none">
+				<Alert tone="success">{form.success}</Alert>
+			</div>
+		);
 	return (
 		<Form
 			className={`submission-form grid gap-5 ${className}`}

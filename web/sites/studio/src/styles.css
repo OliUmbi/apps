@@ -111,6 +111,11 @@
 		text-decoration: none;
 	}
 
+	:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+		outline: 2px solid var(--color-interactive);
+		outline-offset: 2px;
+	}
+
 	::selection {
 		background: rgb(45 212 191 / 25%);
 	}
@@ -216,5 +221,20 @@
 	.overview-monogram {
 		width: 54px;
 		height: 54px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		/* biome-ignore lint/complexity/noImportantStyles: Reduced-motion preferences must override component animation. */
+		animation-duration: 0.01ms !important;
+		/* biome-ignore lint/complexity/noImportantStyles: Reduced-motion preferences must override component animation. */
+		animation-iteration-count: 1 !important;
+		/* biome-ignore lint/complexity/noImportantStyles: Reduced-motion preferences must override component transitions. */
+		transition-duration: 0.01ms !important;
+		/* biome-ignore lint/complexity/noImportantStyles: Reduced-motion preferences must override smooth scrolling. */
+		scroll-behavior: auto !important;
 	}
 }

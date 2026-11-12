@@ -67,7 +67,9 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 					{m.skip_to_content()}
 				</a>
 				<Header />
-				<main id="main">{children}</main>
+				<main id="main" tabIndex={-1}>
+					{children}
+				</main>
 				<Footer />
 				<Scripts />
 			</body>
