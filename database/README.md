@@ -14,6 +14,10 @@ database. The baseline freezes at the first accepted production import. After th
 destructive changes follow expand → backfill → verify → contract, and new
 changes are append-only migrations.
 
+V001 creates cluster-wide roles, so a second database on an existing PostgreSQL
+cluster cannot replay it; use a fresh cluster (or the dev compose Postgres, which
+owns its cluster) for a separate test or restore database.
+
 V001 defines schemas, roles (including the read-only `monitoring` role), the
 `pg_monitor` grant and default permissions. V002 defines the producer
 inbox. V003 defines identity. V004 defines messaging's delivery state and
