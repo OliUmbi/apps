@@ -123,7 +123,10 @@ configuration is provisioned from git under
 (`apps-overview.json`, `host-and-data.json`). A dashboard is a file, not a UI
 object: change the JSON, deploy, and review the diff like any other code.
 Ansible copies the files on each deploy and the unit mounts the directory
-read-only at `/etc/grafana/provisioning`.
+read-only at `/etc/grafana/provisioning`. The web suite validates every
+dashboard JSON, the unique panel/uid ids and the fixed `prometheus` datasource
+(`web/tests/grafana-dashboards.test.ts`), so a malformed dashboard fails CI
+before it reaches the host.
 
 - **Apps overview** - site probes, certificate expiry, edge request rate, 5xx
   ratio and p95 latency, service request rate and 5xx, Hikari pools, messaging
