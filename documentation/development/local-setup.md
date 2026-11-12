@@ -61,8 +61,8 @@ docker compose -f infrastructure/compose.dev.yaml --env-file .env up -d --build
 | Mailpit (development email) | <http://localhost:8025> |
 
 The compose stack runs PostgreSQL, Flyway, the one-shot role provisioning, the
-services and the sites. PostgreSQL and the service ports are development-only;
-they are not published in production.
+services and the sites. All published ports bind to `127.0.0.1`; PostgreSQL and
+the service ports are development-only and are not published in production.
 
 ## Frontend-only workflow
 

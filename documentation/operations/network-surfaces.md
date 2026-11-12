@@ -71,7 +71,7 @@ the named podman network.
 | 8001 | Jublawoma |
 | 8002 | Uncle-T |
 | 8003 | Zelglihof |
-| 8004 | Oliumbi (static) |
+| 8004 | Oliumbi (static + counter) |
 | 2019 | Caddy admin/API (internal only) |
 | 80, 443 | Caddy (inside the container; published as above) |
 
@@ -91,6 +91,9 @@ the named podman network.
 - PostgreSQL `5432` on the host: container network only.
 - Identity, messaging, assets and site ports on the host: container network only.
 - Caddy admin `2019`: container network only; Prometheus scrapes it internally.
+  It is unauthenticated, so every `net-apps` container can rewrite Caddy config.
+  Accepted for this single-tenant network; a socket/sidecar is the structural fix
+  if the network gains untrusted containers.
 - `apps-migrate`: one-shot, no listener.
 - No inbound SMTP: mail is sent outbound to the provider; Mailpit is development
   only.
@@ -108,9 +111,10 @@ pushed.
 
 `infrastructure/compose.dev.yaml` publishes PostgreSQL on `POSTGRES_PORT`
 (default 5432), Mailpit on 1025/8025, Identity 8081, Messaging 8082, Assets 8083,
-Studio 8000 and the sites 8001–8004 on the workstation's loopback/all
-interfaces. These are development surfaces and are not part of the production
-host.
+Studio 8000 and the sites 8001-8004 on the workstation's loopback interface
+(`127.0.0.1`) only. These are development surfaces and are not part of the
+production host; reach them from another device only through an explicit
+forwarding rule, never by publishing them to the LAN.
 
 ## Verify
 

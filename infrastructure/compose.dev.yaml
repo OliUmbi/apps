@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: ${POSTGRES_MIGRATOR_USER:-apps_migrator}
       POSTGRES_PASSWORD: ${POSTGRES_MIGRATOR_PASSWORD:-dev-migrator-password}
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres-data:/var/lib/postgresql
     healthcheck:
@@ -67,8 +67,8 @@ services:
   mailpit:
     image: axllent/mailpit:v1.33.1
     ports:
-      - "1025:1025"
-      - "8025:8025"
+      - "127.0.0.1:1025:1025"
+      - "127.0.0.1:8025:8025"
 
   identity:
     build:
@@ -81,7 +81,7 @@ services:
       IDENTITY_DATABASE_PASSWORD: ${IDENTITY_DATABASE_PASSWORD:-identity_password}
       IDENTITY_INTERNAL_AUTHORIZATION_TOKEN: ${IDENTITY_INTERNAL_AUTHORIZATION_TOKEN:-dev_identity_internal_authorization}
     ports:
-      - "8081:8081"
+      - "127.0.0.1:8081:8081"
     depends_on:
       roles:
         condition: service_completed_successfully
@@ -104,7 +104,7 @@ services:
       MESSAGING_SMTP_TLS: ${MESSAGING_SMTP_TLS:-false}
       MESSAGING_SMTP_TLS_REQUIRED: ${MESSAGING_SMTP_TLS_REQUIRED:-false}
     ports:
-      - "8082:8082"
+      - "127.0.0.1:8082:8082"
     depends_on:
       roles:
         condition: service_completed_successfully
@@ -125,7 +125,7 @@ services:
     volumes:
       - assets-data:/media
     ports:
-      - "8083:8083"
+      - "127.0.0.1:8083:8083"
     depends_on:
       roles:
         condition: service_completed_successfully
@@ -137,7 +137,7 @@ services:
       DATABASE_URL: postgres://${OLIUMBI_DATABASE_USER:-oliumbi}:${OLIUMBI_DATABASE_PASSWORD:-oliumbi_password}@postgres:5432/${POSTGRES_DB:-apps}
       DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE:-10}
     ports:
-      - "8004:8004"
+      - "127.0.0.1:8004:8004"
     depends_on:
       roles:
         condition: service_completed_successfully
@@ -155,7 +155,7 @@ services:
       ZELGLIHOF_REQUESTS_EMAIL: ${ZELGLIHOF_REQUESTS_EMAIL:-hof@zelglihof-maegenwil.ch}
       ZELGLIHOF_NEWSLETTER_EMAIL: ${ZELGLIHOF_NEWSLETTER_EMAIL:-newsletter@zelglihof-maegenwil.ch}
     ports:
-      - "8003:8003"
+      - "127.0.0.1:8003:8003"
     depends_on:
       roles:
         condition: service_completed_successfully
@@ -173,7 +173,7 @@ services:
       MESSAGING_SERVICE_URL: http://messaging:8082
       UNCLET_REQUESTS_EMAIL: ${UNCLET_REQUESTS_EMAIL:-info@uncle-t.ch}
     ports:
-      - "8002:8002"
+      - "127.0.0.1:8002:8002"
     depends_on:
       roles:
         condition: service_completed_successfully
@@ -185,7 +185,7 @@ services:
       context: ..
       dockerfile: web/sites/jublawoma/Dockerfile
     ports:
-      - "8001:8001"
+      - "127.0.0.1:8001:8001"
     environment:
       ASSETS_SERVICE_URL: http://assets:8083
       DATABASE_URL: postgres://${JUBLAWOMA_DATABASE_USER:-jublawoma}:${JUBLAWOMA_DATABASE_PASSWORD:-jublawoma_password}@postgres:5432/${POSTGRES_DB:-apps}
@@ -212,7 +212,7 @@ services:
       MESSAGING_SERVICE_URL: http://messaging:8082
       IDENTITY_INTERNAL_AUTHORIZATION_TOKEN: ${IDENTITY_INTERNAL_AUTHORIZATION_TOKEN:-dev_identity_internal_authorization}
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     depends_on:
       identity:
         condition: service_started
