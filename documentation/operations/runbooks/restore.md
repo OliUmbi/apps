@@ -48,19 +48,18 @@ a new major version. Policy and archive contents are in
    Use the container's configured `POSTGRES_USER` (the example vault uses
    `apps_migrator`, not `postgres`).
 
+   On a host built by `site.yml`, the V001 roles already exist. Do **not** replay
+   `globals.sql` there: it conflicts with those roles and the migrator superuser.
+   Restore the database directly; step 5 provisions the role passwords from the
+   vault.
+
    ```sh
-   podman exec -i postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f -' < globals.sql
    podman exec -i postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists' < database.dump
    ```
 
-   If the database does not exist, create it with the configured owner first.
-   Verify the expected schemas and row counts before continuing.
-
-   > **Known draft gap:** a host built by `site.yml` already has the roles from
-   > V001, so `globals.sql` hits `CREATE ROLE ... already exists` and the stored
-   > passwords do not apply. Either reconcile roles and passwords from the vault
-   > with the normal deploy provisioning, or restore into a clean cluster. Settle
-   > the order during the drill.
+   Only on a bare cluster restore `globals.sql` first, create the database with
+   the configured owner, then run `pg_restore`. Compare the role list with the
+   vault before continuing. Verify the expected schemas and row counts.
 
 4. **Restore media.**
 

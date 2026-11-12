@@ -32,7 +32,8 @@ Keep the source archive and this record together.
 - [ ] `tar xzf` completed without errors.
 - [ ] `sha256sum -c SHA256SUMS` — every file OK.
 - [ ] Application units and Caddy stopped; PostgreSQL started alone.
-- [ ] `globals.sql` applied; role/password reconciliation documented below.
+- [ ] Roles reconciled: `globals.sql` skipped on a `site.yml` host (the deploy
+      provisions passwords) or applied first on a bare cluster.
 - [ ] `pg_restore` completed; no unexplained errors.
 - [ ] Media extracted to `/var/lib/apps/media`, owner `100:100`.
 - [ ] Deploy of the manifest tag started the stack in dependency order.
