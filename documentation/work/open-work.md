@@ -241,7 +241,9 @@ Remaining product features are deliberately deferred until after launch; see
   implemented (skip link and `main` target on every shell, focus after a
   successful Zelglihof submission, focus-visible styles on Jublawoma and Studio,
   Studio reduced motion; field errors use the shared field description wiring).
-  Remaining: the manual keyboard, contrast, mobile-menu and translation pass.
+  Lighthouse accessibility is 100 on the Uncle-T inquiry and Jublawoma join
+  pages (2026-11). Remaining: the manual keyboard, contrast, mobile-menu and
+  translation pass.
 - [x] Contrast follow-up (2026-11 audit): Studio file-input, button and
   filter-chip borders, Zelglihof secondary CTA outlines, the Jublawoma success
   token and the Oliumbi skip-link focus ring are fixed. The remaining items are
@@ -288,10 +290,12 @@ Remaining product features are deliberately deferred until after launch; see
   code once the metric names have settled on the host. Dashboards stay manual
   imports and are not backed up.
 
-- [ ] Strengthen `AccountServiceTest`: it has two tests for a nine-method
+- [x] Strengthen `AccountServiceTest`: it has two tests for a nine-method
   service and mocks `PasswordService`, so `changePassword` could store a bad
   hash and still pass; create/update conflicts and `isAvailable` self-exclusion
-  are untested. Use a real `PasswordService` for the password path.
+  are untested. Use a real `PasswordService` for the password path. (resolved
+  2026-11 - nine tests, real BCrypt encoder, create/update/profile conflicts and
+  self-exclusion covered; `mvn test` green.)
 - [x] Decide whether correcting a subscriber to their own current address should
   be a no-op. (resolved in PH-3 - a same-address correction writes nothing and
   sends nothing; Studio distinguishes unchanged, confirmation-sent and
