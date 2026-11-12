@@ -25,21 +25,6 @@ export interface SubmissionFormOptions<Input, Result> {
 	success?: (result: Result) => ReactNode;
 }
 
-/*
- * Pre-typed call shape. It compiles unchanged but cannot catch renamed domain
- * fields; new code must describe its controls with `fields`.
- * @deprecated use `fields` so names, defaults and coercion stay typed.
- */
-export interface LegacySubmissionFormOptions<Input, Result> {
-	schema: z.ZodType<Input>;
-	submit: (data: Input) => Promise<Result>;
-	/** @deprecated coercion list replaced by field kinds (`fields`). */
-	numberFields?: readonly string[];
-	defaults?: Record<string, unknown>;
-	getResultError?: (result: Result) => string | null;
-	success?: (result: Result) => ReactNode;
-}
-
 export interface SubmissionFormState<Input> {
 	onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 	onChange: () => void;
@@ -56,15 +41,6 @@ export interface SubmissionFormState<Input> {
 
 export function useSubmissionForm<Input, Result>(
 	options: SubmissionFormOptions<Input, Result>,
-): SubmissionFormState<Input>;
-/** @deprecated legacy untyped call shape; kept compiling for its consumers. */
-export function useSubmissionForm<Input, Result>(
-	options: LegacySubmissionFormOptions<Input, Result>,
-): SubmissionFormState<Input>;
-export function useSubmissionForm<Input, Result>(
-	options:
-		| SubmissionFormOptions<Input, Result>
-		| LegacySubmissionFormOptions<Input, Result>,
 ): SubmissionFormState<Input> {
 	const { schema, submit, getResultError, success: renderSuccess } = options;
 	const [invalid, setInvalid] = useState(false);
@@ -77,14 +53,11 @@ export function useSubmissionForm<Input, Result>(
 		event.preventDefault();
 		if (mutation.isPending) return;
 		const form = new FormData(event.currentTarget);
-		const values =
-			"fields" in options
-				? coerceSubmissionValues(form, options.fields, options.defaults ?? {})
-				: readFormValues(
-						form,
-						options.defaults ?? {},
-						options.numberFields ?? [],
-					);
+		const values = coerceSubmissionValues(
+			form,
+			options.fields,
+			options.defaults ?? {},
+		);
 		const result = schema.safeParse(values);
 		setInvalid(!result.success);
 		if (result.success) {
@@ -101,12 +74,7 @@ export function useSubmissionForm<Input, Result>(
 	let error = resultError;
 	if (mutation.isError) error = m.error_generic();
 	if (invalid) {
-		error =
-			"fields" in options
-				? errors.form
-					? validationMessage(errors.form)
-					: null
-				: m.required();
+		error = errors.form ? validationMessage(errors.form) : null;
 	}
 
 	return {
@@ -128,20 +96,6 @@ export function useSubmissionForm<Input, Result>(
 }
 
 const emptySubmissionErrors = { fields: {}, form: null } as const;
-
-// Legacy coercion: the pre-typed call sites rely on this exact behavior.
-function readFormValues(
-	form: FormData,
-	defaults: Record<string, unknown>,
-	numberFields: readonly string[],
-) {
-	const values: Record<string, unknown> = {
-		...defaults,
-		...Object.fromEntries(form),
-	};
-	for (const name of numberFields) values[name] = Number(values[name]);
-	return values;
-}
 
 export function validationMessage(reason: SubmissionErrorReason): string {
 	switch (reason) {
