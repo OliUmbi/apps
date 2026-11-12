@@ -13,6 +13,9 @@ ContainerName=postgres-exporter
 Network=net-apps.network
 Network=net-monitoring.network
 EnvironmentFile=/etc/default/apps-postgres-exporter
+# The image runs unprivileged; no capabilities are needed.
+DropCapability=ALL
+NoNewPrivileges=true
 Pull=missing
 LogDriver=journald
 

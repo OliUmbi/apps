@@ -17,6 +17,9 @@ Volume=/apps/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
 Volume=/apps/monitoring/alerts.yml:/etc/prometheus/alerts.yml:ro
 Volume=data-prometheus.volume:/prometheus
 PublishPort={{ monitoring_bind }}:9090:9090
+# The image runs unprivileged; no capabilities are needed.
+DropCapability=ALL
+NoNewPrivileges=true
 Pull=missing
 LogDriver=journald
 

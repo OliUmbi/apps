@@ -13,6 +13,9 @@ ContainerName=alertmanager
 Network=net-monitoring.network
 Volume=/apps/monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
 PublishPort={{ monitoring_bind }}:9093:9093
+# The image runs unprivileged; no capabilities are needed.
+DropCapability=ALL
+NoNewPrivileges=true
 Pull=missing
 LogDriver=journald
 

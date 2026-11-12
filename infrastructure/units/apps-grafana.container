@@ -18,6 +18,9 @@ Environment=GF_USERS_ALLOW_SIGN_UP=false
 Volume=/apps/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
 Volume=data-grafana.volume:/var/lib/grafana
 PublishPort={{ monitoring_bind }}:3000:3000
+# The image runs as uid 472; no capabilities are needed.
+DropCapability=ALL
+NoNewPrivileges=true
 Pull=missing
 LogDriver=journald
 

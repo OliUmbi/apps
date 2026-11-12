@@ -10,6 +10,9 @@ Network=net-apps.network
 Network=net-monitoring.network
 Exec=--config.file=/etc/blackbox-config.yml
 Volume=/apps/monitoring/blackbox.yml:/etc/blackbox-config.yml:ro
+# The image runs as root but needs no capabilities for HTTP/TCP probes.
+DropCapability=ALL
+NoNewPrivileges=true
 Pull=missing
 LogDriver=journald
 

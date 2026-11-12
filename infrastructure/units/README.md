@@ -62,9 +62,9 @@ root. That is the host boundary. The container processes are not all root:
 | monitoring | the image defaults (nobody/grafana) |
 
 Check a running container with `podman inspect --format '{{.Config.User}}'
-<name>` and `podman exec <name> id`. The eight application/site units drop all
-capabilities and set `NoNewPrivileges=true`; postgres, caddy and the migrator
-keep what their entrypoints need.
+<name>` and `podman exec <name> id`. The application/site units and all six
+monitoring units drop all capabilities and set `NoNewPrivileges=true`; postgres,
+caddy and the migrator keep what their entrypoints need.
 
 A full rootless stack is a post-launch project
 ([TD-23](../../documentation/work/tech-debt.md#td-23)): it needs a dedicated

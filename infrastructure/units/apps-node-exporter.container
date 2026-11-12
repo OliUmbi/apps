@@ -23,6 +23,9 @@ Volume=/var/lib/node-exporter-textfile:/textfile:ro
 Volume=/run/dbus/system_bus_socket:/run/dbus/system_bus_socket:ro
 Volume=/run/systemd:/run/systemd:ro
 PublishPort={{ monitoring_bind }}:9100:9100
+# Host reads are root-owned read-only mounts, not capabilities.
+DropCapability=ALL
+NoNewPrivileges=true
 Pull=missing
 LogDriver=journald
 

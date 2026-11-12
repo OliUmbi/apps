@@ -37,8 +37,10 @@ in place and keep the commit.
   (monitoring binds to the WireGuard address).
   Evidence:
 - [ ] **Privileges** The eight app containers run as their image's unprivileged
-  `app` user (assets is pinned to uid 100) with `NoNewPrivileges`; postgres runs
-  as 70; Caddy and the migrator keep their image defaults, accepted by TD-23.
+  `app` user (assets is pinned to uid 100) with `NoNewPrivileges`; the six
+  monitoring containers also drop all capabilities and set `NoNewPrivileges`.
+  Postgres runs as 70; Caddy and the migrator keep their image defaults, accepted
+  by TD-23.
   Check: `podman inspect --format '{{.Config.User}}' <name>` and
   `podman exec <name> id`; `podman inspect <name> | grep -i no-new-privileges`.
   Evidence:
