@@ -109,6 +109,16 @@ jobs:
       - name: pnpm build
         run: pnpm build
 
+      # The build regenerates the committed route trees; a stale tree would
+      # otherwise pass typecheck against the old file and build against the new.
+      - name: route trees are committed
+        run: |
+          if ! git diff --quiet -- 'sites/*/src/routeTree.gen.ts'; then
+            git --no-pager diff --stat -- 'sites/*/src/routeTree.gen.ts'
+            echo "::error::routeTree.gen.ts is stale - run pnpm build and commit the regenerated tree"
+            exit 1
+          fi
+
   java:
     name: services (mvnw test)
     runs-on: ubuntu-latest
@@ -159,6 +169,25 @@ jobs:
       # same Maven version the READMEs document, so CI and local runs agree.
       - name: services/mvnw -f services/pom.xml test
         run: services/mvnw -B -ntp -f services/pom.xml test
+
+      # Persistence suites self-disable when the URL is missing. Check the three
+      # suite reports rather than a module-wide skipped count, because the
+      # assets module legitimately skips its Windows-only junction test on Linux.
+      - name: persistence suites must run
+        run: |
+          set -eu
+          for report in \
+            services/identity/target/surefire-reports/ch.oliumbi.identity.repositories.IdentityPersistenceTest.txt \
+            services/messaging/target/surefire-reports/ch.oliumbi.messaging.repositories.MessagingPersistenceTest.txt \
+            services/assets/target/surefire-reports/ch.oliumbi.assets.repositories.AssetsPersistenceTest.txt; do
+            test -f "$report" || { echo "::error::$report missing - the suite did not run"; exit 1; }
+            grep -Eq 'Tests run: [1-9][0-9]*, Failures: 0, Errors: 0, Skipped: 0, ' "$report" \
+              || { echo "::error::$report: $(tail -n 1 "$report")"; exit 1; }
+          done
+          if grep -Rqs 'Environment variable \[STUDIO_TEST_ADMIN_URL\] does not exist' services/*/target/surefire-reports; then
+            echo "::error::a persistence suite disabled itself - STUDIO_TEST_ADMIN_URL is missing"
+            exit 1
+          fi
 
   # Build only, never push: this is the PR-time guard for Dockerfile, base-image
   # and Caddy-plugin breakage (DR-13). Same matrix as publish.yml, including the

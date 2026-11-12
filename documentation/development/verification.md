@@ -11,7 +11,7 @@ commands, so a green local run and a green CI run mean the same thing.
 | any `web/packages/*` | the above **plus** `pnpm --filter studio build` |
 | `services/**` | `services\mvnw.cmd -f services/pom.xml test` from the repository root |
 | `database/migrations/**` | apply migrations to a fresh local database, then the web and service suites that touch the model |
-| `infrastructure/compose.dev.yaml` | `docker compose -f infrastructure/compose.dev.yaml config` |
+| `infrastructure/compose.dev.yaml` | `docker compose -f infrastructure/compose.dev.yaml config` (local only; CI deliberately does not depend on the dev rig) |
 | `infrastructure/units/**` or `ansible/**` | CI generates the units and syntax-checks the playbooks; verify on the rebuilt server before trusting a deploy |
 | `documentation/**` | read the affected page, check links, and confirm the fact has one owner |
 
@@ -42,7 +42,8 @@ What they mean:
   directly and fails if anything skips.
 - `build` builds all five sites (including the static Oliumbi placeholder).
   Studio is the broadest consumer of shared packages, which is why it has its
-  own required build.
+  own required build. CI fails if the build regenerated a committed
+  `routeTree.gen.ts`; run the build and commit the tree after changing routes.
 
 ## Java services
 
