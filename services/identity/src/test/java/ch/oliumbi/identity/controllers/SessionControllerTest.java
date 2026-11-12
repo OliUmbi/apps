@@ -83,4 +83,24 @@ class SessionControllerTest {
         assertThat(bearerErrorId).isNotNull();
         assertThat(sessionErrorId).isNotNull();
     }
+
+    @Test
+    void aPasswordLongerThanBcryptAcceptsIsAValidationError() throws Exception {
+        mvc.perform(post("/session")
+                        .header("Authorization", "Bearer " + TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"Olive\",\"password\":\"" + "a".repeat(73) + "\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[?(@.field == 'password')]").isNotEmpty());
+    }
+
+    @Test
+    void aTokenLongerThanAnyIssuedTokenIsAValidationError() throws Exception {
+        mvc.perform(post("/session/validate")
+                        .header("Authorization", "Bearer " + TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"token\":\"" + "a".repeat(65) + "\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[?(@.field == 'token')]").isNotEmpty());
+    }
 }
