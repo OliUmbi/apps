@@ -33,9 +33,9 @@ services:
         condition: service_healthy
 
   # Migrations create the application roles as NOLOGIN without passwords; this
-  # one-shot provisioner grants login credentials per environment (see
-  # database/README.md). Production must provision equivalent statements from
-  # the vault before applications start; DR-04 tracks that missing Ansible step.
+  # one-shot provisioner grants the development login credentials (see
+  # database/README.md). Production does the same from the vault in the Ansible
+  # `app` role after `apps-migrate` and before the services start.
   roles:
     image: postgres:18-alpine
     environment:
