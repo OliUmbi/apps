@@ -17,8 +17,8 @@ Workflows live in `.github/workflows/`:
 | --- | --- |
 | `web` | PostgreSQL 18 service + Flyway migrate, `pnpm install --frozen-lockfile`, `pnpm check`, `pnpm typecheck`, `pnpm test`, `pnpm build` (five sites) |
 | `java` | JDK 25, `services/mvnw -B -ntp -f services/pom.xml test` (includes Checkstyle) |
-| `images` | build-only, same matrix as publish; no push. Catches Dockerfile, base-image and Caddy-plugin breakage on pull requests |
-| `deployment` | every Quadlet unit generates a `.service` under podman 5.8.9; every Ansible playbook passes `--syntax-check` |
+| `images` | build-only, same matrix as publish; no push. Catches Dockerfile, base-image, Caddy-plugin and Caddyfile breakage on pull requests |
+| `deployment` | every Quadlet unit generates a `.service` under podman 5.8.9; every Ansible playbook passes `--syntax-check`; Prometheus, Alertmanager and blackbox configs validate |
 | `security` | `gitleaks` over the checkout (a committed secret fails immediately) and a report-only `trivy fs` dependency scan |
 
 Details that matter:
