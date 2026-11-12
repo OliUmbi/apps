@@ -26,12 +26,24 @@ export function Canonical({
 	);
 }
 
+/**
+ * Serializes structured data for an inline <script>. JSON.stringify leaves `<`
+ * literal, so a value containing `</script>` would close the element early and
+ * turn the rest into markup. Escaping `<` (and the JS line separators) keeps
+ * every value inert without changing what a JSON parser reads.
+ */
+export function jsonLdText(data: object): string {
+	return JSON.stringify(data)
+		.replace(/</g, "\\u003c")
+		.replace(/\u2028/g, "\\u2028")
+		.replace(/\u2029/g, "\\u2029");
+}
+
 export function JsonLd({ data }: { data: object }): ReactElement {
 	return (
 		<script
 			type="application/ld+json"
-			// JSON.stringify output is data, never markup from a user field.
-			dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+			dangerouslySetInnerHTML={{ __html: jsonLdText(data) }}
 		/>
 	);
 }

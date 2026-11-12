@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
 	absoluteUrl,
+	jsonLdText,
 	localBusinessJsonLd,
 	organizationJsonLd,
 } from "../packages/seo/src/index";
@@ -51,6 +52,16 @@ test("local business data carries the postal address", () => {
 		addressCountry: "CH",
 	});
 	assert.equal(data.email, "info@uncle-t.ch");
+});
+
+test("structured data cannot close the script element", () => {
+	const text = jsonLdText({
+		"@type": "Organization",
+		name: '</script><script>alert("x")</script>',
+	});
+	assert.ok(!text.includes("</script>"));
+	assert.ok(text.includes("\\u003c/script>"));
+	assert.equal(JSON.parse(text).name, '</script><script>alert("x")</script>');
 });
 
 test("an organization stays minimal without an address", () => {
