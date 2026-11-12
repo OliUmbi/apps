@@ -1,6 +1,6 @@
 # Base images are pinned as tag@digest across web/sites/* and services/*;
 # bump the tag and the digest together.
-FROM node:26-alpine3.24@sha256:8996bb5821d62a8fd9bb27c1cb07462f3fdce6e47d640c6a881ead0b064ce216 AS build
+FROM node:26-alpine3.24@sha256:6bd9ab43c0ec0190ca7b2d193906cb8b7edf6e7f4afa43ddeccd6452710bffb5 AS build
 
 WORKDIR /workspace
 # Node 25+ images no longer bundle corepack, so install it pinned; the pnpm
@@ -15,7 +15,7 @@ RUN pnpm install --frozen-lockfile
 COPY web/sites/zelglihof/ sites/zelglihof/
 RUN pnpm run build:zelglihof
 
-FROM node:26-alpine3.24@sha256:8996bb5821d62a8fd9bb27c1cb07462f3fdce6e47d640c6a881ead0b064ce216
+FROM node:26-alpine3.24@sha256:6bd9ab43c0ec0190ca7b2d193906cb8b7edf6e7f4afa43ddeccd6452710bffb5
 ENV NODE_ENV=production
 ENV PORT=8003
 WORKDIR /app
