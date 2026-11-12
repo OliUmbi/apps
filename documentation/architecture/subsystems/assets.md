@@ -54,7 +54,9 @@ tracking is process-local.
 
 1. A site server function calls the public assets endpoint without management
    credentials. Assets checks visibility, then returns the rendition with a
-   content-derived `ETag` and explicit `Cache-Control`.
+   content-derived `ETag` and explicit `Cache-Control`. Images are wired this way;
+   the document equivalent exists in the service but has no site proxy or edge
+   consumer yet, so current PDFs ship as static files.
 2. A conditional request returns 304.
 3. Unknown ids and mismatched sites return 404 everywhere, including deletion.
 

@@ -12,6 +12,10 @@ token.
 - Document upload accepts PDFs and preserves their bytes.
 - Images are addressed by UUID; documents have a globally unique slug.
 - Content responses include content-derived ETags and explicit cache policies.
+- Public image reads are wired through the site servers. Public document reads
+  (`GET /documents/{slug}`) exist and are tested, but no site route or edge proxy
+  consumes them yet; published PDFs are static files. Add a site proxy when a
+  document needs to become dynamic.
 - Visibility can change, but stored content is immutable. Replacing content
   creates a new asset.
 - Unknown ids and mismatched sites return 404 everywhere, including deletion:

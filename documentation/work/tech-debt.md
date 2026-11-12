@@ -41,10 +41,11 @@ debt: it is listed so it is not rediscovered as a surprise.
 | [TD-18](#td-18) | Services: bearer check runs after request binding | P3 | open |
 | [TD-22](#td-22) | Operations: retention runs in the housekeeping shell script | P3 | accepted |
 | [TD-23](#td-23) | Operations: rootful Quadlet services | P2 | accepted |
+| [TD-24](#td-24) | Edge: Caddy admin API trust boundary | P3 | accepted |
 
 Open counts: 1 P1, 0 P2, 1 P3. Accepted: TD-13 (P3), TD-15 (P2), TD-16 (P2),
-TD-22 (P3) and TD-23 (P2); accepted debt stays listed. Every other entry is
-resolved. The 2026-10 refactor
+TD-22 (P3), TD-23 (P2) and TD-24 (P3); accepted debt stays listed. Every other
+entry is resolved. The 2026-10 refactor
 resolved most findings in the [code quality review](../history/code-quality-review.md);
 their dispositions remain there as evidence and are not repeated here.
 
@@ -268,9 +269,9 @@ Encrypt rate limits.
 **The Quadlet services run rootful.** Systemd starts podman and conmon as root,
 so a podman/conmon or bind-mount mistake has host-root impact. The application
 images already run as their own unprivileged `app` user (the assets image pins
-uid 100 for the media mount), postgres drops to uid 70, and the eight app units
-drop all capabilities with `NoNewPrivileges=true`; Caddy and the Flyway migrator
-keep their image defaults.
+uid 100 for the media mount), postgres drops to uid 70, and the app/site and
+monitoring units drop all capabilities with `NoNewPrivileges=true`; Caddy and the
+Flyway migrator keep their image defaults.
 
 - **Next action:** evaluate rootless podman on a spare host after launch. Keep
   Caddy (80/443) and node-exporter (host `/proc`, dbus) in the test. The change
@@ -365,7 +366,9 @@ service has a narrow `@DataJpaTest` persistence suite against the same migrated
 database (CI provisions it): `ddl-auto=validate` catches entity/schema drift,
 and the tests pin the native queue/delivery/permission queries, the lifecycle
 CHECK constraints and one `SKIP LOCKED` claim. Broader end-to-end service
-integration (HTTP plus JPA) remains accepted debt.*
+integration (HTTP plus JPA) remains accepted debt. The web environment package
+is build-time Vite glue exercised by every site build; no unit test is warranted
+there either.*
 
 ### TD-17
 
@@ -414,6 +417,23 @@ into a second data-access layer.
 fail closed (metric written last) and covered by `HousekeepStale`. The trigger
 to revisit is a second retention rule that needs per-row logic or another
 environment.*
+
+### TD-24
+
+**Caddy's admin API is unauthenticated on `net-apps`.** Prometheus needs
+`caddy:2019` for `/metrics`, but every app/site/service container can also reach
+`POST /load` and rewrite routing or rate limits. That is acceptable while the
+network contains only first-party containers; it is a real boundary lapse if an
+untrusted workload joins it.
+
+- **Next action:** when the network gains untrusted containers, move the admin
+  listener to a unix socket or a dedicated metrics sidecar and let Prometheus
+  scrape only that path. Keep the trust note until then.
+- **Source:** 2026-11 second review (R-13).
+
+*Disposition (2026-11): accepted (TD-24) - single-tenant network; the boundary is
+now stated in the Caddyfile, [monitoring](../operations/monitoring.md) and
+[network surfaces](../operations/network-surfaces.md).*
 
 ## Accepted limitations (not debt)
 

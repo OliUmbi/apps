@@ -162,6 +162,10 @@ Deployment shape: ghcr images pinned by tag, systemd units from
 - [ ] [verify] Backups are scripted (`ansible/files/backup.sh`, nightly timer):
   confirm the timer runs on the server and the workstation pull
   (`pull-backups.sh`) receives the archive.
+- [ ] [verify] Install the workstation pull as a Task Scheduler job
+  ([backup](../operations/runbooks/backup.md#pull-to-the-workstation)), record one
+  real pull, and confirm the stale warning on an old copy. The server cannot
+  alert on an off-host copy; the external dead-man check covers that gap.
 - [ ] [owner] Restore drill on its own machine (D14): rebuild from zero and
   restore a pulled backup (globals, `pg_restore`, media tar), verify relative
   checksums, re-issue Caddy certificates, then walk Studio and every site. The
@@ -318,6 +322,10 @@ Remaining product features are deliberately deferred until after launch; see
   rules for messages, tokens and personal data.
 - [ ] After launch by the go-live plan: clarify image publication and retention
   when linked content outlives an image.
+- [ ] Wire public document retrieval when a site needs it: the assets service
+  implements `GET /documents/{slug}`, but no site proxy or edge route consumes
+  it yet; current PDFs are static files. Alternatively remove the unused public
+  path and keep only the management API.
 - [ ] Replace the static Oliumbi placeholder with real content when it exists;
   the placeholder site and apex route are built.
 - [ ] Translate the remaining hard-coded labels and content in Studio and the
@@ -326,7 +334,7 @@ Remaining product features are deliberately deferred until after launch; see
   titles, slug-field and asset labels now use the catalog. Remaining: English
   schema validation messages that reach the editor, the `gelöscht` edge labels,
   audit action codes/summaries, message status labels, and the Zelglihof
-  transactional email copy. Detailed inventory: the 2026-11 translation audit.)
+  transactional email copy.)
 - [x] Paraglide URL translation (`/kontakt`, `/produkte`, ...). (implemented in
   PH-9 - German public paths via `urlPatterns`, English route ids, sitemaps
   updated; `i18n-urls` test pins the mapping.) The remaining hard-coded TSX

@@ -20,6 +20,7 @@ now, use [architecture](../architecture/README.md).
 | [Build and deployment review](deployment-review-2026-11.md) | 2026-11 | review complete; P1 blockers open |
 | [Pre-launch hardening plan](pre-launch-hardening-plan-2026-11.md) | 2026-11 | closed; host/CI evidence and the PH-9/PH-10/PH-11 remainder are tracked in the registers |
 | [First go-live review](go-live-review-2026-11.md) | 2026-11 | review complete; RV-01–RV-04 open, RV-05 fixed |
+| [Second code review](code-review-2026-11-second.md) | 2026-11-13 | dispositions recorded; R-10/R-11/R-13/R-14/R-15 carry live notes |
 
 ## Rules
 
