@@ -41,6 +41,11 @@ Two consequences are easy to violate: a component must never import a route,
 and Drizzle must never leak outside a `*-data` package. Studio may import a
 site's data package; a site may not import Studio.
 
+Studio's audit table is the one deliberate exception: its query declaration lives
+in `web/sites/studio/src/server/audit.schema.ts` because a one-table `studio-data`
+package would be disproportionate, and `@oliumbi/database` must stay
+table-agnostic. Flyway V006 still owns the table and constraints.
+
 ## Layer 1 - edge
 
 Caddy is the only process reachable from the internet. It terminates TLS with

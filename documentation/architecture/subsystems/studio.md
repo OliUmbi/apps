@@ -26,6 +26,10 @@ web/sites/studio/src/
   server/content/    per-site management server functions
 ```
 
+- **Audit declaration:** `server/audit.schema.ts` keeps the `studio.audit_event`
+  query type in the application layer. This is the documented Drizzle exception
+  for one table; Flyway V006 owns the actual table and constraints, and the
+  table-agnostic `@oliumbi/database` package stays unchanged.
 - **Navigation** is one workspace route with search parameters, not a route per
   collection. `StudioSearchContext` carries navigation top-down. This keeps the
   session and editor state stable.
