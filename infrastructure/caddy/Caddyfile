@@ -15,6 +15,9 @@
 	acme_dns infomaniak {env.INFOMANIAK_API_TOKEN}
 	# Prometheus scrapes the admin endpoint on the private app network. The
 	# admin port is never published; only Caddy's 80/443 leave the host.
+	# Trust boundary: every container on net-apps can reach this unauthenticated
+	# API and rewrite routing. That is accepted for this single-tenant network;
+	# a socket or sidecar is the structural fix if the network grows tenants.
 	admin :2019
 	metrics
 }

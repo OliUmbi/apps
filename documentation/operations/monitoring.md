@@ -87,7 +87,10 @@ webhook URL lives in the vault as `vault_ntfy_webhook_url` and is rendered into
 `alertmanager.yml`.
 
 The Caddy admin listener is bound to `:2019` inside the app network only; it
-carries `/metrics` and is never published. The three services expose
+carries `/metrics` and is never published. It is unauthenticated, so any
+container on `net-apps` can rewrite Caddy config; that trust boundary is accepted
+for this single-tenant network (a socket or sidecar is the structural fix if the
+network grows untrusted containers). The three services expose
 `/actuator/prometheus` on the private network, and `postgres_exporter` connects
 as the read-only `monitoring` role (`pg_monitor`): statistics are visible,
 application rows are not.
