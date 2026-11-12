@@ -16,7 +16,10 @@ export function TrafficView({ site }: { site: SiteId }) {
 	const summary = query.data;
 	return (
 		<div className="grid gap-6">
-			<PageHeader kicker="SITE / TRAFFIC" title={m.studio_traffic()} />
+			<PageHeader
+				kicker={m.studio_traffic_kicker()}
+				title={m.studio_traffic()}
+			/>
 			<Body>{m.studio_traffic_description()}</Body>
 			<Alert>{query.isError ? m.error_generic() : null}</Alert>
 			{query.isPending && <p>{m.loading()}</p>}
@@ -31,7 +34,9 @@ export function TrafficView({ site }: { site: SiteId }) {
 						<table className="w-full text-left text-sm">
 							<thead className="text-ink/55">
 								<tr>
-									<th className="py-1 font-normal">Route</th>
+									<th className="py-1 font-normal">
+										{m.studio_traffic_route()}
+									</th>
 									<th className="py-1 text-right font-normal">
 										{m.studio_traffic_views()}
 									</th>

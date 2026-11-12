@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { reservationSchema } from "../packages/zelglihof-data/src/forms";
+import { inquiryNotification } from "../packages/zelglihof-data/src/inquiry.email";
 import { formatArticleDate } from "../sites/zelglihof/src/model/dates";
 import { absoluteUrl, siteOrigin } from "../sites/zelglihof/src/model/links";
 
@@ -15,6 +16,24 @@ const reservation = {
 	quantity: 1,
 	note: "",
 };
+
+test("the admin inquiry email labels its fields in German", () => {
+	const mail = inquiryNotification(
+		{
+			submissionId: id,
+			name: "Anna Meier",
+			email: "",
+			phone: "079 123 45 67",
+			subject: "hofladen",
+			message: "Habt ihr noch Eier?",
+		},
+		"REF-1234",
+		"hof@zelglihof-maegenwil.ch",
+	);
+	assert.match(mail.text, /Anliegen: Hofladen/);
+	assert.match(mail.text, /E-Mail: —/);
+	assert.match(mail.text, /Referenz: REF-1234/);
+});
 
 test("article dates render in the pinned de-CH locale with the midday anchor", () => {
 	assert.equal(formatArticleDate("2025-06-01"), "1. Juni 2025");

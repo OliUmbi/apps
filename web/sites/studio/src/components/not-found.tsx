@@ -13,7 +13,7 @@ export function NotFound() {
 			code={
 				<>
 					<ScanLine size={18} aria-hidden="true" />
-					<span>ERR / 404</span>
+					<span>{m.studio_error_kicker()}</span>
 				</>
 			}
 		>

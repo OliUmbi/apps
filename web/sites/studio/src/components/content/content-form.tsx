@@ -3,6 +3,7 @@ import { useBlocker } from "@tanstack/react-router";
 import { type ReactNode, useState } from "react";
 import { flushSync } from "react-dom";
 import type { z } from "zod";
+import { studioValidationMessage } from "../../model/validation";
 import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
 import { Form, FormActions, FormFields } from "../ui/form";
@@ -92,7 +93,9 @@ export function ContentForm<Row, Input>({
 					const result = editor.schema.safeParse(values);
 					if (!result.success) {
 						setValidation(
-							result.error.issues.map((issue) => issue.message).join(" · "),
+							result.error.issues
+								.map((issue) => studioValidationMessage(issue))
+								.join(" · "),
 						);
 						return;
 					}

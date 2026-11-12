@@ -31,7 +31,10 @@ export function MessagesView() {
 	const messages = query.data?.pages.flatMap((page) => page.items) ?? [];
 	return (
 		<div className="grid gap-6">
-			<PageHeader kicker="SYSTEM / DELIVERY" title={m.studio_messages()} />
+			<PageHeader
+				kicker={m.studio_messages_kicker()}
+				title={m.studio_messages()}
+			/>
 			<MessageFilters filter={filter} onChange={setFilter} />
 			<Alert>{query.isError ? m.error_generic() : null}</Alert>
 			{query.isPending && <p>{m.loading()}</p>}

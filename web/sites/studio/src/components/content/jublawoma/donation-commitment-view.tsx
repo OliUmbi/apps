@@ -30,10 +30,10 @@ function donationCommitmentCollection(
 			renderDetails: (record) => (
 				<RecordFields>
 					<RecordField label={m.studio_donation()}>
-						{record.donationId ?? "gelöscht"}
+						{record.donationId ?? m.studio_deleted()}
 					</RecordField>
 					<RecordField label={m.studio_donation_item()}>
-						{record.donationItemId ?? "gelöscht"}
+						{record.donationItemId ?? m.studio_deleted()}
 					</RecordField>
 					<RecordField label={m.studio_field_donation_title()}>
 						{record.donationTitle}

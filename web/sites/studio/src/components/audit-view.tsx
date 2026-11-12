@@ -3,6 +3,11 @@ import { m } from "@oliumbi/i18n/messages";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
+import {
+	auditActionLabel,
+	auditEntityLabel,
+	auditSummaryLabel,
+} from "../model/audit";
 import { formatTimestamp } from "../model/dates";
 import { listAudit } from "../server/audit.functions";
 import { Alert } from "./ui/alert";
@@ -21,7 +26,7 @@ export function AuditView() {
 	const events = query.data ?? [];
 	return (
 		<div className="grid gap-6">
-			<PageHeader kicker="SYSTEM / AUDIT" title={m.studio_audit()} />
+			<PageHeader kicker={m.studio_audit_kicker()} title={m.studio_audit()} />
 			<Body>{m.studio_audit_description()}</Body>
 			<div className="flex flex-wrap gap-3">
 				<FilterChip selected={site === null} onClick={() => setSite(null)}>
@@ -43,7 +48,7 @@ export function AuditView() {
 				{events.map((event) => (
 					<ListRow
 						key={event.id}
-						leading={<Body>{event.action}</Body>}
+						leading={<Body>{auditActionLabel(event.action)}</Body>}
 						trailing={
 							<ListMeta detail={formatTimestamp(event.createdAt)}>
 								{event.site ?? "—"}
@@ -51,12 +56,14 @@ export function AuditView() {
 						}
 					>
 						<Title as="h2" size="sm">
-							{event.entity}
+							{auditEntityLabel(event.entity)}
 							{event.entityId ? ` · ${event.entityId.slice(0, 8)}` : null}
 						</Title>
 						<Body>
 							{event.actorName}
-							{event.summary ? ` · ${event.summary}` : null}
+							{event.summary
+								? ` · ${auditSummaryLabel(event.summary) ?? event.summary}`
+								: null}
 						</Body>
 					</ListRow>
 				))}

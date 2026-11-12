@@ -196,11 +196,11 @@ test("a zelglihof inquiry stores the submission and queues the admin email", {
 		for (const value of [
 			input.name,
 			input.phone,
-			input.subject,
 			input.message,
 			referenceFor(input.submissionId),
 		])
 			assert.ok(adminMail?.text.includes(value), `admin mail lacks ${value}`);
+		assert.match(adminMail.text, /Anliegen: Allgemein/);
 	});
 });
 

@@ -80,10 +80,10 @@ function productReservationCollection(
 			<div className="grid gap-4">
 				<RecordFields>
 					<RecordField label={m.product()}>
-						{record.productId ?? "gelöscht"}
+						{record.productId ?? m.studio_deleted()}
 					</RecordField>
 					<RecordField label={m.product_variant()}>
-						{record.productVariantId ?? "gelöscht"}
+						{record.productVariantId ?? m.studio_deleted()}
 					</RecordField>
 					<RecordField label={m.studio_field_product_name()}>
 						{record.productName}
