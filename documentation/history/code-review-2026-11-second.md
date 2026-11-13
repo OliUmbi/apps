@@ -18,7 +18,7 @@ review; the historical `R-*` IDs in
 | R-05 | Stale “unused oliumbi” role comment | fixed in `1cd19de` |
 | R-06 | Dev compose ports bound to every interface | fixed in `4697e1b` |
 | R-07 | Four sites had no nearby README | fixed in `9fe0f00` |
-| R-08 | Missing FK indexes on site schemas | fixed in `c94b22f` |
+| R-08 | Missing FK indexes on site schemas | fixed in `c94b22f`; the `article_image.image_id` miss was completed in a follow-up |
 | R-09 | Unnamed messaging lifecycle CHECKs | fixed in `c94b22f` |
 | R-10 | Queue partial index needed only for a second channel | noted at the index in `c94b22f`; no change now |
 | R-11 | Public document endpoint has no site/edge consumer | removed in `0135aed`; documents stay management-only |
@@ -30,7 +30,7 @@ review; the historical `R-*` IDs in
 | R-17 | Stale committed route trees could pass CI | fixed in `3691a3f` |
 | R-18 | Compose config check documented as CI but local-only | docs corrected in `3691a3f` |
 | R-19 | i18n package excluded its own `vite.ts` | fixed in `3e7bf34` |
-| R-20 | Messaging/environment packages lacked direct tests | messaging contract test in `2031878`; environment accepted as build-time glue in TD-13 |
+| R-20 | Messaging/environment packages lacked direct tests | messaging contract and attempt tests in `2031878` plus a follow-up; environment accepted as build-time glue in TD-13 |
 | R-21 | Dangling “translation audit” reference | removed with the review docs |
 | R-22 | Register bookkeeping | this table plus the register entries above |
 
