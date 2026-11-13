@@ -163,6 +163,7 @@ CREATE UNIQUE INDEX inquiry_submission_id_idx ON zelglihof.inquiry (submission_i
 -- deletes (cascade/SET NULL) and the scoped repository reads.
 CREATE INDEX promotion_image_id_idx ON zelglihof.promotion (image_id);
 CREATE INDEX article_image_id_idx ON zelglihof.article (image_id);
+CREATE INDEX article_image_image_id_idx ON zelglihof.article_image (image_id);
 CREATE INDEX product_image_id_idx ON zelglihof.product (image_id);
 CREATE INDEX product_variant_product_id_idx ON zelglihof.product_variant (product_id);
 CREATE INDEX product_variant_image_id_idx ON zelglihof.product_variant (image_id);
