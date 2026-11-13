@@ -19,7 +19,7 @@ export const messageSchema = z.object({
 	updatedAt: z.string(),
 });
 export const attemptSchema = z.object({
-	attemptNumber: z.number(),
+	attemptNumber: z.number().int().positive(),
 	outcome: z.string().nullable(),
 	detail: z.object({ code: z.string(), message: z.string() }).nullable(),
 	startedAt: z.string(),
