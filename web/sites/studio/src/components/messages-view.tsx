@@ -36,7 +36,7 @@ export function MessagesView() {
 				title={m.studio_messages()}
 			/>
 			<MessageFilters filter={filter} onChange={setFilter} />
-			<Alert>{query.isError ? m.error_generic() : null}</Alert>
+			{query.isError ? <Alert>{m.error_generic()}</Alert> : null}
 			{query.isPending && <p>{m.loading()}</p>}
 			<MessageList messages={messages} onOpen={setSelected} />
 			{messages.length === 0 && query.isSuccess && <p>{m.empty()}</p>}

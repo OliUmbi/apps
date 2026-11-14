@@ -18,7 +18,7 @@ export function ProfileView() {
 				description={m.studio_profile_description()}
 			/>
 			{profile.isPending ? <p>{m.loading()}</p> : null}
-			<Alert>{profile.isError ? m.error_generic() : null}</Alert>
+			{profile.isError ? <Alert>{m.error_generic()}</Alert> : null}
 			{profile.data ? (
 				<div className="grid grid-cols-2 gap-4 items-start max-md:grid-cols-1">
 					<ProfileDetailsForm

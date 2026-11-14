@@ -96,22 +96,71 @@
 	}
 }
 
-/* A numbered management index: one task per row, aligned like an editorial
- * table of contents rather than a collection of decorative cards. */
+/* The only expressive surface inside the workspace. It establishes the site;
+ * the directory beneath it returns to a strict, practical two-column grid. */
+.overview-hero {
+	position: relative;
+	display: flex;
+	min-height: 260px;
+	align-items: flex-end;
+	justify-content: space-between;
+	overflow: hidden;
+	border: 1px solid var(--color-line-subtle);
+	border-radius: var(--radius-panel);
+	padding: 32px;
+}
+
+.overview-domain {
+	font-family: var(--font-mono);
+	font-size: 0.7rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+}
+
+.overview-hero h1 {
+	max-width: 12ch;
+	margin-top: 12px;
+	font-size: clamp(2.5rem, 5vw, 4.5rem);
+	font-weight: 600;
+	letter-spacing: -0.06em;
+	line-height: 0.95;
+}
+
+.overview-hero h1 + p {
+	max-width: 44ch;
+	margin-top: 20px;
+	color: var(--color-fg);
+	font-size: 0.9375rem;
+	line-height: 1.5;
+}
+
+.overview-site-code {
+	position: relative;
+	z-index: 1;
+	align-self: flex-start;
+	font-family: var(--font-mono);
+	font-size: 0.75rem;
+	letter-spacing: 0.12em;
+}
+
 .overview-directory {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
 	border-top: 1px solid var(--color-line);
+	border-left: 1px solid var(--color-line);
 }
 
 .overview-card {
 	display: grid;
 	width: 100%;
-	min-height: 96px;
-	grid-template-columns: 48px minmax(180px, 0.65fr) minmax(0, 1fr) 24px;
-	align-items: center;
-	gap: 24px;
+	min-height: 184px;
+	grid-template-columns: minmax(0, 1fr) auto;
+	grid-template-rows: auto 1fr auto;
 	border: 0;
-	border-bottom: 1px solid var(--color-line-subtle);
-	padding: 20px 16px;
+	border-right: 1px solid var(--color-line);
+	border-bottom: 1px solid var(--color-line);
+	padding: 24px;
 	color: var(--color-fg-muted);
 	background: transparent;
 	text-align: left;
@@ -123,6 +172,8 @@
 }
 
 .overview-index {
+	grid-column: 1;
+	grid-row: 1;
 	color: var(--color-fg-faint);
 	font-family: var(--font-mono);
 	font-size: 0.72rem;
@@ -130,10 +181,14 @@
 }
 
 .overview-card-title {
+	grid-column: 1 / -1;
+	grid-row: 2;
+	align-self: end;
+	margin-top: 28px;
 	color: var(--color-fg);
-	font-size: 1.25rem;
+	font-size: 1.4rem;
 	font-weight: 600;
-	letter-spacing: -0.025em;
+	letter-spacing: -0.03em;
 }
 
 .overview-card:hover .overview-card-title {
@@ -141,30 +196,57 @@
 }
 
 .overview-card-description {
+	grid-column: 1 / -1;
+	grid-row: 3;
 	max-width: 52ch;
+	margin-top: 8px;
 	color: var(--color-fg-muted);
 	font-size: 0.875rem;
 	line-height: 1.5;
 }
 
 .overview-card-arrow {
+	grid-column: 2;
+	grid-row: 1;
 	color: var(--color-fg-subtle);
 }
 
+.editor-actions {
+	position: relative;
+	overflow: hidden;
+	border: 1px solid var(--color-line-subtle);
+	border-radius: var(--radius-panel);
+	background: var(--color-layer-1);
+}
+
+.editor-actions::before {
+	position: absolute;
+	inset: -48px -48px auto;
+	height: 160px;
+	pointer-events: none;
+	content: "";
+	background-image: var(--gradient-tide);
+	filter: blur(32px);
+	opacity: 0.55;
+}
+
+.editor-actions > * {
+	position: relative;
+}
+
 @media (max-width: 760px) {
+	.overview-hero {
+		min-height: 224px;
+		padding: 24px;
+	}
+
+	.overview-directory {
+		grid-template-columns: 1fr;
+	}
+
 	.overview-card {
-		grid-template-columns: 36px minmax(0, 1fr) 24px;
-		gap: 12px;
-		padding-inline: 8px;
-	}
-
-	.overview-card-description {
-		grid-column: 2 / -1;
-	}
-
-	.overview-card-arrow {
-		grid-column: 3;
-		grid-row: 1;
+		min-height: 160px;
+		padding: 20px;
 	}
 }
 

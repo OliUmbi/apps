@@ -149,7 +149,7 @@ export function Collection<Row, Input = never>({
 			{inWorkspace ? (
 				<>
 					{loadingRecord && <p role="status">{m.loading()}</p>}
-					<Alert>{recordError ? m.error_generic() : null}</Alert>
+					{recordError ? <Alert>{m.error_generic()}</Alert> : null}
 					{recordMissing && <p>{m.empty()}</p>}
 					{editable && editing ? (
 						<ContentForm

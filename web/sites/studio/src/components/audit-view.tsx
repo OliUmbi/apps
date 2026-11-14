@@ -42,7 +42,7 @@ export function AuditView() {
 					</FilterChip>
 				))}
 			</div>
-			<Alert>{query.isError ? m.error_generic() : null}</Alert>
+			{query.isError ? <Alert>{m.error_generic()}</Alert> : null}
 			{query.isPending && <p role="status">{m.loading()}</p>}
 			<ListShell>
 				{events.map((event) => (

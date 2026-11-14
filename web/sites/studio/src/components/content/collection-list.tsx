@@ -40,7 +40,7 @@ export function CollectionList<Row>({
 					onChange={(event) => onSearchChange(event.target.value)}
 				/>
 			</div>
-			<Alert>{query.isError ? m.error_generic() : null}</Alert>
+			{query.isError ? <Alert>{m.error_generic()}</Alert> : null}
 			{query.isPending ? (
 				<p role="status">{m.loading()}</p>
 			) : rows.length ? (

@@ -36,7 +36,7 @@ export function DashboardView({
 			onLogout={() => signOut.mutate({})}
 			logoutPending={signOut.isPending}
 		>
-			<Alert>{signOut.isError ? m.error_generic() : null}</Alert>
+			{signOut.isError ? <Alert>{m.error_generic()}</Alert> : null}
 			<WorkspaceContent
 				workspace={workspace}
 				onSelectSection={navigation.selectSection}

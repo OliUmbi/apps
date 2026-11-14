@@ -27,7 +27,7 @@ export function TrafficOverview({ site }: { site: SiteId }) {
 				</Title>
 				<Body>{m.studio_traffic_description()}</Body>
 			</div>
-			<Alert>{query.isError ? m.error_generic() : null}</Alert>
+			{query.isError ? <Alert>{m.error_generic()}</Alert> : null}
 			{query.isPending && <p role="status">{m.loading()}</p>}
 			{summary && summary.total === 0 && (
 				<Body>{m.studio_traffic_empty()}</Body>
