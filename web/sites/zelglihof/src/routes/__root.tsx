@@ -41,7 +41,9 @@ export const Route = createRootRoute({
 			{ property: "og:type", content: "website" },
 			{ name: "theme-color", content: "#24452f" },
 		],
-		links: [{ rel: "icon", href: "/favicon.svg", type: "image/svg+xml" }],
+		// The query keeps browsers from reusing the old cached favicon after the
+		// farm logo replaced the previous mark.
+		links: [{ rel: "icon", href: "/favicon.svg?v=2", type: "image/svg+xml" }],
 	}),
 	component: RootComponent,
 	shellComponent: RootDocument,
