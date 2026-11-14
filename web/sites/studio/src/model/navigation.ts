@@ -56,9 +56,7 @@ export interface StudioWorkspace {
 export interface StudioNavigation {
 	selectSite: (site: SiteId) => void;
 	selectSection: (section: StudioSectionId) => void;
-	openAdministration: () => void;
 	openProfile: () => void;
-	returnToSite: () => void;
 }
 
 export function resolveStudioWorkspace(

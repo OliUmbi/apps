@@ -4,13 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { listTraffic } from "../server/traffic.functions";
 import { Alert } from "./ui/alert";
-import { PageHeader } from "./ui/page-header";
 import { Panel } from "./ui/panel";
-import { Body } from "./ui/text";
+import { Body, Title } from "./ui/text";
 
 const cellClass = "border-t border-line-subtle px-4 py-3";
 
-export function TrafficView({ site }: { site: SiteId }) {
+export function TrafficOverview({ site }: { site: SiteId }) {
 	const list = useServerFn(listTraffic);
 	const query = useQuery({
 		queryKey: ["traffic", site],
@@ -18,12 +17,16 @@ export function TrafficView({ site }: { site: SiteId }) {
 	});
 	const summary = query.data;
 	return (
-		<div className="grid gap-6">
-			<PageHeader
-				kicker={m.studio_traffic_kicker()}
-				title={m.studio_traffic()}
-				description={m.studio_traffic_description()}
-			/>
+		<section
+			className="grid gap-5 border-t border-line pt-8"
+			aria-labelledby="traffic-heading"
+		>
+			<div className="grid gap-2">
+				<Title as="h2" size="md">
+					<span id="traffic-heading">{m.studio_traffic()}</span>
+				</Title>
+				<Body>{m.studio_traffic_description()}</Body>
+			</div>
 			<Alert>{query.isError ? m.error_generic() : null}</Alert>
 			{query.isPending && <p role="status">{m.loading()}</p>}
 			{summary && summary.total === 0 && (
@@ -31,8 +34,10 @@ export function TrafficView({ site }: { site: SiteId }) {
 			)}
 			{summary && summary.total > 0 && (
 				<>
-					<Body>{m.studio_traffic_total({ total: summary.total })}</Body>
-					<div className="grid items-start gap-6 xl:grid-cols-2">
+					<p className="text-sm font-medium text-fg">
+						{m.studio_traffic_total({ total: summary.total })}
+					</p>
+					<div className="grid items-start gap-5 xl:grid-cols-2">
 						<Panel title={m.studio_traffic_top()}>
 							<div className="overflow-x-auto">
 								<table className="w-full text-left text-sm">
@@ -95,6 +100,6 @@ export function TrafficView({ site }: { site: SiteId }) {
 					</div>
 				</>
 			)}
-		</div>
+		</section>
 	);
 }

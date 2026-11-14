@@ -1,10 +1,7 @@
 import type { ReactNode } from "react";
-import { Kicker, Title } from "./text";
+import { Kicker } from "./text";
 
-/*
- * The bar across the top of the content column. Carries the workspace context:
- * a kicker for which site or area you are in, and the current screen name.
- */
+/* A single-line breadcrumb preserves vertical space for the actual workspace. */
 export function TopBar({
 	leading,
 	label,
@@ -15,13 +12,14 @@ export function TopBar({
 	title: ReactNode;
 }) {
 	return (
-		<header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-line-subtle bg-canvas/95 px-4 backdrop-blur md:px-8">
+		<header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-line-subtle bg-canvas/95 px-4 backdrop-blur md:px-8">
 			{leading}
-			<div className="grid leading-tight">
+			<div className="flex min-w-0 items-baseline gap-2">
 				<Kicker>{label}</Kicker>
-				<Title as="span" size="sm">
-					{title}
-				</Title>
+				<span className="text-fg-disabled" aria-hidden="true">
+					/
+				</span>
+				<span className="truncate text-sm font-medium text-fg">{title}</span>
 			</div>
 		</header>
 	);

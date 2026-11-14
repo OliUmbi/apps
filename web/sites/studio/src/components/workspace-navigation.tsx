@@ -1,10 +1,8 @@
 import { m } from "@oliumbi/i18n/messages";
-import { ArrowLeft, Settings2 } from "lucide-react";
 import type { StudioNavigation, StudioWorkspace } from "../model/navigation";
 import { AdministrationNavigation } from "./administration-navigation";
 import { SiteNavigation } from "./site-navigation";
 import { SiteSwitcher } from "./site-switcher";
-import { Button } from "./ui/button";
 import { Body } from "./ui/text";
 
 export function WorkspaceNavigation({
@@ -23,40 +21,17 @@ export function WorkspaceNavigation({
 		onNavigate();
 	}
 
-	if (area === "administration") {
+	if (allowedSites.length === 0) {
 		return (
-			<AdministrationNavigation
-				section={section}
-				onLeave={() => select(navigation.returnToSite)}
-				onSelect={(next) => select(() => navigation.selectSection(next))}
-			/>
-		);
-	}
-
-	if (area === "profile") {
-		if (allowedSites.length === 0)
-			return (
-				<div className="p-3">
-					<Body>{m.studio_no_access()}</Body>
-				</div>
-			);
-		return (
-			<div className="p-2">
-				<Button
-					variant="ghost"
-					className="w-full justify-start"
-					onClick={() => select(navigation.returnToSite)}
-				>
-					<ArrowLeft size={15} aria-hidden="true" />
-					{m.studio_websites()}
-				</Button>
+			<div className="p-4">
+				<Body>{m.studio_no_access()}</Body>
 			</div>
 		);
 	}
 
 	return (
 		<>
-			<div className="p-2">
+			<div className="border-b border-line-subtle p-3">
 				<SiteSwitcher
 					sites={allowedSites}
 					site={site}
@@ -65,20 +40,14 @@ export function WorkspaceNavigation({
 			</div>
 			<SiteNavigation
 				site={site}
-				section={section}
+				section={area === "site" ? section : null}
 				onSelect={(next) => select(() => navigation.selectSection(next))}
 			/>
 			{isAdministrator && (
-				<div className="p-2">
-					<Button
-						variant="ghost"
-						className="w-full justify-start"
-						onClick={() => select(navigation.openAdministration)}
-					>
-						<Settings2 size={15} aria-hidden="true" />
-						{m.studio_administration()}
-					</Button>
-				</div>
+				<AdministrationNavigation
+					section={area === "administration" ? section : null}
+					onSelect={(next) => select(() => navigation.selectSection(next))}
+				/>
 			)}
 		</>
 	);

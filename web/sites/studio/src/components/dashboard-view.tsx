@@ -16,7 +16,7 @@ import { ContentView } from "./content/content-view";
 import { MessagesView } from "./messages-view";
 import { ProfileView } from "./profile-view";
 import { SiteOverview } from "./site-overview";
-import { TrafficView } from "./traffic-view";
+
 import { Alert } from "./ui/alert";
 
 export function DashboardView({
@@ -60,11 +60,7 @@ function WorkspaceContent({
 	}
 	if (isContentSection(section))
 		return <ContentView key={section} section={section} />;
-	if (
-		section === "traffic" &&
-		(site.id === "jublawoma" || site.id === "unclet" || site.id === "zelglihof")
-	)
-		return <TrafficView site={site.id} />;
+
 	if (section === "images" || section === "documents") {
 		return (
 			<AssetsView key={`${site.id}-${section}`} site={site.id} kind={section} />

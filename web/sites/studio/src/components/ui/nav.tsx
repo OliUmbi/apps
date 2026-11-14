@@ -17,7 +17,7 @@ export function Nav({
 	children: ReactNode;
 }) {
 	return (
-		<nav aria-label={label} className="grid gap-0.5 overflow-y-auto p-2">
+		<nav aria-label={label} className="grid gap-1 overflow-y-auto p-3">
 			{children}
 		</nav>
 	);
@@ -32,7 +32,7 @@ export function NavSection({
 }) {
 	return (
 		<div>
-			<div className="px-3 pb-1 pt-4">
+			<div className="px-3 pb-2 pt-5">
 				<Kicker>{title}</Kicker>
 			</div>
 			{children}
@@ -54,7 +54,7 @@ export function NavItem({
 		<Button
 			aria-current={active ? "page" : undefined}
 			className={[
-				"flex h-10 w-full items-center gap-3 border-l-2 px-3 text-left text-sm transition-colors",
+				"flex h-10 w-full items-center gap-3 rounded-control border-l-2 px-3 text-left text-[0.8125rem] transition-colors",
 				active
 					? "border-interactive bg-interactive/10 font-medium text-fg"
 					: "border-transparent text-fg-muted hover:bg-layer-2 hover:text-fg",

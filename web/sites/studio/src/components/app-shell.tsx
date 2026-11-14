@@ -2,7 +2,7 @@ import { m } from "@oliumbi/i18n/messages";
 import { MenuIcon, UserRound } from "lucide-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import type { StudioNavigation, StudioWorkspace } from "../model/navigation";
-import { Brand } from "./ui/brand";
+
 import { Button, IconButton } from "./ui/button";
 import { Drawer, DrawerClose } from "./ui/drawer";
 import { Sidebar, SidebarFooter, SidebarHeader } from "./ui/sidebar";
@@ -52,7 +52,8 @@ export function AppShell({
 				<div className="flex items-center gap-1">
 					<Button
 						variant="ghost"
-						className="flex-1 justify-start"
+						aria-current={workspace.area === "profile" ? "page" : undefined}
+						className={`flex-1 justify-start ${workspace.area === "profile" ? "bg-interactive/10 text-fg" : ""}`}
 						onClick={() => {
 							actions.openProfile();
 							setOpen(false);
@@ -61,7 +62,12 @@ export function AppShell({
 						<UserRound size={16} aria-hidden="true" />
 						<span className="truncate">{actor.displayName}</span>
 					</Button>
-					<Button size="sm" onClick={onLogout} disabled={logoutPending}>
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={onLogout}
+						disabled={logoutPending}
+					>
 						{m.studio_sign_out()}
 					</Button>
 				</div>
@@ -77,17 +83,10 @@ export function AppShell({
 			>
 				{m.skip_to_content()}
 			</a>
-			<Sidebar>
-				<SidebarHeader>
-					<Brand name={m.studio_name()} />
-				</SidebarHeader>
-				{navigation}
-			</Sidebar>
+			<Sidebar>{navigation}</Sidebar>
 
 			<Drawer open={open} onOpenChange={setOpen} title={m.navigation()}>
-				<SidebarHeader action={<DrawerClose label={m.close()} />}>
-					<Brand name={m.studio_name()} />
-				</SidebarHeader>
+				<SidebarHeader action={<DrawerClose label={m.close()} />} />
 				{navigation}
 			</Drawer>
 
@@ -109,7 +108,7 @@ export function AppShell({
 					ref={main}
 					id="main"
 					tabIndex={-1}
-					className="mx-auto w-full max-w-[90rem] px-4 py-6 md:px-8 md:py-10"
+					className="mx-auto w-full max-w-[90rem] px-4 py-6 md:px-8 md:py-8"
 				>
 					{children}
 				</main>

@@ -3,6 +3,7 @@ import { m } from "@oliumbi/i18n/messages";
 import { ArrowRight } from "lucide-react";
 import type { StudioSectionId } from "../model/navigation";
 import type { StudioSite } from "../model/sites";
+import { TrafficOverview } from "./traffic-view";
 import { PageHeader } from "./ui/page-header";
 
 export function SiteOverview({
@@ -44,6 +45,7 @@ export function SiteOverview({
 						</Button>
 					))}
 			</div>
+			<TrafficOverview site={site.id} />
 		</div>
 	);
 }
