@@ -12,7 +12,7 @@ import { formatTimestamp } from "../model/dates";
 import { listAudit } from "../server/audit.functions";
 import { Alert } from "./ui/alert";
 import { FilterChip } from "./ui/filter-chip";
-import { ListMeta, ListRow, ListShell } from "./ui/list";
+import { ListMeta, ListShell, StaticListRow } from "./ui/list";
 import { PageHeader } from "./ui/page-header";
 import { Body, Title } from "./ui/text";
 
@@ -43,10 +43,10 @@ export function AuditView() {
 				))}
 			</div>
 			<Alert>{query.isError ? m.error_generic() : null}</Alert>
-			{query.isPending && <p>{m.loading()}</p>}
+			{query.isPending && <p role="status">{m.loading()}</p>}
 			<ListShell>
 				{events.map((event) => (
-					<ListRow
+					<StaticListRow
 						key={event.id}
 						leading={<Body>{auditActionLabel(event.action)}</Body>}
 						trailing={
@@ -65,7 +65,7 @@ export function AuditView() {
 								? ` · ${auditSummaryLabel(event.summary) ?? event.summary}`
 								: null}
 						</Body>
-					</ListRow>
+					</StaticListRow>
 				))}
 			</ListShell>
 			{events.length === 0 && query.isSuccess && (

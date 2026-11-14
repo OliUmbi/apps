@@ -1,23 +1,14 @@
 import { Button } from "@base-ui/react/button";
 import type { ComponentProps, ReactNode } from "react";
 
-/*
- * A filter toggle: the chip-sized buttons that switch a list between views.
- * Replaces `.message-filter`; selection reproduces `.is-active` (a stronger
- * hairline and a raised fill instead of the retired violet glow) and `tone`
- * reproduces `.failure`, so the failure chip stays red whether or not it is
- * pressed. Selection only changes border and fill, never the box, so pressing
- * one chip does not move the chips beside it.
- */
-
 const tones = {
-	neutral: "text-fg-subtle",
+	neutral: "text-fg-muted",
 	danger: "text-danger",
 } as const;
 
 const states = {
-	idle: "border-line-control bg-layer-1",
-	selected: "border-fg-subtle bg-layer-2",
+	idle: "border-line bg-layer-1 hover:border-line-control",
+	selected: "border-interactive bg-interactive/10 text-fg",
 } as const;
 
 export function FilterChip({
@@ -35,7 +26,7 @@ export function FilterChip({
 			{...props}
 			aria-pressed={selected}
 			className={[
-				"grid min-h-10 gap-1 rounded-control border p-4 text-left text-xs uppercase tracking-[0.04em] transition-colors",
+				"inline-flex min-h-9 items-center rounded-control border px-3 py-2 text-left font-mono text-[0.68rem] font-semibold uppercase tracking-[0.08em] transition-colors",
 				tones[tone],
 				selected ? states.selected : states.idle,
 			].join(" ")}

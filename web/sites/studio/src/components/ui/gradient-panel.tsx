@@ -1,10 +1,6 @@
 import type { ReactNode } from "react";
 
-/*
- * Decorative scenery surface: an aurora gradient under a grain overlay. The
- * preset names are literal on purpose so Tailwind can see the utilities.
- */
-
+/* The colourful aurora is Studio's only decorative surface. */
 const presets = {
 	aurora: "gradient-aurora",
 	dusk: "gradient-dusk",
@@ -20,7 +16,10 @@ export function GradientPanel({
 	children?: ReactNode;
 }) {
 	return (
-		<div className={`flex items-end p-8 noise ${presets[preset]}`}>
+		<div
+			className={`relative flex min-h-52 items-end overflow-hidden p-8 noise md:min-h-dvh md:p-12 ${presets[preset]}`}
+		>
+			<div className="login-grid" aria-hidden="true" />
 			{children}
 		</div>
 	);

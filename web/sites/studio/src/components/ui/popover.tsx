@@ -32,7 +32,7 @@ export function PopoverPanel({ children }: { children: ReactNode }) {
 	return (
 		<Popover.Portal>
 			<Popover.Positioner className="z-50" sideOffset={8}>
-				<Popover.Popup className="rounded-control border border-line bg-layer-3 p-1 shadow-overlay">
+				<Popover.Popup className="overflow-hidden rounded-panel border border-line bg-layer-3 shadow-overlay">
 					{children}
 				</Popover.Popup>
 			</Popover.Positioner>

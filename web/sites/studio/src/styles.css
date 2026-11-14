@@ -3,73 +3,41 @@
 @source "../../../packages/ui/src";
 
 /*
- * Design tokens.
- *
- * Flat, neutral, dark. Warm stone greys with no chromatic accent: colour is
- * reserved for meaning, teal marks interaction (links, focus rings) and red
- * marks failure, everything else is greyscale. Surfaces stack by fill and
- * hairline rather than shadow, which is what keeps the UI calm and flat.
- *
- * Tokens name what a thing is for, not what it looks like:
- *   canvas     the page itself
- *   layer-N    stacked surfaces: panel, raised, overlay
- *   field      editable controls
- *   line       hairlines, from subtle to strong; `line-control` outlines the
- *              edge of an editable control, which must stay visible on `field`
- *   fg         foreground text, muted to disabled; `fg-faint` is the quietest
- *              non-disabled text and still meets 4.5:1 on `layer-1`
- * Utilities follow the token, so `bg-canvas`, `bg-layer-1`, `border-line`,
- * `text-fg-muted` all read the same way.
- *
- * Spacing stays on the 4px `--spacing` rhythm. No arbitrary spacing or type
- * values in markup: if something needs a size the scale does not have, the
- * scale is wrong, not the markup.
+ * Studio is a working surface, not a marketing page. Cool neutrals, a strict
+ * 4px grid and one blue interaction colour keep dense records legible. Rich
+ * colour stays in the sign-in aurora; status colours retain semantic meaning.
  */
 @theme {
-	/* Surfaces */
-	--color-canvas: #100f0e;
-	--color-layer-1: #181715;
-	--color-layer-2: #201e1b;
-	--color-layer-3: #292622;
-	--color-field: #1c1a18;
+	--color-canvas: #101114;
+	--color-layer-1: #16181c;
+	--color-layer-2: #1d2026;
+	--color-layer-3: #262a32;
+	--color-field: #13151a;
 
-	/* Hairlines */
-	--color-line-subtle: #282521;
-	--color-line: #3a3630;
-	/* Editable-control edge: 3.66:1 on `field`, so the target is perceivable. */
-	--color-line-control: #7a7266;
+	--color-line-subtle: #292d35;
+	--color-line: #3a404b;
+	--color-line-control: #747e8e;
 
-	/* Foreground */
-	--color-fg: #f2f0ed;
-	--color-fg-muted: #b3aca3;
-	--color-fg-subtle: #9a9287;
-	/* Quiet table headers and index numerals: 4.87:1 on `layer-1`. */
-	--color-fg-faint: #8d8478;
-	--color-fg-disabled: #5c564e;
+	--color-fg: #f4f5f7;
+	--color-fg-muted: #b7bdc8;
+	--color-fg-subtle: #9ca5b4;
+	--color-fg-faint: #8b95a5;
+	--color-fg-disabled: #616977;
 
-	/* Interaction: links and focus rings only */
-	--color-interactive: #2dd4bf;
+	--color-interactive: #91b7ff;
 
-	/* Status */
-	--color-danger: #f87171;
-	--color-success: #6ee7b7;
-	--color-warning: #fbbf24;
+	--color-danger: #fb8b83;
+	--color-success: #79d9ae;
+	--color-warning: #f2c94c;
 
-	/* 4px rhythm: gaps, insets and heights are multiples of this. */
 	--spacing: 0.25rem;
-
-	--font-sans: Inter, "Segoe UI", system-ui, sans-serif;
+	--font-sans: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
 	--font-mono: "Cascadia Code", ui-monospace, Consolas, monospace;
-
-	/* Square by default; controls get 2px so they read as targets. */
-	--radius-control: 2px;
+	--radius-control: 6px;
 	--radius-panel: 2px;
-
-	/* Overlays are the only thing that floats. */
 	--shadow-overlay: 0 24px 64px rgb(0 0 0 / 55%);
 }
 
-/* Base element styles: not expressible as utilities. */
 :root {
 	color-scheme: dark;
 	color: var(--color-fg);
@@ -79,11 +47,6 @@
 	text-rendering: optimizeLegibility;
 }
 
-/*
- * Base element styles. These sit in `@layer base` on purpose: unlayered rules
- * outrank `@layer utilities` regardless of specificity, so leaving them out
- * here silently made utilities like `text-canvas` lose to `button { color }`.
- */
 @layer base {
 	* {
 		box-sizing: border-box;
@@ -116,8 +79,6 @@
 		text-decoration: none;
 	}
 
-	/* `main` is programmatically focused by the skip link; a ring around the
-	 * whole page reads as an error state, so it is excluded here. */
 	:where(
 		a,
 		button,
@@ -127,114 +88,102 @@
 		[tabindex]:not(main)
 	):focus-visible {
 		outline: 2px solid var(--color-interactive);
-		outline-offset: 2px;
+		outline-offset: 3px;
 	}
 
 	::selection {
-		background: rgb(45 212 191 / 25%);
+		background: rgb(145 183 255 / 28%);
 	}
 }
 
-/*
- * The dashboard hero and its section cards stay as plain CSS: the hero's
- * display type (`clamp(2.8rem, 7vw, 5.5rem)`), its off-scale geometry and the
- * decorative `::after` ring cannot be expressed through the utility
- * vocabulary without arbitrary values or raw colours, which `ui/` forbids,
- * and `ui/README.md` says not to add a leaf for a single one-off.
- * Constraints:
- * - `.page-kicker` must stay in the markup: `.overview-heading
- *   p:not(.page-kicker)` restyles every other paragraph in the hero, so
- *   dropping the class silently restyles the domain line.
- * - The `@media` override at the end wins by source order over the base
- *   rules above it.
- */
-.page-kicker {
-	color: var(--color-fg-subtle);
-	font-size: 0.75rem;
-	font-weight: 600;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-}
-
+/* Editorial type and hairlines frame the working areas without decoration. */
 .overview-heading {
 	position: relative;
 	display: flex;
-	min-height: 230px;
+	min-height: 240px;
 	align-items: flex-end;
 	justify-content: space-between;
 	overflow: hidden;
-	border-bottom: 1px solid var(--color-line);
-	padding: clamp(12px, 3vw, 28px) 0 clamp(24px, 4vw, 38px);
-	background: transparent;
+	border-block: 1px solid var(--color-line);
+	padding: 40px 0 32px;
+	isolation: isolate;
 }
-.overview-heading::after {
-	position: absolute;
-	top: -4rem;
-	right: 16%;
-	width: 14rem;
-	height: 14rem;
-	border: 1px solid rgb(255 255 255 / 4%);
-	border-radius: 50%;
-	content: "";
-}
-.overview-heading h1 {
-	margin: 10px 0 0;
-	color: var(--color-fg);
-	font-size: clamp(2.8rem, 7vw, 5.5rem);
-	font-weight: 550;
-	letter-spacing: -0.07em;
-	line-height: 0.9;
-}
-.overview-heading p:not(.page-kicker) {
-	max-width: 35rem;
-	margin: 18px 0 0;
+
+.page-kicker {
 	color: var(--color-fg-subtle);
-	line-height: 1.55;
+	font-family: var(--font-mono);
+	font-size: 0.72rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
 }
-.overview-monogram {
-	display: grid;
-	width: 76px;
-	height: 76px;
-	flex: 0 0 auto;
-	place-items: center;
-	border: 1px solid;
-	border-radius: 7px;
-	font-family: "Cascadia Code", monospace;
+
+.overview-heading h1 {
+	max-width: 12ch;
+	margin: 12px 0 0;
+	color: var(--color-fg);
+	font-size: clamp(2.75rem, 7vw, 5.5rem);
+	font-weight: 600;
+	letter-spacing: -0.065em;
+	line-height: 0.92;
+}
+
+.overview-heading p:not(.page-kicker) {
+	max-width: 32rem;
+	margin: 20px 0 0;
+	color: var(--color-fg-muted);
 	font-size: 1rem;
-	background: rgb(255 255 255 / 2%);
+	line-height: 1.5;
 }
+
+.overview-grid {
+	border-top: 1px solid var(--color-line);
+}
+
 .overview-card {
 	position: relative;
 	display: grid;
-	min-height: 178px;
+	min-height: 168px;
 	grid-template-columns: auto 1fr auto;
 	grid-template-rows: auto 1fr auto;
-	gap: 12px;
+	gap: 16px;
 	border: 0;
-	border-top: 1px solid var(--color-line);
-	border-radius: 0;
-	padding: 18px;
+	border-bottom: 1px solid var(--color-line);
+	padding: 20px;
 	color: var(--color-fg-muted);
 	background: transparent;
 	text-align: left;
+	transition: background-color 150ms ease;
 }
+
+.overview-card::before {
+	position: absolute;
+	inset: -1px auto -1px 0;
+	width: 2px;
+	background: var(--color-interactive);
+	content: "";
+	opacity: 0;
+	transition: opacity 150ms ease;
+}
+
 .overview-card:hover {
-	border-color: #575361;
-	background: rgb(255 255 255 / 2%);
+	background: var(--color-layer-1);
 }
+
+.overview-card:hover::before {
+	opacity: 1;
+}
+
 .overview-index {
 	color: var(--color-fg-faint);
-	font-family: "Cascadia Code", monospace;
-	font-size: 0.68rem;
+	font-family: var(--font-mono);
+	font-size: 0.7rem;
 }
 
 @media (max-width: 760px) {
 	.overview-heading {
-		min-height: 190px;
-	}
-	.overview-monogram {
-		width: 54px;
-		height: 54px;
+		min-height: 208px;
+		padding-block: 32px 24px;
 	}
 }
 

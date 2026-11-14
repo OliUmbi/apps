@@ -5,7 +5,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { listTraffic } from "../server/traffic.functions";
 import { Alert } from "./ui/alert";
 import { PageHeader } from "./ui/page-header";
-import { Body, Title } from "./ui/text";
+import { Panel } from "./ui/panel";
+import { Body } from "./ui/text";
+
+const cellClass = "border-t border-line-subtle px-4 py-3";
 
 export function TrafficView({ site }: { site: SiteId }) {
 	const list = useServerFn(listTraffic);
@@ -19,54 +22,77 @@ export function TrafficView({ site }: { site: SiteId }) {
 			<PageHeader
 				kicker={m.studio_traffic_kicker()}
 				title={m.studio_traffic()}
+				description={m.studio_traffic_description()}
 			/>
-			<Body>{m.studio_traffic_description()}</Body>
 			<Alert>{query.isError ? m.error_generic() : null}</Alert>
-			{query.isPending && <p>{m.loading()}</p>}
-			{summary && summary.total === 0 && <p>{m.studio_traffic_empty()}</p>}
+			{query.isPending && <p role="status">{m.loading()}</p>}
+			{summary && summary.total === 0 && (
+				<Body>{m.studio_traffic_empty()}</Body>
+			)}
 			{summary && summary.total > 0 && (
 				<>
-					<p>{m.studio_traffic_total({ total: summary.total })}</p>
-					<section className="grid gap-3">
-						<Title as="h2" size="sm">
-							{m.studio_traffic_top()}
-						</Title>
-						<table className="w-full text-left text-sm">
-							<thead className="text-ink/55">
-								<tr>
-									<th className="py-1 font-normal">
-										{m.studio_traffic_route()}
-									</th>
-									<th className="py-1 text-right font-normal">
-										{m.studio_traffic_views()}
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								{summary.routes.map((row) => (
-									<tr key={row.route} className="border-t border-ink/10">
-										<td className="py-1.5 font-mono">{row.route}</td>
-										<td className="py-1.5 text-right">{row.views}</td>
+					<Body>{m.studio_traffic_total({ total: summary.total })}</Body>
+					<div className="grid items-start gap-6 xl:grid-cols-2">
+						<Panel title={m.studio_traffic_top()}>
+							<div className="overflow-x-auto">
+								<table className="w-full text-left text-sm">
+									<thead className="font-mono text-xs text-fg-faint">
+										<tr>
+											<th
+												scope="col"
+												className="px-4 pb-3 text-left font-normal"
+											>
+												{m.studio_traffic_route()}
+											</th>
+											<th
+												scope="col"
+												className="px-4 pb-3 text-right font-normal"
+											>
+												{m.studio_traffic_views()}
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										{summary.routes.map((row) => (
+											<tr key={row.route}>
+												<th
+													scope="row"
+													className={`${cellClass} font-mono font-normal`}
+												>
+													{row.route}
+												</th>
+												<td className={`${cellClass} text-right tabular-nums`}>
+													{row.views}
+												</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
+						</Panel>
+						<Panel title={m.studio_traffic_day()}>
+							<table className="w-full text-left text-sm">
+								<thead className="sr-only">
+									<tr>
+										<th scope="col">{m.studio_traffic_day()}</th>
+										<th scope="col">{m.studio_traffic_views()}</th>
 									</tr>
-								))}
-							</tbody>
-						</table>
-					</section>
-					<section className="grid gap-3">
-						<Title as="h2" size="sm">
-							{m.studio_traffic_day()}
-						</Title>
-						<table className="w-full text-left text-sm">
-							<tbody>
-								{summary.days.map((row) => (
-									<tr key={row.day} className="border-t border-ink/10">
-										<td className="py-1.5">{row.day}</td>
-										<td className="py-1.5 text-right">{row.views}</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
-					</section>
+								</thead>
+								<tbody>
+									{summary.days.map((row) => (
+										<tr key={row.day}>
+											<th scope="row" className={`${cellClass} font-normal`}>
+												{row.day}
+											</th>
+											<td className={`${cellClass} text-right tabular-nums`}>
+												{row.views}
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
+						</Panel>
+					</div>
 				</>
 			)}
 		</div>

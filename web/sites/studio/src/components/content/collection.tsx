@@ -8,7 +8,7 @@ import type {
 import { DeleteConfirmation } from "../delete-confirmation";
 import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
-import { Body } from "../ui/text";
+import { DangerZone } from "../ui/danger-zone";
 import { CollectionList } from "./collection-list";
 import type { ContentColumn } from "./collection-table";
 import { type ContentEditor, ContentForm } from "./content-form";
@@ -176,16 +176,19 @@ export function Collection<Row, Input = never>({
 							{renderActions?.(record)}
 							{renderRelated?.(record)}
 							{remove && (!canDelete || canDelete(record)) ? (
-								<div className="flex items-center justify-between gap-6 pt-5">
-									<Body>{m.confirm_delete_description()}</Body>
-									<Button
-										variant="danger"
-										disabled={save.isPending}
-										onClick={() => requestDelete(record)}
-									>
-										{m.delete_record()}
-									</Button>
-								</div>
+								<DangerZone
+									title={m.delete_record()}
+									description={m.confirm_delete_description()}
+									actions={
+										<Button
+											variant="danger"
+											disabled={save.isPending}
+											onClick={() => requestDelete(record)}
+										>
+											{m.delete_record()}
+										</Button>
+									}
+								/>
 							) : null}
 						</>
 					)}

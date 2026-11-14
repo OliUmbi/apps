@@ -57,7 +57,11 @@ export function DateField({
 					<FieldLabel htmlFor={controlId}>{label}</FieldLabel>
 					<PopoverRoot>
 						<PopoverTrigger id={controlId}>
-							<CalendarDays size={17} aria-hidden="true" />
+							<CalendarDays
+								size={17}
+								className="shrink-0 text-fg-subtle"
+								aria-hidden="true"
+							/>
 							<span className="truncate">{displayLabel}</span>
 						</PopoverTrigger>
 						<PopoverPanel>

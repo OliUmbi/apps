@@ -19,25 +19,16 @@ export function SiteOverview({
 	onSelectSection: (section: StudioSectionId) => void;
 }) {
 	return (
-		<div className="grid gap-8">
+		<div className="grid gap-10">
 			<header className="overview-heading">
 				<div>
-					{/* Hero and cards are the documented plain-CSS exception (see the
-					    dashboard-hero comment in styles.css). `page-kicker` must stay:
-					    `.overview-heading p:not(.page-kicker)` restyles any other
-					    paragraph. */}
+					{/* The display composition is the documented plain-CSS exception. */}
 					<p className="page-kicker">{site.domain}</p>
 					<h1>{site.name}</h1>
 					<p>{m.studio_dashboard_workspaces_title()}</p>
 				</div>
-				<div
-					className="overview-monogram"
-					style={{ borderColor: site.accent, color: site.accent }}
-				>
-					{site.short}
-				</div>
 			</header>
-			<div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
+			<div className="overview-grid grid grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1">
 				{site.sections
 					.filter((item) => item.id !== "overview")
 					.map((item, index) => (
@@ -50,10 +41,10 @@ export function SiteOverview({
 								{String(index + 1).padStart(2, "0")}
 							</span>
 							<OverviewIcon icon={item.icon} />
-							<span className="col-span-full self-end text-fg text-base font-semibold">
+							<span className="col-span-full self-end text-lg font-semibold tracking-tight text-fg">
 								{item.label()}
 							</span>
-							<span className="col-span-2 text-fg-subtle text-xs leading-relaxed">
+							<span className="col-span-2 text-sm leading-6 text-fg-subtle">
 								{item.description()}
 							</span>
 							<ArrowUpRight

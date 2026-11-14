@@ -1,10 +1,7 @@
 import type { ReactNode } from "react";
 
-/*
- * Page-level split: one panel of scenery, one panel of content. Side by side on
- * desktop, stacked as two equal halves on a phone. Layout only, no visuals.
- */
-
+/* The sign-in artwork becomes a compact banner on small screens; the form keeps
+ * its natural height and never gets trapped in a viewport-sized scroll area. */
 export function Split({
 	scenery,
 	children,
@@ -13,7 +10,7 @@ export function Split({
 	children: ReactNode;
 }) {
 	return (
-		<main className="grid h-dvh w-full grid-rows-2 md:grid-cols-2 md:grid-rows-1">
+		<main className="grid min-h-dvh w-full md:grid-cols-[3fr_2fr]">
 			{scenery}
 			<div className="flex items-start justify-center md:items-center">
 				{children}

@@ -15,7 +15,7 @@ export function TopBar({
 	title: ReactNode;
 }) {
 	return (
-		<header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-line-subtle bg-canvas/90 px-4 backdrop-blur">
+		<header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-line-subtle bg-canvas/95 px-4 backdrop-blur md:px-8">
 			{leading}
 			<div className="grid leading-tight">
 				<Kicker>{label}</Kicker>

@@ -41,7 +41,7 @@ export function FormFields({
 
 export function FormActions({ children }: { children: ReactNode }) {
 	return (
-		<aside className="grid w-full gap-2 lg:sticky lg:top-20 lg:w-64">
+		<aside className="grid w-full gap-2 max-lg:sticky max-lg:bottom-0 max-lg:z-20 max-lg:border-y max-lg:border-line max-lg:bg-canvas max-lg:p-4 lg:sticky lg:top-24 lg:w-64">
 			{children}
 		</aside>
 	);

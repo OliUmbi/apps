@@ -42,7 +42,7 @@ it looks. The leaves are flat on purpose: there is no nesting to learn.
 | `record-fields.tsx`  | Read-only detail: `RecordFields`, `RecordField`.                                                       |
 | `dialog.tsx`         | `ConfirmDialog` for destructive actions.                                                               |
 | `badge.tsx`          | Small status marker. `className` carries layout placement.                                             |
-| `list.tsx`           | List chrome: `ListShell`, `ListRow`, `ListMeta`, `Avatar`.                                             |
+| `list.tsx`           | List chrome: `ListShell`, interactive `ListRow`, `StaticListRow`, `ListMeta`, `Avatar`.                |
 | `attempt-row.tsx`    | Delivery timeline row: mono index, outcome line, error `pre`.                                          |
 | `nav.tsx`            | `Nav`, `NavSection`, `NavItem`.                                                                        |
 | `sidebar.tsx`        | `Sidebar`, `SidebarHeader`, `SidebarFooter`.                                                           |
@@ -52,7 +52,7 @@ it looks. The leaves are flat on purpose: there is no nesting to learn.
 | `brand.tsx`          | The identity mark.                                                                                     |
 | `page-header.tsx`    | The top of every screen: kicker, screen name, supporting copy.                                         |
 | `split.tsx`          | Page-level split: scenery panel + content panel.                                                       |
-| `gradient-panel.tsx` | Decorative aurora surface under a grain overlay.                                                       |
+| `gradient-panel.tsx` | Sign-in aurora, grain and a faint registration grid.                                                   |
 | `message-screen.tsx` | Centred card for empty and failed screens.                                                             |
 | `danger-zone.tsx`    | The destructive end of a record, behind a red hairline.                                                |
 
@@ -64,10 +64,10 @@ single one-off — a view can carry a layout utility instead.
 - Tokens only (`bg-layer-1`, `text-fg-muted`, `border-line`). No raw hex, no
   `zinc-*`, no `white/*`. If a colour is missing, add a token to `styles.css`.
 - Spacing on the 4px rhythm. No arbitrary values like `p-[13px]`.
-- Three heights, so rows never reflow when state changes: `h-10` controls,
-  `h-9` navigation and list rows, `h-8` compact buttons.
-- Colour means something: teal is interaction only, red is failure. Everything
-  else is stone.
+- Controls use 40px and compact actions 32px minimum heights; navigation rows
+  are 40px. Alerts and validation copy may grow instead of clipping.
+- Colour means something: blue is interaction, red is failure. Colourful
+  gradients belong only to the sign-in surface, never to record state.
 - State changes never move anything. Active markers, error lines and alerts
   reserve their space up front (`border-l-2 border-transparent`, the error slot
   in `text-field`, the slot in `alert`).
@@ -77,14 +77,9 @@ single one-off — a view can carry a layout utility instead.
 `@oliumbi/ui` is the leaf layer for the public sites. Studio keeps its own
 styled leaves and does not import the shared styled components.
 
-**Why `alert.tsx` stays studio-local.** The shared `@oliumbi/ui/alert` already
-carries the same contract — a reserved 40px slot, `role="alert"`/`status`, and
-identical error/success tone classes — so behaviour is converged. The look is
-not: the shared component pins its own geometry (a `rounded-lg` box whose
-inner slot grows with wrapped text), which matches neither studio's token
-vocabulary (2px radii, a fixed 40px slot) nor can be overridden from outside.
-Re-exporting it would move studio's visual detail out of this folder — the one
-rule this layer exists to enforce — and a wrapped error message would then
-shift the form beneath it. The two implementations can converge when the shared
-primitive takes its geometry from its site; both already reserve 40px and render
-the same tones.
+**Why `alert.tsx` stays studio-local.** The shared `@oliumbi/ui/alert` carries
+the same `role="alert"`/`status` and error/success tone contract, but pins a
+`rounded-lg` public-site geometry that does not match Studio's 2px controls.
+Studio reserves a 40px minimum slot and lets wrapped messages grow, so feedback
+never clips. Re-exporting the shared component would move Studio's visual detail
+out of this folder — the one rule this layer exists to enforce.

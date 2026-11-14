@@ -1,10 +1,7 @@
 /*
- * Grain overlay and aurora gradient utilities.
- *
- * Self-contained on purpose: tokens in `@theme`, behaviour in `@utility`, no
- * element or component selectors. Nothing here is studio specific, so the file
- * can move to `web/packages/` once a second site wants the same effect
- * (principles.md #3) by copying it and adding the `@import`.
+ * Grain overlay, aurora gradients and the sign-in's geometric composition.
+ * The reusable effects stay in tokens and `@utility`; Studio-specific artwork
+ * is explicitly scoped to `.login-*` classes at the end of the file.
  *
  * Both effects are pseudo elements so they compose with each other and with
  * `bg-*` colours: `background-image` cannot stack from two utilities, the last
@@ -33,10 +30,10 @@
 		radial-gradient(48% 52% at 70% 92%, rgb(227 154 94 / 55%), transparent 78%),
 		radial-gradient(32% 38% at 30% 62%, rgb(140 110 230 / 45%), transparent 80%);
 	--gradient-tide:
-		radial-gradient(44% 48% at 16% 12%, rgb(52 160 184 / 75%), transparent 78%),
-		radial-gradient(38% 42% at 88% 18%, rgb(58 110 200 / 65%), transparent 78%),
-		radial-gradient(48% 52% at 52% 94%, rgb(96 200 186 / 55%), transparent 78%),
-		radial-gradient(32% 38% at 20% 70%, rgb(70 130 210 / 45%), transparent 80%);
+		radial-gradient(44% 48% at 12% 12%, rgb(56 189 248 / 88%), transparent 78%),
+		radial-gradient(42% 46% at 88% 16%, rgb(99 102 241 / 85%), transparent 78%),
+		radial-gradient(52% 54% at 58% 94%, rgb(217 70 239 / 72%), transparent 78%),
+		radial-gradient(34% 40% at 12% 76%, rgb(251 113 133 / 58%), transparent 80%);
 	--gradient-ember:
 		radial-gradient(44% 48% at 14% 12%, rgb(227 122 82 / 72%), transparent 78%),
 		radial-gradient(38% 42% at 86% 14%, rgb(227 110 114 / 62%), transparent 78%),
@@ -108,4 +105,15 @@
 		background-size: var(--noise-size);
 		mix-blend-mode: var(--noise-blend);
 	}
+}
+
+/* Faint registration lines add structure without introducing more decoration. */
+.login-grid {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background-image:
+		linear-gradient(rgb(255 255 255 / 8%) 1px, transparent 1px),
+		linear-gradient(90deg, rgb(255 255 255 / 8%) 1px, transparent 1px);
+	background-size: 25% 25%;
 }

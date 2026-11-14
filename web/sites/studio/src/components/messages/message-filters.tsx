@@ -10,13 +10,13 @@ export function MessageFilters({
 	onChange: (filter: MessageFilter) => void;
 }) {
 	return (
-		<div className="grid grid-cols-2 gap-3">
-			<div className="w-full max-w-55">
+		<div className="flex flex-wrap gap-2">
+			<div>
 				<FilterChip selected={filter === "all"} onClick={() => onChange("all")}>
 					{m.studio_messages_filter_all()}
 				</FilterChip>
 			</div>
-			<div className="w-full max-w-55">
+			<div>
 				<FilterChip
 					tone="danger"
 					selected={filter === "failed"}

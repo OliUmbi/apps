@@ -30,6 +30,28 @@ const rowClasses = {
 	bare: "grid w-full grid-cols-[auto_minmax(0,1fr)] items-center gap-4 bg-layer-1 px-4 py-4 text-left transition-colors hover:bg-layer-2",
 } as const;
 
+function RowContent({
+	leading,
+	trailing,
+	children,
+}: {
+	leading: ReactNode;
+	trailing?: ReactNode;
+	children: ReactNode;
+}) {
+	return (
+		<>
+			{leading}
+			<div className="grid min-w-0 gap-1">{children}</div>
+			{trailing ? (
+				<div className="flex items-center gap-4 max-md:col-start-2 max-md:justify-self-start">
+					{trailing}
+				</div>
+			) : null}
+		</>
+	);
+}
+
 export function ListRow({
 	leading,
 	trailing,
@@ -46,14 +68,24 @@ export function ListRow({
 			className={`min-h-9 ${trailing ? rowClasses.trailing : rowClasses.bare}`}
 			{...props}
 		>
-			{leading}
-			<div className="grid min-w-0 gap-1">{children}</div>
-			{trailing ? (
-				<div className="flex items-center gap-4 max-md:col-start-2 max-md:justify-self-start">
-					{trailing}
-				</div>
-			) : null}
+			<RowContent leading={leading} trailing={trailing}>
+				{children}
+			</RowContent>
 		</button>
+	);
+}
+
+export function StaticListRow(props: {
+	leading: ReactNode;
+	trailing?: ReactNode;
+	children: ReactNode;
+}) {
+	return (
+		<div
+			className={`min-h-9 ${props.trailing ? rowClasses.trailing : rowClasses.bare}`}
+		>
+			<RowContent {...props} />
+		</div>
 	);
 }
 

@@ -27,7 +27,7 @@ export function ImageThumbnail({
 			src={`/api/assets/${encodeURIComponent(id)}?site=${encodeURIComponent(site)}&size=xs`}
 			alt=""
 			loading="lazy"
-			className="block h-11 w-16 rounded-md object-cover"
+			className="block h-11 w-16 rounded-control object-cover"
 		/>
 	) : null;
 }

@@ -7,7 +7,7 @@ import type { ReactNode } from "react";
 
 export function Sidebar({ children }: { children: ReactNode }) {
 	return (
-		<aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col overflow-y-auto border-r border-line-subtle bg-layer-1 md:flex">
+		<aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col overflow-y-auto border-r border-line-subtle bg-layer-1 md:flex">
 			{children}
 		</aside>
 	);
@@ -21,7 +21,7 @@ export function SidebarHeader({
 	children: ReactNode;
 }) {
 	return (
-		<div className="flex h-14 shrink-0 items-center gap-2 border-b border-line-subtle px-3">
+		<div className="flex h-16 shrink-0 items-center gap-2 border-b border-line-subtle px-4">
 			<div className="flex min-w-0 flex-1 items-center">{children}</div>
 			{action}
 		</div>

@@ -20,14 +20,14 @@ export function AssetCard({
 	onDelete: () => void;
 }) {
 	return (
-		<article className="overflow-hidden rounded-md border border-line-subtle bg-layer-1 flex flex-wrap items-center justify-between gap-4 p-4">
+		<article className="flex flex-wrap items-center justify-between gap-5 overflow-hidden rounded-panel border border-line-subtle bg-layer-1 p-5">
 			<div>
 				{kind === "images" && (
 					<img
 						src={`/api/assets/${asset.id}?site=${site}`}
-						alt=""
+						alt={asset.id}
 						loading="lazy"
-						className="mb-3 h-32 w-48 rounded object-cover"
+						className="mb-3 h-32 w-48 rounded-control border border-line-subtle object-cover"
 					/>
 				)}
 				{"filename" in asset ? (
@@ -46,7 +46,7 @@ export function AssetCard({
 					{asset.visible ? m.visibility_public() : m.studio_asset_private()}
 				</Body>
 			</div>
-			<div className="flex gap-2">
+			<div className="flex flex-wrap gap-2">
 				<Button
 					variant="secondary"
 					disabled={visibilityPending}

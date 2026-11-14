@@ -1,6 +1,6 @@
 import { m } from "@oliumbi/i18n/messages";
 import { MenuIcon, UserRound } from "lucide-react";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import type { StudioNavigation, StudioWorkspace } from "../model/navigation";
 import { Brand } from "./ui/brand";
 import { Button, IconButton } from "./ui/button";
@@ -29,7 +29,17 @@ export function AppShell({
 	children: ReactNode;
 }) {
 	const [open, setOpen] = useState(false);
+	const main = useRef<HTMLElement>(null);
+	const initialView = useRef(true);
 	const context = workspaceContext(workspace);
+	const viewKey = `${workspace.site.id}:${workspace.area}:${workspace.section}`;
+	useEffect(() => {
+		if (initialView.current) {
+			initialView.current = false;
+			return;
+		}
+		main.current?.focus();
+	}, [viewKey]);
 
 	const navigation = (
 		<>
@@ -96,9 +106,10 @@ export function AppShell({
 					title={context.title}
 				/>
 				<main
+					ref={main}
 					id="main"
 					tabIndex={-1}
-					className="mx-auto w-full max-w-7xl px-6 py-8"
+					className="mx-auto w-full max-w-[90rem] px-4 py-6 md:px-8 md:py-10"
 				>
 					{children}
 				</main>

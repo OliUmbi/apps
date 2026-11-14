@@ -54,9 +54,9 @@ export function NavItem({
 		<Button
 			aria-current={active ? "page" : undefined}
 			className={[
-				"flex h-9 w-full items-center gap-2.5 border-l-2 px-3 text-left text-sm transition-colors",
+				"flex h-10 w-full items-center gap-3 border-l-2 px-3 text-left text-sm transition-colors",
 				active
-					? "border-fg bg-layer-2 font-medium text-fg"
+					? "border-interactive bg-interactive/10 font-medium text-fg"
 					: "border-transparent text-fg-muted hover:bg-layer-2 hover:text-fg",
 			].join(" ")}
 			{...props}
