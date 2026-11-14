@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Children, type ReactNode } from "react";
 
 const tones = {
 	error: "border-danger/40 bg-danger/10 text-danger",
@@ -13,17 +13,18 @@ export function Alert({
 	tone?: keyof typeof tones;
 	children?: ReactNode;
 }) {
+	const content = Children.toArray(children);
 	return (
 		<div
 			role={tone === "error" ? "alert" : "status"}
 			aria-live={tone === "error" ? "assertive" : "polite"}
 			className="min-h-10"
 		>
-			{children ? (
+			{content.length ? (
 				<div
 					className={`flex min-h-10 flex-wrap items-center gap-2 rounded-control border px-3 py-2 text-sm ${tones[tone]}`}
 				>
-					{children}
+					{content}
 				</div>
 			) : null}
 		</div>

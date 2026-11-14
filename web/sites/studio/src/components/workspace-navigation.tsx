@@ -1,10 +1,10 @@
-import { Button } from "@base-ui/react/button";
 import { m } from "@oliumbi/i18n/messages";
 import { ArrowLeft, Settings2 } from "lucide-react";
 import type { StudioNavigation, StudioWorkspace } from "../model/navigation";
 import { AdministrationNavigation } from "./administration-navigation";
 import { SiteNavigation } from "./site-navigation";
 import { SiteSwitcher } from "./site-switcher";
+import { Button } from "./ui/button";
 import { Body } from "./ui/text";
 
 export function WorkspaceNavigation({
@@ -43,6 +43,7 @@ export function WorkspaceNavigation({
 		return (
 			<div className="p-2">
 				<Button
+					variant="ghost"
 					className="w-full justify-start"
 					onClick={() => select(navigation.returnToSite)}
 				>
@@ -70,6 +71,7 @@ export function WorkspaceNavigation({
 			{isAdministrator && (
 				<div className="p-2">
 					<Button
+						variant="ghost"
 						className="w-full justify-start"
 						onClick={() => select(navigation.openAdministration)}
 					>

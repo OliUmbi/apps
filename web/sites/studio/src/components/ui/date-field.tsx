@@ -2,7 +2,7 @@ import { m } from "@oliumbi/i18n/messages";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { CalendarDays } from "lucide-react";
-import { useId } from "react";
+import { useId, useState } from "react";
 import {
 	changeDateInputDay,
 	changeDateInputTime,
@@ -31,6 +31,9 @@ export function DateField({
 	const controlId = useId();
 	const timeId = useId();
 	const selected = parseDateInput(value, includeTime);
+	const [timeDraft, setTimeDraft] = useState(() =>
+		selected ? format(selected, "HH:mm") : "09:00",
+	);
 	const displayLabel = selected
 		? format(selected, includeTime ? "dd. MMMM yyyy, HH:mm" : "dd. MMMM yyyy", {
 				locale: de,
@@ -46,7 +49,8 @@ export function DateField({
 	};
 
 	const selectTime = (time: string) => {
-		if (!time) return;
+		setTimeDraft(time);
+		if (!/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(time)) return;
 		onChange(changeDateInputTime(time, selected));
 	};
 
@@ -82,9 +86,13 @@ export function DateField({
 						<FieldLabel htmlFor={timeId}>{m.studio_time()}</FieldLabel>
 						<FieldInput
 							id={timeId}
-							type="time"
-							className="w-32"
-							value={selected ? format(selected, "HH:mm") : "09:00"}
+							type="text"
+							inputMode="numeric"
+							pattern="(?:[01]\\d|2[0-3]):[0-5]\\d"
+							maxLength={5}
+							placeholder="09:00"
+							className="w-28 text-center font-mono tabular-nums"
+							value={timeDraft}
 							onChange={(event) => selectTime(event.target.value)}
 						/>
 					</div>

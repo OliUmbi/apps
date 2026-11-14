@@ -1,7 +1,7 @@
-import { Button } from "@base-ui/react/button";
 import { m } from "@oliumbi/i18n/messages";
 import { ArrowLeft, History, type LucideIcon, Mail, Users } from "lucide-react";
 import type { StudioSectionId } from "../model/navigation";
+import { Button } from "./ui/button";
 import { Nav, NavItem } from "./ui/nav";
 
 const administrationSections: {
@@ -26,7 +26,11 @@ export function AdministrationNavigation({
 	return (
 		<>
 			<div className="p-2">
-				<Button className="w-full justify-start" onClick={onLeave}>
+				<Button
+					variant="ghost"
+					className="w-full justify-start"
+					onClick={onLeave}
+				>
 					<ArrowLeft size={15} aria-hidden="true" />
 					{m.studio_websites()}
 				</Button>
