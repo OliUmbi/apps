@@ -131,6 +131,10 @@ created. See [test overlay](../../ansible/files/test/README.md).
 - [x] The first admin was created; one backup ran and wrote its success metric
   (`apps_backup_last_success_timestamp_seconds`). The dyndns timer is disabled,
   the backup and housekeeping timers are active.
+- [x] Release rehearsal: `2026.11.14-test.2` from `19d8cab` passed CI and
+  publish, deployed to the feedback host, and served all five `sslip.io` URLs
+  with valid certificates; Studio sign-in returned 200 and the Zelglihof
+  redesign was live. Rollback target: `2026.11.14-test.1`. (2026-11-14)
 - [ ] [verify] Open inbound TCP 80/443 and confirm the `sslip.io` certificates
   and all five test URLs, including Studio sign-in with the `__Host-` cookie.
 - [ ] [verify] Run the feedback-host integration pass: one form to Mailpit, one
