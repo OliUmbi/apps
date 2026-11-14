@@ -31,7 +31,7 @@ export function WorkspaceNavigation({
 
 	return (
 		<>
-			<div className="border-b border-line-subtle p-3">
+			<div className="border-b border-line-subtle">
 				<SiteSwitcher
 					sites={allowedSites}
 					site={site}

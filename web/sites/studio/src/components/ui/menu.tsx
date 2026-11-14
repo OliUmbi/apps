@@ -16,7 +16,7 @@ export function MenuTrigger({
 }: ComponentProps<typeof Menu.Trigger>) {
 	return (
 		<Menu.Trigger
-			className="flex min-h-12 w-full items-center gap-2 rounded-control border border-transparent px-2 py-2 text-left transition-colors hover:border-line hover:bg-layer-2 data-popup-open:border-line data-popup-open:bg-layer-2"
+			className="flex min-h-14 w-full items-center gap-2 border border-transparent px-4 py-2 text-left transition-colors hover:bg-layer-2 data-popup-open:bg-layer-2"
 			{...props}
 		>
 			{children}

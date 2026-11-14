@@ -2,6 +2,22 @@
 @import "./gradients.css";
 @source "../../../packages/ui/src";
 
+@font-face {
+	font-family: "sans-geist";
+	src: url("/fonts/sans-geist.woff2") format("woff2");
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "mono-geist";
+	src: url("/fonts/mono-geist.woff2") format("woff2");
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
+}
+
 /*
  * Studio is a working surface, not a marketing page. Cool neutrals, a strict
  * 4px grid and one blue interaction colour keep dense records legible. Rich
@@ -31,8 +47,8 @@
 	--color-warning: #f2c94c;
 
 	--spacing: 0.25rem;
-	--font-sans: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
-	--font-mono: "Cascadia Code", ui-monospace, Consolas, monospace;
+	--font-sans: "sans-geist", "Helvetica Neue", Arial, system-ui, sans-serif;
+	--font-mono: "mono-geist", "Cascadia Code", ui-monospace, Consolas, monospace;
 	--radius-control: 6px;
 	--radius-panel: 2px;
 	--shadow-overlay: 0 24px 64px rgb(0 0 0 / 55%);
@@ -209,29 +225,6 @@
 	grid-column: 2;
 	grid-row: 1;
 	color: var(--color-fg-subtle);
-}
-
-.editor-actions {
-	position: relative;
-	overflow: hidden;
-	border: 1px solid var(--color-line-subtle);
-	border-radius: var(--radius-panel);
-	background: var(--color-layer-1);
-}
-
-.editor-actions::before {
-	position: absolute;
-	inset: -48px -48px auto;
-	height: 160px;
-	pointer-events: none;
-	content: "";
-	background-image: var(--gradient-tide);
-	filter: blur(32px);
-	opacity: 0.55;
-}
-
-.editor-actions > * {
-	position: relative;
 }
 
 @media (max-width: 760px) {

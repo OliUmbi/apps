@@ -14,7 +14,7 @@ import type { ComponentProps, ReactNode } from "react";
 export function Form({ children, ...props }: ComponentProps<typeof BaseForm>) {
 	return (
 		<BaseForm
-			className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10"
+			className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-16"
 			{...props}
 		>
 			{children}
@@ -32,7 +32,7 @@ export function FormFields({
 	return (
 		<fieldset
 			disabled={disabled}
-			className="grid w-full min-w-0 flex-1 content-start gap-6 rounded-panel border border-line-subtle bg-layer-1 p-5 md:p-6"
+			className="grid w-full min-w-0 flex-1 content-start gap-8 py-2"
 		>
 			{children}
 		</fieldset>
@@ -41,7 +41,7 @@ export function FormFields({
 
 export function FormActions({ children }: { children: ReactNode }) {
 	return (
-		<aside className="editor-actions grid w-full gap-3 p-4 max-lg:sticky max-lg:bottom-0 max-lg:z-20 lg:sticky lg:top-20 lg:w-72 lg:p-5">
+		<aside className="grid w-full gap-3 max-lg:sticky max-lg:bottom-0 max-lg:z-20 max-lg:border-y max-lg:border-line max-lg:bg-canvas max-lg:py-4 lg:sticky lg:top-20 lg:w-64">
 			{children}
 		</aside>
 	);
