@@ -1,0 +1,148 @@
+---
+# TEST-ONLY overlay for a disposable feedback host.
+#
+# Run AFTER playbooks/site.yml with the same image tag. It does not change any
+# production source: it patches the rendered units on this host, mounts the
+# sslip.io Caddyfile, points messaging at Mailpit and stops monitoring.
+#
+#   ansible-playbook -i inventory-local.yml playbooks/site.yml \
+#     -e image_tag=<tag> --vault-password-file .vault-pass
+#   ansible-playbook -i inventory-local.yml playbooks/test-host.yml \
+#     --vault-password-file .vault-pass
+#
+# Re-run this after every deploy.yml, because the app role re-renders the
+# units from the repository and removes the test changes.
+- name: test host overlay
+  hosts: server
+  gather_facts: false
+
+  vars:
+    test_domain: 86-119-66-183.sslip.io
+    test_urls:
+      jublawoma: "https://jublawoma.{{ test_domain }}"
+      unclet: "https://unclet.{{ test_domain }}"
+      zelglihof: "https://zelglihof.{{ test_domain }}"
+      oliumbi: "https://oliumbi.{{ test_domain }}"
+      studio: "https://studio.{{ test_domain }}"
+    test_units:
+      - apps-jublawoma
+      - apps-unclet
+      - apps-zelglihof
+      - apps-oliumbi
+      - apps-studio
+    test_monitoring_enabled: false
+
+  tasks:
+    - name: test configuration directory
+      ansible.builtin.file:
+        path: /apps/test
+        state: directory
+        mode: "0755"
+
+    - name: test Caddyfile
+      ansible.builtin.copy:
+        src: "{{ repo_root }}/ansible/files/test/Caddyfile"
+        dest: /apps/test/Caddyfile
+        mode: "0644"
+
+    - name: mount the test Caddyfile over the baked one
+      ansible.builtin.lineinfile:
+        path: /etc/containers/systemd/apps-caddy.container
+        insertafter: '^Network=net-apps.network$'
+        line: "Volume=/apps/test/Caddyfile:/etc/caddy/Caddyfile:ro"
+        state: present
+
+    - name: point site public URLs at the test host
+      ansible.builtin.lineinfile:
+        path: "/etc/containers/systemd/{{ item.unit }}.container"
+        regexp: "^Environment={{ item.var }}=.*$"
+        line: "Environment={{ item.var }}={{ item.url }}"
+      loop:
+        - { unit: apps-jublawoma, var: JUBLAWOMA_PUBLIC_URL, url: "{{ test_urls.jublawoma }}" }
+        - { unit: apps-unclet, var: UNCLET_PUBLIC_URL, url: "{{ test_urls.unclet }}" }
+        - { unit: apps-zelglihof, var: ZELGLIHOF_PUBLIC_URL, url: "{{ test_urls.zelglihof }}" }
+        - { unit: apps-studio, var: ZELGLIHOF_PUBLIC_URL, url: "{{ test_urls.zelglihof }}" }
+
+    # Mailpit is a sink: nothing leaves this host. AUTH/TLS are hardcoded true
+    # in env-messaging.j2, so override them here for the disposable run.
+    - name: point messaging at Mailpit
+      ansible.builtin.lineinfile:
+        path: /etc/default/apps-messaging
+        regexp: "^MESSAGING_SMTP_{{ item.key }}=.*$"
+        line: "MESSAGING_SMTP_{{ item.key }}={{ item.value }}"
+      loop:
+        - { key: HOST, value: mailpit }
+        - { key: PORT, value: "1025" }
+        - { key: USERNAME, value: "" }
+        - { key: PASSWORD, value: "" }
+        - { key: AUTH, value: "false" }
+        - { key: TLS, value: "false" }
+        - { key: TLS_REQUIRED, value: "false" }
+      no_log: true
+
+    - name: Mailpit unit
+      ansible.builtin.copy:
+        src: "{{ repo_root }}/ansible/files/test/mailpit.container"
+        dest: /etc/containers/systemd/test-mailpit.container
+        mode: "0644"
+
+    - name: regenerate Quadlet units
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: Mailpit
+      ansible.builtin.systemd:
+        name: test-mailpit.service
+        state: started
+
+    - name: restart the patched units
+      ansible.builtin.systemd:
+        name: "{{ item }}.service"
+        state: restarted
+      loop:
+        - apps-messaging
+        - apps-jublawoma
+        - apps-unclet
+        - apps-zelglihof
+        - apps-oliumbi
+        - apps-studio
+        - apps-caddy
+
+    # The production probes use the real hostnames/SNI; on this host Caddy only
+    # serves the sslip.io names, so those alerts would be expected noise.
+    - name: stop monitoring on the feedback host
+      ansible.builtin.systemd:
+        name: "{{ item }}.service"
+        state: stopped
+      loop:
+        - apps-prometheus
+        - apps-alertmanager
+        - apps-node-exporter
+        - apps-blackbox
+        - apps-grafana
+        - apps-postgres-exporter
+      when: not (test_monitoring_enabled | bool)
+
+    # Stopping a podman-run unit records an exit-code failure; clear it so the
+    # feedback host's status output is not full of expected red units.
+    - name: clear stopped monitoring failures
+      ansible.builtin.command: "systemctl reset-failed {{ item }}.service"
+      loop:
+        - apps-prometheus
+        - apps-alertmanager
+        - apps-node-exporter
+        - apps-blackbox
+        - apps-grafana
+        - apps-postgres-exporter
+      changed_when: false
+      when: not (test_monitoring_enabled | bool)
+
+    - name: feedback URLs
+      ansible.builtin.debug:
+        msg:
+          - "Jublawoma: {{ test_urls.jublawoma }}"
+          - "Uncle-T:   {{ test_urls.unclet }}"
+          - "Zelglihof: {{ test_urls.zelglihof }}"
+          - "Oliumbi:   {{ test_urls.oliumbi }}"
+          - "Studio:    {{ test_urls.studio }}"
+          - "Mailbox:   ssh -L 8025:127.0.0.1:8025 debian@86.119.66.183"

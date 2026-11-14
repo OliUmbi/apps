@@ -8,7 +8,7 @@ is [edge](../../architecture/subsystems/edge.md); the Caddyfile is in
 ## Add or change a domain
 
 1. Create the DNS record once in the Infomaniak manager and add the name to
-   `dyndns_records` in `ansible/group_vars/all.yml`. The timer only updates
+   `dyndns_records` in `ansible/group_vars/all/all.yml`. The timer only updates
    existing records; it never creates or deletes them.
 2. Add the route or redirect to `infrastructure/caddy/Caddyfile`.
 3. Commit, publish a version tag (the Caddyfile ships in the image) and

@@ -5,6 +5,10 @@
       - age
       - ca-certificates
       - curl
+      # node-exporter's systemd collector needs the system bus socket; a
+      # minimal Debian 13 install does not provide it (found on the first
+      # real-host bootstrap, 2026-11).
+      - dbus
       - gnupg
       - jq
       - rsync
@@ -21,6 +25,15 @@
   ansible.builtin.apt:
     name:
       - podman
+
+# A minimal Debian install does not necessarily ship the journald drop-in
+# directory; create it before writing the limit (found on the first real-host
+# bootstrap, 2026-11).
+- name: journald drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/journald.conf.d
+    state: directory
+    mode: "0755"
 
 - name: journald size limit (journald is the log store for every unit)
   ansible.builtin.copy:

@@ -1,7 +1,9 @@
 ---
-# Non-secret configuration. Secrets live in group_vars/vault.yml
-# (create with: ansible-vault create group_vars/vault.yml), see
-# vault.yml.example for the expected keys.
+# Non-secret configuration. Secrets live in group_vars/all/vault.yml
+# (create with: ansible-vault create group_vars/all/vault.yml), see
+# vault.yml.example for the expected keys. The all/ directory is required:
+# a top-level group_vars/vault.yml is read as vars for a group named "vault"
+# and is never loaded for the server.
 
 # paths on the server
 project_dir: /apps

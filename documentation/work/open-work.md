@@ -109,6 +109,36 @@ implementation.
   Prometheus datasource is provisioned as code, and the volume comment says so.
   (superseded 2026-11: dashboards are now provisioned from git.)
 
+## Real-host bootstrap (2026-11-14)
+
+First clean-host run on a disposable Debian 13/amd64 feedback host. The normal
+`site.yml` completed: migrations reached V011, all eight application roles plus
+the monitoring role authenticated, every unit started, and the first admin was
+created. See [test overlay](../../ansible/files/test/README.md).
+
+- [x] **DR-21** The vault path was wrong: a top-level
+  `ansible/group_vars/vault.yml` is read as vars for a group named `vault` and is
+  never loaded, so every `vault_*` value was undefined. Non-secret and secret
+  files now live under `ansible/group_vars/all/`; the vault loads and a fresh
+  deploy completes. (found and fixed 2026-11-14)
+- [x] **DR-22** A minimal Debian 13 has no `/etc/systemd/journald.conf.d`; the
+  server role now creates the directory before writing the journald limit.
+  (found and fixed 2026-11-14)
+- [x] **RV-01 (partial)** The node-exporter systemd collector works after
+  adding `dbus` to the base packages and `DBUS_SYSTEM_BUS_ADDRESS` to the unit;
+  `node_systemd_unit_state` samples are present. The alert-firing test remains
+  open. (found and fixed 2026-11-14)
+- [x] The first admin was created; one backup ran and wrote its success metric
+  (`apps_backup_last_success_timestamp_seconds`). The dyndns timer is disabled,
+  the backup and housekeeping timers are active.
+- [ ] [verify] Open inbound TCP 80/443 and confirm the `sslip.io` certificates
+  and all five test URLs, including Studio sign-in with the `__Host-` cookie.
+- [ ] [verify] Run the feedback-host integration pass: one form to Mailpit, one
+  asset upload, one unpublish, and one backup/restore. Monitoring is stopped on
+  this host; the TLS probes still target the production names.
+- [ ] [owner] Add the first real content through Studio and collect site-owner
+  feedback.
+
 ## First go-live review (2026-11)
 
 Evidence: [first go-live review](../history/go-live-review-2026-11.md).
@@ -121,6 +151,11 @@ host.
   wired (dbus socket, `/run/systemd`, start-time metrics). Verify
   `node_systemd_unit_state` and `node_systemd_unit_start_time_seconds` exist on
   the real host, then fire `UnitFailing` and `UnitRestartLoop` as tests.
+  *Disposition (2026-11-14): the first real host had no dbus socket and the
+  exporter image resolves the bus at `/var/run/dbus/system_bus_socket`. `dbus`
+  is now a base package and the unit sets `DBUS_SYSTEM_BUS_ADDRESS`; the
+  collector returned 1172 `node_systemd_unit_state` samples. The alert-firing
+  test is still open.*
 - [ ] [verify] **RV-02** `BackupStale` alerts on an absent success metric as well
   as a stale one, and the node-exporter textfile is published atomically. Test
   before the first backup and after an injected backup failure.
@@ -179,7 +214,7 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   console/KVM recovery first, then set `restrict_ssh: true` so sshd only listens
   on the tunnel; confirm the drop-in is removed when it is false again.
 - [ ] [verify] Create the A records listed in `dyndns_records`
-  (`ansible/group_vars/all.yml`) once in the Infomaniak manager, including
+  (`ansible/group_vars/all/all.yml`) once in the Infomaniak manager, including
   `studio.*`/`admin.*` and `vpn.oliumbi.ch` for the laptop's WireGuard endpoint.
   The dyndns timer only updates existing records and stays disabled before
   cutover.

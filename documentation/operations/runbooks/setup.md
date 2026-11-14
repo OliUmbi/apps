@@ -15,7 +15,7 @@ forwarding or enables live DNS.
   `dns:read`, `dns:write`.
 - Router access to reserve a LAN address and forward ports.
 - The vault passphrase and every value listed in
-  `ansible/group_vars/vault.yml.example`.
+  `ansible/group_vars/all/vault.yml.example`.
 - A published image tag (`publish.yml` green); `latest` is rejected.
 
 ## Steps
@@ -67,7 +67,7 @@ forwarding or enables live DNS.
    first run, so verify the key works before running `site.yml`.
 
 4. **DNS.** Create the A records listed in `dyndns_records`
-   (`ansible/group_vars/all.yml`) once in the Infomaniak manager, including
+   (`ansible/group_vars/all/all.yml`) once in the Infomaniak manager, including
    `studio.*`, `admin.*` and `vpn.oliumbi.ch`. The dyndns timer only updates
    existing records; it never creates them. Pre-cutover the timer is disabled,
    so if the public IP changes, update `vpn.oliumbi.ch` by hand before the
@@ -77,7 +77,7 @@ forwarding or enables live DNS.
 
    ```sh
    cd ansible
-   ansible-vault create group_vars/vault.yml   # copy the keys from vault.yml.example
+   ansible-vault create group_vars/all/vault.yml   # copy the keys from vault.yml.example
    ```
 
    At minimum: `vault_wireguard_server_private_key`,

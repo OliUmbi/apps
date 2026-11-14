@@ -51,7 +51,7 @@ curl -I https://<site>/
 reaches it.
 
 1. Update the key in the Ansible vault (`ansible-vault edit
-   group_vars/vault.yml`).
+   group_vars/all/vault.yml`).
 2. Add or update the service template in `ansible/roles/app/templates/` if the
    variable is new.
 3. Deploy the current tag: `ansible-playbook playbooks/deploy.yml -e

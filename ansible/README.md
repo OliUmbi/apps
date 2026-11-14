@@ -9,8 +9,8 @@ these playbooks, run from the workstation over WireGuard. Context:
 | path | purpose |
 | --- | --- |
 | `inventory.yml` | the one server (WireGuard address) |
-| `group_vars/all.yml` | non-secret configuration |
-| `group_vars/vault.yml.example` | every secret key, template for the vault |
+| `group_vars/all/all.yml` | non-secret configuration |
+| `group_vars/all/vault.yml.example` | every secret key, template for the vault |
 | `playbooks/` | one action per playbook |
 | `roles/` | one concern per role |
 | `files/` | scripts, systemd units and workstation helpers |
@@ -54,5 +54,7 @@ and housekeeping timers are templated from `backup_hour`, `housekeep_day` and
 passing `-e dyndns_enabled=true` to every later `site.yml` run, or it stops live
 DNS updates.
 
-Secrets: `ansible-vault create group_vars/vault.yml` (start from the
-example). Nothing secret is ever committed.
+Secrets: `ansible-vault create group_vars/all/vault.yml` (start from the
+example). The `all/` directory is load-bearing: a top-level
+`group_vars/vault.yml` is treated as vars for a group named `vault` and is not
+loaded. Nothing secret is ever committed.

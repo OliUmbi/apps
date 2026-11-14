@@ -26,7 +26,7 @@
           - vault_first_admin_email is defined and vault_first_admin_email | length > 0
           - vault_first_admin_password is defined
           - vault_first_admin_password is defined and vault_first_admin_password | length > 0
-        fail_msg: "Set vault_first_admin_name, vault_first_admin_email and vault_first_admin_password in group_vars/vault.yml."
+        fail_msg: "Set vault_first_admin_name, vault_first_admin_email and vault_first_admin_password in group_vars/all/vault.yml."
         quiet: true
 
     - name: install the first-admin helper
