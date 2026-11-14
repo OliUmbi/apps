@@ -135,6 +135,10 @@ created. See [test overlay](../../ansible/files/test/README.md).
   publish, deployed to the feedback host, and served all five `sslip.io` URLs
   with valid certificates; Studio sign-in returned 200 and the Zelglihof
   redesign was live. Rollback target: `2026.11.14-test.1`. (2026-11-14)
+- [x] Follow-up `2026.11.14-test.3`: removed the unused Zelglihof full/text/PNG
+  logo variants and versioned the favicon URL. Verified the removed assets
+  return 404 while `/logo-icon.svg` and `/favicon.svg?v=2` return 200.
+  (2026-11-14)
 - [ ] [verify] Open inbound TCP 80/443 and confirm the `sslip.io` certificates
   and all five test URLs, including Studio sign-in with the `__Host-` cookie.
 - [ ] [verify] Run the feedback-host integration pass: one form to Mailpit, one
