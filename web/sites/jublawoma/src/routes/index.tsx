@@ -9,6 +9,19 @@ import { getNextEvent } from "../data/events";
 import { getPromotions } from "../data/promotions";
 
 export const Route = createFileRoute("/")({
+	head: () => ({
+		// The hero illustration is the largest paint on this page; discover it
+		// before the body is parsed.
+		links: [
+			{
+				rel: "preload",
+				href: "/assets/images/doodles/swinging.svg",
+				as: "image",
+				type: "image/svg+xml",
+				fetchPriority: "high",
+			},
+		],
+	}),
 	loader: async () => {
 		const [nextEvent, promotions] = await Promise.all([
 			getNextEvent(),

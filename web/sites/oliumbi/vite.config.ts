@@ -13,5 +13,12 @@ export default defineConfig(({ mode }) => ({
 	resolve: {
 		tsconfigPaths: true,
 	},
-	plugins: [tanstackStart(), nitro(), viteReact(), tailwindCss()],
+	plugins: [
+		// The site ships one small stylesheet; inlining it removes the
+		// render-blocking round trip before first paint.
+		tanstackStart({ server: { build: { inlineCss: true } } }),
+		nitro(),
+		viteReact(),
+		tailwindCss(),
+	],
 }));

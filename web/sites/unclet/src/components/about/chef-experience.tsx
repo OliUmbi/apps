@@ -1,6 +1,7 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import { StaticImage } from "../static-image";
 
 export function ChefExperience() {
 	// Messages resolve per render; module scope would bake one locale in (U-20).
@@ -61,9 +62,10 @@ export function ChefExperience() {
 				</div>
 			</div>
 			<div className="mt-20 image-treatment aspect-[16/7]">
-				<img
-					src="/images/private-dinner.jpg"
+				<StaticImage
+					name="private-dinner"
 					alt={m.unclet_about_chef_serving_alt()}
+					sizes="100vw"
 				/>
 			</div>
 			<div className="mt-12 flex flex-wrap items-center justify-between gap-8">

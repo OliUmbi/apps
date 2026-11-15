@@ -1,13 +1,16 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowDown, ArrowRight } from "lucide-react";
+import { StaticImage } from "../static-image";
 
 export function Hero() {
 	return (
 		<section className="relative min-h-[92svh] overflow-hidden pt-20">
-			<img
-				src="/images/private-dinner.jpg"
+			<StaticImage
+				name="private-dinner"
 				alt={m.unclet_home_private_dinner_alt()}
+				sizes="100vw"
+				priority
 				className="absolute inset-0 size-full object-cover object-center"
 			/>
 			<div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(17,17,15,.96)_0%,rgba(17,17,15,.72)_47%,rgba(17,17,15,.18)_100%)]" />

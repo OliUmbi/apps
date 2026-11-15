@@ -10,6 +10,7 @@ export const Route = createFileRoute("/about")({
 		pageHead({
 			title: m.unclet_about_page_title(),
 			description: m.unclet_about_page_description(),
+			preload: { name: "thomas", sizes: "100vw" },
 		}),
 	component: AboutPage,
 });
@@ -29,7 +30,7 @@ function AboutPage() {
 					</>
 				}
 				description={m.unclet_about_description()}
-				image="/images/thomas.jpg"
+				image="thomas"
 			/>
 			<CookingPhilosophy />
 			<ChefExperience />

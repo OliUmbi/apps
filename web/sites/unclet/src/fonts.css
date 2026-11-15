@@ -1,25 +1,40 @@
+/* Fonts are cached immutably at the edge, so the URLs carry a version. Bump it
+   together with the file whenever a face is replaced. Sans and mono are subset
+   to Latin + German (31/32 KB instead of 68/70 KB); characters outside that
+   range fall back to the next family in the stack. */
+
 @font-face {
 	font-family: "sans-geist";
-	src: url("/fonts/sans-geist.woff2") format("woff2");
+	src: url("/fonts/sans-geist.woff2?v=2026-11") format("woff2");
 	font-weight: 100 900;
 	font-style: normal;
 	font-display: swap;
+	unicode-range:
+		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+		U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF,
+		U+FFFD;
 }
 
 @font-face {
 	font-family: "serif-playfair";
-	src: url("/fonts/serif-playfair.woff2") format("woff2");
+	src: url("/fonts/serif-playfair.woff2?v=2026-11") format("woff2");
 	font-weight: 400 900;
 	font-style: normal;
 	font-display: swap;
 	unicode-range:
-		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+		U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+		U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
 	font-family: "mono-geist";
-	src: url("/fonts/mono-geist.woff2") format("woff2");
+	src: url("/fonts/mono-geist.woff2?v=2026-11") format("woff2");
 	font-weight: 100 900;
 	font-style: normal;
 	font-display: swap;
+	unicode-range:
+		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+		U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF,
+		U+FFFD;
 }

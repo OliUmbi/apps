@@ -10,5 +10,13 @@ export default defineConfig(({ mode }) => ({
 	...configureEnvironment(mode, import.meta.url),
 	server: { port: 8001 },
 	resolve: { tsconfigPaths: true },
-	plugins: [i18nPlugin(), tanstackStart(), nitro(), viteReact(), tailwindCss()],
+	plugins: [
+		i18nPlugin(),
+		// The site ships one small stylesheet; inlining it removes the
+		// render-blocking round trip before first paint.
+		tanstackStart({ server: { build: { inlineCss: true } } }),
+		nitro(),
+		viteReact(),
+		tailwindCss(),
+	],
 }));

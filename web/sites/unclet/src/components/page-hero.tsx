@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import type { ImageName } from "../model/images";
+import { StaticImage } from "./static-image";
 
 export function PageHero({
 	eyebrow,
@@ -9,15 +11,17 @@ export function PageHero({
 	eyebrow: string;
 	title: ReactNode;
 	description: string;
-	image?: string;
+	image?: ImageName;
 }>) {
 	return (
 		<section className="relative overflow-hidden border-b border-bone/10 pt-20">
 			{image ? (
 				<>
-					<img
-						src={image}
+					<StaticImage
+						name={image}
 						alt=""
+						sizes="100vw"
+						priority
 						className="absolute inset-0 size-full object-cover opacity-35"
 					/>
 					<div className="absolute inset-0 bg-gradient-to-r from-night via-night/90 to-night/35" />

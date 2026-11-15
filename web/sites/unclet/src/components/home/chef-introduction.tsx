@@ -1,14 +1,16 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { Award, MapPin, Users } from "lucide-react";
+import { StaticImage } from "../static-image";
 
 export function ChefIntroduction() {
 	return (
 		<section className="grid lg:grid-cols-2">
 			<div className="image-treatment min-h-[520px]">
-				<img
-					src="/images/thomas.jpg"
+				<StaticImage
+					name="thomas"
 					alt={m.unclet_home_chef_portrait_alt()}
+					sizes="(min-width: 1024px) 50vw, 100vw"
 					className="object-top"
 				/>
 			</div>

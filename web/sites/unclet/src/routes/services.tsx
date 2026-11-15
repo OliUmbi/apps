@@ -10,6 +10,7 @@ export const Route = createFileRoute("/services")({
 		pageHead({
 			title: m.unclet_services_page_title(),
 			description: m.unclet_services_page_description(),
+			preload: { name: "catering", sizes: "100vw" },
 		}),
 	component: ServicesPage,
 });
@@ -29,7 +30,7 @@ function ServicesPage() {
 					</>
 				}
 				description={m.unclet_services_description()}
-				image="/images/catering.jpg"
+				image="catering"
 			/>
 			<CateringFormats />
 			<EventPlanning />

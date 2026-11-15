@@ -53,7 +53,7 @@
 	# images under /api/assets/* carry their own Cache-Control + ETag and must
 	# win; unversioned public files fall through to the short default below.
 	@versioned {
-		path /images/* /fonts/*
+		path /images/* /fonts/* /assets/images/*
 		query v=*
 	}
 	header @versioned Cache-Control "public, max-age=31536000, immutable"

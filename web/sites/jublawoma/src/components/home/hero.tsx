@@ -35,6 +35,7 @@ export function Hero() {
 						className="absolute inset-0 z-10 h-full w-full object-contain saturate-50"
 						src="/assets/images/doodles/swinging.svg"
 						alt={m.jublawoma_home_hero_art_alt()}
+						fetchPriority="high"
 					/>
 				</div>
 			</div>

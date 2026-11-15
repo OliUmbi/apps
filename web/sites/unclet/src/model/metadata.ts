@@ -1,5 +1,8 @@
 // Canonical origin (also in public/sitemap.xml); social preview images must be
 // absolute URLs, so relative asset paths are joined onto it.
+import { imagePreload } from "../components/static-image";
+import type { ImageName } from "./images";
+
 export const siteOrigin = "https://uncle-t.ch";
 
 export function absoluteUrl(path: string): string {
@@ -15,6 +18,7 @@ export function pageHead(options: {
 	title: string;
 	description?: string | null;
 	image?: string | null;
+	preload?: { name: ImageName; sizes: string };
 }) {
 	const meta: Record<string, string>[] = [
 		{ title: options.title },
@@ -26,5 +30,11 @@ export function pageHead(options: {
 	}
 	if (options.image)
 		meta.push({ property: "og:image", content: absoluteUrl(options.image) });
+	if (options.preload) {
+		return {
+			meta,
+			links: [imagePreload(options.preload.name, options.preload.sizes)],
+		};
+	}
 	return { meta };
 }

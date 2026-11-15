@@ -1,14 +1,16 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import { StaticImage } from "../static-image";
 
 export function TeamSection() {
 	return (
 		<section className="shell grid items-center gap-12 pb-24 lg:grid-cols-[1.3fr_.7fr] lg:pb-36">
-			<img
-				className="aspect-[4/3] w-full rounded-3xl object-cover"
-				src="/assets/images/people/leiter.jpg"
+			<StaticImage
+				name="leiter"
 				alt={m.jublawoma_home_team_alt()}
+				sizes="(min-width: 1024px) 62vw, 100vw"
+				className="aspect-[4/3] w-full rounded-3xl object-cover"
 			/>
 			<div>
 				<p className="kicker">{m.jublawoma_home_team_eyebrow()}</p>

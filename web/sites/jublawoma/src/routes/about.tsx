@@ -2,6 +2,7 @@ import { m } from "@oliumbi/i18n/messages";
 import { createFileRoute } from "@tanstack/react-router";
 import { PartnerOrganizations } from "../components/partner-organizations";
 import { PublicMembers } from "../components/public-members";
+import { imagePreload, StaticImage } from "../components/static-image";
 import { getLeadership, getMemberPage } from "../data/members";
 import { pageHead } from "../model/metadata";
 
@@ -16,11 +17,13 @@ export const Route = createFileRoute("/about")({
 		]);
 		return { leadership, memberPage };
 	},
-	head: () =>
-		pageHead({
+	head: () => ({
+		...pageHead({
 			title: m.jublawoma_navigation_about(),
 			description: m.jublawoma_about_description(),
 		}),
+		links: [imagePreload("scharleitung", "(min-width: 900px) 38vw, 100vw")],
+	}),
 	component: About,
 });
 function About() {
@@ -39,10 +42,12 @@ function About() {
 					</h1>
 					<p>{m.jublawoma_about_description()}</p>
 				</div>
-				<img
-					className="photo"
-					src="/assets/images/people/scharleitung.jpg"
+				<StaticImage
+					name="scharleitung"
 					alt={m.jublawoma_about_leadership_alt()}
+					sizes="(min-width: 900px) 38vw, 100vw"
+					priority
+					className="photo"
 				/>
 			</section>
 			<section className="shell split-body">
