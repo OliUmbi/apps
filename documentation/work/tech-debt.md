@@ -454,6 +454,23 @@ untrusted workload joins it.
 now stated in the Caddyfile, [monitoring](../operations/monitoring.md) and
 [network surfaces](../operations/network-surfaces.md).*
 
+### TD-25
+
+**Deploys run from a hand-synced control tree, not from the tag.** The release
+runbook runs `ansible-playbook` from the workstation, but the test host deploys
+from `~/apps-deploy`, a copy of `ansible/` and `infrastructure/` that is synced
+by hand. A unit or playbook change committed to the repository therefore does
+not reach the host at deploy time: the `2026.11.15-test.12` deploy re-rendered
+the old `HealthCmd=pg_isready` until `infrastructure/units/apps-postgres.container`
+was copied across separately. The image tag alone does not describe what runs.
+
+- **Next action:** run the playbooks from the workstation per the
+  [release runbook](../operations/runbooks/release.md), or make `~/apps-deploy`
+  a git checkout of the tag and assert it is clean before rendering. Until then,
+  sync `ansible/` and `infrastructure/` before a deploy that changes them, and
+  inspect the rendered unit afterwards.
+- **Source:** 2026-11-15, found while fixing the Postgres health probe.
+
 ## Accepted limitations (not debt)
 
 These are deliberate trade-offs, recorded so they are not re-litigated as
