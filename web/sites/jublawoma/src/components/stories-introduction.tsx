@@ -24,7 +24,7 @@ export function StoriesIntroduction() {
 				</a>
 			</div>
 			<div className="story-art">
-				<img src="/assets/images/doodles/selfie.svg" alt="" />
+				<img src="/images/doodles/selfie.svg" alt="" />
 			</div>
 		</section>
 	);

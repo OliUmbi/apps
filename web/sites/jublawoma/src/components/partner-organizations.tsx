@@ -7,31 +7,31 @@ function partners() {
 		{
 			name: "Jubla Schweiz",
 			href: "https://www.jubla.ch/",
-			image: "/assets/images/logos/jubla.jpg",
+			image: "/images/logos/jubla.jpg",
 			description: m.jublawoma_about_partner_jubla_schweiz_body,
 		},
 		{
 			name: "Jubla Aargau",
 			href: "https://www.jublaaargau.ch/",
-			image: "/assets/images/logos/aargau.svg",
+			image: "/images/logos/aargau.svg",
 			description: m.jublawoma_about_partner_jubla_aargau_body,
 		},
 		{
 			name: "Jugend + Sport",
 			href: "https://www.jugendundsport.ch/de",
-			image: "/assets/images/logos/js.jpg",
+			image: "/images/logos/js.jpg",
 			description: m.jublawoma_about_partner_jugend_sport_body,
 		},
 		{
 			name: "Gemeinde Mägenwil",
 			href: "https://www.maegenwil.ch/",
-			image: "/assets/images/logos/maegenwil.png",
+			image: "/images/logos/maegenwil.png",
 			description: null,
 		},
 		{
 			name: "Gemeinde Wohlenschwil",
 			href: "https://www.wohlenschwil.ch/",
-			image: "/assets/images/logos/wohlenschwil.webp",
+			image: "/images/logos/wohlenschwil.webp",
 			description: null,
 		},
 	];

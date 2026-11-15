@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
 		links: [
 			{
 				rel: "preload",
-				href: "/assets/images/doodles/swinging.svg",
+				href: "/images/doodles/swinging.svg",
 				as: "image",
 				type: "image/svg+xml",
 				fetchPriority: "high",

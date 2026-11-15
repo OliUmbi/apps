@@ -19,7 +19,7 @@ export function Header() {
 		<header className="site-header">
 			<Link to="/" className="brand" onClick={() => setOpen(false)}>
 				<img
-					src="/assets/images/logos/logo.png"
+					src="/images/logos/logo.png"
 					alt=""
 					width={100}
 					height={84}

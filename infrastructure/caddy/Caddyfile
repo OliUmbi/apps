@@ -41,12 +41,11 @@
 		defer
 	}
 
-	# Public files that are replaced in place (owner photos, fonts, the
-	# registration PDFs) start at one hour. An earlier handler wins over a
-	# later one for the same header, so the immutable rules below must come
-	# after this one; the app itself sets a year for /assets/*, which is why
-	# this value has to be forced rather than merged in.
-	@shortLived path /assets/* /images/* /fonts/*
+	# Public files that are replaced in place start at one hour. Images and
+	# fonts are the only namespaces the app does not set a cache header for, so
+	# these rules own them. Hashed build output lives in /assets and keeps the
+	# immutable header the app already sends.
+	@shortLived path /images/* /fonts/*
 	header @shortLived Cache-Control "public, max-age=3600, must-revalidate"
 
 	# Owner photos and fonts carry a ?v= version that the app bumps when a file
@@ -54,7 +53,7 @@
 	# images under /api/assets/* carry their own Cache-Control + ETag and must
 	# win; they are not in these paths.
 	@versioned {
-		path /images/* /fonts/* /assets/images/*
+		path /images/* /fonts/*
 		query v=*
 	}
 	header @versioned Cache-Control "public, max-age=31536000, immutable"

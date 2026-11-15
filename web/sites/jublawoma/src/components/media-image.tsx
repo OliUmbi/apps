@@ -49,7 +49,7 @@ export function MediaImage({
 			role="img"
 			aria-label={alt || m.jublawoma_image_missing_alt()}
 		>
-			<img src={`/assets/images/doodles/${doodles[index]}`} alt="" />
+			<img src={`/images/doodles/${doodles[index]}`} alt="" />
 			<span>
 				<ImageOff size={14} aria-hidden="true" />
 				{m.jublawoma_image_placeholder()}

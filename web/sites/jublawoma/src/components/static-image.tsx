@@ -1,7 +1,7 @@
 import { type ImageName, imageDimensions, imageVersion } from "../model/images";
 
 const variants = [480, 800, 1200] as const;
-const directory = "/assets/images/people";
+const directory = "/images/people";
 
 type StaticImageProps = {
 	name: ImageName;
