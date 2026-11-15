@@ -70,6 +70,15 @@ currently limited only by application behavior.
   before the application handlers, so the application honeypot is no longer the
   only brake.*
 
+*Disposition (2026-11-15): the public zone no longer matches static assets
+  (`/assets/*`, `/images/*`, `/fonts/*`, `/favicon*`, `/robots.txt`,
+  `/sitemap.xml`, `/api/assets/*`). A real mobile page load fetches many hashed
+  chunks, fonts and images in parallel; counting them returned 429s, which broke
+  hydration and the mobile drawers on Zelglihof and also dropped images, fonts
+  and analytics on Jublawoma and Uncle-T. Form/API traffic and the separate login
+  zone remain limited. Verified in WebKit with an iPhone profile: all three
+  public drawers open, navigate and close with no 429s.*
+
 ### TD-06
 
 **Profile editing can undo an administrative account change.** Studio's profile
