@@ -146,6 +146,14 @@ created. See [test overlay](../../ansible/files/test/README.md).
   login limits remain. Verified in WebKit with an iPhone profile: all three
   public drawers open, navigate and close with no 429s. Deployed as
   `2026.11.15-test.1`. (2026-11-15)
+- [x] Follow-up `2026.11.15-test.3`: documents now send
+  `no-cache, must-revalidate` so a cached entry point cannot hide a deploy;
+  Zelglihof's body uses `min-height` instead of `height: 100%`, so the sticky
+  header stays through the page; the newsletter input uses ink on the light
+  field, and the submit button keeps its sun/ink colors on hover and press.
+  Verified in WebKit iPhone/desktop on the test host; the header stayed at
+  `top: 0` through the page and the page loaded with no failed responses.
+  (2026-11-15)
 - [ ] [verify] Open inbound TCP 80/443 and confirm the `sslip.io` certificates
   and all five test URLs, including Studio sign-in with the `__Host-` cookie.
 - [ ] [verify] Run the feedback-host integration pass: one form to Mailpit, one

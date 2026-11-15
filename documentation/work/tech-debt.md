@@ -311,6 +311,11 @@ not content-hashed, so they cannot be cached immutably.
   files (PDFs, logos, fonts) keep the one-hour default. Uploaded images under
   `/api/assets/*` keep their own cache headers.*
 
+*Disposition (2026-11-15): the HTML document is not content-hashed, so it now
+  sends `Cache-Control: no-cache, must-revalidate`. Without it Chrome could keep
+  an old entry point after a deploy and never request the new hashed chunks.
+  Hashed assets stay immutable and API responses keep their own headers.*
+
 ### TD-10
 
 **Authorization is a per-handler convention.** Each Studio server function calls
