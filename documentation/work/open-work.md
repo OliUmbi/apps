@@ -162,6 +162,27 @@ created. See [test overlay](../../ansible/files/test/README.md).
 - [ ] [owner] Add the first real content through Studio and collect site-owner
   feedback.
 
+## Site review (2026-11-15)
+
+Reviewed Jublawoma, Uncle-T, Zelglihof, Oliumbi and Studio at desktop and iPhone
+WebKit widths. The home pages have no horizontal overflow, broken images or
+console errors. Zelglihof's Kulturen page now uses the owner image set: a field
+banner, a wide Futtermais tile, a two-image harvest band, and a captioned
+pflanzung/bewässerung/spinat/hofladen gallery, with season labels and richer
+crop copy.
+
+- [owner] Confirm the exact Zelglihof house number. The owner said it is not
+  `Zelgliweg 2`; the footer and JSON-LD now show `Zelgliweg` without a number.
+- [owner] Confirm the current livestock counts. `FarmFacts` still shows
+  45 Mutterkühe, 18 Rinder and 22 Kälber from placeholder code; the 60 hens are
+  confirmed.
+- [owner] Confirm whether Uncle-T's `Zelgliweg 2` is correct or whether it
+  shares the Zelglihof address correction.
+- [owner] Decide whether "Aktuelles" should add a future-events block; the
+  current page shows updates only.
+- [design] The Studio login autofocus produces a bright blue double focus ring.
+  Decide whether to keep the accent or soften the autofocus state.
+
 ## First go-live review (2026-11)
 
 Evidence: [first go-live review](../history/go-live-review-2026-11.md).
