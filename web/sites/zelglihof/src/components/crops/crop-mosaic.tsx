@@ -113,39 +113,8 @@ function FieldBanner() {
 	);
 }
 
-function HarvestFeature() {
-	return (
-		<div className="my-16 grid gap-4 md:my-24 md:grid-cols-[0.8fr_1.2fr]">
-			<figure className="relative min-h-[22rem] overflow-hidden rounded-[2rem] md:min-h-[32rem]">
-				<img
-					src="/images/broccoli-ernte-feld.jpg"
-					alt={m.zelglihof_crops_harvest_field_alt()}
-					loading="lazy"
-					decoding="async"
-					className="absolute inset-0 h-full w-full object-cover"
-				/>
-				<figcaption className="absolute bottom-5 left-5 right-5 w-fit rounded-2xl bg-ink/45 px-4 py-3 text-sm font-semibold text-cream backdrop-blur md:bottom-7 md:left-7 md:right-auto">
-					{m.zelglihof_crops_harvest_field_caption()}
-				</figcaption>
-			</figure>
-			<figure className="relative min-h-[22rem] overflow-hidden rounded-[2rem] md:min-h-[32rem]">
-				<img
-					src="/images/broccoli-ernte-team.jpg"
-					alt={m.zelglihof_crops_harvest_team_alt()}
-					loading="lazy"
-					decoding="async"
-					className="absolute inset-0 h-full w-full object-cover"
-				/>
-				<figcaption className="absolute bottom-5 left-5 right-5 w-fit rounded-2xl bg-ink/45 px-4 py-3 text-sm font-semibold text-cream backdrop-blur md:bottom-7 md:left-7 md:right-auto">
-					{m.zelglihof_crops_harvest_team_caption()}
-				</figcaption>
-			</figure>
-		</div>
-	);
-}
-
-function CropGallery() {
-	const images = [
+function CropProcess() {
+	const steps = [
 		{
 			src: "/images/broccoli-pflanzung.jpg",
 			alt: m.zelglihof_crops_gallery_planting_alt(),
@@ -157,9 +126,9 @@ function CropGallery() {
 			caption: m.zelglihof_crops_gallery_irrigation(),
 		},
 		{
-			src: "/images/spinat-beregnung.jpg",
-			alt: m.zelglihof_crops_spinach_alt(),
-			caption: m.zelglihof_crops_spinach_name(),
+			src: "/images/broccoli-ernte-team.jpg",
+			alt: m.zelglihof_crops_gallery_harvest_alt(),
+			caption: m.zelglihof_crops_gallery_harvest(),
 		},
 		{
 			src: "/images/broccoli-ernte-kiste.jpg",
@@ -169,7 +138,7 @@ function CropGallery() {
 	];
 
 	return (
-		<section className="shell">
+		<section className="my-16 md:my-24">
 			<p className="eyebrow text-clay">{m.zelglihof_crops_gallery_eyebrow()}</p>
 			<div className="mt-5 grid gap-8 md:grid-cols-[0.8fr_1.2fr] md:items-end">
 				<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] text-5xl md:text-6xl">
@@ -180,19 +149,22 @@ function CropGallery() {
 				</p>
 			</div>
 			<div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
-				{images.map((image) => (
-					<figure key={image.src} className="group">
-						<div className="overflow-hidden rounded-[1.5rem] bg-cream">
+				{steps.map((step, index) => (
+					<figure key={step.src}>
+						<div className="relative overflow-hidden rounded-[1.5rem] bg-cream">
 							<img
-								src={image.src}
-								alt={image.alt}
+								src={step.src}
+								alt={step.alt}
 								loading="lazy"
 								decoding="async"
-								className="aspect-[4/5] w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+								className="aspect-[4/5] w-full object-cover"
 							/>
+							<span className="absolute left-3 top-3 grid size-8 place-items-center rounded-full bg-ink/55 text-xs font-bold text-cream backdrop-blur">
+								{String(index + 1).padStart(2, "0")}
+							</span>
 						</div>
 						<figcaption className="mt-3 text-sm font-semibold text-ink/70">
-							{image.caption}
+							{step.caption}
 						</figcaption>
 					</figure>
 				))}
@@ -209,12 +181,11 @@ export function CropMosaic() {
 				title={m.zelglihof_crops_group_arable()}
 				crops={arableCrops()}
 			/>
-			<HarvestFeature />
+			<CropProcess />
 			<CropGroup
 				title={m.zelglihof_crops_group_special()}
 				crops={specialCrops()}
 			/>
-			<CropGallery />
 		</section>
 	);
 }
