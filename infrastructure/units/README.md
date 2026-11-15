@@ -103,12 +103,19 @@ thing.
 
 ## Health
 
-Health checks use busybox `wget` (available in every image here — the JRE
+Health checks use busybox `wget` (available in every image here - the JRE
 alpine images have neither bash nor curl, which broke the old compose health
 checks, finding DP-01): `/actuator/health` for the Java services, `/` for the
-sites. Status shows in `podman ps`; prometheus probes the same endpoints over
-the network via blackbox, and `UnitFailing`/`UnitRestartLoop` alerts watch the
-systemd side.
+sites, and `pg_isready -U apps_migrator -d apps` for the database (the bare
+command probes as the container's OS user, so it logs a role error every
+interval). Status shows in `podman ps`; prometheus probes the same endpoints
+over the network via blackbox, and `UnitFailing`/`UnitRestartLoop` alerts watch
+the systemd side.
+
+Podman writes a journald event for every health probe (`container
+health_status`), which filled the journal on the test host; the server role
+switches the event logger to a file drop-in (`events_logger = "file"`).
+`podman events` still reads it.
 
 ## Debugging unit files
 

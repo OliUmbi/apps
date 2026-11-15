@@ -44,6 +44,23 @@
       SystemMaxUse=200M
   notify: restart journald
 
+# Every health probe writes a journald event ("container health_status ..."),
+# which is ~40 lines a minute across the containers. Keep the events in
+# podman's own file; `podman events` still reads them.
+- name: podman config drop-in directory
+  ansible.builtin.file:
+    path: /etc/containers/containers.conf.d
+    state: directory
+    mode: "0755"
+
+- name: podman event logger
+  ansible.builtin.copy:
+    dest: /etc/containers/containers.conf.d/50-events.conf
+    mode: "0644"
+    content: |
+      [engine]
+      events_logger = "file"
+
 - name: automatic security updates
   ansible.builtin.copy:
     dest: /etc/apt/apt.conf.d/20auto-upgrades
