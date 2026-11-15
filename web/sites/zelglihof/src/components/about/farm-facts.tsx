@@ -1,4 +1,5 @@
 import { m } from "@oliumbi/i18n/messages";
+import { StaticImage } from "../static-image";
 
 // Owner item "real farm facts and crop list": these counts are placeholder
 // content until the farm confirms the real numbers.
@@ -29,9 +30,10 @@ export function FarmFacts() {
 	return (
 		<section className="shell grid gap-5 pb-24 lg:grid-cols-[1.15fr_0.85fr] lg:pb-32">
 			<div className="relative min-h-[32rem] overflow-hidden rounded-[2rem] lg:min-h-[38rem]">
-				<img
-					src="/images/rinder-herde.jpg"
+				<StaticImage
+					name="rinder-herde"
 					alt={m.zelglihof_farm_landscape_alt()}
+					sizes="(min-width: 1024px) 58vw, 100vw"
 					className="absolute inset-0 h-full w-full object-cover"
 				/>
 				<div className="absolute inset-0 bg-gradient-to-t from-ink/65 via-transparent to-transparent" />

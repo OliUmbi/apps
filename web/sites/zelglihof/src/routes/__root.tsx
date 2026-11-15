@@ -43,7 +43,23 @@ export const Route = createRootRoute({
 		],
 		// The query keeps browsers from reusing the old cached favicon after the
 		// farm logo replaced the previous mark.
-		links: [{ rel: "icon", href: "/favicon.svg?v=2", type: "image/svg+xml" }],
+		links: [
+			{ rel: "icon", href: "/favicon.svg?v=2", type: "image/svg+xml" },
+			{
+				rel: "preload",
+				href: "/fonts/sans-geist.woff2",
+				as: "font",
+				type: "font/woff2",
+				crossOrigin: "anonymous",
+			},
+			{
+				rel: "preload",
+				href: "/fonts/serif-playfair.woff2",
+				as: "font",
+				type: "font/woff2",
+				crossOrigin: "anonymous",
+			},
+		],
 	}),
 	component: RootComponent,
 	shellComponent: RootDocument,

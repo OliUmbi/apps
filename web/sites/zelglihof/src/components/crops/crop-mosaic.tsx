@@ -1,10 +1,12 @@
 import { m } from "@oliumbi/i18n/messages";
+import type { ImageName } from "../../model/images";
+import { StaticImage } from "../static-image";
 
 type Crop = {
 	name: string;
 	body: string;
 	season: string;
-	image?: string;
+	image?: ImageName;
 	imageAlt?: string;
 	tone?: string;
 	wide?: boolean;
@@ -53,21 +55,21 @@ function specialCrops(): Crop[] {
 			name: m.zelglihof_crops_maize_name(),
 			body: m.zelglihof_crops_maize_body(),
 			season: m.zelglihof_season_summer(),
-			image: "/images/zuckermais-mulchfolie.jpg",
+			image: "zuckermais-mulchfolie",
 			imageAlt: m.zelglihof_crops_maize_alt(),
 		},
 		{
 			name: m.zelglihof_crops_spinach_name(),
 			body: m.zelglihof_crops_spinach_body(),
 			season: m.zelglihof_season_spring_autumn(),
-			image: "/images/spinat-feld.jpg",
+			image: "spinat-feld",
 			imageAlt: m.zelglihof_crops_spinach_alt(),
 		},
 		{
 			name: m.zelglihof_crops_broccoli_name(),
 			body: m.zelglihof_crops_broccoli_body(),
 			season: m.zelglihof_season_summer_autumn(),
-			image: "/images/broccoli-pflanze.jpg",
+			image: "broccoli-pflanze",
 			imageAlt: m.zelglihof_crops_broccoli_alt(),
 		},
 		{
@@ -94,11 +96,11 @@ function specialCrops(): Crop[] {
 function FieldBanner() {
 	return (
 		<figure className="relative mt-12 mb-12 overflow-hidden rounded-[2rem] md:mt-16 md:mb-16">
-			<img
-				src="/images/zuckermais-mulchfeld.jpg"
+			<StaticImage
+				name="zuckermais-mulchfeld"
 				alt={m.zelglihof_crops_field_alt()}
-				loading="lazy"
-				decoding="async"
+				sizes="100vw"
+				priority
 				className="aspect-[4/3] w-full object-cover md:aspect-[16/7]"
 			/>
 			<figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/75 via-ink/25 to-transparent p-6 text-cream md:p-9">
@@ -116,22 +118,22 @@ function FieldBanner() {
 function CropProcess() {
 	const steps = [
 		{
-			src: "/images/broccoli-pflanzung.jpg",
+			name: "broccoli-pflanzung" as const,
 			alt: m.zelglihof_crops_gallery_planting_alt(),
 			caption: m.zelglihof_crops_gallery_planting(),
 		},
 		{
-			src: "/images/zuckermais-beregnung-traktor.jpg",
+			name: "zuckermais-beregnung-traktor" as const,
 			alt: m.zelglihof_crops_gallery_irrigation_alt(),
 			caption: m.zelglihof_crops_gallery_irrigation(),
 		},
 		{
-			src: "/images/broccoli-ernte-team.jpg",
+			name: "broccoli-ernte-team" as const,
 			alt: m.zelglihof_crops_gallery_harvest_alt(),
 			caption: m.zelglihof_crops_gallery_harvest(),
 		},
 		{
-			src: "/images/broccoli-ernte-kiste.jpg",
+			name: "broccoli-ernte-kiste" as const,
 			alt: m.zelglihof_crops_gallery_crate_alt(),
 			caption: m.zelglihof_crops_gallery_crate(),
 		},
@@ -150,13 +152,12 @@ function CropProcess() {
 			</div>
 			<div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
 				{steps.map((step, index) => (
-					<figure key={step.src}>
+					<figure key={step.name}>
 						<div className="relative overflow-hidden rounded-[1.5rem] bg-cream">
-							<img
-								src={step.src}
+							<StaticImage
+								name={step.name}
 								alt={step.alt}
-								loading="lazy"
-								decoding="async"
+								sizes="(min-width: 1024px) 25vw, 50vw"
 								className="aspect-[4/5] w-full object-cover"
 							/>
 							<span className="absolute left-3 top-3 grid size-8 place-items-center rounded-full bg-ink/55 text-xs font-bold text-cream backdrop-blur">
@@ -215,11 +216,10 @@ function CropTile({ crop }: { crop: Crop }) {
 		const mediaWide = crop.wide ? "tile-media--wide" : "";
 		return (
 			<article className={`tile-media ${mediaWide} ${wide}`}>
-				<img
-					src={crop.image}
+				<StaticImage
+					name={crop.image}
 					alt={crop.imageAlt ?? ""}
-					loading="lazy"
-					decoding="async"
+					sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
 				/>
 				<div className="relative z-10 flex h-full flex-col justify-between gap-6">
 					<p className="w-fit rounded-full bg-ink/35 px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-cream backdrop-blur">
