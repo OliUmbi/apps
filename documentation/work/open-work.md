@@ -283,6 +283,16 @@ Deployment shape: ghcr images pinned by tag, systemd units from
 - [ ] [verify] Deploy the monitoring stack (`apps-prometheus` ... `apps-grafana`)
   and confirm alerts reach the phone. External uptime and dead-man coverage is
   accepted for launch; see the owner acceptance below.
+- [x] The journal on the test host was dominated by two repeating streams: the
+  Postgres health probe logged `FATAL: role "root" does not exist` every 10 s
+  (`pg_isready` without `-U` probes as the container's OS user) and podman wrote
+  one `container health_status` event per probe (~40 lines a minute). `HealthCmd`
+  now runs `pg_isready -U apps_migrator -d apps` (the cluster has no `postgres`
+  role) and the server role installs
+  `/etc/containers/containers.conf.d/50-events.conf` with
+  `events_logger = "file"`; `podman events` still reads the file. Verified on
+  `2026.11.15-test.12`: no role errors or podman event lines in steady state.
+  (2026-11-15)
 - [x] [owner] External uptime and dead-man's switch. (accepted 2026-11-13 for
   launch: monitoring stays host-local, so a dead host is silent. Revisit after
   launch; the accepted limitation is recorded in
