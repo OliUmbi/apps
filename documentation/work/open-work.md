@@ -171,6 +171,10 @@ banner, a wide Futtermais tile, a two-image harvest band, and a captioned
 pflanzung/bewässerung/spinat/hofladen gallery, with season labels and richer
 crop copy.
 
+- [x] `2026.11.15-test.5` deployed the image-led Kulturen page, the owner-fact
+  corrections and the spacing fix: 64 px desktop / 48 px mobile above the field
+  banner, 10 images including the four-image work gallery, no broken assets,
+  429s or horizontal overflow. (2026-11-15)
 - [owner] Confirm the exact Zelglihof house number. The owner said it is not
   `Zelgliweg 2`; the footer and JSON-LD now show `Zelgliweg` without a number.
 - [owner] Confirm the current livestock counts. `FarmFacts` still shows
