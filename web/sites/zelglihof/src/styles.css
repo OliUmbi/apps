@@ -194,6 +194,22 @@ a {
 	background: var(--color-sun);
 }
 
+/* `.cta` carries a forest hover; at this specificity it would beat the
+   newsletter override and produce dark-on-dark text while the touch hover
+   state sticks after a tap. Keep the sun surface for hover and press. */
+.newsletter-form button:hover,
+.newsletter-form button:active {
+	color: var(--color-ink);
+	background: var(--color-sun);
+}
+
+/* The form sits on the forest section and would otherwise inherit its cream
+   text into the light input field. */
+.newsletter-form input {
+	color: var(--color-ink);
+	caret-color: var(--color-ink);
+}
+
 .contact-form-card {
 	position: relative;
 	border: 1px solid var(--color-hairline);
