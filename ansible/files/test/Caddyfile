@@ -39,7 +39,11 @@
 	rate_limit {
 		zone public {
 			match {
-				not path /api/session/login
+				# A single page load fetches many hashed JS/CSS chunks, fonts and
+				# images in parallel; rate-limiting those produces 429s, failed
+				# hydration and broken mobile menus. Keep this zone for form/API
+				# traffic; the login zone stays separate.
+				not path /api/session/login /assets/* /images/* /fonts/* /favicon* /robots.txt /sitemap.xml /api/assets/*
 			}
 			key {remote_host}
 			window 2s
