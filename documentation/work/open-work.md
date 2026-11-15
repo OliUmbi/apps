@@ -144,7 +144,8 @@ created. See [test overlay](../../ansible/files/test/README.md).
   failed and the drawer never attached; Jublawoma and Uncle-T also lost images,
   fonts and analytics. Static assets now bypass the public zone; form/API and
   login limits remain. Verified in WebKit with an iPhone profile: all three
-  public drawers open, navigate and close with no 429s. (2026-11-15)
+  public drawers open, navigate and close with no 429s. Deployed as
+  `2026.11.15-test.1`. (2026-11-15)
 - [ ] [verify] Open inbound TCP 80/443 and confirm the `sslip.io` certificates
   and all five test URLs, including Studio sign-in with the `__Host-` cookie.
 - [ ] [verify] Run the feedback-host integration pass: one form to Mailpit, one
