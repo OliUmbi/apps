@@ -93,7 +93,7 @@ function specialCrops(): Crop[] {
 
 function FieldBanner() {
 	return (
-		<figure className="relative mb-12 overflow-hidden rounded-[2rem] md:mb-16">
+		<figure className="relative mt-12 mb-12 overflow-hidden rounded-[2rem] md:mt-16 md:mb-16">
 			<img
 				src="/images/zuckermais-mulchfeld.jpg"
 				alt={m.zelglihof_crops_field_alt()}
