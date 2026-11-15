@@ -167,14 +167,25 @@ created. See [test overlay](../../ansible/files/test/README.md).
 Reviewed Jublawoma, Uncle-T, Zelglihof, Oliumbi and Studio at desktop and iPhone
 WebKit widths. The home pages have no horizontal overflow, broken images or
 console errors. Zelglihof's Kulturen page now uses the owner image set: a field
-banner, a wide Futtermais tile, a two-image harvest band, and a captioned
-pflanzung/bewässerung/spinat/hofladen gallery, with season labels and richer
-crop copy.
+banner, a wide Futtermais tile, a four-step Pflanzung/Bewässerung/Ernte/Hofladen
+story, and the special-crop group with photos, season labels and richer crop
+copy.
 
 - [x] `2026.11.15-test.5` deployed the image-led Kulturen page, the owner-fact
   corrections and the spacing fix: 64 px desktop / 48 px mobile above the field
   banner, 10 images including the four-image work gallery, no broken assets,
   429s or horizontal overflow. (2026-11-15)
+- [x] `2026.11.15-test.8` shipped the performance pass: responsive AVIF photos
+  (Kulturen dropped from 3.2 MiB to 720 KiB), the stylesheet inlined into the
+  document (no render-blocking request), immutable caching only for versioned
+  photo/font URLs, a Latin subset for the sans font (68 -> 31 KiB), preloaded
+  LCP images, minified logo/favicon and a cached grain tile instead of the
+  inline `feTurbulence` filter. Lighthouse on the test host: Kulturen
+  0.76 -> 0.94 (LCP 6.0 -> 3.1 s simulated, 0.51 -> 0.31 s observed), home
+  0.77 -> 0.89 (LCP 6.2 -> 3.3 s), CLS 0. (2026-11-15)
+  The remaining "improve image delivery" hint compares the 800 px AVIF with a
+  380 px box at DPR 1; phones render that box at ~665 px, so the current
+  variants are correct and the hint is a heuristic mismatch, not a defect.
 - [owner] Confirm the exact Zelglihof house number. The owner said it is not
   `Zelgliweg 2`; the footer and JSON-LD now show `Zelgliweg` without a number.
 - [owner] Confirm the current livestock counts. `FarmFacts` still shows
