@@ -54,6 +54,12 @@
 	# /api/assets/* carry their own Cache-Control + ETag and must win.
 	@static path /assets/* /images/* /fonts/*
 	header @static ?Cache-Control "public, max-age=3600"
+
+	# The document is not content-hashed, so a browser may keep an old entry
+	# point after a deploy. Force revalidation for every navigation; the hashed
+	# assets above remain immutable. API responses keep their own cache headers.
+	@document not path /assets/* /images/* /fonts/* /favicon* /robots.txt /sitemap.xml /api/*
+	header @document Cache-Control "no-cache, must-revalidate"
 }
 
 # Per-client-IP rate limits. The public zone approximates 10 requests per
