@@ -186,6 +186,22 @@ copy.
   The remaining "improve image delivery" hint compares the 800 px AVIF with a
   380 px box at DPR 1; phones render that box at ~665 px, so the current
   variants are correct and the hint is a heuristic mismatch, not a defect.
+- [x] `2026.11.15-test.12` applied the same performance pass to the other public
+  sites: the stylesheet is inlined on Jublawoma, Uncle-T and Oliumbi, photos
+  render through a site-local `StaticImage` (AVIF + JPEG fallback, intrinsic
+  size, eager/preloaded for the largest paint), Uncle-T's sans/mono are
+  Latin-subset and versioned, and Jublawoma's 10.5 MB of unreferenced images now
+  sit in [`media/jublawoma`](../../media/jublawoma/README.md) instead of
+  `public/`. Its doodles/logos were minified (1.1 MB -> 576 KB) and the favicon
+  went from 264 KB to 6 KB. Lighthouse on the test host: Jublawoma
+  0.92 -> 0.98 (LCP 3.3 -> 2.5 s, 813 -> 455 KiB), Uncle-T 0.81 -> 0.95
+  (LCP 4.9 -> 2.9 s, 1,186 -> 436 KiB); cache, image delivery, render-blocking
+  and LCP-discovery insights pass. (2026-11-15)
+- [x] Caching is now "immutable only when versioned" for `/images/*` and
+  `/fonts/*`; the app's own immutable header for hashed `/assets/*` build output
+  is left alone, and Jublawoma's PDFs carry `?v=` so a replaced document is not
+  stale for a year. Unversioned photos/fonts revalidate within the hour.
+  (2026-11-15)
 - [owner] Confirm the exact Zelglihof house number. The owner said it is not
   `Zelgliweg 2`; the footer and JSON-LD now show `Zelgliweg` without a number.
 - [owner] Confirm the current livestock counts. `FarmFacts` still shows
