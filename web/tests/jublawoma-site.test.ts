@@ -48,10 +48,13 @@ test("unparseable donation dates render as nothing instead of Invalid Date", () 
 });
 
 test("site links resolve from one module and absolute URLs from one origin", () => {
+	// The PDFs sit under /assets, which the app serves as immutable, so the
+	// path must stay stable while a version query busts the cache on replace.
 	assert.equal(
-		registrationFormPdf,
+		registrationFormPdf.split("?")[0],
 		"/assets/documents/Anmeldung-Jubla-Woma.pdf",
 	);
+	assert.match(registrationFormPdf, /\?v=\d{4}-\d{2}$/);
 	assert.equal(contactMailto, "mailto:scharleitung@jublawoma.ch");
 	assert.equal(instagramUrl, "https://www.instagram.com/jubla_woma/");
 	assert.equal(siteOrigin, "https://jublawoma.ch");
