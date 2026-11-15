@@ -45,16 +45,17 @@ export const Route = createRootRoute({
 		// farm logo replaced the previous mark.
 		links: [
 			{ rel: "icon", href: "/favicon.svg?v=2", type: "image/svg+xml" },
+			// Keep this in step with the versioned URLs in fonts.css.
 			{
 				rel: "preload",
-				href: "/fonts/sans-geist.woff2",
+				href: "/fonts/sans-geist.woff2?v=2026-11",
 				as: "font",
 				type: "font/woff2",
 				crossOrigin: "anonymous",
 			},
 			{
 				rel: "preload",
-				href: "/fonts/serif-playfair.woff2",
+				href: "/fonts/serif-playfair.woff2?v=2026-11",
 				as: "font",
 				type: "font/woff2",
 				crossOrigin: "anonymous",

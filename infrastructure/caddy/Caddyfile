@@ -48,15 +48,19 @@
 	@hashedAssets path_regexp "^/assets/.+-[A-Za-z0-9_-]{6,}[.](js|css|woff2?)$"
 	header @hashedAssets Cache-Control "public, max-age=31536000, immutable"
 
-	# Owner photos and fonts are versioned by the app (imageVersion / font file
-	# names), so they can be cached immutably. Uploaded images under
-	# /api/assets/* carry their own Cache-Control + ETag and must win.
-	@images path /images/* /fonts/*
-	header @images Cache-Control "public, max-age=31536000, immutable"
+	# Owner photos and fonts carry a ?v= version that the app bumps when a file
+	# is replaced, so only versioned URLs may be cached immutably. Uploaded
+	# images under /api/assets/* carry their own Cache-Control + ETag and must
+	# win; unversioned public files fall through to the short default below.
+	@versioned {
+		path /images/* /fonts/*
+		query v=*
+	}
+	header @versioned Cache-Control "public, max-age=31536000, immutable"
 
 	# Other public files (PDFs, logos) are not content hashed and get replaced in
 	# place; keep a short fallback for responses where the app set none.
-	@static path /assets/*
+	@static path /assets/* /images/* /fonts/*
 	header @static ?Cache-Control "public, max-age=3600"
 
 	# The document is not content-hashed, so a browser may keep an old entry

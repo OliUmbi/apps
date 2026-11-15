@@ -40,7 +40,11 @@ default and `fetchpriority="high"` for the one photo that carries the page.
 - The intrinsic sizes live in `src/model/images.ts`; add an entry there before
   using a new photo.
 - URLs carry `?v=<imageVersion>`. Bump `imageVersion` whenever a photo is
-  replaced in place - `/images/*` is cached immutably at the edge.
+  replaced in place - `/images/*` and `/fonts/*` are cached immutably at the
+  edge, but only when the request carries a version query.
+- `public/fonts/sans-geist.woff2` is subset to Latin + German (31 KB instead
+  of 68 KB); its `?v=` lives in `src/fonts.css` and must match the preload in
+  `src/routes/__root.tsx`.
 - Prominent photos also get `imagePreload(...)` in the route `head`, so the
   browser starts the fetch before it has parsed the markup.
 - `public/images/noise.webp` is the body grain tile; it replaced an inline
