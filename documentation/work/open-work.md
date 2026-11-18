@@ -218,7 +218,9 @@ copy.
 
 The owner reviewed the `.12` feedback site and sent copy, photos and palette
 feedback. `2026.11.18-test.1` deployed the content and layout round;
-`2026.11.18-test.2` aligned the JSON-LD address with the visible copy.
+`2026.11.18-test.2` aligned the JSON-LD address with the visible copy;
+`2026.11.18-test.3` fixed the crop-tile label layout and lightened the green
+surfaces.
 
 - [x] Removed the `01`-`04` badges from the Kulturen process, replaced the
   irrigation photo with the owner's broccoli field, and changed the last step
@@ -234,6 +236,9 @@ feedback. `2026.11.18-test.1` deployed the content and layout round;
   sizes, so titles wrap less often.
 - [x] Kulturen now accepts multiple photos: the Kürbisse tile has a
   click-through gallery with a counter and labelled previous/next controls.
+- [x] `2026.11.18-test.3` moved the photo wrappers out of the tile flex flow so
+  the season pill and gallery counter stay at the top, and lightened the forest
+  surfaces from `#44522e` to `#5c6530` with secondary text at 82% opacity.
 - [ ] [owner] Decide which additional photos to add beyond the crops and the
   home pair; the current page uses one image per crop except Kürbisse.
 

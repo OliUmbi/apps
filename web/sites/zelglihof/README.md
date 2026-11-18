@@ -55,3 +55,11 @@ Regenerate the AVIF variants after replacing a JPEG (Pillow with AVIF support):
 ```powershell
 python scripts/optimize-images.py
 ```
+
+## Kulturen photos
+
+`CropMosaic` takes an `images` list per crop in
+`src/components/crops/crop-mosaic.tsx`. One image renders as a still tile;
+several render as a click-through gallery with a `1/n` counter and labelled
+previous/next controls (currently the Kürbisse tile). Add the JPEG and its AVIF
+variants through the static-image flow above before referencing a new name.

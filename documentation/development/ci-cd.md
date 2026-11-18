@@ -8,7 +8,7 @@ Workflows live in `.github/workflows/`:
 | Workflow | Trigger | Purpose |
 | --- | --- | --- |
 | `ci.yml` | every branch push (tags excluded), pull request, and called by publish | verify web, Java, image builds, deployment inputs and the report-only security scan |
-| `publish.yml` | version tag `*.*`, or manual dispatch | re-run CI, build and push every image |
+| `publish.yml` | version tag `*.*`, or manual dispatch | re-run the CI gate, build and push every image once |
 | `security.yml` | weekly schedule, manual dispatch | blocking secret, dependency and lockfile audit |
 
 ## `ci.yml`
@@ -17,7 +17,7 @@ Workflows live in `.github/workflows/`:
 | --- | --- |
 | `web` | PostgreSQL 18 service + Flyway migrate, `pnpm install --frozen-lockfile`, `pnpm check`, `pnpm typecheck`, `pnpm test` with a skip guard, `pnpm build` and a stale route-tree check |
 | `java` | JDK 25, `services/mvnw -B -ntp -f services/pom.xml test` (includes Checkstyle), then a guard that all three persistence suites ran |
-| `images` | build-only, same matrix as publish; no push. Catches Dockerfile, base-image, Caddy-plugin and Caddyfile breakage on pull requests |
+| `images` | build-only, same matrix as publish; no push. Catches Dockerfile, base-image, Caddy-plugin and Caddyfile breakage on branch pushes and pull requests. `publish.yml` passes `build_images: false` so a tag does not build the same images a second time |
 | `deployment` | every Quadlet unit generates a `.service` under podman 5.8.9; every Ansible playbook passes `--syntax-check`; Prometheus, Alertmanager and blackbox configs validate |
 | `security` | `gitleaks` over the checkout (a committed secret fails immediately) and a report-only `trivy fs` dependency scan |
 
@@ -46,7 +46,8 @@ Details that matter:
 
 A version tag (for example `2026.10.24`) starts a hard gate (`verify` calls
 `ci.yml`) and then a matrix build. Nothing is pushed unless verification is
-green.
+green. The verify call skips the no-push image job; the matrix below is the
+single image build for the tag.
 
 Every image builds with the repository root as its context and the single root
 `.dockerignore`:
@@ -65,7 +66,9 @@ Each push produces three tags:
 - `:latest` - convenience only, never deployed.
 
 The workflow uses GitHub Actions cache for layer reuse and `GITHUB_TOKEN` with
-`packages: write` for ghcr. No other secret is needed to publish.
+`packages: write` for ghcr. CI and publish share one `apps` cache scope, so a
+new tag reuses the previous tag's compiled Caddy and base layers instead of
+starting cold. No other secret is needed to publish.
 
 ## Release flow
 
@@ -73,7 +76,8 @@ The workflow uses GitHub Actions cache for layer reuse and `GITHUB_TOKEN` with
 merge to main
   → ci.yml green (including the build-only image job)
   → tag the commit with a version (e.g. 2026.10.24) and push the tag
-  → publish.yml re-runs CI, builds and pushes all images
+  → publish.yml re-runs the CI gate (without the duplicate image build),
+    then builds and pushes all images
   → deploy from the workstation: deploy.yml -e image_tag=2026.10.24
   → migrate, provision database roles from the vault, then start the apps
   → verify, then record the release

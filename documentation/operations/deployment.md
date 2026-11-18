@@ -27,7 +27,8 @@ CI (ci.yml): web checks, Java tests, deployment-input checks
 version tag (e.g. 2026.10.24)
       │
       ▼
-publish.yml: re-runs CI, builds every image, pushes
+publish.yml: re-runs the CI gate (without the duplicate no-push image
+             build), builds every image once, pushes
              ghcr.io/oliumbi/apps-*:<tag>, :sha-<sha>, :latest
       │
       ▼
