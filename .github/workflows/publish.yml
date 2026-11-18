@@ -12,9 +12,12 @@ permissions:
 
 jobs:
   # Hard gate: the shared ci.yml (push/PR verification) must be green on this
-  # commit before any image is built or pushed.
+  # commit before any image is built or pushed. Its no-push image matrix is
+  # skipped: the build job below is the single image build for a tag.
   verify:
     uses: ./.github/workflows/ci.yml
+    with:
+      build_images: false
 
   build:
     needs: verify
@@ -87,5 +90,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=apps
+          cache-to: type=gha,mode=max,scope=apps

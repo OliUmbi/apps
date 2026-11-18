@@ -11,8 +11,9 @@ name: ci
 # deployment job checks what the server actually runs -- the quadlet units must
 # generate and the ansible playbooks must parse; the dev compose rig is a
 # workstation tool and CI does not depend on it. publish.yml calls this workflow
-# and only builds and pushes images when it is green, so tag pushes skip the
-# standalone trigger below and are verified through that call instead.
+# for the code, service, deployment and security gates, then builds and pushes
+# the images once in its own matrix. It passes `build_images: false` so the
+# no-push matrix below does not build the same images a second time on a tag.
 #
 # Inputs are pinned: actions use commit SHAs, CI tool images use tag@digest,
 # and ansible-core is an exact version (DR-14). Bump the tag and digest together.
@@ -25,6 +26,11 @@ on:
       - "**"
   pull_request:
   workflow_call:
+    inputs:
+      build_images:
+        description: Build the image matrix with no push.
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -191,9 +197,11 @@ jobs:
 
   # Build only, never push: this is the PR-time guard for Dockerfile, base-image
   # and Caddy-plugin breakage (DR-13). Same matrix as publish.yml, including the
-  # static Oliumbi placeholder. gha cache keeps the repeat cost low.
+  # static Oliumbi placeholder. Branch and pull-request runs use it; publish.yml
+  # skips it because its build job is the single build for a tag.
   images:
     name: images (build, no push)
+    if: ${{ github.event_name != 'workflow_call' || inputs.build_images }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -244,8 +252,10 @@ jobs:
           file: ${{ matrix.dockerfile }}
           push: false
           tags: ghcr.io/oliumbi/${{ matrix.image }}:ci
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # One scope for every ref: the default per-ref scope made each tag a
+          # cold Caddy compile. The layer keys still separate the images.
+          cache-from: type=gha,scope=apps
+          cache-to: type=gha,mode=max,scope=apps
 
   deployment:
     name: deployment (units + ansible)
