@@ -220,7 +220,8 @@ The owner reviewed the `.12` feedback site and sent copy, photos and palette
 feedback. `2026.11.18-test.1` deployed the content and layout round;
 `2026.11.18-test.2` aligned the JSON-LD address with the visible copy;
 `2026.11.18-test.3` fixed the crop-tile label layout and lightened the green
-surfaces.
+surfaces; `2026.11.18-test.4` aligns the browser chrome and is the current
+test deployment.
 
 - [x] Removed the `01`-`04` badges from the Kulturen process, replaced the
   irrigation photo with the owner's broccoli field, and changed the last step
@@ -239,6 +240,9 @@ surfaces.
 - [x] `2026.11.18-test.3` moved the photo wrappers out of the tile flex flow so
   the season pill and gallery counter stay at the top, and lightened the forest
   surfaces from `#44522e` to `#5c6530` with secondary text at 82% opacity.
+- [x] `2026.11.18-test.4` set the browser theme color and favicon to the new
+  forest green, bumped the favicon version and added a polite live region to
+  the gallery counter. The tag also verified the single-build publish path.
 - [ ] [owner] Decide which additional photos to add beyond the crops and the
   home pair; the current page uses one image per crop except Kürbisse.
 
