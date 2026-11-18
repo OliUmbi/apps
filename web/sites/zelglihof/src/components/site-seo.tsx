@@ -13,7 +13,7 @@ export function SiteSeo() {
 				data={localBusinessJsonLd({
 					name: "Familienbetrieb Habegger",
 					url: siteOrigin,
-					street: "Zelgliweg",
+					street: "Zelglihof",
 					postalCode: "5506",
 					city: "Mägenwil",
 					email: "hof@zelglihof-maegenwil.ch",
