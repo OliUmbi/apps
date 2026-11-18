@@ -5,6 +5,10 @@
       - age
       - ca-certificates
       - curl
+      # node-exporter's systemd collector needs the system bus socket; a
+      # minimal Debian 13 install does not provide it (found on the first
+      # real-host bootstrap, 2026-11).
+      - dbus
       - gnupg
       - jq
       - rsync
@@ -22,6 +26,15 @@
     name:
       - podman
 
+# A minimal Debian install does not necessarily ship the journald drop-in
+# directory; create it before writing the limit (found on the first real-host
+# bootstrap, 2026-11).
+- name: journald drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/journald.conf.d
+    state: directory
+    mode: "0755"
+
 - name: journald size limit (journald is the log store for every unit)
   ansible.builtin.copy:
     dest: /etc/systemd/journald.conf.d/00-limits.conf
@@ -30,6 +43,23 @@
       [Journal]
       SystemMaxUse=200M
   notify: restart journald
+
+# Every health probe writes a journald event ("container health_status ..."),
+# which is ~40 lines a minute across the containers. Keep the events in
+# podman's own file; `podman events` still reads them.
+- name: podman config drop-in directory
+  ansible.builtin.file:
+    path: /etc/containers/containers.conf.d
+    state: directory
+    mode: "0755"
+
+- name: podman event logger
+  ansible.builtin.copy:
+    dest: /etc/containers/containers.conf.d/50-events.conf
+    mode: "0644"
+    content: |
+      [engine]
+      events_logger = "file"
 
 - name: automatic security updates
   ansible.builtin.copy:

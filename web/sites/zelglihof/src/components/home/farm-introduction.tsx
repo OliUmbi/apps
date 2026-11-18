@@ -1,6 +1,7 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Egg, Sprout, Wheat } from "lucide-react";
+import { StaticImage } from "../static-image";
 
 // Owner item "real farm facts": the hen and crop counts below are placeholder
 // values until the farm confirms them. "Seit 1906" comes from the farm history
@@ -9,9 +10,10 @@ export function FarmIntroduction() {
 	return (
 		<section className="shell grid gap-5 py-24 md:grid-cols-[1.15fr_0.85fr] md:py-32">
 			<div className="relative min-h-[34rem] overflow-hidden rounded-[2rem]">
-				<img
-					src="/images/broccoli-ernte-team.jpg"
+				<StaticImage
+					name="broccoli-ernte-team"
 					alt={m.zelglihof_home_sowing_alt()}
+					sizes="(min-width: 768px) 58vw, 100vw"
 					className="absolute inset-0 h-full w-full object-cover"
 				/>
 				<div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />

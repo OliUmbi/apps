@@ -1,7 +1,7 @@
 import { Drawer } from "@base-ui/react/drawer";
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Menu, Sprout, X } from "lucide-react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 import { useState } from "react";
 
 const links = [
@@ -46,9 +46,13 @@ export default function Header() {
 function Brand() {
 	return (
 		<Link to="/" className="group flex items-center gap-3">
-			<span className="grid size-10 place-items-center rounded-full bg-forest text-cream transition-transform group-hover:-rotate-6">
-				<Sprout size={20} strokeWidth={1.8} aria-hidden="true" />
-			</span>
+			<img
+				src="/logo-icon.svg"
+				alt=""
+				width="651"
+				height="629"
+				className="size-12 shrink-0 object-contain transition-transform group-hover:-rotate-6"
+			/>
 			<span className="leading-none">
 				<span className="block font-serif text-xl font-bold tracking-tight">
 					{m.zelglihof_brand()}

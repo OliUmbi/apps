@@ -16,7 +16,7 @@ export function NotFound() {
 					{m.back_to_home()}
 				</Link>
 			</div>
-			<img src="/assets/images/doodles/strolling.svg" alt="" />
+			<img src="/images/doodles/strolling.svg" alt="" />
 		</section>
 	);
 }

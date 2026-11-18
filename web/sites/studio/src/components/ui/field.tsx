@@ -11,7 +11,7 @@ import type { ComponentProps, ReactNode } from "react";
  */
 
 export const controlClass =
-	"min-h-10 w-full rounded-control border border-line-control bg-field px-3 py-2 text-sm text-fg placeholder:text-fg-subtle transition-colors focus:border-interactive focus:outline-2 focus:outline-offset-2 focus:outline-interactive disabled:cursor-not-allowed disabled:opacity-50";
+	"min-h-10 w-full rounded-control border border-line-control bg-field px-3 py-2 text-[0.8125rem] font-normal tracking-normal text-fg placeholder:text-fg-subtle transition-colors focus:border-interactive focus:outline-2 focus:outline-offset-2 focus:outline-interactive disabled:cursor-not-allowed disabled:opacity-50";
 
 export function FieldRoot({
 	children,
@@ -33,7 +33,7 @@ export function FieldLabel({
 }: ComponentProps<typeof Field.Label>) {
 	return (
 		<Field.Label
-			className="text-xs font-semibold uppercase tracking-[0.08em] text-fg-subtle"
+			className="text-xs font-medium normal-case tracking-normal text-fg-muted"
 			{...props}
 		>
 			{children}

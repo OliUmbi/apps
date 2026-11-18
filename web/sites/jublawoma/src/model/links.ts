@@ -1,10 +1,13 @@
 // Every document and contact target the site renders, defined once: the same
 // registration PDF, address and Instagram profile are linked from the header,
 // the join page, the footer and the legal pages.
-export const registrationFormPdf = "/assets/documents/Anmeldung-Jubla-Woma.pdf";
-export const calendarPdf = "/assets/documents/Jahreskalender-Jubla-Woma.pdf";
-export const privacyPolicyPdf =
-	"/assets/documents/Datenschutzerklärung-Jubla-Woma.pdf";
+// Documents live under /assets, which the app serves as immutable for a
+// year; the query busts the cache whenever a PDF is replaced.
+const documentVersion = "?v=2026-11";
+
+export const registrationFormPdf = `/assets/documents/Anmeldung-Jubla-Woma.pdf${documentVersion}`;
+export const calendarPdf = `/assets/documents/Jahreskalender-Jubla-Woma.pdf${documentVersion}`;
+export const privacyPolicyPdf = `/assets/documents/Datenschutzerklärung-Jubla-Woma.pdf${documentVersion}`;
 export const contactEmail = "scharleitung@jublawoma.ch";
 export const contactMailto = `mailto:${contactEmail}`;
 export const instagramUrl = "https://www.instagram.com/jubla_woma/";

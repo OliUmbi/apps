@@ -55,7 +55,7 @@ export function ValuesSection() {
 						<span className="text-xs font-black">{value.number}</span>
 						<img
 							className="h-60 w-full object-contain saturate-50"
-							src={`/assets/images/doodles/${value.art}`}
+							src={`/images/doodles/${value.art}`}
 							alt=""
 						/>
 						<h3 className="mt-5 mb-2 text-2xl font-bold">{value.title()}</h3>

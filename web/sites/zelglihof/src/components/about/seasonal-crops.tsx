@@ -1,6 +1,7 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Leaf, Sprout } from "lucide-react";
+import { StaticImage } from "../static-image";
 
 const cropColors = ["bg-sun/55", "bg-sage/45", "bg-oat"];
 
@@ -61,9 +62,10 @@ export function SeasonalCrops() {
 						</Link>
 					</div>
 				</div>
-				<img
-					src="/images/zuckermais-mulchfeld.jpg"
+				<StaticImage
+					name="zuckermais-mulchfeld"
 					alt={m.zelglihof_farm_sowing_alt()}
+					sizes="100vw"
 					className="mt-14 aspect-[16/7] w-full rounded-[2rem] object-cover"
 				/>
 			</div>

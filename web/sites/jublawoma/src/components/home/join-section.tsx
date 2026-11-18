@@ -8,7 +8,7 @@ export function JoinSection() {
 			<div className="shell grid min-h-[560px] items-center gap-10 py-16 md:grid-cols-[.8fr_1.2fr]">
 				<img
 					className="max-h-[460px] w-full object-contain"
-					src="/assets/images/doodles/loving.svg"
+					src="/images/doodles/loving.svg"
 					alt=""
 				/>
 				<div>

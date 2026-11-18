@@ -8,7 +8,9 @@ import { Kicker } from "./text";
 
 export function RecordFields({ children }: { children: ReactNode }) {
 	return (
-		<dl className="grid grid-cols-2 gap-x-8 max-md:grid-cols-1">{children}</dl>
+		<dl className="grid grid-cols-2 gap-x-10 border-t border-line-subtle max-md:grid-cols-1">
+			{children}
+		</dl>
 	);
 }
 

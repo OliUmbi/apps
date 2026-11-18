@@ -109,6 +109,111 @@ implementation.
   Prometheus datasource is provisioned as code, and the volume comment says so.
   (superseded 2026-11: dashboards are now provisioned from git.)
 
+## Real-host bootstrap (2026-11-14)
+
+First clean-host run on a disposable Debian 13/amd64 feedback host. The normal
+`site.yml` completed: migrations reached V011, all eight application roles plus
+the monitoring role authenticated, every unit started, and the first admin was
+created. See [test overlay](../../ansible/files/test/README.md).
+
+- [x] **DR-21** The vault path was wrong: a top-level
+  `ansible/group_vars/vault.yml` is read as vars for a group named `vault` and is
+  never loaded, so every `vault_*` value was undefined. Non-secret and secret
+  files now live under `ansible/group_vars/all/`; the vault loads and a fresh
+  deploy completes. (found and fixed 2026-11-14)
+- [x] **DR-22** A minimal Debian 13 has no `/etc/systemd/journald.conf.d`; the
+  server role now creates the directory before writing the journald limit.
+  (found and fixed 2026-11-14)
+- [x] **RV-01 (partial)** The node-exporter systemd collector works after
+  adding `dbus` to the base packages and `DBUS_SYSTEM_BUS_ADDRESS` to the unit;
+  `node_systemd_unit_state` samples are present. The alert-firing test remains
+  open. (found and fixed 2026-11-14)
+- [x] The first admin was created; one backup ran and wrote its success metric
+  (`apps_backup_last_success_timestamp_seconds`). The dyndns timer is disabled,
+  the backup and housekeeping timers are active.
+- [x] Release rehearsal: `2026.11.14-test.2` from `19d8cab` passed CI and
+  publish, deployed to the feedback host, and served all five `sslip.io` URLs
+  with valid certificates; Studio sign-in returned 200 and the Zelglihof
+  redesign was live. Rollback target: `2026.11.14-test.1`. (2026-11-14)
+- [x] Follow-up `2026.11.14-test.3`: removed the unused Zelglihof full/text/PNG
+  logo variants and versioned the favicon URL. Verified the removed assets
+  return 404 while `/logo-icon.svg` and `/favicon.svg?v=2` return 200.
+  (2026-11-14)
+- [x] Mobile drawers / TD-01: the public rate limit counted static assets.
+  Zelglihof's mobile page load received 429s for its JS chunks, so hydration
+  failed and the drawer never attached; Jublawoma and Uncle-T also lost images,
+  fonts and analytics. Static assets now bypass the public zone; form/API and
+  login limits remain. Verified in WebKit with an iPhone profile: all three
+  public drawers open, navigate and close with no 429s. Deployed as
+  `2026.11.15-test.1`. (2026-11-15)
+- [x] Follow-up `2026.11.15-test.3`: documents now send
+  `no-cache, must-revalidate` so a cached entry point cannot hide a deploy;
+  Zelglihof's body uses `min-height` instead of `height: 100%`, so the sticky
+  header stays through the page; the newsletter input uses ink on the light
+  field, and the submit button keeps its sun/ink colors on hover and press.
+  Verified in WebKit iPhone/desktop on the test host; the header stayed at
+  `top: 0` through the page and the page loaded with no failed responses.
+  (2026-11-15)
+- [ ] [verify] Open inbound TCP 80/443 and confirm the `sslip.io` certificates
+  and all five test URLs, including Studio sign-in with the `__Host-` cookie.
+- [ ] [verify] Run the feedback-host integration pass: one form to Mailpit, one
+  asset upload, one unpublish, and one backup/restore. Monitoring is stopped on
+  this host; the TLS probes still target the production names.
+- [ ] [owner] Add the first real content through Studio and collect site-owner
+  feedback.
+
+## Site review (2026-11-15)
+
+Reviewed Jublawoma, Uncle-T, Zelglihof, Oliumbi and Studio at desktop and iPhone
+WebKit widths. The home pages have no horizontal overflow, broken images or
+console errors. Zelglihof's Kulturen page now uses the owner image set: a field
+banner, a wide Futtermais tile, a four-step Pflanzung/Bewässerung/Ernte/Hofladen
+story, and the special-crop group with photos, season labels and richer crop
+copy.
+
+- [x] `2026.11.15-test.5` deployed the image-led Kulturen page, the owner-fact
+  corrections and the spacing fix: 64 px desktop / 48 px mobile above the field
+  banner, 10 images including the four-image work gallery, no broken assets,
+  429s or horizontal overflow. (2026-11-15)
+- [x] `2026.11.15-test.8` shipped the performance pass: responsive AVIF photos
+  (Kulturen dropped from 3.2 MiB to 720 KiB), the stylesheet inlined into the
+  document (no render-blocking request), immutable caching only for versioned
+  photo/font URLs, a Latin subset for the sans font (68 -> 31 KiB), preloaded
+  LCP images, minified logo/favicon and a cached grain tile instead of the
+  inline `feTurbulence` filter. Lighthouse on the test host: Kulturen
+  0.76 -> 0.94 (LCP 6.0 -> 3.1 s simulated, 0.51 -> 0.31 s observed), home
+  0.77 -> 0.89 (LCP 6.2 -> 3.3 s), CLS 0. (2026-11-15)
+  The remaining "improve image delivery" hint compares the 800 px AVIF with a
+  380 px box at DPR 1; phones render that box at ~665 px, so the current
+  variants are correct and the hint is a heuristic mismatch, not a defect.
+- [x] `2026.11.15-test.12` applied the same performance pass to the other public
+  sites: the stylesheet is inlined on Jublawoma, Uncle-T and Oliumbi, photos
+  render through a site-local `StaticImage` (AVIF + JPEG fallback, intrinsic
+  size, eager/preloaded for the largest paint), Uncle-T's sans/mono are
+  Latin-subset and versioned, and Jublawoma's 10.5 MB of unreferenced images now
+  sit in [`media/jublawoma`](../../media/jublawoma/README.md) instead of
+  `public/`. Its doodles/logos were minified (1.1 MB -> 576 KB) and the favicon
+  went from 264 KB to 6 KB. Lighthouse on the test host: Jublawoma
+  0.92 -> 0.98 (LCP 3.3 -> 2.5 s, 813 -> 455 KiB), Uncle-T 0.81 -> 0.95
+  (LCP 4.9 -> 2.9 s, 1,186 -> 436 KiB); cache, image delivery, render-blocking
+  and LCP-discovery insights pass. (2026-11-15)
+- [x] Caching is now "immutable only when versioned" for `/images/*` and
+  `/fonts/*`; the app's own immutable header for hashed `/assets/*` build output
+  is left alone, and Jublawoma's PDFs carry `?v=` so a replaced document is not
+  stale for a year. Unversioned photos/fonts revalidate within the hour.
+  (2026-11-15)
+- [owner] Confirm the exact Zelglihof house number. The owner said it is not
+  `Zelgliweg 2`; the footer and JSON-LD now show `Zelgliweg` without a number.
+- [owner] Confirm the current livestock counts. `FarmFacts` still shows
+  45 Mutterkühe, 18 Rinder and 22 Kälber from placeholder code; the 60 hens are
+  confirmed.
+- [owner] Confirm whether Uncle-T's `Zelgliweg 2` is correct or whether it
+  shares the Zelglihof address correction.
+- [owner] Decide whether "Aktuelles" should add a future-events block; the
+  current page shows updates only.
+- [design] The Studio login autofocus produces a bright blue double focus ring.
+  Decide whether to keep the accent or soften the autofocus state.
+
 ## First go-live review (2026-11)
 
 Evidence: [first go-live review](../history/go-live-review-2026-11.md).
@@ -121,6 +226,11 @@ host.
   wired (dbus socket, `/run/systemd`, start-time metrics). Verify
   `node_systemd_unit_state` and `node_systemd_unit_start_time_seconds` exist on
   the real host, then fire `UnitFailing` and `UnitRestartLoop` as tests.
+  *Disposition (2026-11-14): the first real host had no dbus socket and the
+  exporter image resolves the bus at `/var/run/dbus/system_bus_socket`. `dbus`
+  is now a base package and the unit sets `DBUS_SYSTEM_BUS_ADDRESS`; the
+  collector returned 1172 `node_systemd_unit_state` samples. The alert-firing
+  test is still open.*
 - [ ] [verify] **RV-02** `BackupStale` alerts on an absent success metric as well
   as a stale one, and the node-exporter textfile is published atomically. Test
   before the first backup and after an injected backup failure.
@@ -179,7 +289,7 @@ Deployment shape: ghcr images pinned by tag, systemd units from
   console/KVM recovery first, then set `restrict_ssh: true` so sshd only listens
   on the tunnel; confirm the drop-in is removed when it is false again.
 - [ ] [verify] Create the A records listed in `dyndns_records`
-  (`ansible/group_vars/all.yml`) once in the Infomaniak manager, including
+  (`ansible/group_vars/all/all.yml`) once in the Infomaniak manager, including
   `studio.*`/`admin.*` and `vpn.oliumbi.ch` for the laptop's WireGuard endpoint.
   The dyndns timer only updates existing records and stays disabled before
   cutover.
@@ -189,6 +299,16 @@ Deployment shape: ghcr images pinned by tag, systemd units from
 - [ ] [verify] Deploy the monitoring stack (`apps-prometheus` ... `apps-grafana`)
   and confirm alerts reach the phone. External uptime and dead-man coverage is
   accepted for launch; see the owner acceptance below.
+- [x] The journal on the test host was dominated by two repeating streams: the
+  Postgres health probe logged `FATAL: role "root" does not exist` every 10 s
+  (`pg_isready` without `-U` probes as the container's OS user) and podman wrote
+  one `container health_status` event per probe (~40 lines a minute). `HealthCmd`
+  now runs `pg_isready -U apps_migrator -d apps` (the cluster has no `postgres`
+  role) and the server role installs
+  `/etc/containers/containers.conf.d/50-events.conf` with
+  `events_logger = "file"`; `podman events` still reads the file. Verified on
+  `2026.11.15-test.12`: no role errors or podman event lines in steady state.
+  (2026-11-15)
 - [x] [owner] External uptime and dead-man's switch. (accepted 2026-11-13 for
   launch: monitoring stays host-local, so a dead host is silent. Revisit after
   launch; the accepted limitation is recorded in

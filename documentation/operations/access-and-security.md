@@ -16,7 +16,7 @@ access model, the secret policy and the security baseline.
 | SSH | LAN only (the router does not forward 22); bound to the WireGuard address when `restrict_ssh: true` |
 | Recovery | physical access to the machine (screen/keyboard) |
 | Admin UIs | Grafana `:3000`, Prometheus `:9090`, Alertmanager `:9093`, bound to the WireGuard address |
-| Secrets | `ansible/group_vars/vault.yml` (Ansible vault) |
+| Secrets | `ansible/group_vars/all/vault.yml` (Ansible vault) |
 | Rendered secrets | `/etc/default/apps-<service>`, root-owned `0600` |
 | Backup archives | `age`-encrypted; pulled to the workstation; the server has no credentials for it |
 

@@ -12,7 +12,7 @@ export function NoCurrentDonations() {
 				</h1>
 				<p>{m.jublawoma_donations_description()}</p>
 			</div>
-			<img src="/assets/images/doodles/loving.svg" alt="" />
+			<img src="/images/doodles/loving.svg" alt="" />
 		</header>
 	);
 }

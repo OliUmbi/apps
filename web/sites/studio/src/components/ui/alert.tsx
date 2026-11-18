@@ -1,14 +1,4 @@
-import type { ReactNode } from "react";
-
-/*
- * Form and screen feedback. The slot is always rendered at its full height so
- * showing or clearing a message never moves the controls around it.
- *
- * Studio-local by design: `@oliumbi/ui/alert` is the reserved-slot alert for
- * the public sites, but it pins its own geometry (a rounded-lg box that grows
- * with wrapped text) which is not studio's token vocabulary and would move the
- * slot. See `README.md` ("Shared `@oliumbi/ui`") for the full rationale.
- */
+import { Children, type ReactNode } from "react";
 
 const tones = {
 	error: "border-danger/40 bg-danger/10 text-danger",
@@ -23,18 +13,19 @@ export function Alert({
 	tone?: keyof typeof tones;
 	children?: ReactNode;
 }) {
+	const content = Children.toArray(children);
 	return (
 		<div
 			role={tone === "error" ? "alert" : "status"}
 			aria-live={tone === "error" ? "assertive" : "polite"}
 			className="min-h-10"
 		>
-			{children ? (
-				<p
-					className={`flex h-10 items-center gap-2 rounded-control border px-3 text-sm ${tones[tone]}`}
+			{content.length ? (
+				<div
+					className={`flex min-h-10 flex-wrap items-center gap-2 rounded-control border px-3 py-2 text-sm ${tones[tone]}`}
 				>
-					{children}
-				</p>
+					{content}
+				</div>
 			) : null}
 		</div>
 	);

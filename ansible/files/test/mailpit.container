@@ -1,0 +1,23 @@
+# TEST-ONLY replacement for the real SMTP provider. Catches every message the
+# messaging service sends so a feedback host cannot email real people. The UI
+# is bound to loopback; reach it through an SSH tunnel:
+#   ssh -L 8025:127.0.0.1:8025 debian@<host>
+# Do not install this unit on a deployed environment.
+
+[Unit]
+Description=Mailpit (test SMTP sink)
+
+[Container]
+Image=docker.io/axllent/mailpit:v1.33.1
+ContainerName=mailpit
+Network=net-apps.network
+PublishPort=127.0.0.1:8025:8025
+Pull=missing
+LogDriver=journald
+
+[Service]
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

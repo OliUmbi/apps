@@ -11,7 +11,7 @@ page owns what is expired and what must never be deleted.
 Sunday 04:00, `apps-housekeep.timer` runs `ansible/files/housekeep.sh`:
 
 1. **Expired operational data.** Retention comes from
-   `/etc/default/apps-housekeep`, templated from `ansible/group_vars/all.yml`:
+   `/etc/default/apps-housekeep`, templated from `ansible/group_vars/all/all.yml`:
    `messaging.message` in `SENT`/`FAILED` after 365 days (attempts cascade),
    `queue.message` older than 30 days only when a terminal delivery record
    already exists for it (a row the worker has not taken up is never expired),
@@ -32,7 +32,7 @@ metric is written last, so a failed stage leaves the alert firing
 (`HousekeepStale`: absent or older than eight days).
 
 The timer schedule is templated from `housekeep_day` and `housekeep_hour` in
-`ansible/group_vars/all.yml`; the backup timer is templated the same way from
+`ansible/group_vars/all/all.yml`; the backup timer is templated the same way from
 `backup_hour`. Change the variable and redeploy, not the unit on the server.
 
 ## What not to clean

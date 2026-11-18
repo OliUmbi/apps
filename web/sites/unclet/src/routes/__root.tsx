@@ -36,7 +36,24 @@ export const Route = createRootRoute({
 			{ property: "og:type", content: "website" },
 			{ name: "theme-color", content: "#11110f" },
 		],
-		links: [{ rel: "icon", href: "/favicon.ico" }],
+		links: [
+			{ rel: "icon", href: "/favicon.ico" },
+			// Keep these in step with the versioned URLs in fonts.css.
+			{
+				rel: "preload",
+				href: "/fonts/sans-geist.woff2?v=2026-11",
+				as: "font",
+				type: "font/woff2",
+				crossOrigin: "anonymous",
+			},
+			{
+				rel: "preload",
+				href: "/fonts/serif-playfair.woff2?v=2026-11",
+				as: "font",
+				type: "font/woff2",
+				crossOrigin: "anonymous",
+			},
+		],
 	}),
 	component: RootComponent,
 	shellComponent: RootDocument,

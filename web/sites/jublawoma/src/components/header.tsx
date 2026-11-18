@@ -18,7 +18,13 @@ export function Header() {
 	return (
 		<header className="site-header">
 			<Link to="/" className="brand" onClick={() => setOpen(false)}>
-				<img src="/assets/images/logos/logo.png" alt="" />
+				<img
+					src="/images/logos/logo.png"
+					alt=""
+					width={100}
+					height={84}
+					decoding="async"
+				/>
 				<span>
 					<strong>{m.jublawoma_brand()}</strong>
 					<small>{m.jublawoma_region()}</small>

@@ -1,16 +1,9 @@
 import type { ElementType, ReactNode } from "react";
 
-/*
- * The type scale. Everything readable in the app goes through one of these, so
- * typography is never spelled out in a view — the one exception is the
- * dashboard hero in `site-overview`, documented in `styles.css` because its
- * display clamp is off-scale.
- */
-
 const titles = {
-	sm: "text-base font-semibold tracking-tight",
-	md: "text-xl font-semibold tracking-tight",
-	lg: "text-2xl font-semibold tracking-tight",
+	sm: "text-base font-semibold tracking-[-0.015em]",
+	md: "text-xl font-semibold tracking-[-0.025em]",
+	lg: "text-3xl font-semibold tracking-[-0.04em] md:text-4xl",
 } as const;
 
 export function Title({
@@ -27,12 +20,14 @@ export function Title({
 
 export function Kicker({ children }: { children: ReactNode }) {
 	return (
-		<p className="text-xs font-semibold uppercase tracking-[0.08em] text-fg-subtle">
+		<p className="font-mono text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-fg-subtle">
 			{children}
 		</p>
 	);
 }
 
 export function Body({ children }: { children: ReactNode }) {
-	return <p className="text-sm leading-relaxed text-fg-muted">{children}</p>;
+	return (
+		<p className="max-w-2xl text-sm leading-6 text-fg-muted">{children}</p>
+	);
 }

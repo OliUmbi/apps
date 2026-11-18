@@ -1,15 +1,9 @@
 import { Button } from "@base-ui/react/button";
 import { m } from "@oliumbi/i18n/messages";
-import {
-	ArrowUpRight,
-	FileText,
-	Inbox,
-	Mail,
-	ShoppingBasket,
-	Users,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { StudioSectionId } from "../model/navigation";
 import type { StudioSite } from "../model/sites";
+import { TrafficOverview } from "./traffic-view";
 
 export function SiteOverview({
 	site,
@@ -20,24 +14,17 @@ export function SiteOverview({
 }) {
 	return (
 		<div className="grid gap-8">
-			<header className="overview-heading">
-				<div>
-					{/* Hero and cards are the documented plain-CSS exception (see the
-					    dashboard-hero comment in styles.css). `page-kicker` must stay:
-					    `.overview-heading p:not(.page-kicker)` restyles any other
-					    paragraph. */}
-					<p className="page-kicker">{site.domain}</p>
-					<h1>{site.name}</h1>
-					<p>{m.studio_dashboard_workspaces_title()}</p>
+			<header className="overview-hero gradient-tide noise">
+				<div className="relative z-10">
+					<p className="overview-domain">{site.domain}</p>
+					<h1>{m.studio_overview_title({ site: site.name })}</h1>
+					<p>{m.studio_overview_description()}</p>
 				</div>
-				<div
-					className="overview-monogram"
-					style={{ borderColor: site.accent, color: site.accent }}
-				>
+				<span className="overview-site-code" aria-hidden="true">
 					{site.short}
-				</div>
+				</span>
 			</header>
-			<div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
+			<div className="overview-directory">
 				{site.sections
 					.filter((item) => item.id !== "overview")
 					.map((item, index) => (
@@ -49,43 +36,20 @@ export function SiteOverview({
 							<span className="overview-index">
 								{String(index + 1).padStart(2, "0")}
 							</span>
-							<OverviewIcon icon={item.icon} />
-							<span className="col-span-full self-end text-fg text-base font-semibold">
-								{item.label()}
-							</span>
-							<span className="col-span-2 text-fg-subtle text-xs leading-relaxed">
+							<ArrowRight
+								className="overview-card-arrow"
+								size={18}
+								strokeWidth={1.5}
+								aria-hidden="true"
+							/>
+							<span className="overview-card-title">{item.label()}</span>
+							<span className="overview-card-description">
 								{item.description()}
 							</span>
-							<ArrowUpRight
-								className="self-end justify-self-end text-fg-disabled"
-								size={17}
-							/>
 						</Button>
 					))}
 			</div>
+			<TrafficOverview site={site.id} />
 		</div>
-	);
-}
-
-function OverviewIcon({
-	icon,
-}: {
-	icon: StudioSite["sections"][number]["icon"];
-}) {
-	const Icon = {
-		inbox: Inbox,
-		content: FileText,
-		people: Users,
-		commerce: ShoppingBasket,
-		newsletter: Mail,
-		home: FileText,
-	}[icon];
-	return (
-		<Icon
-			className="col-start-3 text-interactive"
-			size={19}
-			strokeWidth={1.6}
-			aria-hidden="true"
-		/>
 	);
 }

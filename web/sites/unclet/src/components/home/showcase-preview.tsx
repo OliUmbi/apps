@@ -1,6 +1,7 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import { StaticImage } from "../static-image";
 
 export function ShowcasePreview() {
 	return (
@@ -20,16 +21,25 @@ export function ShowcasePreview() {
 			</div>
 			<div className="mt-14 grid auto-rows-[280px] gap-3 md:grid-cols-12">
 				<div className="image-treatment md:col-span-7 md:row-span-2">
-					<img
-						src="/images/event-table.jpg"
+					<StaticImage
+						name="event-table"
 						alt={m.unclet_home_table_setting_alt()}
+						sizes="(min-width: 768px) 58vw, 100vw"
 					/>
 				</div>
 				<div className="image-treatment md:col-span-5">
-					<img src="/images/plating.jpg" alt={m.unclet_home_pasta_alt()} />
+					<StaticImage
+						name="plating"
+						alt={m.unclet_home_pasta_alt()}
+						sizes="(min-width: 768px) 42vw, 100vw"
+					/>
 				</div>
 				<div className="image-treatment md:col-span-5">
-					<img src="/images/fire.jpg" alt={m.unclet_home_open_fire_alt()} />
+					<StaticImage
+						name="fire"
+						alt={m.unclet_home_open_fire_alt()}
+						sizes="(min-width: 768px) 42vw, 100vw"
+					/>
 				</div>
 			</div>
 			<Link to="/showcases" className="cta secondary mt-10">

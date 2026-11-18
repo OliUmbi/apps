@@ -20,8 +20,12 @@ Volume=/sys:/host/sys:ro
 Volume=/:/rootfs:ro
 Volume=/var/lib/node-exporter-textfile:/textfile:ro
 # Host systemd access for --collector.systemd (dbus + private socket path).
+# The exporter image does not make /var/run a symlink to /run, so point the
+# dbus client at the mounted socket explicitly; without this the collector
+# reports "connect: no such file or directory" (found 2026-11-14, RV-01).
 Volume=/run/dbus/system_bus_socket:/run/dbus/system_bus_socket:ro
 Volume=/run/systemd:/run/systemd:ro
+Environment=DBUS_SYSTEM_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
 PublishPort={{ monitoring_bind }}:9100:9100
 # Host reads are root-owned read-only mounts, not capabilities.
 DropCapability=ALL

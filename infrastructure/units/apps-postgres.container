@@ -10,7 +10,11 @@ ContainerName=postgres
 Network=net-apps.network
 EnvironmentFile=/etc/default/apps-postgres
 Volume=/var/lib/apps/postgres:/var/lib/postgresql
-HealthCmd=pg_isready
+# Without -U, pg_isready connects as the container's OS user (root), which the
+# server logs as FATAL: role "root" does not exist on every probe. These mirror
+# POSTGRES_USER/POSTGRES_DB in /etc/default/apps-postgres; the cluster's only
+# superuser is the migrator role, there is no "postgres" role.
+HealthCmd=pg_isready -U apps_migrator -d apps
 HealthInterval=10s
 HealthTimeout=5s
 HealthRetries=10

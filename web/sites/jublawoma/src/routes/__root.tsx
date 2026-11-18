@@ -36,7 +36,7 @@ export const Route = createRootRoute({
 			{ property: "og:type", content: "website" },
 			{ name: "theme-color", content: "#343d30" },
 		],
-		links: [{ rel: "icon", href: "/assets/images/logos/favicon.ico" }],
+		links: [{ rel: "icon", href: "/images/logos/favicon.ico" }],
 	}),
 	component: RootComponent,
 	shellComponent: RootDocument,

@@ -1,0 +1,77 @@
+---
+# Production secrets template.
+# Copy to vault.yml and fill it:
+#   ansible-vault create group_vars/all/vault.yml
+# Never commit vault.yml. Ansible renders these values into /etc/default/apps-*.
+
+# --- wireguard ---
+vault_wireguard_server_private_key: ""
+vault_wireguard_laptop_public_key: ""
+
+# --- dns and tls ---
+# One Infomaniak token covers ACME DNS-01 and the dyndns timer.
+# Scopes: domain:read, dns:read, dns:write.
+vault_acme_email: ""
+vault_infomaniak_api_token: ""
+
+# --- database ---
+# Migrations create the roles NOLOGIN; these values provision login.
+vault_postgres_db: "apps"
+vault_postgres_migrator_user: "apps_migrator"
+vault_postgres_migrator_password: ""
+vault_identity_database_user: "identity"
+vault_identity_database_password: ""
+vault_messaging_database_user: "messaging"
+vault_messaging_database_password: ""
+vault_assets_database_user: "assets"
+vault_assets_database_password: ""
+vault_jublawoma_database_user: "jublawoma"
+vault_jublawoma_database_password: ""
+vault_unclet_database_user: "unclet"
+vault_unclet_database_password: ""
+vault_zelglihof_database_user: "zelglihof"
+vault_zelglihof_database_password: ""
+vault_oliumbi_database_user: "oliumbi"
+vault_oliumbi_database_password: ""
+vault_studio_database_user: "studio"
+vault_studio_database_password: ""
+# Read-only statistics role for postgres_exporter (pg_monitor).
+vault_monitoring_database_password: ""
+
+# --- internal service tokens ---
+vault_identity_internal_authorization_token: ""
+vault_messaging_internal_authorization_token: ""
+vault_assets_internal_authorization_token: ""
+
+# --- mail (messaging only) ---
+vault_messaging_smtp_host: ""
+vault_messaging_smtp_port: "587"
+vault_messaging_smtp_username: ""
+vault_messaging_smtp_password: ""
+
+# --- sites ---
+# requests: form notifications and Reply-To for visitors.
+# newsletter: sending identity for subscriber mail.
+vault_unclet_requests_email: ""
+vault_zelglihof_requests_email: ""
+vault_zelglihof_newsletter_email: ""
+
+# --- backups ---
+# Public age recipient of the recovery identity; the private half is wrapped
+# and printed on the recovery sheet (operations/runbooks/backup.md).
+vault_age_recipient: ""
+
+# --- first admin (one-time bootstrap) ---
+# Used once by playbooks/first-admin.yml after the stack is healthy; never a
+# migration seed. Delete the values after the run if you prefer.
+vault_first_admin_name: ""
+vault_first_admin_email: ""
+# Identity requires >= 10 characters with an uppercase letter, a lowercase
+# letter and a number, and at most 72 UTF-8 bytes.
+vault_first_admin_password: ""
+
+# --- monitoring ---
+# ntfy topic URL, for example https://ntfy.sh/oliumbi-alerts-<random>
+# (optionally https://:tk_<token>@ntfy.sh/<topic>). Treat it as a secret.
+vault_ntfy_webhook_url: ""
+vault_grafana_admin_password: ""

@@ -33,8 +33,9 @@ export function Hero() {
 					<div className="absolute top-[12%] right-[5%] aspect-square w-4/5 rotate-[-9deg] rounded-[48%_52%_65%_35%/60%_42%_58%_40%] bg-sage/70" />
 					<img
 						className="absolute inset-0 z-10 h-full w-full object-contain saturate-50"
-						src="/assets/images/doodles/swinging.svg"
+						src="/images/doodles/swinging.svg"
 						alt={m.jublawoma_home_hero_art_alt()}
+						fetchPriority="high"
 					/>
 				</div>
 			</div>

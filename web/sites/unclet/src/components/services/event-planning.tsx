@@ -1,6 +1,7 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import { StaticImage } from "../static-image";
 
 export function EventPlanning() {
 	// Messages resolve per render; module scope would bake one locale in (U-20).
@@ -21,7 +22,11 @@ export function EventPlanning() {
 		<section className="shell py-24 md:py-32">
 			<div className="grid gap-12 lg:grid-cols-2">
 				<div className="image-treatment min-h-[520px]">
-					<img src="/images/buffet.jpg" alt={m.unclet_services_buffet_alt()} />
+					<StaticImage
+						name="buffet"
+						alt={m.unclet_services_buffet_alt()}
+						sizes="(min-width: 1024px) 50vw, 100vw"
+					/>
 				</div>
 				<div className="flex items-center lg:px-12">
 					<div>

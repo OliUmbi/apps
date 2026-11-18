@@ -8,7 +8,9 @@ legacy/
 # ansible secrets (the example file stays tracked)
 ansible/group_vars/vault.yml
 ansible/group_vars/vault.yml.*
-!ansible/group_vars/vault.yml.example
+ansible/group_vars/all/vault.yml
+ansible/group_vars/all/vault.yml.*
+!ansible/group_vars/all/vault.yml.example
 
 # web
 node_modules

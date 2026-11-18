@@ -57,19 +57,7 @@ export const studioSites: StudioSite[] = siteDetails.map((site) => ({
 			description: m.studio_dashboard_workspaces_title,
 			icon: "home",
 		},
-		...(site.id === "jublawoma" ||
-		site.id === "unclet" ||
-		site.id === "zelglihof" ||
-		site.id === "oliumbi"
-			? [
-					{
-						id: "traffic" as const,
-						label: m.studio_traffic,
-						description: m.studio_traffic_description,
-						icon: "content" as const,
-					},
-				]
-			: []),
+
 		...contentSections
 			.filter((section) => section.site === site.id)
 			.map(({ id, label, description, icon }) => ({
@@ -81,13 +69,13 @@ export const studioSites: StudioSite[] = siteDetails.map((site) => ({
 		{
 			id: "images",
 			label: m.studio_section_images,
-			description: m.studio_overview_content,
+			description: m.studio_overview_images,
 			icon: "content",
 		},
 		{
 			id: "documents",
 			label: m.studio_section_documents,
-			description: m.studio_overview_content,
+			description: m.studio_overview_documents,
 			icon: "content",
 		},
 	],

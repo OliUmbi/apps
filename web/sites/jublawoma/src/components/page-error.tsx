@@ -21,7 +21,7 @@ export function PageError() {
 					{pending ? m.loading() : m.retry()}
 				</Button>
 			</div>
-			<img src="/assets/images/doodles/strolling.svg" alt="" />
+			<img src="/images/doodles/strolling.svg" alt="" />
 		</section>
 	);
 }

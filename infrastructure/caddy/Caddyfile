@@ -36,24 +36,38 @@
 		Referrer-Policy "strict-origin-when-cross-origin"
 		# Deny powerful features nothing on these sites uses; keep media
 		# playback allowed for a future background video (self only).
-		Permissions-Policy "accelerometer=(), autoplay=(self), camera=(), display-capture=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(self), publickey-credentials-get=(), screen-wake-lock=(), usb=(), xr-spatial-tracking=(), browsing-topics=()"
+		Permissions-Policy "accelerometer=(), autoplay=(self), camera=(), display-capture=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(self), publickey-credentials-get=(), screen-wake-lock=(), usb=(), xr-spatial-tracking=()"
 		Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: blob:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests"
 		defer
 	}
 
+	# Public files that are replaced in place start at one hour. Images and
+	# fonts are the only namespaces the app does not set a cache header for, so
+	# these rules own them. Hashed build output lives in /assets and keeps the
+	# immutable header the app already sends.
+	@shortLived path /images/* /fonts/*
+	header @shortLived Cache-Control "public, max-age=3600, must-revalidate"
+
+	# Owner photos and fonts carry a ?v= version that the app bumps when a file
+	# is replaced, so only versioned URLs may be cached immutably. Uploaded
+	# images under /api/assets/* carry their own Cache-Control + ETag and must
+	# win; they are not in these paths.
+	@versioned {
+		path /images/* /fonts/*
+		query v=*
+	}
+	header @versioned Cache-Control "public, max-age=31536000, immutable"
+
 	# Vite build outputs carry a content hash in the file name, so a given
-	# name never changes and can be cached for a year. This rule must come
-	# before the fallback below: that one uses ?Cache-Control and therefore
-	# only fills in responses that do not already have the header.
+	# name never changes and can be cached for a year.
 	@hashedAssets path_regexp "^/assets/.+-[A-Za-z0-9_-]{6,}[.](js|css|woff2?)$"
 	header @hashedAssets Cache-Control "public, max-age=31536000, immutable"
 
-	# Static files in public/ (pdfs, logos, fonts) are not content hashed and
-	# get replaced in place, so no long immutable caching -- only a default
-	# for responses where the app set none. Uploaded images under
-	# /api/assets/* carry their own Cache-Control + ETag and must win.
-	@static path /assets/* /images/* /fonts/*
-	header @static ?Cache-Control "public, max-age=3600"
+	# The document is not content-hashed, so a browser may keep an old entry
+	# point after a deploy. Force revalidation for every navigation; the hashed
+	# assets above remain immutable. API responses keep their own cache headers.
+	@document not path /assets/* /images/* /fonts/* /favicon* /robots.txt /sitemap.xml /api/*
+	header @document Cache-Control "no-cache, must-revalidate"
 }
 
 # Per-client-IP rate limits. The public zone approximates 10 requests per
@@ -64,7 +78,11 @@
 	rate_limit {
 		zone public {
 			match {
-				not path /api/session/login
+				# A single page load fetches many hashed JS/CSS chunks, fonts and
+				# images in parallel; rate-limiting those produces 429s, failed
+				# hydration and broken mobile menus. Keep this zone for form/API
+				# traffic; the login zone stays separate.
+				not path /api/session/login /assets/* /images/* /fonts/* /favicon* /robots.txt /sitemap.xml /api/assets/*
 			}
 			key {remote_host}
 			window 2s

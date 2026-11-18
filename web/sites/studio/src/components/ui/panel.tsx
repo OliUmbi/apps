@@ -28,7 +28,7 @@ export function Panel({
 	return (
 		<section
 			className={[
-				"rounded-panel border border-line bg-layer-1",
+				"rounded-panel border border-line-subtle bg-layer-1",
 				className ?? "",
 			].join(" ")}
 		>

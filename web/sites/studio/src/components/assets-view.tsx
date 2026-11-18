@@ -61,7 +61,7 @@ export function AssetsView({
 			<Alert>
 				{query.isError || toggle.isError ? m.error_generic() : null}
 			</Alert>
-			{query.isPending ? <p>{m.loading()}</p> : null}
+			{query.isPending ? <p role="status">{m.loading()}</p> : null}
 			<div className="grid gap-3">
 				{query.data?.pages
 					.flatMap((page) => page.items)

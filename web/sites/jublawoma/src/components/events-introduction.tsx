@@ -23,7 +23,7 @@ export function EventsIntroduction() {
 					{m.jublawoma_events_download_calendar()}
 				</a>
 			</div>
-			<img src="/assets/images/doodles/rolling.svg" alt="" />
+			<img src="/images/doodles/rolling.svg" alt="" />
 		</section>
 	);
 }

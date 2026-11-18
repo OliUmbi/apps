@@ -1,6 +1,6 @@
 import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, MapPin, Sprout } from "lucide-react";
+import { ArrowUpRight, MapPin } from "lucide-react";
 import { farmMapLink } from "../model/location";
 
 export default function Footer({ year }: { year: number }) {
@@ -9,9 +9,13 @@ export default function Footer({ year }: { year: number }) {
 			<div className="shell grid gap-14 py-14 md:grid-cols-[1.3fr_0.7fr_0.7fr] md:py-20">
 				<div className="max-w-md">
 					<div className="flex items-center gap-3">
-						<span className="grid size-11 place-items-center rounded-full bg-sun text-ink">
-							<Sprout size={21} aria-hidden="true" />
-						</span>
+						<img
+							src="/logo-icon.svg"
+							alt=""
+							width="651"
+							height="629"
+							className="size-12 shrink-0 object-contain invert"
+						/>
 						<span className="font-serif text-3xl font-bold">
 							{m.zelglihof_brand()}
 						</span>

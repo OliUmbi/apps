@@ -9,7 +9,7 @@ export function useStudioNavigation(
 	workspace: StudioWorkspace,
 ): StudioNavigation {
 	const { navigate } = useStudioSearch();
-	const { site, area } = workspace;
+	const { site } = workspace;
 
 	function openSection(
 		destination: Pick<StudioSearch, "site" | "area" | "section">,
@@ -20,16 +20,19 @@ export function useStudioNavigation(
 	return {
 		selectSite: (site) =>
 			openSection({ site, area: "site", section: "overview" }),
-		selectSection: (section) => openSection({ site: site.id, area, section }),
-		openAdministration: () =>
+		selectSection: (section) =>
 			openSection({
 				site: site.id,
-				area: "administration",
-				section: "accounts",
+				area:
+					section === "accounts" ||
+					section === "messages" ||
+					section === "audit"
+						? "administration"
+						: "site",
+				section,
 			}),
+
 		openProfile: () =>
 			openSection({ site: site.id, area: "profile", section: "profile" }),
-		returnToSite: () =>
-			openSection({ site: site.id, area: "site", section: "overview" }),
 	};
 }

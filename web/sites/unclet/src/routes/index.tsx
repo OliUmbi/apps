@@ -14,6 +14,7 @@ export const Route = createFileRoute("/")({
 		pageHead({
 			title: m.unclet_site_title(),
 			description: m.unclet_site_description(),
+			preload: { name: "private-dinner", sizes: "100vw" },
 		}),
 	loader: async () => ({
 		// The loader seeds review page 0 so the reviews are in the SSR HTML; a

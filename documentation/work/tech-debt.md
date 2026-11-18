@@ -70,6 +70,15 @@ currently limited only by application behavior.
   before the application handlers, so the application honeypot is no longer the
   only brake.*
 
+*Disposition (2026-11-15): the public zone no longer matches static assets
+  (`/assets/*`, `/images/*`, `/fonts/*`, `/favicon*`, `/robots.txt`,
+  `/sitemap.xml`, `/api/assets/*`). A real mobile page load fetches many hashed
+  chunks, fonts and images in parallel; counting them returned 429s, which broke
+  hydration and the mobile drawers on Zelglihof and also dropped images, fonts
+  and analytics on Jublawoma and Uncle-T. Form/API traffic and the separate login
+  zone remain limited. Verified in WebKit with an iPhone profile: all three
+  public drawers open, navigate and close with no 429s.*
+
 ### TD-06
 
 **Profile editing can undo an administrative account change.** Studio's profile
@@ -302,6 +311,11 @@ not content-hashed, so they cannot be cached immutably.
   files (PDFs, logos, fonts) keep the one-hour default. Uploaded images under
   `/api/assets/*` keep their own cache headers.*
 
+*Disposition (2026-11-15): the HTML document is not content-hashed, so it now
+  sends `Cache-Control: no-cache, must-revalidate`. Without it Chrome could keep
+  an old entry point after a deploy and never request the new hashed chunks.
+  Hashed assets stay immutable and API responses keep their own headers.*
+
 ### TD-10
 
 **Authorization is a per-handler convention.** Each Studio server function calls
@@ -439,6 +453,23 @@ untrusted workload joins it.
 *Disposition (2026-11): accepted (TD-24) - single-tenant network; the boundary is
 now stated in the Caddyfile, [monitoring](../operations/monitoring.md) and
 [network surfaces](../operations/network-surfaces.md).*
+
+### TD-25
+
+**Deploys run from a hand-synced control tree, not from the tag.** The release
+runbook runs `ansible-playbook` from the workstation, but the test host deploys
+from `~/apps-deploy`, a copy of `ansible/` and `infrastructure/` that is synced
+by hand. A unit or playbook change committed to the repository therefore does
+not reach the host at deploy time: the `2026.11.15-test.12` deploy re-rendered
+the old `HealthCmd=pg_isready` until `infrastructure/units/apps-postgres.container`
+was copied across separately. The image tag alone does not describe what runs.
+
+- **Next action:** run the playbooks from the workstation per the
+  [release runbook](../operations/runbooks/release.md), or make `~/apps-deploy`
+  a git checkout of the tag and assert it is clean before rendering. Until then,
+  sync `ansible/` and `infrastructure/` before a deploy that changes them, and
+  inspect the rendered unit afterwards.
+- **Source:** 2026-11-15, found while fixing the Postgres health probe.
 
 ## Accepted limitations (not debt)
 

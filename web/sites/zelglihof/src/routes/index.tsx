@@ -5,6 +5,7 @@ import { Hero } from "../components/home/hero";
 import { LatestUpdates } from "../components/home/latest-updates";
 import { NewsletterSignup } from "../components/newsletter-signup";
 import { Promotions } from "../components/promotions";
+import { imagePreload } from "../components/static-image";
 import { getProductPage } from "../data/products";
 import { getPromotions } from "../data/promotions";
 import { getUpdatePage } from "../data/updates";
@@ -15,6 +16,11 @@ const homeProductCount = 4;
 const homeUpdateCount = 3;
 
 export const Route = createFileRoute("/")({
+	head: () => ({
+		links: [
+			imagePreload("spinat-beregnung", "(min-width: 1024px) 48vw, 100vw"),
+		],
+	}),
 	loader: async () => {
 		const [products, updates, promotions] = await Promise.all([
 			getProductPage({ data: { page: 0, size: homeProductCount } }),

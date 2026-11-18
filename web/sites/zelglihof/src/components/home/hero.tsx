@@ -2,6 +2,7 @@ import { m } from "@oliumbi/i18n/messages";
 import { Link } from "@tanstack/react-router";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import type { ProductSummary } from "../../model/content";
+import { StaticImage } from "../static-image";
 export function Hero({
 	featuredProduct,
 }: {
@@ -51,9 +52,11 @@ export function Hero({
 				</a>
 			</div>
 			<div className="relative min-h-[32rem] overflow-hidden rounded-[2rem] lg:min-h-[42rem]">
-				<img
-					src="/images/spinat-beregnung.jpg"
+				<StaticImage
+					name="spinat-beregnung"
 					alt={m.zelglihof_home_farm_alt()}
+					sizes="(min-width: 1024px) 48vw, 100vw"
+					priority
 					className="absolute inset-0 h-full w-full object-cover"
 				/>
 				<div className="absolute inset-0 bg-gradient-to-t from-ink/65 via-transparent to-transparent" />

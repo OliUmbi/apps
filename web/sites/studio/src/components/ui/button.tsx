@@ -8,7 +8,7 @@ import type { ComponentProps, ReactNode } from "react";
  */
 
 const variants = {
-	primary: "border-transparent bg-fg text-canvas hover:bg-white",
+	primary: "border-transparent bg-fg text-canvas hover:bg-interactive",
 	secondary:
 		"border-line-control bg-layer-1 text-fg hover:border-fg-subtle hover:bg-layer-2",
 	ghost:
@@ -18,8 +18,8 @@ const variants = {
 } as const;
 
 const sizes = {
-	sm: "h-8 px-3 text-xs",
-	md: "h-10 px-4 text-sm",
+	sm: "min-h-8 px-3 text-xs",
+	md: "min-h-10 px-4 text-sm",
 } as const;
 
 export function Button({

@@ -1,8 +1,7 @@
-import { Button } from "@base-ui/react/button";
 import { m } from "@oliumbi/i18n/messages";
-import { ArrowLeft, History, type LucideIcon, Mail, Users } from "lucide-react";
+import { History, type LucideIcon, Mail, Users } from "lucide-react";
 import type { StudioSectionId } from "../model/navigation";
-import { Nav, NavItem } from "./ui/nav";
+import { Nav, NavItem, NavSection } from "./ui/nav";
 
 const administrationSections: {
 	id: "accounts" | "messages" | "audit";
@@ -17,35 +16,24 @@ const administrationSections: {
 export function AdministrationNavigation({
 	section,
 	onSelect,
-	onLeave,
 }: {
-	section: StudioSectionId;
+	section: StudioSectionId | null;
 	onSelect: (section: StudioSectionId) => void;
-	onLeave: () => void;
 }) {
 	return (
-		<>
-			<div className="p-2">
-				<Button className="w-full justify-start" onClick={onLeave}>
-					<ArrowLeft size={15} aria-hidden="true" />
-					{m.studio_websites()}
-				</Button>
-			</div>
-			<Nav label={m.studio_administration()}>
-				{administrationSections.map((item) => {
-					const Icon = item.icon;
-					return (
-						<NavItem
-							key={item.id}
-							icon={Icon}
-							active={item.id === section}
-							onClick={() => onSelect(item.id)}
-						>
-							{item.label()}
-						</NavItem>
-					);
-				})}
-			</Nav>
-		</>
+		<Nav label={m.studio_administration()}>
+			<NavSection title={m.studio_administration()}>
+				{administrationSections.map((item) => (
+					<NavItem
+						key={item.id}
+						icon={item.icon}
+						active={item.id === section}
+						onClick={() => onSelect(item.id)}
+					>
+						{item.label()}
+					</NavItem>
+				))}
+			</NavSection>
+		</Nav>
 	);
 }

@@ -23,8 +23,11 @@ export default function Header() {
 						onClick={() => setOpen(false)}
 					>
 						<img
-							src="/logo.png"
+							src="/images/logo.png?v=2026-11"
 							alt={m.unclet_brand()}
+							width={1483}
+							height={512}
+							decoding="async"
 							className="h-10 w-auto brightness-0 invert"
 						/>
 					</Link>

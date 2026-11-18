@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import type { StudioSectionId } from "../model/navigation";
 import type { StudioSite } from "../model/sites";
-import { Nav, NavItem, NavSection } from "./ui/nav";
+import { Nav, NavItem } from "./ui/nav";
 
 const icons: Record<StudioSite["sections"][number]["icon"], LucideIcon> = {
 	home: Home,
@@ -26,23 +26,21 @@ export function SiteNavigation({
 	onSelect,
 }: {
 	site: StudioSite;
-	section: StudioSectionId;
+	section: StudioSectionId | null;
 	onSelect: (section: StudioSectionId) => void;
 }) {
 	return (
 		<Nav label={site.name}>
-			<NavSection title={site.name}>
-				{site.sections.map((item) => (
-					<NavItem
-						key={item.id}
-						icon={icons[item.icon]}
-						active={item.id === section}
-						onClick={() => onSelect(item.id)}
-					>
-						{item.label()}
-					</NavItem>
-				))}
-			</NavSection>
+			{site.sections.map((item) => (
+				<NavItem
+					key={item.id}
+					icon={icons[item.icon]}
+					active={item.id === section}
+					onClick={() => onSelect(item.id)}
+				>
+					{item.label()}
+				</NavItem>
+			))}
 		</Nav>
 	);
 }

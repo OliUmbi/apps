@@ -22,10 +22,10 @@ function Join() {
 					<p>{m.jublawoma_join_description()}</p>
 					<p>{m.jublawoma_join_welcome_body()}</p>
 				</div>
-				<img src="/assets/images/doodles/dog.svg" alt="" />
+				<img src="/images/doodles/dog.svg" alt="" />
 			</section>
 			<section className="contact-card shell">
-				<img src="/assets/images/doodles/groovy-sitting.svg" alt="" />
+				<img src="/images/doodles/groovy-sitting.svg" alt="" />
 				<div>
 					<p className="kicker light">{m.jublawoma_join_questions_eyebrow()}</p>
 					<h2>{m.jublawoma_join_questions_title()}</h2>

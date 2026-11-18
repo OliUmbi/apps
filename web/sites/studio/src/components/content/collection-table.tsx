@@ -25,7 +25,7 @@ export function CollectionTable<Row>({
 	onOpen: (record: Row) => void;
 }) {
 	return (
-		<div className="overflow-x-auto rounded-md border border-line-subtle">
+		<div className="overflow-x-auto rounded-panel border border-line-subtle">
 			<table className="w-full min-w-3xl border-collapse text-left text-sm">
 				<thead>
 					<tr>
@@ -54,7 +54,11 @@ export function CollectionTable<Row>({
 								</td>
 							))}
 							<td className={cellClass}>
-								<Button variant="link" onClick={() => onOpen(record)}>
+								<Button
+									variant="link"
+									aria-label={`${m.studio_open_record()}: ${rowKey(record)}`}
+									onClick={() => onOpen(record)}
+								>
 									{m.studio_open_record()}
 								</Button>
 							</td>
