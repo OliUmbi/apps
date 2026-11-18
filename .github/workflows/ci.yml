@@ -201,7 +201,9 @@ jobs:
   # skips it because its build job is the single build for a tag.
   images:
     name: images (build, no push)
-    if: ${{ github.event_name != 'workflow_call' || inputs.build_images }}
+    # A tag caller passes build_images: false; push and pull_request have no
+    # input, so the empty value must still run the matrix.
+    if: ${{ inputs.build_images != false }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
