@@ -45,7 +45,7 @@ export function FarmFacts() {
 					<p className="eyebrow text-sun">
 						{m.zelglihof_farm_counts_eyebrow()}
 					</p>
-					<p className="mt-5 max-w-xs text-sm leading-relaxed text-cream/65">
+					<p className="mt-5 max-w-xs text-sm leading-relaxed text-cream/82">
 						{m.zelglihof_farm_farming_standards()}
 					</p>
 				</div>
@@ -55,10 +55,10 @@ export function FarmFacts() {
 							<dd className="font-serif font-bold leading-[0.84] tracking-[-0.05em] text-4xl md:text-5xl">
 								{count.value}
 							</dd>
-							<dt className="mt-2.5 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-cream/70">
+							<dt className="mt-2.5 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-cream/82">
 								{count.label()}
 							</dt>
-							<p className="mt-1.5 text-xs leading-relaxed text-cream/70">
+							<p className="mt-1.5 text-xs leading-relaxed text-cream/82">
 								{count.note()}
 							</p>
 						</div>

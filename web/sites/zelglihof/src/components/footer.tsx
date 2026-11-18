@@ -20,7 +20,7 @@ export default function Footer({ year }: { year: number }) {
 							{m.zelglihof_brand()}
 						</span>
 					</div>
-					<p className="mt-6 text-lg leading-relaxed text-cream/72">
+					<p className="mt-6 text-lg leading-relaxed text-cream/82">
 						{m.zelglihof_footer_description()}
 					</p>
 				</div>
@@ -51,7 +51,7 @@ export default function Footer({ year }: { year: number }) {
 						href={farmMapLink}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="mt-6 flex items-start gap-2 text-sm leading-relaxed text-cream/75 hover:text-cream"
+						className="mt-6 flex items-start gap-2 text-sm leading-relaxed text-cream/82 hover:text-cream"
 					>
 						<MapPin className="mt-0.5 shrink-0" size={17} aria-hidden="true" />
 						<span>
@@ -68,7 +68,7 @@ export default function Footer({ year }: { year: number }) {
 				</div>
 			</div>
 			<div className="border-t border-white/12">
-				<div className="shell flex flex-col gap-4 py-6 text-xs text-cream/70 md:flex-row md:items-center md:justify-between">
+				<div className="shell flex flex-col gap-4 py-6 text-xs text-cream/82 md:flex-row md:items-center md:justify-between">
 					<p>
 						© {year}
 						{m.zelglihof_footer_ownership()}

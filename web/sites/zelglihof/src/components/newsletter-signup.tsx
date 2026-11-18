@@ -21,7 +21,7 @@ export function NewsletterSignup() {
 					<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-4xl md:text-5xl">
 						{m.zelglihof_newsletter_title()}
 					</h2>
-					<p className="mt-6 max-w-xl text-lg leading-relaxed text-cream/70">
+					<p className="mt-6 max-w-xl text-lg leading-relaxed text-cream/82">
 						{m.zelglihof_newsletter_description()}
 					</p>
 				</div>
@@ -54,7 +54,7 @@ export function NewsletterSignup() {
 							},
 						]}
 					/>
-					<p className="mt-4 text-sm leading-[1.6] text-cream/70">
+					<p className="mt-4 text-sm leading-[1.6] text-cream/82">
 						{m.zelglihof_newsletter_privacy()}
 					</p>
 				</div>

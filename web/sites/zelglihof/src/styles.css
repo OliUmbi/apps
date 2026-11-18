@@ -7,20 +7,20 @@
 	--font-serif: "serif-playfair", serif;
 	--font-mono: "mono-geist", monospace;
 	--color-ink: #1d291f;
-	--color-forest: #44522e;
-	--color-forest-dark: #313d21;
+	--color-forest: #5c6530;
+	--color-forest-dark: #4a5327;
 	--color-moss: #6a6b32;
-	--color-sage: #c3c7a8;
+	--color-sage: #c9cdb2;
 	--color-oat: #f2ecdf;
 	--color-cream: #fbf8f1;
 	--color-cream-veil: rgb(251 248 241 / 72%);
-	--color-hairline: rgb(68 82 46 / 16%);
+	--color-hairline: rgb(92 101 48 / 16%);
 	--color-clay: #954428;
 	--color-sun: #d7ccb0;
 	--color-danger: #b91c1c;
-	--color-success: #44522e;
+	--color-success: #5c6530;
 	--radius-card: 1.5rem;
-	--shadow-card: 0 24px 70px rgb(68 82 46 / 8%);
+	--shadow-card: 0 24px 70px rgb(92 101 48 / 8%);
 }
 
 /* Base element styles: not expressible as utilities. */

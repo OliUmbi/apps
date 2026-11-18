@@ -109,7 +109,7 @@ function MobileMenu() {
 									</Link>
 								))}
 							</nav>
-							<p className="text-sm text-cream/60">
+							<p className="text-sm text-cream/82">
 								{m.zelglihof_navigation_description()}
 							</p>
 						</Drawer.Content>

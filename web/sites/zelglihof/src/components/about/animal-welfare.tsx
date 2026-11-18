@@ -36,7 +36,7 @@ export function AnimalWelfare() {
 					<p className="mt-14 font-serif text-4xl font-bold">
 						{m.zelglihof_farm_animal_welfare_title()}
 					</p>
-					<p className="mt-6 leading-relaxed text-cream/65">
+					<p className="mt-6 leading-relaxed text-cream/82">
 						{m.zelglihof_farm_animal_welfare_body()}
 					</p>
 				</div>

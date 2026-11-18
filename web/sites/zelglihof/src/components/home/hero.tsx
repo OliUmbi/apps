@@ -24,7 +24,7 @@ export function Hero({
 							{m.zelglihof_home_hero_title_accent()}
 						</span>
 					</h1>
-					<p className="mt-7 max-w-md text-base leading-relaxed text-cream/72 md:text-lg">
+					<p className="mt-7 max-w-md text-base leading-relaxed text-cream/82 md:text-lg">
 						{m.zelglihof_home_hero_description()}
 					</p>
 					<div className="mt-8 flex flex-wrap gap-3">
@@ -45,7 +45,7 @@ export function Hero({
 				</div>
 				<a
 					href="#aktuell"
-					className="relative flex w-fit items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-cream/70 hover:text-cream"
+					className="relative flex w-fit items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-cream/82 hover:text-cream"
 				>
 					<ArrowDown size={16} aria-hidden="true" />
 					{m.zelglihof_home_latest_updates()}

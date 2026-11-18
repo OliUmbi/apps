@@ -269,15 +269,19 @@ function CropTile({ crop }: { crop: Crop }) {
 		return (
 			<article className="relative flex aspect-[4/5] flex-col justify-between gap-6 overflow-hidden rounded-[1.5rem] p-[1.35rem]">
 				{images.map((image, imageIndex) => (
-					<StaticImage
+					<div
 						key={image.name}
-						name={image.name}
-						alt={imageIndex === index ? image.alt : ""}
-						sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-						className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+						className={`absolute inset-0 transition-opacity duration-500 ${
 							imageIndex === index ? "opacity-100" : "opacity-0"
 						}`}
-					/>
+					>
+						<StaticImage
+							name={image.name}
+							alt={imageIndex === index ? image.alt : ""}
+							sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+							className="absolute inset-0 h-full w-full object-cover"
+						/>
+					</div>
 				))}
 				<div
 					className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent"
