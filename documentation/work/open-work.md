@@ -202,17 +202,40 @@ copy.
   is left alone, and Jublawoma's PDFs carry `?v=` so a replaced document is not
   stale for a year. Unversioned photos/fonts revalidate within the hour.
   (2026-11-15)
-- [owner] Confirm the exact Zelglihof house number. The owner said it is not
-  `Zelgliweg 2`; the footer and JSON-LD now show `Zelgliweg` without a number.
-- [owner] Confirm the current livestock counts. `FarmFacts` still shows
-  45 Mutterkühe, 18 Rinder and 22 Kälber from placeholder code; the 60 hens are
-  confirmed.
+- [x] Confirm the exact Zelglihof house number. The owner asked for `Zelglihof`
+  without a street or number; the footer, contact page and JSON-LD now use it.
+  (2026-11-18)
+- [x] Confirm the current livestock counts. Owner-confirmed: 21 Mutterkühe,
+  10 Rinder, 8 Kälber and 60 Freilandhühner. (2026-11-18)
 - [owner] Confirm whether Uncle-T's `Zelgliweg 2` is correct or whether it
   shares the Zelglihof address correction.
 - [owner] Decide whether "Aktuelles" should add a future-events block; the
   current page shows updates only.
 - [design] The Studio login autofocus produces a bright blue double focus ring.
   Decide whether to keep the accent or soften the autofocus state.
+
+## Zelglihof owner feedback round (2026-11-18)
+
+The owner reviewed the `.12` feedback site and sent copy, photos and palette
+feedback. `2026.11.18-test.1` deployed the content and layout round;
+`2026.11.18-test.2` aligned the JSON-LD address with the visible copy.
+
+- [x] Removed the `01`-`04` badges from the Kulturen process, replaced the
+  irrigation photo with the owner's broccoli field, and changed the last step
+  to "Für die Verarbeitung" with the caption below the photo.
+- [x] Replaced the home farm photo with the tractor-and-cattle composition and
+  added the owner's crop photos; Erbsen and Dinkel remain text-only.
+- [x] Added the payment note ("Bar oder via Twint") to the Hofladen and contact
+  pages.
+- [x] Updated the "Unser Hof" paragraph, livestock counts and the `Zelglihof`
+  address, and shifted the palette to the owner's neutral (`#d7ccb0`) and
+  olive (`#6a6b32`) swatches with lighter green tokens.
+- [x] Reduced the display headings across the site, particularly the mobile
+  sizes, so titles wrap less often.
+- [x] Kulturen now accepts multiple photos: the Kürbisse tile has a
+  click-through gallery with a counter and labelled previous/next controls.
+- [ ] [owner] Decide which additional photos to add beyond the crops and the
+  home pair; the current page uses one image per crop except Kürbisse.
 
 ## First go-live review (2026-11)
 
