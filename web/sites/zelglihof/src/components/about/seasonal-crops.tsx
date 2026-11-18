@@ -6,9 +6,8 @@ import { StaticImage } from "../static-image";
 const cropColors = ["bg-sun/55", "bg-sage/45", "bg-oat"];
 
 export function SeasonalCrops() {
-	// Owner item "real farm facts and crop list": the list itself is
-	// placeholder content until the farm confirms its crops. The names are
-	// catalog copy shared with the crops mosaic, resolved at render time.
+	// Owner-reviewed crop list (2026-11). The names are catalog copy shared
+	// with the crops mosaic, resolved at render time.
 	const crops = [
 		m.zelglihof_crops_beets_name(),
 		m.zelglihof_crops_rapeseed_name(),

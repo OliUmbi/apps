@@ -3,9 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Egg, Sprout, Wheat } from "lucide-react";
 import { StaticImage } from "../static-image";
 
-// Owner item "real farm facts": the hen and crop counts below are placeholder
-// values until the farm confirms them. "Seit 1906" comes from the farm history
-// block and is not a placeholder count.
+// Owner-confirmed farm facts (2026-11): 60 Freilandhühner and 11 Kulturen.
+// "Seit 1906" comes from the farm history block.
 export function FarmIntroduction() {
 	return (
 		<section className="shell grid gap-5 py-24 md:grid-cols-[1.15fr_0.85fr] md:py-32">
