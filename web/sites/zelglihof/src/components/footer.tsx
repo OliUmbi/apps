@@ -25,26 +25,26 @@ export default function Footer({ year }: { year: number }) {
 					</p>
 				</div>
 				<div>
-					<p className="eyebrow text-sun">
+					<p className="eyebrow text-cream">
 						{m.zelglihof_footer_explore_title()}
 					</p>
 					<nav className="mt-6 grid gap-3 text-sm font-semibold">
-						<Link to="/latest" className="hover:text-sun">
+						<Link to="/latest" className="hover:underline">
 							{m.zelglihof_updates()}
 						</Link>
-						<Link to="/products" className="hover:text-sun">
+						<Link to="/products" className="hover:underline">
 							{m.zelglihof_shop()}
 						</Link>
-						<Link to="/about" className="hover:text-sun">
+						<Link to="/about" className="hover:underline">
 							{m.zelglihof_farm()}
 						</Link>
-						<Link to="/contact" className="hover:text-sun">
+						<Link to="/contact" className="hover:underline">
 							{m.contact()}
 						</Link>
 					</nav>
 				</div>
 				<div>
-					<p className="eyebrow text-sun">
+					<p className="eyebrow text-cream">
 						{m.zelglihof_footer_address_title()}
 					</p>
 					<a

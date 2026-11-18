@@ -95,16 +95,13 @@ function MobileMenu() {
 								className="my-auto grid gap-2"
 								aria-label={m.mobile_navigation()}
 							>
-								{links.map((link, index) => (
+								{links.map((link) => (
 									<Link
 										key={link.to}
 										to={link.to}
 										onClick={() => setOpen(false)}
 										className="group flex items-center gap-4 border-b border-white/15 py-4 font-serif text-3xl font-bold"
 									>
-										<span className="font-sans text-xs font-semibold text-sun">
-											0{index + 1}
-										</span>
 										{link.label()}
 									</Link>
 								))}

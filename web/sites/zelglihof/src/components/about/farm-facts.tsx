@@ -42,7 +42,7 @@ export function FarmFacts() {
 			</div>
 			<div className="flex flex-col justify-between gap-10 rounded-[2rem] bg-forest p-8 text-cream md:p-10">
 				<div>
-					<p className="eyebrow text-sun">
+					<p className="eyebrow text-cream">
 						{m.zelglihof_farm_counts_eyebrow()}
 					</p>
 					<p className="mt-5 max-w-xs text-sm leading-relaxed text-cream/82">

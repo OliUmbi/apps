@@ -14,7 +14,9 @@ export function Hero({
 				<div className="absolute -right-24 -top-20 size-72 rounded-full border border-white/10" />
 				<div className="absolute -right-10 top-10 size-44 rounded-full border border-white/10" />
 				<div className="relative flex flex-wrap items-center gap-x-4 gap-y-2">
-					<p className="eyebrow text-sun">{m.zelglihof_home_hero_eyebrow()}</p>
+					<p className="eyebrow text-cream">
+						{m.zelglihof_home_hero_eyebrow()}
+					</p>
 				</div>
 				<div className="relative">
 					<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] max-w-xl text-[clamp(3.2rem,7vw,6rem)]">
