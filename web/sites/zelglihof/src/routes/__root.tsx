@@ -39,12 +39,12 @@ export const Route = createRootRoute({
 				content: m.zelglihof_site_social_description(),
 			},
 			{ property: "og:type", content: "website" },
-			{ name: "theme-color", content: "#24452f" },
+			{ name: "theme-color", content: "#5c6530" },
 		],
 		// The query keeps browsers from reusing the old cached favicon after the
 		// farm logo replaced the previous mark.
 		links: [
-			{ rel: "icon", href: "/favicon.svg?v=2", type: "image/svg+xml" },
+			{ rel: "icon", href: "/favicon.svg?v=3", type: "image/svg+xml" },
 			// Keep this in step with the versioned URLs in fonts.css.
 			{
 				rel: "preload",

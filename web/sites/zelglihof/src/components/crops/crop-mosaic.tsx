@@ -292,7 +292,10 @@ function CropTile({ crop }: { crop: Crop }) {
 						{crop.season}
 					</p>
 					{images.length > 1 && (
-						<span className="rounded-full bg-ink/35 px-2.5 py-1 text-[0.62rem] font-bold text-cream backdrop-blur">
+						<span
+							aria-live="polite"
+							className="rounded-full bg-ink/35 px-2.5 py-1 text-[0.62rem] font-bold text-cream backdrop-blur"
+						>
 							{index + 1}/{images.length}
 						</span>
 					)}
