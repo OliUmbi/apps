@@ -9,7 +9,7 @@ export function AnimalWelfare() {
 					<p className="eyebrow text-moss">
 						{m.zelglihof_farm_animals_eyebrow()}
 					</p>
-					<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-5xl md:text-6xl">
+					<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-4xl md:text-5xl">
 						{m.zelglihof_farm_animals_title()}
 					</h2>
 					<p className="mt-7 font-serif text-[clamp(1.35rem,2.5vw,2.05rem)] leading-[1.3] tracking-[-0.025em] text-ink/75">

@@ -1,5 +1,5 @@
 import { m } from "@oliumbi/i18n/messages";
-import { ArrowUpRight, Clock3, MapPin } from "lucide-react";
+import { ArrowUpRight, Banknote, Clock3, MapPin } from "lucide-react";
 import { farmMapLink } from "../model/location";
 import { ContactForm } from "./contact-form";
 
@@ -9,7 +9,7 @@ export function ContactDetails() {
 			<section className="shell py-14 md:py-24">
 				<p className="eyebrow text-clay">{m.contact()}</p>
 				<div className="mt-5 grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-end">
-					<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] text-[clamp(3.4rem,6.5vw,6rem)]">
+					<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] text-[clamp(2.6rem,5.5vw,4.8rem)]">
 						{m.zelglihof_contact_hero_title()}
 						<br />
 						{m.zelglihof_contact_hero_title_accent()}
@@ -45,6 +45,14 @@ export function ContactDetails() {
 						</h2>
 						<p className="mt-3 leading-relaxed text-ink/70">
 							{m.zelglihof_contact_shop_body()}
+						</p>
+						<p className="mt-3 flex items-start gap-2 text-sm leading-relaxed text-ink/70">
+							<Banknote
+								size={17}
+								className="mt-0.5 shrink-0"
+								aria-hidden="true"
+							/>
+							{m.zelglihof_shop_payment()}
 						</p>
 					</div>
 					<p className="px-2 text-sm leading-relaxed text-ink/70">

@@ -14,7 +14,7 @@ export function FarmShop({ products }: { products: ProductSummary[] }) {
 						<p className="eyebrow text-moss">
 							{m.zelglihof_home_shop_eyebrow()}
 						</p>
-						<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 max-w-2xl text-5xl md:text-6xl">
+						<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 max-w-2xl text-4xl md:text-5xl">
 							{m.zelglihof_home_shop_title()}
 						</h2>
 					</div>

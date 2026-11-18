@@ -18,7 +18,7 @@ export function NewsletterSignup() {
 						<Mail size={24} />
 					</span>
 					<p className="eyebrow text-sun">{m.zelglihof_newsletter_eyebrow()}</p>
-					<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-5xl md:text-6xl">
+					<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-4xl md:text-5xl">
 						{m.zelglihof_newsletter_title()}
 					</h2>
 					<p className="mt-6 max-w-xl text-lg leading-relaxed text-cream/70">

@@ -1,21 +1,20 @@
 import { m } from "@oliumbi/i18n/messages";
 import { StaticImage } from "../static-image";
 
-// Owner item "real farm facts and crop list": these counts are placeholder
-// content until the farm confirms the real numbers.
+// Owner-confirmed livestock counts (2026-11).
 const counts = [
 	{
-		value: "45",
+		value: "21",
 		label: m.zelglihof_farm_count_cows,
 		note: m.zelglihof_farm_count_cows_note,
 	},
 	{
-		value: "18",
+		value: "10",
 		label: m.zelglihof_farm_count_cattle,
 		note: m.zelglihof_farm_count_cattle_note,
 	},
 	{
-		value: "22",
+		value: "8",
 		label: m.zelglihof_farm_count_calves,
 		note: m.zelglihof_farm_count_calves_note,
 	},

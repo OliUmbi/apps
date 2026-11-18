@@ -1,15 +1,20 @@
 import { m } from "@oliumbi/i18n/messages";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
 import type { ImageName } from "../../model/images";
 import { StaticImage } from "../static-image";
+
+type CropImage = {
+	name: ImageName;
+	alt: string;
+};
 
 type Crop = {
 	name: string;
 	body: string;
 	season: string;
-	image?: ImageName;
-	imageAlt?: string;
+	images?: CropImage[];
 	tone?: string;
-	wide?: boolean;
 };
 
 // Messages resolve at render time, never at module scope.
@@ -19,8 +24,12 @@ function arableCrops(): Crop[] {
 			name: m.zelglihof_crops_corn_name(),
 			body: m.zelglihof_crops_corn_body(),
 			season: m.zelglihof_season_summer_autumn(),
-			tone: "bg-forest text-cream",
-			wide: true,
+			images: [
+				{
+					name: "futtermais",
+					alt: m.zelglihof_crops_corn_alt(),
+				},
+			],
 		},
 		{
 			name: m.zelglihof_crops_rapeseed_name(),
@@ -33,6 +42,12 @@ function arableCrops(): Crop[] {
 			body: m.zelglihof_crops_wheat_body(),
 			season: m.zelglihof_season_summer(),
 			tone: "bg-oat text-ink",
+			images: [
+				{
+					name: "weizen",
+					alt: m.zelglihof_crops_wheat_alt(),
+				},
+			],
 		},
 		{
 			name: m.zelglihof_crops_spelt_name(),
@@ -45,6 +60,12 @@ function arableCrops(): Crop[] {
 			body: m.zelglihof_crops_beets_body(),
 			season: m.zelglihof_season_autumn(),
 			tone: "bg-clay text-cream",
+			images: [
+				{
+					name: "zuckerrueben",
+					alt: m.zelglihof_crops_beets_alt(),
+				},
+			],
 		},
 	];
 }
@@ -55,28 +76,45 @@ function specialCrops(): Crop[] {
 			name: m.zelglihof_crops_maize_name(),
 			body: m.zelglihof_crops_maize_body(),
 			season: m.zelglihof_season_summer(),
-			image: "zuckermais-mulchfolie",
-			imageAlt: m.zelglihof_crops_maize_alt(),
+			images: [
+				{
+					name: "zuckermais-mulchfolie",
+					alt: m.zelglihof_crops_maize_alt(),
+				},
+			],
 		},
 		{
 			name: m.zelglihof_crops_spinach_name(),
 			body: m.zelglihof_crops_spinach_body(),
 			season: m.zelglihof_season_spring_autumn(),
-			image: "spinat-feld",
-			imageAlt: m.zelglihof_crops_spinach_alt(),
+			images: [
+				{
+					name: "spinat-feld",
+					alt: m.zelglihof_crops_spinach_alt(),
+				},
+			],
 		},
 		{
 			name: m.zelglihof_crops_broccoli_name(),
 			body: m.zelglihof_crops_broccoli_body(),
 			season: m.zelglihof_season_summer_autumn(),
-			image: "broccoli-pflanze",
-			imageAlt: m.zelglihof_crops_broccoli_alt(),
+			images: [
+				{
+					name: "broccoli-verarbeitung",
+					alt: m.zelglihof_crops_broccoli_alt(),
+				},
+			],
 		},
 		{
 			name: m.zelglihof_crops_beans_name(),
 			body: m.zelglihof_crops_beans_body(),
 			season: m.zelglihof_season_summer(),
-			tone: "bg-moss text-cream",
+			images: [
+				{
+					name: "bohnen",
+					alt: m.zelglihof_crops_beans_alt(),
+				},
+			],
 		},
 		{
 			name: m.zelglihof_crops_peas_name(),
@@ -88,7 +126,20 @@ function specialCrops(): Crop[] {
 			name: m.zelglihof_crops_pumpkin_name(),
 			body: m.zelglihof_crops_pumpkin_body(),
 			season: m.zelglihof_season_late_summer_autumn(),
-			tone: "bg-sun text-ink",
+			images: [
+				{
+					name: "kuerbisse",
+					alt: m.zelglihof_crops_pumpkin_alt(),
+				},
+				{
+					name: "kuerbisse-2",
+					alt: m.zelglihof_crops_pumpkin_alt_2(),
+				},
+				{
+					name: "kuerbisse-3",
+					alt: m.zelglihof_crops_pumpkin_alt_3(),
+				},
+			],
 		},
 	];
 }
@@ -123,7 +174,7 @@ function CropProcess() {
 			caption: m.zelglihof_crops_gallery_planting(),
 		},
 		{
-			name: "zuckermais-beregnung-traktor" as const,
+			name: "broccoli-bewaesserung" as const,
 			alt: m.zelglihof_crops_gallery_irrigation_alt(),
 			caption: m.zelglihof_crops_gallery_irrigation(),
 		},
@@ -143,7 +194,7 @@ function CropProcess() {
 		<section className="my-16 md:my-24">
 			<p className="eyebrow text-clay">{m.zelglihof_crops_gallery_eyebrow()}</p>
 			<div className="mt-5 grid gap-8 md:grid-cols-[0.8fr_1.2fr] md:items-end">
-				<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] text-5xl md:text-6xl">
+				<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] text-4xl md:text-5xl">
 					{m.zelglihof_crops_gallery_title()}
 				</h2>
 				<p className="max-w-xl text-lg leading-relaxed text-ink/65">
@@ -151,7 +202,7 @@ function CropProcess() {
 				</p>
 			</div>
 			<div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
-				{steps.map((step, index) => (
+				{steps.map((step) => (
 					<figure key={step.name}>
 						<div className="relative overflow-hidden rounded-[1.5rem] bg-cream">
 							<StaticImage
@@ -160,9 +211,6 @@ function CropProcess() {
 								sizes="(min-width: 1024px) 25vw, 50vw"
 								className="aspect-[4/5] w-full object-cover"
 							/>
-							<span className="absolute left-3 top-3 grid size-8 place-items-center rounded-full bg-ink/55 text-xs font-bold text-cream backdrop-blur">
-								{String(index + 1).padStart(2, "0")}
-							</span>
 						</div>
 						<figcaption className="mt-3 text-sm font-semibold text-ink/70">
 							{step.caption}
@@ -210,29 +258,68 @@ function CropGroup({ title, crops }: { title: string; crops: Crop[] }) {
 }
 
 function CropTile({ crop }: { crop: Crop }) {
-	const wide = crop.wide ? "lg:col-span-2" : "";
+	const images = crop.images ?? [];
+	const [index, setIndex] = useState(0);
 
-	if (crop.image) {
-		const mediaWide = crop.wide ? "tile-media--wide" : "";
+	if (images.length > 0) {
+		const previous = () =>
+			setIndex((current) => (current - 1 + images.length) % images.length);
+		const next = () => setIndex((current) => (current + 1) % images.length);
+
 		return (
-			<article className={`tile-media ${mediaWide} ${wide}`}>
-				<StaticImage
-					name={crop.image}
-					alt={crop.imageAlt ?? ""}
-					sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+			<article className="relative flex aspect-[4/5] flex-col justify-between gap-6 overflow-hidden rounded-[1.5rem] p-[1.35rem]">
+				{images.map((image, imageIndex) => (
+					<StaticImage
+						key={image.name}
+						name={image.name}
+						alt={imageIndex === index ? image.alt : ""}
+						sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+						className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
+							imageIndex === index ? "opacity-100" : "opacity-0"
+						}`}
+					/>
+				))}
+				<div
+					className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-transparent"
+					aria-hidden="true"
 				/>
-				<div className="relative z-10 flex h-full flex-col justify-between gap-6">
+				<div className="relative z-10 flex items-start justify-between gap-3">
 					<p className="w-fit rounded-full bg-ink/35 px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-cream backdrop-blur">
 						{crop.season}
 					</p>
-					<div>
-						<h3 className="font-serif font-bold leading-[1.04] tracking-[-0.035em] text-2xl text-cream">
-							{crop.name}
-						</h3>
-						<p className="mt-2 max-w-md text-sm leading-relaxed text-cream/90">
-							{crop.body}
-						</p>
-					</div>
+					{images.length > 1 && (
+						<span className="rounded-full bg-ink/35 px-2.5 py-1 text-[0.62rem] font-bold text-cream backdrop-blur">
+							{index + 1}/{images.length}
+						</span>
+					)}
+				</div>
+				<div className="relative z-10">
+					<h3 className="font-serif font-bold leading-[1.04] tracking-[-0.035em] text-2xl text-cream">
+						{crop.name}
+					</h3>
+					<p className="mt-2 max-w-md text-sm leading-relaxed text-cream/90">
+						{crop.body}
+					</p>
+					{images.length > 1 && (
+						<div className="mt-4 flex gap-2">
+							<button
+								type="button"
+								onClick={previous}
+								aria-label={m.zelglihof_crops_gallery_previous()}
+								className="grid size-9 place-items-center rounded-full bg-cream/90 text-ink transition hover:bg-cream"
+							>
+								<ChevronLeft size={18} aria-hidden="true" />
+							</button>
+							<button
+								type="button"
+								onClick={next}
+								aria-label={m.zelglihof_crops_gallery_next()}
+								className="grid size-9 place-items-center rounded-full bg-cream/90 text-ink transition hover:bg-cream"
+							>
+								<ChevronRight size={18} aria-hidden="true" />
+							</button>
+						</div>
+					)}
 				</div>
 			</article>
 		);
@@ -240,11 +327,9 @@ function CropTile({ crop }: { crop: Crop }) {
 
 	return (
 		<article
-			className={`flex flex-col justify-between rounded-[1.5rem] p-[1.35rem] ${wide} ${
-				crop.wide
-					? "aspect-[4/3] lg:aspect-[8/5]"
-					: "aspect-[4/3] lg:aspect-[4/5]"
-			} ${crop.tone ?? "bg-oat text-ink"}`}
+			className={`flex aspect-[4/3] flex-col justify-between rounded-[1.5rem] p-[1.35rem] lg:aspect-[4/5] ${
+				crop.tone ?? "bg-oat text-ink"
+			}`}
 		>
 			<p className="w-fit rounded-full border border-current/25 px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-[0.14em] text-current/80">
 				{crop.season}

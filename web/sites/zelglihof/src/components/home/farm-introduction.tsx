@@ -9,22 +9,32 @@ import { StaticImage } from "../static-image";
 export function FarmIntroduction() {
 	return (
 		<section className="shell grid gap-5 py-24 md:grid-cols-[1.15fr_0.85fr] md:py-32">
-			<div className="relative min-h-[34rem] overflow-hidden rounded-[2rem]">
-				<StaticImage
-					name="broccoli-ernte-team"
-					alt={m.zelglihof_home_sowing_alt()}
-					sizes="(min-width: 768px) 58vw, 100vw"
-					className="absolute inset-0 h-full w-full object-cover"
-				/>
-				<div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
-				<p className="absolute bottom-7 left-7 max-w-sm font-serif text-3xl font-bold text-cream md:bottom-10 md:left-10 md:text-4xl">
-					{m.zelglihof_home_farm_summary()}
-				</p>
+			<div className="grid gap-4 md:min-h-[34rem] md:grid-rows-[1.05fr_0.95fr]">
+				<div className="relative aspect-[16/10] overflow-hidden rounded-[2rem] md:aspect-auto">
+					<StaticImage
+						name="traktor-feld"
+						alt={m.zelglihof_home_tractor_alt()}
+						sizes="(min-width: 768px) 58vw, 100vw"
+						className="absolute inset-0 h-full w-full object-cover"
+					/>
+				</div>
+				<div className="relative aspect-[16/10] overflow-hidden rounded-[2rem] md:aspect-auto">
+					<StaticImage
+						name="rinder-herde"
+						alt={m.zelglihof_home_cattle_alt()}
+						sizes="(min-width: 768px) 58vw, 100vw"
+						className="absolute inset-0 h-full w-full object-cover"
+					/>
+					<div className="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/10 to-transparent" />
+					<p className="absolute bottom-6 left-6 max-w-sm font-serif text-2xl font-bold text-cream md:bottom-8 md:left-8 md:text-3xl">
+						{m.zelglihof_home_farm_summary()}
+					</p>
+				</div>
 			</div>
 			<div className="flex flex-col justify-between rounded-[2rem] bg-sun p-7 md:p-10">
 				<div>
 					<p className="eyebrow">{m.zelglihof_home_family_business()}</p>
-					<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-6 text-5xl md:text-6xl">
+					<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-6 text-4xl md:text-5xl">
 						{m.zelglihof_home_farm_title()}
 					</h2>
 					<p className="mt-6 text-lg leading-relaxed text-ink/70">

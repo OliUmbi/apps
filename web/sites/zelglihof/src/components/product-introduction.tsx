@@ -32,7 +32,7 @@ export function ProductIntroduction({ product }: { product: Product }) {
 						<p className="eyebrow text-clay">
 							{m.zelglihof_shop_farm_direct()}
 						</p>
-						<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-6 text-6xl md:text-7xl">
+						<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-6 text-5xl md:text-6xl">
 							{product.name}
 						</h1>
 						<p className="mt-7 text-lg leading-relaxed text-ink/65">

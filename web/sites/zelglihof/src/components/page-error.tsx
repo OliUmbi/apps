@@ -9,7 +9,7 @@ export function PageError() {
 	return (
 		<section className="shell grid min-h-[72vh] place-items-center py-24 text-center">
 			<div className="max-w-3xl">
-				<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] text-5xl md:text-7xl">
+				<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] text-4xl md:text-6xl">
 					{m.page_error_title()}
 				</h1>
 				<p className="mx-auto mt-6 max-w-lg text-lg text-ink/65">

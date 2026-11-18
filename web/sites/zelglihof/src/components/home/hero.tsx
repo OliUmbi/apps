@@ -17,7 +17,7 @@ export function Hero({
 					<p className="eyebrow text-sun">{m.zelglihof_home_hero_eyebrow()}</p>
 				</div>
 				<div className="relative">
-					<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] max-w-xl text-[clamp(4.2rem,9vw,7.8rem)]">
+					<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] max-w-xl text-[clamp(3.2rem,7vw,6rem)]">
 						{m.zelglihof_home_hero_title()}
 						<br />
 						<span className="text-sun">
@@ -72,7 +72,7 @@ export function Hero({
 								</p>
 							</div>
 							<span
-								className="size-3 rounded-full bg-moss shadow-[0_0_0_7px_rgba(99,122,82,.16)]"
+								className="size-3 rounded-full bg-moss shadow-[0_0_0_7px_rgba(106,107,50,.16)]"
 								aria-hidden="true"
 							/>
 						</div>

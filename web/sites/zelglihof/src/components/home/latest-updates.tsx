@@ -12,7 +12,7 @@ export function LatestUpdates({ updates }: { updates: UpdateSummary[] }) {
 					<p className="eyebrow text-clay">
 						{m.zelglihof_home_updates_eyebrow()}
 					</p>
-					<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-5xl md:text-6xl">
+					<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-4xl md:text-5xl">
 						{m.zelglihof_home_updates_title()}
 					</h2>
 				</div>

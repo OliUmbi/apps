@@ -30,7 +30,7 @@ export function SeasonalCrops() {
 						<p className="eyebrow text-clay">
 							{m.zelglihof_farm_crops_eyebrow()}
 						</p>
-						<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-5xl md:text-6xl">
+						<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-4xl md:text-5xl">
 							{m.zelglihof_farm_crops_title()}
 						</h2>
 					</div>

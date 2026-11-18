@@ -1,11 +1,11 @@
 import { m } from "@oliumbi/i18n/messages";
-import { Clock3, ShoppingBag } from "lucide-react";
+import { Banknote, Clock3, ShoppingBag } from "lucide-react";
 export function ShopIntroduction() {
 	return (
 		<section className="shell grid gap-8 py-14 md:grid-cols-[0.8fr_1.2fr] md:items-end md:py-24">
 			<div>
 				<p className="eyebrow text-clay">{m.zelglihof_shop_eyebrow()}</p>
-				<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-[clamp(3.4rem,6.5vw,6rem)]">
+				<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-[clamp(2.6rem,5.5vw,4.8rem)]">
 					{m.zelglihof_shop_title()}
 					<br />
 					{m.zelglihof_shop_title_accent()}
@@ -25,6 +25,14 @@ export function ShopIntroduction() {
 						{m.zelglihof_shop_while_stocks_last()}
 					</span>
 				</div>
+				<p className="mt-4 flex items-start gap-2 text-sm leading-relaxed text-ink/70">
+					<Banknote
+						size={18}
+						className="mt-0.5 shrink-0 text-clay"
+						aria-hidden="true"
+					/>
+					{m.zelglihof_shop_payment()}
+				</p>
 			</div>
 		</section>
 	);

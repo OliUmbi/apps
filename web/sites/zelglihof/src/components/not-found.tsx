@@ -12,7 +12,7 @@ export function NotFound() {
 				<p className="eyebrow mt-8 text-clay">
 					{m.zelglihof_not_found_eyebrow()}
 				</p>
-				<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mx-auto mt-6 max-w-2xl text-6xl md:text-8xl">
+				<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mx-auto mt-6 max-w-2xl text-5xl md:text-7xl">
 					{m.zelglihof_not_found_title()}
 				</h1>
 				<p className="mx-auto mt-6 max-w-lg text-lg text-ink/70">

@@ -20,7 +20,7 @@ export function UpdateArticle({ update }: { update: Update }) {
 					{m.zelglihof_updates_category()} ·{" "}
 					<time dateTime={update.dateIso}>{update.date}</time>
 				</p>
-				<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 max-w-5xl text-6xl md:text-8xl">
+				<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 max-w-5xl text-5xl md:text-7xl">
 					{update.title}
 				</h1>
 				<p className="mt-8 max-w-2xl text-xl leading-relaxed text-ink/70">

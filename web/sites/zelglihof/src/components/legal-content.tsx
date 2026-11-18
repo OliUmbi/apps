@@ -13,7 +13,7 @@ function LegalPage({
 	return (
 		<article className="shell py-14 md:py-24">
 			<p className="eyebrow text-clay">{eyebrow}</p>
-			<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-6xl md:text-7xl">
+			<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 text-5xl md:text-6xl">
 				{title}
 			</h1>
 			<div className="mt-14 space-y-10 rounded-[2rem] bg-cream p-7 leading-relaxed text-ink/68 md:p-12 [&_h2]:font-serif [&_h2]:text-3xl [&_h2]:font-bold [&_h2]:text-ink [&_p]:mt-3 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-5">
