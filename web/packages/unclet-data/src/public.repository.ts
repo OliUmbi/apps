@@ -1,4 +1,9 @@
-import { guardRepository, type Page, pageSchema } from "@oliumbi/contracts";
+import {
+	guardRepository,
+	markdownToPlainText,
+	type Page,
+	pageSchema,
+} from "@oliumbi/contracts";
 import type { DatabaseExecutor } from "@oliumbi/database";
 import { paginate } from "@oliumbi/database/pagination";
 import { and, desc, eq, lte, sql } from "drizzle-orm";
@@ -29,14 +34,9 @@ const excerptLength = 240;
 // teaser can render the text as-is, and the result is length-bounded at a word
 // boundary (D4).
 export function showcaseExcerpt(markdown: string): string {
-	const text = markdown
-		.replace(/```[\s\S]*?(```|$)/g, " ")
-		.replace(/!\[[^\]]*]\([^)]*\)/g, " ")
-		.replace(/\[([^\]]*)]\([^)]*\)/g, "$1")
-		.replace(/^\s{0,3}#{1,6}\s+/gm, "")
-		.replace(/^\s{0,3}[-*+]\s+/gm, "")
-		.replace(/^\s{0,3}>\s+/gm, "")
-		.replace(/[*_`~]/g, "")
+	// Fenced code is outside the dialect, but legacy content may contain it.
+	// Drop it before projecting the supported syntax to plain text.
+	const text = markdownToPlainText(markdown.replace(/```[\s\S]*?(```|$)/g, " "))
 		.replace(/\s+/g, " ")
 		.trim();
 	if (text.length <= excerptLength) return text;

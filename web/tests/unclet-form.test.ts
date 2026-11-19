@@ -69,7 +69,7 @@ test("today is the first accepted event date, in local calendar parts", () => {
 
 test("the list teaser is plain text, markup-free and bounded (U-07)", () => {
 	const excerpt = showcaseExcerpt(
-		"## Ein Abend\n\n**Feines** aus dem *Ofen* mit [mehr Infos](https://example.com).\n\n- Punkt eins\n> zitiert\n\n```js\nconst code = 1;\n```\n" +
+		"## Ein Abend\n\n*Feines* aus dem _Ofen_ mit [mehr Infos](https://example.com).\n\n- Punkt eins\n> zitiert\n\n```js\nconst code = 1;\n```\n" +
 			"langer Text ".repeat(80),
 	);
 	assert.doesNotMatch(excerpt, /[*_#>`[\]]/);
@@ -77,7 +77,7 @@ test("the list teaser is plain text, markup-free and bounded (U-07)", () => {
 	assert.doesNotMatch(excerpt, /const code/);
 	assert.ok([...excerpt].length <= 241);
 	assert.ok(excerpt.endsWith("…"));
-	assert.equal(showcaseExcerpt("**kurz**"), "kurz");
+	assert.equal(showcaseExcerpt("*kurz*"), "kurz");
 });
 
 test("inquiry emails carry the submitted details and the stable reference (U-02)", () => {
