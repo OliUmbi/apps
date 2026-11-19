@@ -1,4 +1,5 @@
 import { m } from "@oliumbi/i18n/messages";
+import { SimpleMarkdown } from "@oliumbi/ui/simple-markdown";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, CalendarDays, MapPin, PackageCheck } from "lucide-react";
 import { availabilityLabel } from "../model/availability";
@@ -35,9 +36,12 @@ export function ProductIntroduction({ product }: { product: Product }) {
 						<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-6 text-5xl md:text-6xl">
 							{product.name}
 						</h1>
-						<p className="mt-7 text-lg leading-relaxed text-ink/65">
-							{product.body}
-						</p>
+						<div className="mt-7 text-lg leading-relaxed text-ink/65">
+							<SimpleMarkdown
+								value={product.body}
+								className="farm-markdown product-markdown"
+							/>
+						</div>
 					</div>
 					<div className="mt-12 grid gap-4 border-t border-forest/12 pt-7 text-sm font-semibold sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
 						<span className="flex items-center gap-2">

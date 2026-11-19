@@ -259,16 +259,10 @@ a {
 	border: 0;
 	border-top: 1px solid color-mix(in srgb, var(--color-forest) 22%, transparent);
 }
-.farm-markdown ul,
-.farm-markdown ol {
+.farm-markdown ul {
 	margin: 0 0 1.4rem;
 	padding-left: 1.35rem;
-}
-.farm-markdown ul {
 	list-style: disc;
-}
-.farm-markdown ol {
-	list-style: decimal;
 }
 .farm-markdown li {
 	margin: 0.45rem 0;
@@ -288,6 +282,42 @@ a {
 	padding: 0.1em 0.35em;
 	background: color-mix(in srgb, var(--color-forest) 10%, transparent);
 	font-size: 0.92em;
+}
+
+/* Product copy sits in a narrow column beside the product facts. */
+.product-markdown {
+	font-size: 1rem;
+	line-height: 1.7;
+}
+.product-markdown h1,
+.product-markdown h2,
+.product-markdown h3 {
+	margin: 1.8rem 0 0.55rem;
+}
+.product-markdown h1 {
+	font-size: 1.9rem;
+}
+.product-markdown h2 {
+	font-size: 1.5rem;
+}
+.product-markdown h3 {
+	font-size: 1.2rem;
+}
+.product-markdown p {
+	margin: 0 0 1rem;
+}
+.product-markdown ul {
+	margin: 0 0 1rem;
+	padding-left: 1.25rem;
+}
+.product-markdown li {
+	margin: 0.35rem 0;
+}
+.product-markdown blockquote {
+	margin: 0 0 1rem;
+}
+.product-markdown hr {
+	margin: 1.8rem 0;
 }
 
 @media (min-width: 768px) {
