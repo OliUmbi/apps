@@ -287,6 +287,17 @@ and set the recovery and cutover boundaries.
   now. A server-side Places API block can be added later if the owner needs
   review text; it must follow Google's attribution, source-link and no-caching
   rules, and the privacy page must be updated.
+- **D37 — Simple Markdown is the only rich-text format.** Long-form `body`
+  fields store the narrow dialect parsed by
+  `@oliumbi/contracts/simple-markdown` and rendered by
+  `@oliumbi/ui/simple-markdown`: `*bold*`, `_italic_`, backtick code,
+  `[label](href)`, H2/H3, `-` lists, `>` quotes and `---`. There is one marker
+  per style; `**`, `__`, `*` bullets and ordered lists stay literal. HTML is
+  never parsed and links pass through `safeLinkHref`. Short descriptions,
+  titles, meta/SEO copy, email bodies and other plain-text surfaces do not use
+  markdown. Studio exposes the dialect through one `MarkdownField` with a
+  toolbar and preview. Details in
+  [simple markdown](simple-markdown.md).
 
 ### O-006 threat model (accepted 2026-11)
 

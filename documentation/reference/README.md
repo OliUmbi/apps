@@ -7,6 +7,7 @@ term or direction changes - not when a task is picked up.
 | --- | --- |
 | [Sites and capabilities](sites.md) | what each property does, its scope and the launch checklist |
 | [Glossary](glossary.md) | the shared vocabulary and per-workflow states |
+| [Simple Markdown](simple-markdown.md) | the content dialect, its security boundary and the Studio editor |
 | [Decisions](decisions.md) | fixed directions, approved proposals, closed and open questions |
 | [External versions](versions.md) | every external dependency, its pinned line, and the pointer to the refresh runbook (D24) |
 

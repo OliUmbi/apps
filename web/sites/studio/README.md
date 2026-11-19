@@ -29,3 +29,19 @@ pnpm --filter studio start
 ```
 
 Smoke check: sign in, open one site's content list and one image, and sign out.
+
+## Markdown content
+
+The long-form body fields for Zelglihof articles and products, Unclet showcases
+and Jublawoma stories use `MarkdownField`. It offers a small toolbar (bold,
+italic, link, H2, H3, `-` list, quote, inline code), a live preview using the
+same renderer as the public sites, and a syntax help panel.
+
+The dialect has exactly one form per style: `*bold*`, `_italic_`, backtick
+code, `[label](href)`, `##`/`###`, `-` lists, `>` quotes and `---`. HTML,
+images, tables, ordered lists and doubled markers are not supported. The full
+contract is in [simple markdown](../../../documentation/reference/simple-markdown.md).
+
+Titles, teaser descriptions, promotion copy, review quotes, event short copy
+and campaign emails stay plain text. If the public page does not render a field
+with `SimpleMarkdown`, do not add markdown tools for it.

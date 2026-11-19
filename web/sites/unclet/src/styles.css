@@ -293,6 +293,17 @@ h3 {
 .unclet-markdown p {
 	margin: 0 0 1.3rem;
 }
+.unclet-markdown ul {
+	margin: 0 0 1.3rem;
+	padding-left: 1.35rem;
+	list-style: disc;
+}
+.unclet-markdown li {
+	margin: 0.35rem 0;
+}
+.unclet-markdown li::marker {
+	color: var(--color-brass);
+}
 .unclet-markdown a {
 	color: var(--color-brass-light);
 	text-decoration: underline;

@@ -249,6 +249,22 @@ surfaces; `2026.11.18-test.4` aligned the browser chrome;
 - [ ] [owner] Decide which additional photos to add beyond the crops and the
   home pair; the current page uses one image per crop except Kürbisse.
 
+## Simple Markdown (2026-11-19)
+
+- [x] Moved the parser and plain-text projection into
+  `@oliumbi/contracts/simple-markdown`; the React renderer stays in
+  `@oliumbi/ui/simple-markdown`.
+- [x] Made the dialect single-form: `*bold*`, `_italic_`, `-` lists only.
+  Doubled markers and ordered lists are literal text.
+- [x] Rendered the Zelglihof product body with the shared renderer and added
+  compact `.product-markdown` styles.
+- [x] Added the Studio `MarkdownField` with toolbar, live preview and help to the
+  four long-form body editors.
+- [x] Replaced Unclet's excerpt regex with `markdownToPlainText`.
+- [ ] [verify] Audit imported body content for legacy `**bold**`, `*italic*` and
+  ordered-list markers before publishing; the new dialect shows them literally.
+  The current test host has no such content.
+
 ## First go-live review (2026-11)
 
 Evidence: [first go-live review](../history/go-live-review-2026-11.md).
