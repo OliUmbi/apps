@@ -28,9 +28,9 @@ on:
   workflow_call:
     inputs:
       build_images:
-        description: Build the image matrix with no push.
-        type: boolean
-        default: true
+        description: Build the image matrix with no push ("false" disables it).
+        type: string
+        default: "true"
 
 permissions:
   contents: read
@@ -201,9 +201,9 @@ jobs:
   # skips it because its build job is the single build for a tag.
   images:
     name: images (build, no push)
-    # A tag caller passes build_images: false; push and pull_request have no
-    # input, so the empty value must still run the matrix.
-    if: ${{ inputs.build_images != false }}
+    # A tag caller passes build_images: "false"; push and pull_request have no
+    # input, so the empty string must still run the matrix.
+    if: ${{ inputs.build_images != 'false' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

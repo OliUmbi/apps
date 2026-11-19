@@ -17,7 +17,7 @@ jobs:
   verify:
     uses: ./.github/workflows/ci.yml
     with:
-      build_images: false
+      build_images: "false"
 
   build:
     needs: verify
