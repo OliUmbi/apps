@@ -261,6 +261,10 @@ surfaces; `2026.11.18-test.4` aligned the browser chrome;
 - [x] Added the Studio `MarkdownField` with toolbar, live preview and help to the
   four long-form body editors.
 - [x] Replaced Unclet's excerpt regex with `markdownToPlainText`.
+- [x] `2026.11.19-test.1` deployed the dialect, the product renderer and the
+  Studio field to the feedback host. The tag also verified the single-build
+  publish path with the explicit string input. The Studio field and its preview
+  were verified in the browser against the test host.
 - [ ] [verify] Audit imported body content for legacy `**bold**`, `*italic*` and
   ordered-list markers before publishing; the new dialect shows them literally.
   The current test host has no such content.
