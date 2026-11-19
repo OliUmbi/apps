@@ -257,3 +257,68 @@
 		scroll-behavior: auto !important;
 	}
 }
+
+/* Preview of the simple content dialect. It mirrors the sites' markdown
+   structure with Studio's dense, neutral typography. */
+.studio-markdown {
+	color: var(--color-fg-muted);
+	font-size: 0.875rem;
+	line-height: 1.7;
+}
+.studio-markdown h1,
+.studio-markdown h2,
+.studio-markdown h3 {
+	margin: 1.2em 0 0.4em;
+	color: var(--color-fg);
+	font-weight: 600;
+	line-height: 1.25;
+}
+.studio-markdown h1 {
+	font-size: 1.2rem;
+}
+.studio-markdown h2 {
+	font-size: 1.1rem;
+}
+.studio-markdown h3 {
+	font-size: 1rem;
+}
+/* biome-ignore lint/style/noDescendingSpecificity: The preview is a self-contained subtree with its own typography. */
+.studio-markdown p {
+	margin: 0 0 0.8em;
+}
+.studio-markdown ul {
+	margin: 0 0 0.8em;
+	padding-left: 1.2em;
+	list-style: disc;
+}
+.studio-markdown li {
+	margin: 0.25em 0;
+}
+.studio-markdown blockquote {
+	margin: 0.8em 0;
+	border-left: 2px solid var(--color-line-control);
+	padding-left: 0.8em;
+	color: var(--color-fg-subtle);
+}
+.studio-markdown code {
+	border-radius: 4px;
+	padding: 0.1em 0.3em;
+	background: var(--color-layer-3);
+	font-family: var(--font-mono);
+	font-size: 0.9em;
+}
+.studio-markdown a {
+	color: var(--color-interactive);
+	text-decoration: underline;
+}
+.studio-markdown hr {
+	margin: 1em 0;
+	border: 0;
+	border-top: 1px solid var(--color-line-subtle);
+}
+.studio-markdown > :first-child {
+	margin-top: 0;
+}
+.studio-markdown > :last-child {
+	margin-bottom: 0;
+}

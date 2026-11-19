@@ -19,6 +19,7 @@ import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { CheckboxField, NumberField } from "../editor-controls";
 import { ImageField } from "../image-field";
+import { MarkdownField } from "../markdown-field";
 import { PageCollection } from "../page-collection";
 import { SlugField } from "../slug-field";
 import { ShowcaseImagesRelated } from "./showcase-image-view";
@@ -140,12 +141,11 @@ function ShowcaseFields({
 				nullable
 				onChange={(value) => onChange("publishedOn", value)}
 			/>
-			<TextField
+			<MarkdownField
 				name="body"
 				label={m.body()}
 				value={values.body ?? ""}
-				render={<textarea rows={18} />}
-				onChange={(event) => onChange("body", event.target.value || null)}
+				onChange={(value) => onChange("body", value || null)}
 			/>
 		</>
 	);

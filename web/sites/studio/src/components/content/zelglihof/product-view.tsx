@@ -21,6 +21,7 @@ import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { CheckboxField } from "../editor-controls";
 import { ImageField } from "../image-field";
+import { MarkdownField } from "../markdown-field";
 import { PageCollection } from "../page-collection";
 import { ProductReservationsRelated } from "./product-reservation-view";
 import { ProductVariantsRelated } from "./product-variant-view";
@@ -135,13 +136,12 @@ function ProductFields({
 				render={<textarea rows={4} />}
 				onChange={(event) => onChange("description", event.target.value)}
 			/>
-			<TextField
+			<MarkdownField
 				name="body"
 				label={m.body()}
 				value={values.body}
 				required
-				render={<textarea rows={18} />}
-				onChange={(event) => onChange("body", event.target.value)}
+				onChange={(value) => onChange("body", value)}
 			/>
 			<ImageField
 				onPendingChange={onPendingChange}

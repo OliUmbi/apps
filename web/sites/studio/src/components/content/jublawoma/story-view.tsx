@@ -20,6 +20,7 @@ import type { EditorFieldsProps } from "../content-form";
 import { ImageThumbnail } from "../display";
 import { CheckboxField } from "../editor-controls";
 import { ImageField } from "../image-field";
+import { MarkdownField } from "../markdown-field";
 import { PageCollection } from "../page-collection";
 import { SlugField } from "../slug-field";
 import { StoryImagesRelated } from "./story-image-view";
@@ -127,13 +128,12 @@ function StoryFields({
 				nullable
 				onChange={(value) => onChange("imageId", value)}
 			/>
-			<TextField
+			<MarkdownField
 				name="body"
 				label={m.body()}
 				value={values.body}
 				required
-				render={<textarea rows={18} />}
-				onChange={(event) => onChange("body", event.target.value)}
+				onChange={(value) => onChange("body", value)}
 			/>
 			<CheckboxField
 				name="published"
