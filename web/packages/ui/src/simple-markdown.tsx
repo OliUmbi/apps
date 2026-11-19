@@ -1,9 +1,9 @@
-import { Fragment, type ReactNode } from "react";
 import {
 	type MarkdownBlock,
 	type MarkdownInline,
 	parseSimpleMarkdown,
-} from "./parse-simple-markdown";
+} from "@oliumbi/contracts";
+import { Fragment, type ReactNode } from "react";
 
 export function SimpleMarkdown({
 	value,
@@ -29,11 +29,7 @@ function renderBlock(block: MarkdownBlock, index: number): ReactNode {
 		const items = block.items.map((item, itemIndex) => (
 			<li key={`${key}-${itemIndex}`}>{renderInline(item)}</li>
 		));
-		return block.ordered ? (
-			<ol key={key}>{items}</ol>
-		) : (
-			<ul key={key}>{items}</ul>
-		);
+		return <ul key={key}>{items}</ul>;
 	}
 	if (block.type === "heading") {
 		const content = renderInline(block.content);

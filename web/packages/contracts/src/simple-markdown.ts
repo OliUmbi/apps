@@ -1,4 +1,4 @@
-import { safeLinkHref } from "@oliumbi/contracts";
+import { safeLinkHref } from "./links";
 
 export type MarkdownInline =
 	| { type: "text" | "strong" | "emphasis" | "code"; value: string }
@@ -7,10 +7,21 @@ export type MarkdownInline =
 export type MarkdownBlock =
 	| { type: "heading"; level: 1 | 2 | 3; content: MarkdownInline[] }
 	| { type: "paragraph"; lines: MarkdownInline[][] }
-	| { type: "list"; ordered: boolean; items: MarkdownInline[][] }
+	| { type: "list"; items: MarkdownInline[][] }
 	| { type: "quote"; content: MarkdownInline[] }
 	| { type: "rule" };
 
+/*
+ * The content dialect. It is deliberately one form per style:
+ *
+ *   *bold*   _italic_   `code`   [label](href)
+ *   # H1     ## H2      ### H3   - list   > quote   ---
+ *
+ * A single newline stays a line break inside a paragraph; a blank line starts
+ * a new block. There is no HTML, image, table, ordered-list or fenced-code
+ * syntax. Anything unrecognised stays literal text, and links only survive the
+ * `safeLinkHref` allowlist.
+ */
 export function parseSimpleMarkdown(value: string): MarkdownBlock[] {
 	const blocks: MarkdownBlock[] = [];
 	let paragraph: MarkdownInline[][] = [];
@@ -44,12 +55,11 @@ export function parseSimpleMarkdown(value: string): MarkdownBlock[] {
 		if (listItem) {
 			flushParagraph();
 			const previous = blocks.at(-1);
-			if (previous?.type === "list" && previous.ordered === listItem.ordered)
+			if (previous?.type === "list")
 				previous.items.push(parseInline(listItem.content));
 			else
 				blocks.push({
 					type: "list",
-					ordered: listItem.ordered,
 					items: [parseInline(listItem.content)],
 				});
 			continue;
@@ -63,6 +73,32 @@ export function parseSimpleMarkdown(value: string): MarkdownBlock[] {
 	}
 	flushParagraph();
 	return blocks;
+}
+
+/**
+ * Plain-text projection for excerpts, meta descriptions and structured data.
+ * It never returns markup; leftover marker characters from malformed or
+ * legacy source are removed.
+ */
+export function markdownToPlainText(value: string): string {
+	return parseSimpleMarkdown(value)
+		.map((block) => {
+			if (block.type === "rule") return "";
+			if (block.type === "paragraph")
+				return block.lines.map(inlineToText).join(" ");
+			if (block.type === "list") return block.items.map(inlineToText).join(" ");
+			return inlineToText(block.content);
+		})
+		.filter((part) => part.length > 0)
+		.join("\n\n")
+		.replace(/[*_`]/g, "")
+		.trim();
+}
+
+function inlineToText(content: MarkdownInline[]): string {
+	return content
+		.map((inline) => (inline.type === "link" ? inline.label : inline.value))
+		.join("");
 }
 
 function parseInline(value: string): MarkdownInline[] {
@@ -101,14 +137,7 @@ function parseHeadingLine(line: string) {
 }
 
 function parseListLine(line: string) {
-	if (line.startsWith("- ") || line.startsWith("* "))
-		return { ordered: false, content: line.slice(2) };
-	let cursor = 0;
-	while (cursor < line.length && line[cursor] >= "0" && line[cursor] <= "9")
-		cursor += 1;
-	if (cursor > 0 && line.slice(cursor, cursor + 2) === ". ")
-		return { ordered: true, content: line.slice(cursor + 2) };
-	return null;
+	return line.startsWith("- ") ? { content: line.slice(2) } : null;
 }
 
 interface InlineToken {
@@ -117,10 +146,14 @@ interface InlineToken {
 }
 
 function parseInlineToken(value: string, start: number): InlineToken | null {
-	if (value.startsWith("**", start))
-		return parseWrappedToken(value, start, "**", "strong");
+	// Historic doubled markers are not a second syntax: keep them literal.
+	if (value.startsWith("**", start) || value.startsWith("__", start))
+		return {
+			inline: { type: "text", value: value.slice(start, start + 2) },
+			end: start + 2,
+		};
 	if (value[start] === "*")
-		return parseWrappedToken(value, start, "*", "emphasis");
+		return parseWrappedToken(value, start, "*", "strong");
 	if (value[start] === "_")
 		return parseWrappedToken(value, start, "_", "emphasis");
 	if (value[start] === "`") return parseWrappedToken(value, start, "`", "code");

@@ -1,8 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { safeLinkHref } from "../packages/contracts/src/links";
+import {
+	markdownToPlainText,
+	parseSimpleMarkdown,
+} from "../packages/contracts/src/simple-markdown";
 import { passwordSchema } from "../packages/identity/src/password";
-import { parseSimpleMarkdown } from "../packages/ui/src/parse-simple-markdown";
 
 /*
  * Security helpers at the render boundary: link hrefs, the markdown renderer
@@ -47,20 +50,13 @@ test("markdown headings keep their levels 1-3", () => {
 	);
 });
 
-test("consecutive list items group, ordered and unordered separately", () => {
-	const blocks = parseSimpleMarkdown("- a\n- b\n\n1. c\n2. d");
-	assert.equal(blocks.length, 2);
-	assert.deepEqual(
-		blocks.map((block) =>
-			block.type === "list"
-				? [block.ordered, block.items.length]
-				: [block.type],
-		),
-		[
-			[false, 2],
-			[true, 2],
-		],
-	);
+test("only '-' list items group; ordered and asterisk lines stay prose", () => {
+	const blocks = parseSimpleMarkdown("- a\n- b\n\n1. c\n\n* d");
+	assert.equal(blocks.length, 3);
+	assert.ok(blocks[0]?.type === "list");
+	assert.equal(blocks[0].items.length, 2);
+	assert.equal(blocks[1]?.type, "paragraph");
+	assert.equal(blocks[2]?.type, "paragraph");
 });
 
 test("a blockquote and a rule become their own blocks", () => {
@@ -91,10 +87,8 @@ test("a paragraph groups its lines and a blank line ends it", () => {
 	);
 });
 
-test("inline strong, emphasis and code are tokenized", () => {
-	const [block] = parseSimpleMarkdown(
-		"**fett** *kursiv* _auch_ `code` und Text",
-	);
+test("inline strong, emphasis and code use one marker each", () => {
+	const [block] = parseSimpleMarkdown("*fett* _kursiv_ `code` und Text");
 	assert.ok(block?.type === "paragraph");
 	assert.deepEqual(
 		block.lines[0].map((inline) => [
@@ -106,12 +100,44 @@ test("inline strong, emphasis and code are tokenized", () => {
 			["text", " "],
 			["emphasis", "kursiv"],
 			["text", " "],
-			["emphasis", "auch"],
-			["text", " "],
 			["code", "code"],
 			["text", " und Text"],
 		],
 	);
+});
+
+test("doubled markers are literal, not a second syntax", () => {
+	const [block] = parseSimpleMarkdown("**fett** und __auch__");
+	assert.ok(block?.type === "paragraph");
+	assert.equal(
+		block.lines[0].some(
+			(inline) => inline.type === "strong" || inline.type === "emphasis",
+		),
+		false,
+	);
+	assert.equal(
+		block.lines[0]
+			.map((inline) => (inline.type === "link" ? inline.label : inline.value))
+			.join(""),
+		"**fett** und __auch__",
+	);
+});
+
+test("raw HTML is text, never markup", () => {
+	const [block] = parseSimpleMarkdown("<script>alert(1)</script>");
+	assert.ok(block?.type === "paragraph");
+	assert.equal(
+		block.lines[0].every((inline) => inline.type === "text"),
+		true,
+	);
+});
+
+test("plain text strips markers and keeps link labels", () => {
+	assert.equal(
+		markdownToPlainText("*fett* _kursiv_ [Link](https://example.com)"),
+		"fett kursiv Link",
+	);
+	assert.equal(markdownToPlainText("## Titel\n\n- Punkt"), "Titel\n\nPunkt");
 });
 
 test("a javascript: link is never emitted as a link", () => {
