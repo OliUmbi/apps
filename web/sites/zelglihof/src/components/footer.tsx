@@ -5,7 +5,7 @@ import { farmMapLink } from "../model/location";
 
 export default function Footer({ year }: { year: number }) {
 	return (
-		<footer className="mt-24 bg-forest text-cream">
+		<footer className="bg-forest text-cream">
 			<div className="shell grid gap-14 py-14 md:grid-cols-[1.3fr_0.7fr_0.7fr] md:py-20">
 				<div className="max-w-md">
 					<div className="flex items-center gap-3">
