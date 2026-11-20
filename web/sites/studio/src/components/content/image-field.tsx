@@ -54,7 +54,10 @@ export function ImageField({
 			const data = new FormData();
 			data.set("site", site);
 			data.set("kind", "images");
-			data.set("visible", "false");
+			// An image uploaded from a content record is immediately used on the
+			// public page; requiring a second publish step in the Images view made
+			// the public URL 404 in the meantime.
+			data.set("visible", "true");
 			data.set("file", file);
 			return upload({ data });
 		},
@@ -110,7 +113,7 @@ export function ImageField({
 				onSelect={(file) => creation.mutate(file)}
 			/>
 			<Alert tone="error">{creation.isError ? m.error_generic() : null}</Alert>
-			<FieldMessage />
+			<FieldMessage hint={m.studio_image_upload_public_hint()} />
 		</FieldRoot>
 	);
 }
