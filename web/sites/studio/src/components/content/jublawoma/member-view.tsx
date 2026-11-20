@@ -25,6 +25,7 @@ export function MembersView() {
 		<PageCollection<Member, MemberInput>
 			collection="jublawoma.member"
 			title={m.studio_section_member()}
+			searchable={false}
 			rowKey={(record) => record.id}
 			loadPage={(input) => listMembers({ data: input })}
 			loadRecord={(id) => getMember({ data: { id } })}

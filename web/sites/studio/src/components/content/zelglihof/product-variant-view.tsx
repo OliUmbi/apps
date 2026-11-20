@@ -33,7 +33,6 @@ function productVariantCollection(
 		scope: productId,
 		title: m.studio_product_variants(),
 		rowKey: (record) => record.id,
-		searchable: false,
 		loadPage: (input) => listProductVariants({ data: { ...input, productId } }),
 		loadRecord: (id) => getProductVariant({ data: { id } }),
 		capability: {

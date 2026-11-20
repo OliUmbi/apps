@@ -18,6 +18,7 @@ export function RelatedCollection<Row, Input = never>(
 			key={selection.mode === "detail" ? selection.id : selection.mode}
 			search={search}
 			onSearchChange={setSearch}
+			searchable={props.searchable ?? false}
 			navigation={{
 				selection,
 				showList: () => setSelection({ mode: "list" }),

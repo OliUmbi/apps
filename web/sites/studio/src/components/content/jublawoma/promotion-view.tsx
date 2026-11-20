@@ -26,6 +26,7 @@ export function PromotionsView() {
 		<PageCollection<Promotion, PromotionInput>
 			collection="jublawoma.promotion"
 			title={m.studio_section_promotion()}
+			searchable={false}
 			rowKey={(record) => record.id}
 			loadPage={(input) => listPromotions({ data: input })}
 			loadRecord={(id) => getPromotion({ data: { id } })}
