@@ -21,6 +21,7 @@ import { CheckboxField, NumberField } from "../editor-controls";
 import { ImageField } from "../image-field";
 import { MarkdownField } from "../markdown-field";
 import { PageCollection } from "../page-collection";
+import { PublicSiteLink } from "../public-site-link";
 import { SlugField } from "../slug-field";
 import { ShowcaseImagesRelated } from "./showcase-image-view";
 
@@ -51,6 +52,15 @@ export function ShowcasesView() {
 						},
 					}),
 			}}
+			renderSideActions={(record) =>
+				record.published ? (
+					<PublicSiteLink
+						site="unclet"
+						path={`/referenzen/${record.slug}`}
+						label={m.studio_view_on_website()}
+					/>
+				) : null
+			}
 			columns={[
 				{
 					id: "title",

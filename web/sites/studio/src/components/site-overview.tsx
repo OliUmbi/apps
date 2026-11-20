@@ -3,6 +3,7 @@ import { m } from "@oliumbi/i18n/messages";
 import { ArrowRight } from "lucide-react";
 import type { StudioSectionId } from "../model/navigation";
 import type { StudioSite } from "../model/sites";
+import { PublicSiteLink } from "./content/public-site-link";
 import { TrafficOverview } from "./traffic-view";
 
 export function SiteOverview({
@@ -19,6 +20,7 @@ export function SiteOverview({
 					<p className="overview-domain">{site.domain}</p>
 					<h1>{m.studio_overview_title({ site: site.name })}</h1>
 					<p>{m.studio_overview_description()}</p>
+					<PublicSiteLink site={site.id} className="mt-5" />
 				</div>
 				<span className="overview-site-code" aria-hidden="true">
 					{site.short}

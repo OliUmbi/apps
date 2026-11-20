@@ -72,7 +72,7 @@ export function CampaignsView() {
 					render: (record) => displayStatus(record.status),
 				},
 			]}
-			renderActions={(record) =>
+			renderSideActions={(record) =>
 				record.status === "draft" ? <CampaignSend id={record.id} /> : null
 			}
 		/>

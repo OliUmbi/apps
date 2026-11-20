@@ -58,8 +58,10 @@ export interface CollectionProps<Row, Input = never>
 	columns: readonly ContentColumn<Row>[];
 	capability: CollectionCapability<Row, Input>;
 	renderActions?: (record: Row) => ReactNode;
+	renderSideActions?: (record: Row) => ReactNode;
 	renderRelated?: (record: Row) => ReactNode;
 	introduction?: ReactNode;
+	className?: string;
 }
 
 // The adapters own the context around the collection: where the selection
@@ -83,8 +85,10 @@ export function Collection<Row, Input = never>({
 	columns,
 	capability,
 	renderActions,
+	renderSideActions,
 	renderRelated,
 	introduction,
+	className,
 	navigation,
 	search,
 	onSearchChange,
@@ -142,9 +146,20 @@ export function Collection<Row, Input = never>({
 			{m.create()}
 		</Button>
 	) : null;
+	const deleteAction =
+		record && remove && (!canDelete || canDelete(record)) ? (
+			<Button
+				type="button"
+				variant="danger"
+				disabled={save.isPending}
+				onClick={() => requestDelete(record)}
+			>
+				{m.delete_record()}
+			</Button>
+		) : null;
 
 	return (
-		<section className="grid gap-6">
+		<section className={["grid gap-6", className ?? ""].join(" ")}>
 			{renderHeader(title, actions)}
 			{inWorkspace ? (
 				<>
@@ -164,6 +179,8 @@ export function Collection<Row, Input = never>({
 								record !== null &&
 								rowKey(save.data) === rowKey(record)
 							}
+							sideActions={record ? renderSideActions?.(record) : null}
+							dangerActions={deleteAction}
 							onSave={saveRecord}
 							onReload={reload}
 							onClose={close}
@@ -175,19 +192,11 @@ export function Collection<Row, Input = never>({
 						<>
 							{renderActions?.(record)}
 							{renderRelated?.(record)}
-							{remove && (!canDelete || canDelete(record)) ? (
+							{!editable && deleteAction ? (
 								<DangerZone
 									title={m.delete_record()}
 									description={m.confirm_delete_description()}
-									actions={
-										<Button
-											variant="danger"
-											disabled={save.isPending}
-											onClick={() => requestDelete(record)}
-										>
-											{m.delete_record()}
-										</Button>
-									}
+									actions={deleteAction}
 								/>
 							) : null}
 						</>

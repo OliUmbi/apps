@@ -43,6 +43,7 @@ export function ArchiveAction({
 	return (
 		<>
 			<Button
+				type="button"
 				variant="danger"
 				disabled={mutation.isPending}
 				onClick={() => {

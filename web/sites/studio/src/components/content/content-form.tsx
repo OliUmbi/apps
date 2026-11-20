@@ -29,6 +29,8 @@ export function ContentForm<Row, Input>({
 	error,
 	conflict,
 	saved,
+	sideActions,
+	dangerActions,
 	onSave,
 	onReload,
 	onClose,
@@ -39,6 +41,8 @@ export function ContentForm<Row, Input>({
 	error: boolean;
 	conflict: boolean;
 	saved: boolean;
+	sideActions?: ReactNode;
+	dangerActions?: ReactNode;
 	onSave: (values: Input) => void;
 	onReload: () => void;
 	onClose: () => void;
@@ -130,6 +134,16 @@ export function ContentForm<Row, Input>({
 					<Button type="button" disabled={busy} onClick={requestClose}>
 						{m.cancel()}
 					</Button>
+					{sideActions ? (
+						<div className="grid gap-2 border-t border-line-subtle pt-3">
+							{sideActions}
+						</div>
+					) : null}
+					{dangerActions ? (
+						<div className="grid gap-2 border-t border-danger/30 pt-3">
+							{dangerActions}
+						</div>
+					) : null}
 				</FormActions>
 			</Form>
 			<DiscardChangesDialog

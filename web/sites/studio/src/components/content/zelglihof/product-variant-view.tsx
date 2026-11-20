@@ -78,7 +78,7 @@ function productVariantCollection(
 				render: (record) => formatTimestamp(record.archivedAt),
 			},
 		],
-		renderActions: (record) => (
+		renderSideActions: (record) => (
 			<ArchiveAction
 				collection="zelglihof.product_variant"
 				archivedAt={record.archivedAt}

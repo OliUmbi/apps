@@ -23,6 +23,7 @@ import { CheckboxField } from "../editor-controls";
 import { ImageField } from "../image-field";
 import { MarkdownField } from "../markdown-field";
 import { PageCollection } from "../page-collection";
+import { PublicSiteLink } from "../public-site-link";
 import { ProductReservationsRelated } from "./product-reservation-view";
 import { ProductVariantsRelated } from "./product-variant-view";
 
@@ -86,17 +87,26 @@ export function ProductsView() {
 					render: (record) => formatTimestamp(record.archivedAt),
 				},
 			]}
-			renderActions={(record) => (
-				<ArchiveAction
-					collection="zelglihof.product"
-					archivedAt={record.archivedAt}
-					archivedBy={record.archivedBy}
-					onArchive={() =>
-						archiveProduct({
-							data: { key: { id: record.id }, updatedAt: record.updatedAt },
-						})
-					}
-				/>
+			renderSideActions={(record) => (
+				<div className="grid gap-2">
+					{record.visible && !record.archivedAt ? (
+						<PublicSiteLink
+							site="zelglihof"
+							path={`/produkte/${record.id}`}
+							label={m.studio_view_on_website()}
+						/>
+					) : null}
+					<ArchiveAction
+						collection="zelglihof.product"
+						archivedAt={record.archivedAt}
+						archivedBy={record.archivedBy}
+						onArchive={() =>
+							archiveProduct({
+								data: { key: { id: record.id }, updatedAt: record.updatedAt },
+							})
+						}
+					/>
+				</div>
 			)}
 			renderRelated={(record) => (
 				<div className="grid gap-4">

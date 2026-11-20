@@ -46,6 +46,7 @@ export function CampaignSend({ id }: { id: string }) {
 	return (
 		<>
 			<Button
+				type="button"
 				variant="primary"
 				onClick={() => {
 					mutation.reset();

@@ -29,8 +29,9 @@ export function RelatedCollection<Row, Input = never>(
 						record: props.loadRecord ? undefined : record,
 					}),
 			}}
+			className="border-t border-line-subtle pt-8"
 			renderHeader={(title, actions) => (
-				<header className="flex items-center justify-between gap-4">
+				<header className="flex flex-wrap items-center justify-between gap-4 border-b border-line-subtle pb-4">
 					<Title as="h3" size="sm">
 						{title}
 					</Title>
