@@ -282,8 +282,9 @@ surfaces; `2026.11.18-test.4` aligned the browser chrome;
 - [x] Zelglihof article galleries sit above the body; image descriptions are
   used as alt text only, not printed as captions.
 - [x] The Zelglihof footer no longer leaves a light gap after the newsletter.
-- [ ] [verify] Confirm the Studio and article fixes on the test host after the
-  next tag.
+- [x] Confirmed on `2026.11.20-test.1`: a fresh content upload was public
+  (`public = true`, public URL 200) and the test asset was removed afterwards.
+  `2026.11.20-test.2` lets a single article gallery image span the full width.
 
 ## First go-live review (2026-11)
 
