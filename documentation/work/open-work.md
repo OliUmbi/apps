@@ -276,8 +276,12 @@ surfaces; `2026.11.18-test.4` aligned the browser chrome;
 - [x] Archive, delete, campaign-send and public-review actions sit in the sticky
   detail rail instead of full-width rows below the form.
 - [x] Related collections have a top rule, a header rule and more room, so
-  variants and reservations no longer run into the product form. Product
-  variants no longer show a search field.
+  variants and reservations no longer run into the product form. Search is a
+  page-list affordance only: related and scoped collections omit it, and the
+  short Jublawoma member/event/promotion/donation and Zelglihof promotion
+  lists opt out as well.
+- [x] Zelglihof products sold over the farm-shop counter show "Im Hofladen"
+  instead of the reservation confirmation note; reservable products keep it.
 - [x] Form rows use 1.25rem spacing instead of 2rem, so related inputs read as
   groups.
 - [x] Public-site links resolve the test host's `sslip.io` subdomains and use
@@ -290,7 +294,8 @@ surfaces; `2026.11.18-test.4` aligned the browser chrome;
   (`public = true`, public URL 200) and the test asset was removed afterwards.
   `2026.11.20-test.2` lets a single article gallery image span the full width;
   `2026.11.20-test.3` places the gallery beside the body and removes the
-  variants search.
+  variants search; `2026.11.20-test.4` trims search to page lists and splits
+  the farm-shop product fact from the reservation note.
 
 ## First go-live review (2026-11)
 
