@@ -62,6 +62,7 @@ export interface CollectionProps<Row, Input = never>
 	renderRelated?: (record: Row) => ReactNode;
 	introduction?: ReactNode;
 	className?: string;
+	searchable?: boolean;
 }
 
 // The adapters own the context around the collection: where the selection
@@ -89,6 +90,7 @@ export function Collection<Row, Input = never>({
 	renderRelated,
 	introduction,
 	className,
+	searchable = true,
 	navigation,
 	search,
 	onSearchChange,
@@ -207,6 +209,7 @@ export function Collection<Row, Input = never>({
 					query={query}
 					search={search}
 					onSearchChange={onSearchChange}
+					searchable={searchable}
 					columns={columns}
 					rowKey={rowKey}
 					onOpen={open}

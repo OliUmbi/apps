@@ -32,7 +32,7 @@ export function FormFields({
 	return (
 		<fieldset
 			disabled={disabled}
-			className="grid w-full min-w-0 flex-1 content-start gap-8 py-2"
+			className="grid w-full min-w-0 flex-1 content-start gap-5 py-2"
 		>
 			{children}
 		</fieldset>

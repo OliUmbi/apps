@@ -14,6 +14,7 @@ export function CollectionList<Row>({
 	query,
 	search,
 	onSearchChange,
+	searchable = true,
 	columns,
 	rowKey,
 	onOpen,
@@ -22,6 +23,7 @@ export function CollectionList<Row>({
 	query: UseInfiniteQueryResult<InfiniteData<Page<Row>>>;
 	search: string;
 	onSearchChange: (search: string) => void;
+	searchable?: boolean;
 	columns: readonly ContentColumn<Row>[];
 	rowKey: (record: Row) => string;
 	onOpen: (record: Row) => void;
@@ -31,15 +33,17 @@ export function CollectionList<Row>({
 	return (
 		<>
 			{children}
-			<div className="max-w-sm">
-				<TextField
-					name="search"
-					label={m.search()}
-					value={search}
-					maxLength={limits.title}
-					onChange={(event) => onSearchChange(event.target.value)}
-				/>
-			</div>
+			{searchable ? (
+				<div className="max-w-sm">
+					<TextField
+						name="search"
+						label={m.search()}
+						value={search}
+						maxLength={limits.title}
+						onChange={(event) => onSearchChange(event.target.value)}
+					/>
+				</div>
+			) : null}
 			{query.isError ? <Alert>{m.error_generic()}</Alert> : null}
 			{query.isPending ? (
 				<p role="status">{m.loading()}</p>
