@@ -284,6 +284,11 @@ surfaces; `2026.11.18-test.4` aligned the browser chrome;
   instead of the reservation confirmation note; reservable products keep it.
 - [x] Form rows use 1.25rem spacing instead of 2rem, so related inputs read as
   groups.
+- [x] Zelglihof display headings balance their line lengths and prose avoids a
+  stranded last word; short card, lead and legal blocks balance explicitly, so
+  titles no longer end in a lone word and card descriptions no longer leave
+  widows. The product facts also stack on one column in the narrow buy panel
+  instead of wrapping each label onto two lines.
 - [x] Public-site links resolve the test host's `sslip.io` subdomains and use
   the production domains otherwise.
 - [x] Zelglihof article galleries sit beside the body, with the main image full
@@ -295,7 +300,9 @@ surfaces; `2026.11.18-test.4` aligned the browser chrome;
   `2026.11.20-test.2` lets a single article gallery image span the full width;
   `2026.11.20-test.3` places the gallery beside the body and removes the
   variants search; `2026.11.20-test.4` trims search to page lists and splits
-  the farm-shop product fact from the reservation note.
+  the farm-shop product fact from the reservation note; `2026.11.20-test.6`
+  through `.9` balance heading and short-copy wrapping and keep the product
+  facts on one column.
 
 ## First go-live review (2026-11)
 
