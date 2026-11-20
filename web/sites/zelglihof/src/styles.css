@@ -73,12 +73,19 @@ select {
 }
 
 /* German legal and page headings contain long compounds; never let a single
-   word widen the layout viewport on a phone. */
+   word widen the layout viewport on a phone. Headings also balance their line
+   lengths so a two-line title does not end in a lone word ("Was auf dem Hof /
+   läuft."), and prose keeps the last line from stranding an orphan. */
 h1,
 h2,
 h3 {
 	overflow-wrap: break-word;
 	hyphens: auto;
+	text-wrap: balance;
+}
+
+p {
+	text-wrap: pretty;
 }
 button,
 a {

@@ -12,7 +12,7 @@ export function ShopIntroduction() {
 				</h1>
 			</div>
 			<div className="md:pb-2 md:pl-16">
-				<p className="max-w-xl text-xl leading-relaxed text-ink/65">
+				<p className="max-w-xl text-balance text-xl leading-relaxed text-ink/65">
 					{m.zelglihof_shop_description()}
 				</p>
 				<div className="mt-7 flex flex-wrap gap-5 text-sm font-semibold">

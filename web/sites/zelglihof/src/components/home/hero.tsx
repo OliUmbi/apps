@@ -26,7 +26,7 @@ export function Hero({
 							{m.zelglihof_home_hero_title_accent()}
 						</span>
 					</h1>
-					<p className="mt-7 max-w-md text-base leading-relaxed text-cream/82 md:text-lg">
+					<p className="mt-7 max-w-md text-balance text-base leading-relaxed text-cream/82 md:text-lg">
 						{m.zelglihof_home_hero_description()}
 					</p>
 					<div className="mt-8 flex flex-wrap gap-3">
