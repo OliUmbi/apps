@@ -34,24 +34,20 @@ export function UpdateArticle({ update }: { update: Update }) {
 					className="max-h-[44rem] w-full rounded-[2rem] object-cover"
 				/>
 			</div>
-			{update.images.length > 0 && (
-				<div
-					className={`shell grid gap-6 pt-10 ${
-						update.images.length > 1 ? "md:grid-cols-2" : ""
-					}`}
-				>
-					{update.images.map((image) => (
-						<figure key={image.id}>
-							<AssetImage
-								src={image.src}
-								alt={image.description}
-								className="w-full rounded-3xl"
-							/>
-						</figure>
-					))}
-				</div>
-			)}
 			<div className="shell grid gap-10 py-16 md:grid-cols-[0.7fr_1.3fr] md:py-24">
+				{update.images.length > 0 && (
+					<div className="grid content-start gap-6">
+						{update.images.map((image) => (
+							<figure key={image.id}>
+								<AssetImage
+									src={image.src}
+									alt={image.description}
+									className="w-full rounded-3xl"
+								/>
+							</figure>
+						))}
+					</div>
+				)}
 				<div className="max-w-2xl text-lg leading-relaxed text-ink/70 md:col-start-2">
 					<SimpleMarkdown value={update.body} className="farm-markdown" />
 					<div className="mt-12 rounded-[1.75rem] bg-sage/45 p-8 md:p-10">
