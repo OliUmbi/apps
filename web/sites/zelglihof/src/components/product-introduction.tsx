@@ -49,24 +49,28 @@ export function ProductIntroduction({ product }: { product: Product }) {
 							/>
 						</div>
 					</div>
-					<div className="mt-12 grid gap-4 border-t border-forest/12 pt-7 text-sm font-semibold sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+					<div className="mt-12 grid gap-4 border-t border-forest/12 pt-7 text-sm font-semibold sm:grid-cols-3 lg:grid-cols-1">
 						<span className="flex items-center gap-2">
 							<PackageCheck
 								size={19}
-								className="text-clay"
+								className="shrink-0 text-clay"
 								aria-hidden="true"
 							/>
 							{m.zelglihof_product_direct_sales()}
 						</span>
 						<span className="flex items-center gap-2">
-							<MapPin size={19} className="text-clay" aria-hidden="true" />
+							<MapPin
+								size={19}
+								className="shrink-0 text-clay"
+								aria-hidden="true"
+							/>
 							{m.zelglihof_product_farm_pickup()}
 						</span>
 						{product.availability.state === "farm-shop" ? (
 							<span className="flex items-center gap-2">
 								<ShoppingBasket
 									size={19}
-									className="text-clay"
+									className="shrink-0 text-clay"
 									aria-hidden="true"
 								/>
 								{m.zelglihof_availability_farm_shop()}
@@ -75,7 +79,7 @@ export function ProductIntroduction({ product }: { product: Product }) {
 							<span className="flex items-center gap-2">
 								<CalendarDays
 									size={19}
-									className="text-clay"
+									className="shrink-0 text-clay"
 									aria-hidden="true"
 								/>
 								{m.zelglihof_product_confirmation_required()}
