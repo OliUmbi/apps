@@ -304,7 +304,7 @@ function CropTile({ crop }: { crop: Crop }) {
 					<h3 className="font-serif font-bold leading-[1.04] tracking-[-0.035em] text-2xl text-cream">
 						{crop.name}
 					</h3>
-					<p className="mt-2 max-w-md text-sm leading-relaxed text-cream/90">
+					<p className="mt-2 max-w-md text-balance text-sm leading-relaxed text-cream/90">
 						{crop.body}
 					</p>
 					{images.length > 1 && (
@@ -345,7 +345,9 @@ function CropTile({ crop }: { crop: Crop }) {
 				<h3 className="font-serif font-bold leading-[1.04] tracking-[-0.035em] text-2xl">
 					{crop.name}
 				</h3>
-				<p className="mt-2 text-sm leading-relaxed opacity-90">{crop.body}</p>
+				<p className="mt-2 text-balance text-sm leading-relaxed opacity-90">
+					{crop.body}
+				</p>
 			</div>
 		</article>
 	);

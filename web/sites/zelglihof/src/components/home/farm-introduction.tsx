@@ -36,7 +36,7 @@ export function FarmIntroduction() {
 					<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-6 text-4xl md:text-5xl">
 						{m.zelglihof_home_farm_title()}
 					</h2>
-					<p className="mt-6 text-lg leading-relaxed text-ink/70">
+					<p className="mt-6 text-balance text-lg leading-relaxed text-ink/70">
 						{m.zelglihof_home_farm_body()}
 					</p>
 				</div>

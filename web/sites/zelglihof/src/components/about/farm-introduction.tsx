@@ -8,7 +8,7 @@ export function FarmIntroduction() {
 				<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] text-5xl md:text-7xl">
 					{m.zelglihof_farm_title()}
 				</h1>
-				<p className="max-w-xl text-xl leading-relaxed text-ink/70">
+				<p className="max-w-xl text-balance text-xl leading-relaxed text-ink/70">
 					{m.zelglihof_farm_description()}
 				</p>
 			</div>

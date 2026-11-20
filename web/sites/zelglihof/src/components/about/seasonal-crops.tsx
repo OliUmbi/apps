@@ -34,7 +34,7 @@ export function SeasonalCrops() {
 						</h2>
 					</div>
 					<div>
-						<p className="font-serif text-[clamp(1.35rem,2.5vw,2.05rem)] leading-[1.3] tracking-[-0.025em] text-ink/70">
+						<p className="text-balance font-serif text-[clamp(1.35rem,2.5vw,2.05rem)] leading-[1.3] tracking-[-0.025em] text-ink/70">
 							{m.zelglihof_farm_crops_body()}
 						</p>
 						<div className="mt-9 flex flex-wrap gap-3">
