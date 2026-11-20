@@ -158,7 +158,7 @@ function FieldBanner() {
 				<p className="font-serif text-3xl font-bold md:text-4xl">
 					{m.zelglihof_crops_field_name()}
 				</p>
-				<p className="mt-2 max-w-xl text-sm leading-relaxed text-cream/80">
+				<p className="mt-2 max-w-xl text-balance text-sm leading-relaxed text-cream/80">
 					{m.zelglihof_crops_field_body()}
 				</p>
 			</figcaption>
@@ -197,7 +197,7 @@ function CropProcess() {
 				<h2 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] text-4xl md:text-5xl">
 					{m.zelglihof_crops_gallery_title()}
 				</h2>
-				<p className="max-w-xl text-lg leading-relaxed text-ink/65">
+				<p className="max-w-xl text-balance text-lg leading-relaxed text-ink/65">
 					{m.zelglihof_crops_gallery_body()}
 				</p>
 			</div>

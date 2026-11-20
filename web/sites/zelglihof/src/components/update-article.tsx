@@ -23,7 +23,7 @@ export function UpdateArticle({ update }: { update: Update }) {
 				<h1 className="font-serif font-bold leading-[0.96] tracking-[-0.045em] mt-5 max-w-5xl text-5xl md:text-7xl">
 					{update.title}
 				</h1>
-				<p className="mt-8 max-w-2xl text-xl leading-relaxed text-ink/70">
+				<p className="mt-8 max-w-2xl text-balance text-xl leading-relaxed text-ink/70">
 					{update.description}
 				</p>
 			</header>
@@ -57,7 +57,7 @@ export function UpdateArticle({ update }: { update: Update }) {
 						<h2 className="mt-5 font-serif text-4xl font-bold">
 							{m.zelglihof_article_newsletter_title()}
 						</h2>
-						<p className="mt-4 text-base leading-relaxed text-ink/70">
+						<p className="mt-4 text-balance text-base leading-relaxed text-ink/70">
 							{m.zelglihof_article_newsletter_body()}
 						</p>
 					</div>

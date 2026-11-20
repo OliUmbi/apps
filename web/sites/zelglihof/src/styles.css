@@ -316,6 +316,7 @@ a {
 }
 .product-markdown p {
 	margin: 0 0 1rem;
+	text-wrap: balance;
 }
 .product-markdown ul {
 	margin: 0 0 1rem;
