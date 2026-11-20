@@ -269,6 +269,22 @@ surfaces; `2026.11.18-test.4` aligned the browser chrome;
   ordered-list markers before publishing; the new dialect shows them literally.
   The current test host has no such content.
 
+## Studio feedback (2026-11-20)
+
+- [x] Images uploaded from a content form are public immediately; the
+  standalone Images view keeps its explicit publish step.
+- [x] Archive, delete, campaign-send and public-review actions sit in the sticky
+  detail rail instead of full-width rows below the form.
+- [x] Related collections have a top rule, a header rule and more room, so
+  variants and reservations no longer run into the product form.
+- [x] Public-site links resolve the test host's `sslip.io` subdomains and use
+  the production domains otherwise.
+- [x] Zelglihof article galleries sit above the body; image descriptions are
+  used as alt text only, not printed as captions.
+- [x] The Zelglihof footer no longer leaves a light gap after the newsletter.
+- [ ] [verify] Confirm the Studio and article fixes on the test host after the
+  next tag.
+
 ## First go-live review (2026-11)
 
 Evidence: [first go-live review](../history/go-live-review-2026-11.md).
