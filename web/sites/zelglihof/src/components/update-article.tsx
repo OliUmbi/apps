@@ -35,7 +35,11 @@ export function UpdateArticle({ update }: { update: Update }) {
 				/>
 			</div>
 			{update.images.length > 0 && (
-				<div className="shell grid gap-6 pt-10 md:grid-cols-2">
+				<div
+					className={`shell grid gap-6 pt-10 ${
+						update.images.length > 1 ? "md:grid-cols-2" : ""
+					}`}
+				>
 					{update.images.map((image) => (
 						<figure key={image.id}>
 							<AssetImage
