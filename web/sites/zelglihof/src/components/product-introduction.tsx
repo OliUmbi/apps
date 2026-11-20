@@ -1,7 +1,13 @@
 import { m } from "@oliumbi/i18n/messages";
 import { SimpleMarkdown } from "@oliumbi/ui/simple-markdown";
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, CalendarDays, MapPin, PackageCheck } from "lucide-react";
+import {
+	ArrowLeft,
+	CalendarDays,
+	MapPin,
+	PackageCheck,
+	ShoppingBasket,
+} from "lucide-react";
 import { availabilityLabel } from "../model/availability";
 import type { Product } from "../model/content";
 import { AssetImage } from "./asset-image";
@@ -56,14 +62,25 @@ export function ProductIntroduction({ product }: { product: Product }) {
 							<MapPin size={19} className="text-clay" aria-hidden="true" />
 							{m.zelglihof_product_farm_pickup()}
 						</span>
-						<span className="flex items-center gap-2">
-							<CalendarDays
-								size={19}
-								className="text-clay"
-								aria-hidden="true"
-							/>
-							{m.zelglihof_product_confirmation_required()}
-						</span>
+						{product.availability.state === "farm-shop" ? (
+							<span className="flex items-center gap-2">
+								<ShoppingBasket
+									size={19}
+									className="text-clay"
+									aria-hidden="true"
+								/>
+								{m.zelglihof_availability_farm_shop()}
+							</span>
+						) : (
+							<span className="flex items-center gap-2">
+								<CalendarDays
+									size={19}
+									className="text-clay"
+									aria-hidden="true"
+								/>
+								{m.zelglihof_product_confirmation_required()}
+							</span>
+						)}
 					</div>
 				</div>
 			</div>
