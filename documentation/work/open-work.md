@@ -276,15 +276,21 @@ surfaces; `2026.11.18-test.4` aligned the browser chrome;
 - [x] Archive, delete, campaign-send and public-review actions sit in the sticky
   detail rail instead of full-width rows below the form.
 - [x] Related collections have a top rule, a header rule and more room, so
-  variants and reservations no longer run into the product form.
+  variants and reservations no longer run into the product form. Product
+  variants no longer show a search field.
+- [x] Form rows use 1.25rem spacing instead of 2rem, so related inputs read as
+  groups.
 - [x] Public-site links resolve the test host's `sslip.io` subdomains and use
   the production domains otherwise.
-- [x] Zelglihof article galleries sit above the body; image descriptions are
-  used as alt text only, not printed as captions.
+- [x] Zelglihof article galleries sit beside the body, with the main image full
+  width above; image descriptions are used as alt text only, not printed as
+  captions.
 - [x] The Zelglihof footer no longer leaves a light gap after the newsletter.
 - [x] Confirmed on `2026.11.20-test.1`: a fresh content upload was public
   (`public = true`, public URL 200) and the test asset was removed afterwards.
-  `2026.11.20-test.2` lets a single article gallery image span the full width.
+  `2026.11.20-test.2` lets a single article gallery image span the full width;
+  `2026.11.20-test.3` places the gallery beside the body and removes the
+  variants search.
 
 ## First go-live review (2026-11)
 
