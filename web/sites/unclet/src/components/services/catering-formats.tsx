@@ -7,6 +7,7 @@ export function CateringFormats() {
 		m.unclet_services_format_private_dinner(),
 		m.unclet_services_format_birthdays(),
 		m.unclet_services_format_weddings(),
+		m.unclet_services_format_funerals(),
 		m.unclet_services_format_corporate(),
 		m.unclet_services_format_buffets(),
 		m.unclet_services_format_fire(),
@@ -23,10 +24,14 @@ export function CateringFormats() {
 					</h2>
 				</div>
 				<div className="grid gap-px bg-night/15 sm:grid-cols-2">
-					{formats.map((item) => (
+					{formats.map((item, index) => (
 						<div
 							key={item}
-							className="flex items-center gap-3 bg-paper p-6 text-lg"
+							className={`flex items-center gap-3 bg-paper p-6 text-lg ${
+								index === formats.length - 1 && formats.length % 2 === 1
+									? "sm:col-span-2"
+									: ""
+							}`}
 						>
 							<Check
 								size={18}
