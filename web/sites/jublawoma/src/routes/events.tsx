@@ -26,6 +26,7 @@ function EventsPage() {
 				initialPage={initialPage}
 				load={(page) => getEventPage({ data: { page } })}
 				containerClassName="shell"
+				emptyState={<p className="shell pt-8 pb-24">{m.empty()}</p>}
 			>
 				{(events) => <EventsList events={events} />}
 			</PaginatedList>
