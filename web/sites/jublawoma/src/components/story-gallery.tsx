@@ -4,16 +4,17 @@ import { MediaImage } from "./media-image";
 export function StoryGallery({ images }: { images: ContentImage[] }) {
 	if (!images.length) return null;
 	return (
-		<section className="shell media-gallery">
+		<div className="grid content-start gap-5">
 			{images.map((image) => (
 				<MediaImage
 					key={image.id}
 					src={image.src}
 					alt={image.alt}
 					seed={image.id}
-					sizes="(min-width: 850px) 50vw, 100vw"
+					className="aspect-[4/3] w-full object-cover"
+					sizes="(min-width: 1024px) 58vw, 100vw"
 				/>
 			))}
-		</section>
+		</div>
 	);
 }

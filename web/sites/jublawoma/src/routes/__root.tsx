@@ -13,9 +13,17 @@ import { Footer } from "../components/footer";
 import { Header } from "../components/header";
 import { NotFound } from "../components/not-found";
 import { SiteSeo } from "../components/site-seo";
+import { hasCurrentDonation } from "../data/donations";
 import "../styles.css";
 
 export const Route = createRootRoute({
+	loader: async () => {
+		// One cheap existence check decides whether the donations tab belongs in
+		// the navigation. A failed check keeps the tab: hiding a real campaign is
+		// worse than linking to an empty page.
+		const hasDonations = await hasCurrentDonation().catch(() => true);
+		return { hasDonations };
+	},
 	head: () => ({
 		meta: [
 			{ charSet: "utf-8" },
@@ -45,10 +53,21 @@ export const Route = createRootRoute({
 
 function RootComponent() {
 	usePageView();
+	const { hasDonations } = Route.useLoaderData();
 	return (
 		<QueryProvider>
 			<SiteSeo />
-			<Outlet />
+			<a
+				className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-black focus:px-4 focus:py-2 focus:text-white"
+				href="#main"
+			>
+				{m.skip_to_content()}
+			</a>
+			<Header hasDonations={hasDonations} />
+			<main id="main" tabIndex={-1}>
+				<Outlet />
+			</main>
+			<Footer />
 		</QueryProvider>
 	);
 }
@@ -60,17 +79,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 				<HeadContent />
 			</head>
 			<body>
-				<a
-					className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-black focus:px-4 focus:py-2 focus:text-white"
-					href="#main"
-				>
-					{m.skip_to_content()}
-				</a>
-				<Header />
-				<main id="main" tabIndex={-1}>
-					{children}
-				</main>
-				<Footer />
+				{children}
 				<Scripts />
 			</body>
 		</html>

@@ -32,13 +32,20 @@ export const Route = createFileRoute("/stories/$slug")({
 
 function StoryDetail() {
 	const story = Route.useLoaderData();
+	const hasGallery = story.gallery.length > 0;
 	return (
 		<article>
 			<StoryIntroduction story={story} />
-			<section className="shell max-w-[780px] py-20">
-				<MarkdownContent value={story.body} />
-			</section>
-			<StoryGallery images={story.gallery} />
+			<div
+				className={`shell grid gap-10 py-16 md:py-20 ${
+					hasGallery ? "lg:grid-cols-[0.72fr_1.28fr] lg:gap-16" : ""
+				}`}
+			>
+				<section className={hasGallery ? "max-w-[36rem]" : "max-w-[46rem]"}>
+					<MarkdownContent value={story.body} />
+				</section>
+				{hasGallery ? <StoryGallery images={story.gallery} /> : null}
+			</div>
 		</article>
 	);
 }

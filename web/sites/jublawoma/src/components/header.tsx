@@ -13,8 +13,11 @@ const links = [
 	{ to: "/join", label: m.jublawoma_navigation_join },
 ] as const;
 
-export function Header() {
+export function Header({ hasDonations }: { hasDonations: boolean }) {
 	const [open, setOpen] = useState(false);
+	const visibleLinks = hasDonations
+		? links
+		: links.filter((item) => item.to !== "/donations");
 	return (
 		<header className="site-header">
 			<Link to="/" className="brand" onClick={() => setOpen(false)}>
@@ -49,7 +52,7 @@ export function Header() {
 							</Dialog.Close>
 						</div>
 						<nav className="grid gap-3 py-4" aria-label={m.mobile_navigation()}>
-							{links.map((item) => (
+							{visibleLinks.map((item) => (
 								<Link
 									key={item.to}
 									to={item.to}
@@ -72,7 +75,7 @@ export function Header() {
 				</Dialog.Portal>
 			</Dialog.Root>
 			<nav className="site-nav" aria-label={m.main_navigation()}>
-				{links.map((item) => (
+				{visibleLinks.map((item) => (
 					<Link
 						key={item.to}
 						to={item.to}
