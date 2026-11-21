@@ -306,6 +306,8 @@ surfaces; `2026.11.18-test.4` aligned the browser chrome;
 
 ## Site feedback round (2026-11-21)
 
+`2026.11.21-test.3` carries the roster, donations-tab and story-layout round.
+
 - [x] Uncle-T: "selbständig" corrected to "selbstständig"; "Abdankungen &
   Trauerfeiern" added to the catering formats because families search for it.
   The odd seventh format spans the full last row.
@@ -314,6 +316,16 @@ surfaces; `2026.11.18-test.4` aligned the browser chrome;
   nav CTA and primary buttons carry the red, and the About partner band is a
   light band with five clean cards instead of a green band with an empty sixth
   cell.
+- [x] Jublawoma: the Spenden tab only appears while a donation campaign is
+  active. The root loader runs one existence check; a failed check keeps the tab
+  rather than hiding a real campaign.
+- [x] Jublawoma: the About roster is a compact directory that shows twelve
+  members and expands to the full list on request, so a roster of up to fifty
+  no longer produces an endless photo wall. Verified with eighteen seeded
+  members (twelve collapsed, eighteen expanded) and cleaned up afterwards.
+- [x] Jublawoma: story pages left-align the title and lead, and put the gallery
+  beside the body in the wider column so the photos carry the page; the
+  Instagram button on the stories intro no longer touches the paragraph.
 - [ ] [owner] Jublawoma: decide between keeping the custom site and moving to
   the jubla.ch WordPress template; the 2026-11-21 direction is to keep the
   custom site and fix the brand fit.
