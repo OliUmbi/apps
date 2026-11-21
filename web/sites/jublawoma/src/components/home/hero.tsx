@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 
 export function Hero() {
 	return (
-		<section className="overflow-hidden bg-oat text-bark">
+		<section className="overflow-hidden bg-paper text-ink">
 			<div className="shell grid min-h-[680px] items-center gap-10 py-16 lg:grid-cols-[1.1fr_.9fr]">
 				<div>
 					<p className="kicker">{m.jublawoma_home_hero_eyebrow()}</p>
@@ -12,11 +12,11 @@ export function Hero() {
 						{m.jublawoma_home_hero_title_start()}
 						<br />
 						{m.jublawoma_home_hero_title_line()}{" "}
-						<em className="font-serif font-normal text-moss">
+						<em className="font-serif font-normal text-accent">
 							{m.jublawoma_home_hero_title_emphasis()}
 						</em>
 					</h1>
-					<p className="max-w-2xl text-lg leading-relaxed text-bark-soft">
+					<p className="max-w-2xl text-lg leading-relaxed text-ink-soft">
 						{m.jublawoma_home_hero_description()}
 					</p>
 					<div className="mt-8 flex flex-wrap items-center gap-6">
@@ -30,9 +30,9 @@ export function Hero() {
 					</div>
 				</div>
 				<div className="relative min-h-[360px] self-stretch">
-					<div className="absolute top-[12%] right-[5%] aspect-square w-4/5 rotate-[-9deg] rounded-[48%_52%_65%_35%/60%_42%_58%_40%] bg-sage/70" />
+					<div className="absolute top-[12%] right-[5%] aspect-square w-4/5 rotate-[-9deg] rounded-[48%_52%_65%_35%/60%_42%_58%_40%] bg-accent-soft" />
 					<img
-						className="absolute inset-0 z-10 h-full w-full object-contain saturate-50"
+						className="absolute inset-0 z-10 h-full w-full object-contain"
 						src="/images/doodles/swinging.svg"
 						alt={m.jublawoma_home_hero_art_alt()}
 						fetchPriority="high"

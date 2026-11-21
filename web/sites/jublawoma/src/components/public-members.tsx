@@ -32,7 +32,7 @@ function Leadership({ members }: { members: PublicMember[] | null }) {
 	if (!members.length) return null;
 
 	return (
-		<div className="mb-16 border-y border-bark/15 py-10 md:grid md:grid-cols-[1fr_2fr] md:gap-10">
+		<div className="mb-16 border-y border-ink/15 py-10 md:grid md:grid-cols-[1fr_2fr] md:gap-10">
 			<div>
 				<p className="kicker">{m.jublawoma_leadership_eyebrow()}</p>
 				<h2 className="mt-3 text-4xl font-bold">

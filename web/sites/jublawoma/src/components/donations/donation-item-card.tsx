@@ -36,7 +36,7 @@ export function DonationItemCard({
 						: m.jublawoma_donation_choose()}
 				</button>
 			) : (
-				<p className="rounded-2xl bg-sage p-6 leading-[1.6]">
+				<p className="rounded-2xl bg-mist p-6 leading-[1.6]">
 					{m.jublawoma_donation_complete()}
 				</p>
 			)}

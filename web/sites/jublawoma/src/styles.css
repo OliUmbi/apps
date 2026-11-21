@@ -2,27 +2,28 @@
 @source "../../../packages/ui/src";
 
 @theme {
-	--color-bark: #343d30;
-	--color-bark-soft: #5f6255;
-	--color-moss: #64714e;
-	--color-honey: #e3d4af;
-	--color-sage: #d0d8c3;
-	--color-oat: #f5f0e6;
-	--color-oat-soft: #d5cbb9;
-	--color-sand: #e6ded2;
-	--color-line: #d9d1c5;
-	--color-danger: #b91c1c;
-	--color-success: #64714e;
+	/* Brand palette: white paper, near-black ink and the flyer red. */
+	--color-ink: #1c1b1a;
+	--color-ink-soft: #57534e;
+	--color-accent: #a93343;
+	--color-accent-dark: #8c2735;
+	--color-accent-soft: #f4e3e6;
+	--color-paper: #ffffff;
+	--color-mist: #f4f1ed;
+	--color-sand: #ece7e1;
+	--color-line: #e4dfd9;
+	--color-danger: #b3261e;
+	--color-success: #2f6b46;
 	--font-sans: Inter, "Segoe UI", sans-serif;
 	--font-serif: Georgia, serif;
 	--radius-pill: 999px;
-	--shadow-hover: 0 24px 70px rgb(52 61 48 / 12%);
+	--shadow-hover: 0 24px 70px rgb(28 27 26 / 12%);
 }
 
 /* Base element styles: not expressible as utilities. */
 :root {
-	color: var(--color-bark);
-	background: var(--color-oat);
+	color: var(--color-ink);
+	background: var(--color-paper);
 	font-family: var(--font-sans);
 	font-synthesis: none;
 }
@@ -46,24 +47,15 @@ input {
 	}
 }
 /*
- * Two-tone focus ring: a 3px oat outline carries on dark surfaces (9.96:1 on
- * bark, 4.61:1 on moss) and a 3px bark halo carries on light ones (9.96:1 on
- * oat, 11.31:1 on white). `main` is programmatically focused by the skip link
- * and must not paint a full-page ring.
+ * Two-tone focus ring: a 3px paper outline carries on dark surfaces (17:1 on
+ * ink, 6.5:1 on accent) and a 3px ink halo carries on light ones (17:1 on
+ * paper). `main` is programmatically focused by the skip link and must not
+ * paint a full-page ring.
  */
 :where(a, button, input, select, textarea, [tabindex]):not(main):focus-visible {
-	outline: 3px solid var(--color-oat);
+	outline: 3px solid var(--color-paper);
 	outline-offset: 3px;
-	box-shadow: 0 0 0 6px var(--color-bark);
-}
-/*
- * Partner cards share a hairline grid inside a rounded `overflow-hidden`
- * container, so an outside ring is clipped and covered by the next card.
- * Draw theirs inside the moss surface instead (oat on moss: 4.61:1).
- */
-.partner-grid > a:focus-visible {
-	outline-offset: -3px;
-	box-shadow: none;
+	box-shadow: 0 0 0 6px var(--color-ink);
 }
 img {
 	display: block;
@@ -80,7 +72,7 @@ h3 {
 }
 ::selection {
 	color: white;
-	background: var(--color-moss);
+	background: var(--color-accent);
 }
 
 /*
@@ -121,17 +113,17 @@ h3 {
 }
 .kicker {
 	margin: 0;
-	color: var(--color-moss);
+	color: var(--color-accent);
 	font-size: 0.72rem;
 	font-weight: 800;
 	letter-spacing: 0.14em;
 	text-transform: uppercase;
 }
 .kicker.light {
-	color: var(--color-oat);
+	color: var(--color-paper);
 }
 .site-header {
-	@apply border-b border-bark/15 bg-oat text-bark;
+	@apply border-b border-ink/15 bg-paper text-ink;
 	position: sticky;
 	top: 0;
 	z-index: 50;
@@ -162,7 +154,7 @@ h3 {
 }
 .brand small {
 	margin-top: 2px;
-	@apply text-bark-soft;
+	@apply text-ink-soft;
 	font-size: 0.62rem;
 	text-transform: uppercase;
 	letter-spacing: 0.08em;
@@ -185,7 +177,7 @@ h3 {
 	height: 2px;
 	content: "";
 	transform: scaleX(0);
-	background: var(--color-moss);
+	background: var(--color-accent);
 	transition: transform 0.18s;
 }
 .site-nav > a:hover::after,
@@ -195,8 +187,12 @@ h3 {
 .nav-cta {
 	border-radius: var(--radius-pill);
 	padding: 0.72rem 1rem;
-	color: var(--color-bark);
-	background: var(--color-honey);
+	color: white;
+	background: var(--color-accent);
+	transition: background-color 180ms ease;
+}
+.nav-cta:hover {
+	background: var(--color-accent-dark);
 }
 .page-hero h1,
 .stories-page h1 {
@@ -220,12 +216,16 @@ h3 {
 	font-weight: 800;
 }
 .button.light {
-	color: var(--color-bark);
+	color: var(--color-ink);
 	background: white;
 }
 .button.dark {
 	color: white;
-	background: var(--color-bark);
+	background: var(--color-accent);
+	transition: background-color 180ms ease;
+}
+.button.dark:hover {
+	background: var(--color-accent-dark);
 }
 .button-row {
 	display: flex;
@@ -245,7 +245,7 @@ h3 {
 }
 .contact-card {
 	color: white;
-	background: var(--color-moss);
+	background: var(--color-accent);
 }
 .page-hero {
 	display: grid;
@@ -257,7 +257,7 @@ h3 {
 }
 .page-hero > div > p:not(.kicker) {
 	max-width: 620px;
-	color: var(--color-bark-soft);
+	color: var(--color-ink-soft);
 	font-size: 1.05rem;
 	line-height: 1.7;
 }
@@ -301,7 +301,7 @@ h3 {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
-	color: var(--color-bark-soft);
+	color: var(--color-ink-soft);
 }
 .split-body {
 	display: grid;
@@ -314,7 +314,7 @@ h3 {
 	font-size: 4.5rem;
 }
 .split-body p {
-	color: var(--color-bark-soft);
+	color: var(--color-ink-soft);
 	font-size: 1.05rem;
 	line-height: 1.75;
 }
@@ -344,7 +344,7 @@ h3 {
 }
 .stories-page > div > p:not(.kicker) {
 	max-width: 600px;
-	color: var(--color-bark-soft);
+	color: var(--color-ink-soft);
 	line-height: 1.75;
 }
 .story-art {
@@ -367,7 +367,7 @@ h3 {
 	place-items: center;
 	border-radius: 50%;
 	color: white;
-	background: var(--color-moss);
+	background: var(--color-accent);
 	font-size: 0.72rem;
 	font-weight: 900;
 	line-height: 1.4;
@@ -388,11 +388,11 @@ h3 {
 	margin: 3rem 0 1rem;
 }
 .legal p {
-	color: var(--color-bark-soft);
+	color: var(--color-ink-soft);
 	line-height: 1.8;
 }
 .legal a:not(.button) {
-	color: var(--color-moss);
+	color: var(--color-accent);
 	text-decoration: underline;
 }
 .status-page {
@@ -550,7 +550,7 @@ h3 {
 	border-radius: var(--radius-pill);
 	padding: 7px 10px;
 	color: white;
-	background: color-mix(in srgb, var(--color-bark) 82%, transparent);
+	background: color-mix(in srgb, var(--color-ink) 82%, transparent);
 	font-size: 0.62rem;
 	font-weight: 800;
 	letter-spacing: 0.06em;
@@ -588,7 +588,7 @@ h3 {
 	letter-spacing: -0.04em;
 }
 .story-grid article > p:last-child {
-	color: var(--color-bark-soft);
+	color: var(--color-ink-soft);
 	line-height: 1.6;
 }
 .honest-empty {
@@ -604,7 +604,7 @@ h3 {
 }
 /* biome-ignore lint/style/noDescendingSpecificity: This selector is unrelated to the earlier event-list rule. */
 .honest-empty p:last-child {
-	color: var(--color-bark-soft);
+	color: var(--color-ink-soft);
 }
 .story-detail-header h1 {
 	margin: 1rem 0;
@@ -621,7 +621,7 @@ h3 {
 .story-detail-header > p:last-child {
 	max-width: 700px;
 	margin: 1.5rem auto 0;
-	color: var(--color-bark-soft);
+	color: var(--color-ink-soft);
 	font-size: 1.1rem;
 	line-height: 1.7;
 }
@@ -637,7 +637,7 @@ h3 {
 	object-fit: cover;
 }
 .markdown-content {
-	color: var(--color-bark);
+	color: var(--color-ink);
 	font-size: 1.05rem;
 	line-height: 1.8;
 }
@@ -664,7 +664,7 @@ h3 {
 }
 .markdown-content blockquote {
 	margin: 2rem 0;
-	border-left: 3px solid var(--color-moss);
+	border-left: 3px solid var(--color-accent);
 	padding-left: 1.5rem;
 	font-family: var(--font-serif);
 	font-size: 1.25rem;
@@ -765,7 +765,7 @@ h3 {
 	gap: 0.7rem;
 }
 .donation-meta svg {
-	color: var(--color-moss);
+	color: var(--color-accent);
 }
 .donation-items-heading {
 	display: flex;
@@ -779,7 +779,7 @@ h3 {
 	border-radius: 50%;
 	padding: 0.8rem;
 	color: white;
-	background: var(--color-moss);
+	background: var(--color-accent);
 }
 .donation-items-heading h2 {
 	margin: 0.4rem 0 0;
@@ -795,7 +795,7 @@ h3 {
 	padding-block: 2rem;
 }
 .donation-item.is-selected {
-	border-color: var(--color-moss);
+	border-color: var(--color-accent);
 }
 .donation-item:last-child {
 	border-bottom: 1px solid var(--color-line);
@@ -806,7 +806,7 @@ h3 {
 	letter-spacing: -0.05em;
 }
 .donation-item-body > p {
-	color: var(--color-bark-soft);
+	color: var(--color-ink-soft);
 	line-height: 1.65;
 }
 .donation-progress {
@@ -820,16 +820,16 @@ h3 {
 	display: block;
 	height: 100%;
 	border-radius: inherit;
-	background: var(--color-moss);
+	background: var(--color-accent);
 }
 .donation-remaining strong {
-	color: var(--color-bark);
+	color: var(--color-ink);
 	font-size: 1.35rem;
 }
 .donation-action {
 	max-width: 46rem;
 	margin: 3rem auto 0;
-	border-top: 2px solid var(--color-moss);
+	border-top: 2px solid var(--color-accent);
 	padding-top: 2rem;
 }
 .donation-action h3 {

@@ -5,7 +5,7 @@ import { contactMailto, instagramUrl } from "../model/links";
 
 export function Footer() {
 	return (
-		<footer className="bg-bark py-20 text-oat-soft">
+		<footer className="bg-ink py-20 text-mist">
 			<div className="shell footer-grid">
 				<div>
 					<p className="mb-8 text-white text-2xl font-black tracking-[-0.04em]">

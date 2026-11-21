@@ -36,7 +36,7 @@ export function SubmissionControl<Input>({
 				max={numeric?.max}
 				step={numeric?.step}
 				defaultValue={numeric ? (numeric.min ?? 1) : undefined}
-				className="w-full rounded-lg border border-bark/20 bg-oat px-3 py-2 focus:outline-2 focus:outline-offset-2 disabled:opacity-50"
+				className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 focus:outline-2 focus:outline-offset-2 disabled:opacity-50"
 			/>
 			<Field.Error match={error !== undefined} className="text-danger">
 				{error ? validationMessage(error) : null}

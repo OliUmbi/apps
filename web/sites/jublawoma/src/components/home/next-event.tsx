@@ -6,23 +6,23 @@ import { formatEventDates } from "../../model/dates";
 
 export function NextEvent({ event }: { event: PublicEvent }) {
 	return (
-		<section className="border-b border-bark/15 bg-sage/40">
+		<section className="border-b border-ink/15 bg-mist">
 			<div className="shell grid min-h-28 items-center gap-5 py-6 md:grid-cols-[10rem_1fr_auto]">
 				<p className="kicker">{m.jublawoma_home_next_event_eyebrow()}</p>
 				<div className="flex flex-wrap items-center gap-x-8 gap-y-2">
 					<strong className="text-2xl">{event.title}</strong>
-					<span className="inline-flex items-center gap-2 text-sm text-bark-soft">
+					<span className="inline-flex items-center gap-2 text-sm text-ink-soft">
 						<CalendarDays size={15} aria-hidden="true" />
 						{formatEventDates(event.startsOn, event.endsOn)}
 					</span>
-					<span className="inline-flex items-center gap-2 text-sm text-bark-soft">
+					<span className="inline-flex items-center gap-2 text-sm text-ink-soft">
 						<MapPin size={15} aria-hidden="true" />
 						{event.location}
 					</span>
 				</div>
 				<Link
 					to="/events"
-					className="grid h-[52px] w-[52px] flex-none place-items-center rounded-full bg-moss text-white"
+					className="grid h-[52px] w-[52px] flex-none place-items-center rounded-full bg-accent text-white"
 					aria-label={m.jublawoma_home_next_event_action_label()}
 				>
 					<ArrowRight aria-hidden="true" />

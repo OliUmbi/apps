@@ -39,13 +39,13 @@ function partners() {
 
 export function PartnerOrganizations() {
 	return (
-		<section className="bg-moss text-oat py-20">
+		<section className="border-t border-line bg-mist py-20">
 			<div className="shell">
-				<p className="kicker light">{m.jublawoma_about_partners_title()}</p>
-				<div className="partner-grid mt-8 grid gap-px overflow-hidden rounded-3xl bg-white/20 sm:grid-cols-2 lg:grid-cols-3">
+				<p className="kicker">{m.jublawoma_about_partners_title()}</p>
+				<div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 					{partners().map((partner) => (
 						<a
-							className="group flex min-h-52 flex-col justify-between bg-moss p-6"
+							className="group flex min-h-52 flex-col justify-between rounded-2xl border border-line bg-paper p-6 transition hover:border-ink/30"
 							href={partner.href}
 							target="_blank"
 							rel="noopener noreferrer"
@@ -53,12 +53,12 @@ export function PartnerOrganizations() {
 						>
 							<div>
 								<img
-									className="h-20 w-full rounded-xl bg-white object-contain p-3"
+									className="h-20 w-full rounded-xl border border-line bg-white object-contain p-3"
 									src={partner.image}
 									alt=""
 								/>
 								{partner.description ? (
-									<p className="mt-4 text-sm leading-relaxed text-oat">
+									<p className="mt-4 text-sm leading-relaxed text-ink-soft">
 										{partner.description()}
 									</p>
 								) : null}

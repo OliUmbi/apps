@@ -10,7 +10,7 @@ export function StoryIntroduction({ story }: { story: PublicStory }) {
 				<p className="kicker">
 					{story.publishedOn ? formatDate(story.publishedOn) : m.story()}
 				</p>
-				<p className="mt-3 text-moss font-extrabold">{story.author}</p>
+				<p className="mt-3 text-accent font-extrabold">{story.author}</p>
 				<h1>{story.title}</h1>
 				{story.description ? <p>{story.description}</p> : null}
 			</header>

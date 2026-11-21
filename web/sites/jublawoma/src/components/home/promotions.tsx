@@ -13,7 +13,7 @@ export function Promotions({
 	// degrades to an honest error instead of silently showing nothing (J-07).
 	if (promotions === null)
 		return (
-			<p className="shell pt-8 pb-20 text-center text-bark-soft" role="alert">
+			<p className="shell pt-8 pb-20 text-center text-ink-soft" role="alert">
 				{m.error_generic()}
 			</p>
 		);
@@ -26,7 +26,7 @@ export function Promotions({
 					href={safeLinkHref(promotion.link)}
 					className="promotion-card group"
 				>
-					<div className="min-h-[18rem] bg-sage max-[850px]:min-h-[14rem]">
+					<div className="min-h-[18rem] bg-mist max-[850px]:min-h-[14rem]">
 						<MediaImage
 							src={promotion.image?.src}
 							alt={promotion.image?.alt || promotion.title}
@@ -38,7 +38,7 @@ export function Promotions({
 					<div className="promotion-body">
 						<p className="kicker">{m.jublawoma_promotion_eyebrow()}</p>
 						<h2 className="text-2xl font-bold">{promotion.title}</h2>
-						<p className="mt-2 text-bark-soft">{promotion.description}</p>
+						<p className="mt-2 text-ink-soft">{promotion.description}</p>
 						<span className="mt-6 inline-flex items-center gap-2 border-b-2 border-current pb-[0.35rem] font-extrabold">
 							{m.jublawoma_promotion_link()}{" "}
 							<ArrowUpRight size={18} aria-hidden="true" />

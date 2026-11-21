@@ -9,7 +9,7 @@ export function EventsList({ events }: { events: PublicEvent[] }) {
 		<section className="shell event-list">
 			{events.map((event, index) => (
 				<article key={event.id}>
-					<div className="self-start pt-8 text-moss text-[0.7rem] font-black max-[520px]:pt-0">
+					<div className="self-start pt-8 text-accent text-[0.7rem] font-black max-[520px]:pt-0">
 						{String(index + 1).padStart(2, "0")}
 					</div>
 					<MediaImage
@@ -29,7 +29,7 @@ export function EventsList({ events }: { events: PublicEvent[] }) {
 						</p>
 					</div>
 					<CalendarDays
-						className="text-moss max-[850px]:hidden"
+						className="text-accent max-[850px]:hidden"
 						aria-hidden="true"
 					/>
 				</article>

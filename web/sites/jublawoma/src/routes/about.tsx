@@ -36,7 +36,7 @@ function About() {
 					<h1>
 						{m.jublawoma_about_title()}
 						<br />
-						<span className="font-serif font-normal italic text-moss">
+						<span className="font-serif font-normal italic text-accent">
 							{m.jublawoma_about_title_accent()}
 						</span>
 					</h1>

@@ -32,7 +32,7 @@ export function Header() {
 			</Link>
 			<Dialog.Root open={open} onOpenChange={setOpen}>
 				<Dialog.Trigger
-					className="hidden h-11 w-11 place-items-center text-bark max-[850px]:grid"
+					className="hidden h-11 w-11 place-items-center text-ink max-[850px]:grid"
 					type="button"
 					aria-expanded={open}
 					aria-label={open ? m.close_menu() : m.open_menu()}
@@ -40,8 +40,8 @@ export function Header() {
 					{open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
 				</Dialog.Trigger>
 				<Dialog.Portal>
-					<Dialog.Backdrop className="fixed inset-0 z-50 bg-bark/35" />
-					<Dialog.Popup className="fixed inset-y-0 right-0 z-60 w-full max-w-sm overflow-y-auto bg-oat p-7 text-bark shadow-2xl">
+					<Dialog.Backdrop className="fixed inset-0 z-50 bg-ink/35" />
+					<Dialog.Popup className="fixed inset-y-0 right-0 z-60 w-full max-w-sm overflow-y-auto bg-paper p-7 text-ink shadow-2xl">
 						<div className="flex items-center justify-between">
 							<Dialog.Title>{m.menu()}</Dialog.Title>
 							<Dialog.Close aria-label={m.close_menu()} className="p-3">
@@ -54,7 +54,7 @@ export function Header() {
 									key={item.to}
 									to={item.to}
 									onClick={() => setOpen(false)}
-									className="border-b border-bark/15 py-3 text-xl"
+									className="border-b border-ink/15 py-3 text-xl"
 								>
 									{item.label()}
 								</Link>

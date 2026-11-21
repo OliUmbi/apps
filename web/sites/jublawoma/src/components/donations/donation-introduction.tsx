@@ -13,7 +13,7 @@ export function DonationIntroduction({
 			<div>
 				<p className="kicker">{m.jublawoma_donations_eyebrow()}</p>
 				<h1>{campaign.title}</h1>
-				<p className="max-w-[50rem] text-[1.1rem] leading-[1.7] text-bark-soft">
+				<p className="max-w-[50rem] text-[1.1rem] leading-[1.7] text-ink-soft">
 					{campaign.description}
 				</p>
 			</div>

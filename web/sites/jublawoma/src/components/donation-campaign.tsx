@@ -46,7 +46,7 @@ export function DonationCampaign({
 						item={selected}
 					/>
 				) : availableItems.length ? (
-					<p className="mx-auto mt-8 max-w-[42rem] text-center text-bark-soft">
+					<p className="mx-auto mt-8 max-w-[42rem] text-center text-ink-soft">
 						{m.jublawoma_donation_select_help()}
 					</p>
 				) : null}

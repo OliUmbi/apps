@@ -10,7 +10,7 @@ export function PageError() {
 		<section className="shell status-page">
 			<div>
 				<h1>{m.page_error_title()}</h1>
-				<p className="mb-8 max-w-[560px] text-[1.05rem] leading-[1.7] text-bark-soft">
+				<p className="mb-8 max-w-[560px] text-[1.05rem] leading-[1.7] text-ink-soft">
 					{m.page_error_description()}
 				</p>
 				<Button

@@ -8,7 +8,7 @@ export function NotFound() {
 			<div>
 				<p className="kicker">{m.jublawoma_not_found_eyebrow()}</p>
 				<h1>{m.jublawoma_not_found_title()}</h1>
-				<p className="mb-8 max-w-[560px] text-[1.05rem] leading-[1.7] text-bark-soft">
+				<p className="mb-8 max-w-[560px] text-[1.05rem] leading-[1.7] text-ink-soft">
 					{m.jublawoma_not_found_description()}
 				</p>
 				<Link to="/" className="button dark">

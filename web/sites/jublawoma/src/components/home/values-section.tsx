@@ -41,7 +41,7 @@ export function ValuesSection() {
 				<h2 className="m-0 text-[clamp(2.6rem,5vw,5.3rem)] leading-[.95] tracking-[-.06em]">
 					{m.jublawoma_home_values_title()}
 					<br />
-					<span className="font-serif font-normal text-moss italic">
+					<span className="font-serif font-normal text-accent italic">
 						{m.jublawoma_home_values_title_accent()}
 					</span>
 				</h2>
@@ -49,17 +49,17 @@ export function ValuesSection() {
 			<div className="mt-16 grid gap-4 md:grid-cols-2 lg:grid-cols-6">
 				{values.map((value, index) => (
 					<article
-						className={`relative min-h-[28rem] overflow-hidden rounded-3xl border border-bark/15 p-6 ${index < 2 ? "lg:col-span-3" : "lg:col-span-2"}`}
+						className={`relative min-h-[28rem] overflow-hidden rounded-3xl border border-ink/15 p-6 ${index < 2 ? "lg:col-span-3" : "lg:col-span-2"}`}
 						key={value.number}
 					>
 						<span className="text-xs font-black">{value.number}</span>
 						<img
-							className="h-60 w-full object-contain saturate-50"
+							className="h-60 w-full object-contain"
 							src={`/images/doodles/${value.art}`}
 							alt=""
 						/>
 						<h3 className="mt-5 mb-2 text-2xl font-bold">{value.title()}</h3>
-						<p className="leading-relaxed text-bark-soft">{value.body()}</p>
+						<p className="leading-relaxed text-ink-soft">{value.body()}</p>
 					</article>
 				))}
 			</div>
