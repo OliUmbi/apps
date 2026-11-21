@@ -17,6 +17,12 @@ export const submitCommitment = createServerFn({ method: "POST" })
 			? result
 			: { outcome: "unavailable" as const };
 	});
+// The header only needs to know whether the donations tab should exist; the
+// page itself still resolves the full campaign.
+export const hasCurrentDonation = createServerFn({ method: "GET" }).handler(
+	async (): Promise<boolean> =>
+		createPublicRepository(database.db).hasActiveDonation(),
+);
 export const getCurrentDonation = createServerFn({ method: "GET" }).handler(
 	async (): Promise<PublicDonationCampaign | null> => {
 		const campaign = await createPublicRepository(

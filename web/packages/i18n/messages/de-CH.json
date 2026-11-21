@@ -106,6 +106,8 @@
   "jublawoma_legal_source": "Quelle: SwissAnwalt",
   "jublawoma_legal_street": "Vogelsangstrasse 2",
   "jublawoma_member_line": "{group} · {role}",
+  "jublawoma_members_show_all": "Alle {count} Mitglieder anzeigen",
+  "jublawoma_members_show_less": "Weniger anzeigen",
   "jublawoma_navigation_about": "Über uns",
   "jublawoma_navigation_events": "Anlässe",
   "jublawoma_navigation_help": "Spenden",

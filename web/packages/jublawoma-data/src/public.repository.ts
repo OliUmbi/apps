@@ -77,22 +77,18 @@ export function createPublicRepository(db: DatabaseExecutor) {
 				pageSchema.parse({ page }),
 			);
 		},
-		listMembers(page: number): Promise<Page<Member>> {
-			return paginate<Member>(
-				db
-					.select()
-					.from(member)
-					.orderBy(desc(member.createdAt), member.id)
-					.$dynamic(),
-				pageSchema.parse({ page }),
-			);
-		},
 		leadership(): Promise<Member[]> {
 			return db
 				.select()
 				.from(member)
 				.where(eq(member.leadership, true))
 				.orderBy(member.name, member.id);
+		},
+		// The full roster is small (a club has tens of members, not thousands)
+		// and the About page needs the total for a collapsed list, so it reads
+		// every member in one query instead of paginating.
+		members(): Promise<Member[]> {
+			return db.select().from(member).orderBy(member.name, member.id);
 		},
 		listEvents(page: number): Promise<Page<Event>> {
 			return paginate<Event>(
@@ -113,6 +109,14 @@ export function createPublicRepository(db: DatabaseExecutor) {
 				.orderBy(event.startsOn, event.id)
 				.limit(1);
 			return record ?? null;
+		},
+		async hasActiveDonation(): Promise<boolean> {
+			const [record] = await db
+				.select({ id: donation.id })
+				.from(donation)
+				.where(activeDonation)
+				.limit(1);
+			return record !== undefined;
 		},
 		async currentDonation(): Promise<{
 			donation: Donation;

@@ -1,22 +1,26 @@
 import { Button } from "@base-ui/react/button";
-import type { Page } from "@oliumbi/contracts";
 import { m } from "@oliumbi/i18n/messages";
-import { PaginatedList } from "@oliumbi/ui/paginated-list";
-import { getMemberPage } from "../data/members";
+import { useState } from "react";
 import type { PublicMember } from "../model/content";
 import { MediaImage } from "./media-image";
 
+// A club roster can reach fifty people. Members start as a short directory and
+// only expand on request, so the About page never becomes an endless photo
+// wall; the compact rows keep even the expanded list scannable.
+const collapsedMemberCount = 12;
+const memberGridId = "team-grid";
+
 export function PublicMembers({
 	leadership,
-	memberPage,
+	members,
 }: {
 	leadership: PublicMember[] | null;
-	memberPage: Page<PublicMember>;
+	members: PublicMember[];
 }) {
 	return (
 		<section className="shell pb-20">
 			<Leadership members={leadership} />
-			<MemberList initialPage={memberPage} />
+			<MemberList members={members} />
 		</section>
 	);
 }
@@ -50,60 +54,62 @@ function Leadership({ members }: { members: PublicMember[] | null }) {
 	);
 }
 
-function MemberList({ initialPage }: { initialPage: Page<PublicMember> }) {
+function MemberList({ members }: { members: PublicMember[] }) {
+	const [expanded, setExpanded] = useState(false);
+	if (members.length === 0) return null;
+	const visible = expanded ? members : members.slice(0, collapsedMemberCount);
+
 	return (
-		<PaginatedList
-			queryKey={["members"]}
-			initialPage={initialPage}
-			load={(page) => getMemberPage({ data: { page } })}
-			emptyState={null}
-			footer={({ loadMore, isFetchingNextPage }) => (
+		<section aria-labelledby="team-title">
+			<h2 id="team-title" className="mb-8 text-4xl font-bold">
+				{m.jublawoma_team_title()}
+			</h2>
+			<div
+				id={memberGridId}
+				className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+			>
+				{visible.map((member) => (
+					<MemberCard key={member.id} member={member} />
+				))}
+			</div>
+			{members.length > collapsedMemberCount && (
 				<Button
 					className="button dark mt-8"
-					disabled={isFetchingNextPage}
-					onClick={loadMore}
+					type="button"
+					aria-expanded={expanded}
+					aria-controls={memberGridId}
+					onClick={() => setExpanded((value) => !value)}
 				>
-					{m.load_more()}
+					{expanded
+						? m.jublawoma_members_show_less()
+						: m.jublawoma_members_show_all({ count: members.length })}
 				</Button>
 			)}
-		>
-			{(members) =>
-				members.length === 0 ? null : (
-					<>
-						<h2 className="mb-8 text-4xl font-bold">
-							{m.jublawoma_team_title()}
-						</h2>
-						<div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-							{members.map((member) => (
-								<MemberCard key={member.id} member={member} />
-							))}
-						</div>
-					</>
-				)
-			}
-		</PaginatedList>
+		</section>
 	);
 }
 
 function MemberCard({ member }: { member: PublicMember }) {
 	return (
-		<article>
+		<article className="flex items-center gap-4 rounded-2xl border border-line p-4">
 			<MediaImage
 				src={member.image?.src}
 				alt={member.image?.alt || member.name}
 				seed={member.id}
-				className="aspect-square rounded-3xl object-cover"
-				sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+				className="size-16 shrink-0 rounded-full object-cover"
+				sizes="64px"
 			/>
-			<h3 className="mt-4 text-xl font-bold">{member.name}</h3>
-			<p>
-				{member.leadership
-					? m.jublawoma_member_line({
-							group: member.groupName,
-							role: m.jublawoma_leadership_title(),
-						})
-					: member.groupName}
-			</p>
+			<div className="min-w-0">
+				<h3 className="truncate text-base font-bold">{member.name}</h3>
+				<p className="text-sm text-ink-soft">
+					{member.leadership
+						? m.jublawoma_member_line({
+								group: member.groupName,
+								role: m.jublawoma_leadership_title(),
+							})
+						: member.groupName}
+				</p>
+			</div>
 		</article>
 	);
 }

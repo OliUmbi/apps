@@ -3,19 +3,19 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PartnerOrganizations } from "../components/partner-organizations";
 import { PublicMembers } from "../components/public-members";
 import { imagePreload, StaticImage } from "../components/static-image";
-import { getLeadership, getMemberPage } from "../data/members";
+import { getLeadership, getMembers } from "../data/members";
 import { pageHead } from "../model/metadata";
 
 export const Route = createFileRoute("/about")({
 	loader: async () => {
-		const [leadership, memberPage] = await Promise.all([
+		const [leadership, members] = await Promise.all([
 			// The leadership block renders its own error branch for a null seed
 			// (J-07); the member list is primary content, so its failure surfaces
 			// as the route error with a retry.
 			getLeadership().catch(() => null),
-			getMemberPage({ data: { page: 0 } }),
+			getMembers(),
 		]);
-		return { leadership, memberPage };
+		return { leadership, members };
 	},
 	head: () => ({
 		...pageHead({
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/about")({
 	component: About,
 });
 function About() {
-	const { leadership, memberPage } = Route.useLoaderData();
+	const { leadership, members } = Route.useLoaderData();
 	return (
 		<>
 			<section className="page-hero shell">
@@ -61,7 +61,7 @@ function About() {
 					<p>{m.jublawoma_about_inclusion_body()}</p>
 				</div>
 			</section>
-			<PublicMembers leadership={leadership} memberPage={memberPage} />
+			<PublicMembers leadership={leadership} members={members} />
 			<PartnerOrganizations />
 		</>
 	);

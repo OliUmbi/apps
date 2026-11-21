@@ -1,8 +1,6 @@
-import { pageSchema } from "@oliumbi/contracts";
 import { createPublicRepository } from "@oliumbi/jublawoma-data";
 import type { Member } from "@oliumbi/jublawoma-data/content/member";
 import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import type { PublicMember } from "../model/content";
 import { database } from "../server/database.server";
 import { imageFromId } from "./images";
@@ -23,11 +21,11 @@ export const getLeadership = createServerFn({ method: "GET" }).handler(
 		return members.map(memberFromRecord);
 	},
 );
-export const getMemberPage = createServerFn({ method: "GET" })
-	.validator(z.object({ page: pageSchema.shape.page }))
-	.handler(async ({ data }) => {
-		const page = await createPublicRepository(database.db).listMembers(
-			data.page,
-		);
-		return { ...page, items: page.items.map(memberFromRecord) };
-	});
+// The roster stays one bounded query: About needs the total for its collapsed
+// list and a club has tens of members, so paging would only add complexity.
+export const getMembers = createServerFn({ method: "GET" }).handler(
+	async (): Promise<PublicMember[]> => {
+		const members = await createPublicRepository(database.db).members();
+		return members.map(memberFromRecord);
+	},
+);
