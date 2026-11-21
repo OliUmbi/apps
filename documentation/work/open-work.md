@@ -304,6 +304,21 @@ surfaces; `2026.11.18-test.4` aligned the browser chrome;
   through `.9` balance heading and short-copy wrapping and keep the product
   facts on one column.
 
+## Site feedback round (2026-11-21)
+
+- [x] Uncle-T: "selbständig" corrected to "selbstständig"; "Abdankungen &
+  Trauerfeiern" added to the catering formats because families search for it.
+  The odd seventh format spans the full last row.
+- [x] Jublawoma: the olive/beige palette is replaced by white paper, near-black
+  ink and the flyer red `#a93343`. Illustrations render at full saturation, the
+  nav CTA and primary buttons carry the red, and the About partner band is a
+  light band with five clean cards instead of a green band with an empty sixth
+  cell.
+- [ ] [owner] Jublawoma: decide between keeping the custom site and moving to
+  the jubla.ch WordPress template; the 2026-11-21 direction is to keep the
+  custom site and fix the brand fit.
+- [ ] [owner] Zelglihof: feedback for the 2026-11-21 round is pending.
+
 ## First go-live review (2026-11)
 
 Evidence: [first go-live review](../history/go-live-review-2026-11.md).
@@ -479,6 +494,9 @@ Remaining product features are deliberately deferred until after launch; see
   confirmed. Real product data and photos remain owner-executed.
 - [ ] [verify] Jubla: confirm annual dates, same-day event endings, calendar/PDF
   exports, group names and donation units with the second developer.
+- [ ] [owner] Jubla: decide whether to keep the custom site or move to the
+  jubla.ch WordPress template. The 2026-11-21 direction is to keep it and fix
+  the brand fit (white/ink/red palette); the club has not decided.
 - [ ] [verify] Mail identities: the code now defaults to
   `newsletter@zelglihof-maegenwil.ch` plus the requests inbox (`hof@`) and the
   newsletter/requests split is implemented. Confirm the provider SMTP may send
